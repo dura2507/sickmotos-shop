@@ -35,16 +35,10 @@ export function Hero() {
 
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 pt-16 pb-20 md:gap-8 md:px-6 md:pt-28 md:pb-28">
         <div className="flex max-w-2xl flex-col gap-5">
-          <h1
-            className="text-balance bg-clip-text text-4xl font-light leading-[1.05] tracking-tight text-transparent sm:text-5xl md:text-6xl"
-            style={{
-              backgroundImage:
-                "linear-gradient(180deg, #f5f5f5 0%, #c8c8c8 55%, #8a8a8a 100%)",
-            }}
-          >
-            Ride wild.
+          <h1 className="text-balance text-4xl font-extralight leading-[1.1] tracking-tight text-zinc-100 sm:text-5xl md:text-6xl">
+            Ride wild,
             <br />
-            <span className="italic">Ride free.</span>
+            <span className="italic font-light text-zinc-400">ride free.</span>
           </h1>
 
           <p className="max-w-xl text-balance text-sm leading-relaxed text-fg-muted md:text-lg">
@@ -54,15 +48,15 @@ export function Hero() {
 
           <form
             role="search"
-            className="mt-2 flex w-full max-w-xl items-center overflow-hidden rounded-full border-2 border-accent bg-bg/80 backdrop-blur-sm transition-shadow focus-within:shadow-[0_0_0_4px_rgba(225,6,0,0.18)]"
+            className="mt-2 flex w-full max-w-md items-center overflow-hidden rounded-full border border-fg/25 bg-bg/60 backdrop-blur-sm transition-colors focus-within:border-accent"
           >
-            <span className="grid size-10 shrink-0 place-items-center text-accent md:size-12">
+            <span className="grid size-9 shrink-0 place-items-center text-fg-muted">
               <svg
                 viewBox="0 0 24 24"
-                className="size-4 md:size-5"
+                className="size-4"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth={2}
+                strokeWidth={1.8}
               >
                 <circle cx="11" cy="11" r="7" />
                 <path d="M21 21l-4.3-4.3" strokeLinecap="round" />
@@ -71,11 +65,11 @@ export function Hero() {
             <input
               type="search"
               placeholder="Search your bike..."
-              className="min-w-0 flex-1 bg-transparent py-2.5 pr-2 text-sm text-fg placeholder:text-fg-dim focus:outline-none md:py-3.5 md:text-base"
+              className="min-w-0 flex-1 bg-transparent py-2 pr-3 text-xs text-fg placeholder:text-fg-dim focus:outline-none md:text-sm"
             />
             <button
               type="submit"
-              className="m-1 shrink-0 rounded-full bg-accent px-4 py-2 text-xs font-bold uppercase tracking-wider text-fg transition-colors hover:bg-accent-hi md:px-6 md:py-2.5 md:text-sm"
+              className="shrink-0 pr-4 text-[11px] font-semibold uppercase tracking-wider text-accent transition-colors hover:text-accent-hi"
             >
               Find
             </button>
