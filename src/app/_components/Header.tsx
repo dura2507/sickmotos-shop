@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { MobileMenu } from "./MobileMenu";
 
 const brands = [
   "All brands",
@@ -24,7 +25,7 @@ const nav = [
 export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-bg/95 backdrop-blur-md">
-      <div className="mx-auto flex h-28 max-w-7xl items-center gap-4 px-6">
+      <div className="mx-auto flex h-20 max-w-7xl items-center gap-3 px-4 md:h-24 md:gap-4 md:px-6">
         <Link href="/" className="shrink-0">
           <Image
             src="/sickmotos-original.png"
@@ -32,7 +33,7 @@ export function Header() {
             width={300}
             height={200}
             priority
-            className="h-20 w-auto md:h-24"
+            className="h-14 w-auto sm:h-16 md:h-24"
           />
         </Link>
 
@@ -79,7 +80,7 @@ export function Header() {
           </button>
         </form>
 
-        <div className="ml-auto flex items-center gap-2 md:ml-0">
+        <div className="ml-auto flex items-center gap-2">
           <button
             type="button"
             aria-label="Account"
@@ -104,6 +105,7 @@ export function Header() {
               0
             </span>
           </button>
+          <MobileMenu />
         </div>
       </div>
 

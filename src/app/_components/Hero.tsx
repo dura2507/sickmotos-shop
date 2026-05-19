@@ -24,7 +24,7 @@ export function Hero() {
         />
         <div
           aria-hidden
-          className="absolute inset-x-0 bottom-0 h-32"
+          className="absolute inset-x-0 bottom-0 h-24 md:h-32"
           style={{
             background:
               "linear-gradient(180deg, transparent 0%, #0a0a0a 100%)",
@@ -32,7 +32,7 @@ export function Hero() {
         />
       </div>
 
-      <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 pt-24 pb-24 md:pt-28 md:pb-28">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 pt-16 pb-20 md:gap-8 md:px-6 md:pt-28 md:pb-28">
         <div className="flex max-w-2xl flex-col gap-5">
           <h1 className="font-display text-balance text-5xl uppercase leading-[0.95] tracking-tight text-fg sm:text-6xl md:text-7xl">
             Ride wild.
@@ -40,7 +40,7 @@ export function Hero() {
             <span className="text-accent">Ride free.</span>
           </h1>
 
-          <p className="max-w-xl text-balance text-base leading-relaxed text-fg-muted md:text-lg">
+          <p className="max-w-xl text-balance text-sm leading-relaxed text-fg-muted md:text-lg">
             Performance parts for Supermoto and Enduro. Designed and tested
             in Germany by Thomas Krawietz, Mechatronics Master.
           </p>
@@ -61,36 +61,38 @@ export function Hero() {
             </svg>
             <input
               type="search"
-              placeholder="Search your bike: Beta RR 125, KTM SMC, Husqvarna 701..."
-              className="flex-1 bg-transparent py-2 text-base text-fg placeholder:text-fg-dim focus:outline-none"
+              placeholder="Search your bike..."
+              className="min-w-0 flex-1 bg-transparent py-2 text-sm text-fg placeholder:text-fg-dim focus:outline-none md:text-base"
             />
             <button
               type="submit"
-              className="text-xs font-bold uppercase tracking-wider text-accent transition-colors hover:text-accent-hi"
+              className="shrink-0 text-xs font-bold uppercase tracking-wider text-accent transition-colors hover:text-accent-hi"
             >
               Find
             </button>
           </form>
 
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
-            <span className="text-fg-dim">Quick picks</span>
-            <span aria-hidden className="h-3 w-px bg-accent/60" />
-            {quickPicks.map((b, i) => (
-              <span key={b} className="flex items-center gap-3">
-                <a
-                  href="#"
-                  className="font-medium uppercase tracking-wider text-fg-muted transition-colors hover:text-accent"
-                >
-                  {b}
-                </a>
-                {i < quickPicks.length - 1 && (
-                  <span aria-hidden className="size-1 rounded-full bg-fg-dim/60" />
-                )}
-              </span>
-            ))}
+          <div className="-mx-4 overflow-x-auto px-4 md:mx-0 md:overflow-visible md:px-0">
+            <div className="flex items-center gap-3 whitespace-nowrap text-xs md:flex-wrap md:gap-x-4 md:whitespace-normal">
+              <span className="text-fg-dim">Quick picks</span>
+              <span aria-hidden className="h-3 w-px bg-accent/60" />
+              {quickPicks.map((b, i) => (
+                <span key={b} className="flex items-center gap-3">
+                  <a
+                    href="#"
+                    className="font-medium uppercase tracking-wider text-fg-muted transition-colors hover:text-accent"
+                  >
+                    {b}
+                  </a>
+                  {i < quickPicks.length - 1 && (
+                    <span aria-hidden className="size-1 rounded-full bg-fg-dim/60" />
+                  )}
+                </span>
+              ))}
+            </div>
           </div>
 
-          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-fg-muted">
+          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-fg-muted md:mt-4 md:gap-x-5">
             <div className="flex items-center gap-2">
               <div className="flex gap-0.5 text-accent">
                 {[0, 1, 2, 3, 4].map((i) => (
