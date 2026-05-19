@@ -52,7 +52,7 @@ export function Merchandise() {
           {items.map((it) => (
             <article
               key={it.title}
-              className="group flex flex-col overflow-hidden rounded-lg border border-border bg-bg transition-colors hover:border-border-strong"
+              className="reveal group flex flex-col overflow-hidden rounded-lg border border-border bg-bg transition-colors hover:border-border-strong"
             >
               <div className="relative aspect-square overflow-hidden border-b border-border bg-white">
                 <Image

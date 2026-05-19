@@ -22,7 +22,7 @@ export function Categories() {
             <a
               key={c.name}
               href={c.href}
-              className="group relative flex items-center justify-between overflow-hidden rounded-lg border border-border bg-surface px-5 py-6 transition-colors hover:border-accent"
+              className="reveal-soft group relative flex items-center justify-between overflow-hidden rounded-lg border border-border bg-surface px-5 py-6 transition-colors hover:border-accent"
             >
               <span className="font-display text-2xl uppercase tracking-tight text-fg">
                 {c.name}

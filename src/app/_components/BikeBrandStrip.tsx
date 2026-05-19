@@ -27,7 +27,7 @@ export function BikeBrandStrip() {
             <a
               key={b.name}
               href="#"
-              className="group flex flex-col items-center justify-center gap-1 rounded-lg border border-border bg-surface px-3 py-5 text-center transition-all hover:border-accent hover:bg-surface-2"
+              className="reveal-soft group flex flex-col items-center justify-center gap-1 rounded-lg border border-border bg-surface px-3 py-5 text-center transition-all hover:border-accent hover:bg-surface-2"
             >
               <span className="font-display text-xl uppercase tracking-tight text-fg transition-colors group-hover:text-accent">
                 {b.name}

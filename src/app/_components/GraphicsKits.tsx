@@ -48,7 +48,7 @@ export function GraphicsKits() {
           {kits.map((k) => (
             <article
               key={k.title}
-              className="group flex flex-col overflow-hidden rounded-lg border border-border bg-surface transition-colors hover:border-accent"
+              className="reveal group flex flex-col overflow-hidden rounded-lg border border-border bg-surface transition-colors hover:border-accent"
             >
               <div className="relative aspect-[4/3] overflow-hidden border-b border-border bg-white">
                 <Image

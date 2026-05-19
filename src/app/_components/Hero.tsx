@@ -12,7 +12,7 @@ export function Hero() {
           fill
           priority
           sizes="100vw"
-          className="object-cover object-center"
+          className="hero-parallax object-cover object-center"
           style={{ transform: "scaleX(-1)" }}
         />
         <div

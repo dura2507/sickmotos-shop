@@ -18,7 +18,7 @@ export function Stats() {
       />
       <div className="relative mx-auto grid max-w-7xl grid-cols-2 gap-y-10 px-6 py-14 md:grid-cols-4">
         {stats.map((s) => (
-          <div key={s.label} className="flex flex-col items-center text-center">
+          <div key={s.label} className="reveal flex flex-col items-center text-center">
             <span className="font-display text-5xl uppercase tracking-tight text-accent md:text-6xl">
               {s.number}
             </span>

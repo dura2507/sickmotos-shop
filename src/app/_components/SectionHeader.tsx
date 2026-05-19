@@ -16,7 +16,7 @@ export function SectionHeader({
   backdropImage,
 }: Props) {
   return (
-    <div className="relative isolate mb-10 overflow-hidden rounded-lg border border-border bg-surface/50">
+    <div className="reveal relative isolate mb-10 overflow-hidden rounded-lg border border-border bg-surface/50">
       {backdropImage && (
         <>
           <Image

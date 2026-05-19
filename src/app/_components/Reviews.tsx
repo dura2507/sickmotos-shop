@@ -52,7 +52,7 @@ export function Reviews() {
           {reviews.map((r) => (
             <article
               key={r.name}
-              className="flex flex-col gap-4 rounded-lg border border-border bg-bg p-5"
+              className="reveal flex flex-col gap-4 rounded-lg border border-border bg-bg p-5"
             >
               <div className="flex gap-0.5 text-accent">
                 {[0, 1, 2, 3, 4].map((i) => (
