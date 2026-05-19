@@ -109,8 +109,8 @@ export function Header() {
         </div>
       </div>
 
-      <nav className="hidden border-t border-border md:block">
-        <ul className="mx-auto flex max-w-7xl items-center gap-6 px-6 py-2.5">
+      <nav className="hidden md:block">
+        <ul className="mx-auto flex max-w-7xl items-center gap-7 px-6 pb-3">
           {nav.map((item) => (
             <li key={item.label}>
               <Link
