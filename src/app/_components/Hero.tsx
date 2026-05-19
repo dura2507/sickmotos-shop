@@ -35,10 +35,10 @@ export function Hero() {
 
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 pt-16 pb-20 md:gap-8 md:px-6 md:pt-28 md:pb-28">
         <div className="flex max-w-2xl flex-col gap-5">
-          <h1 className="font-display text-balance text-5xl uppercase leading-[0.95] tracking-tight text-fg sm:text-6xl md:text-7xl">
+          <h1 className="text-balance text-4xl font-light leading-[1.05] tracking-tight text-fg sm:text-5xl md:text-6xl">
             Ride wild.
             <br />
-            <span className="text-accent">Ride free.</span>
+            <span className="font-semibold italic text-accent">Ride free.</span>
           </h1>
 
           <p className="max-w-xl text-balance text-sm leading-relaxed text-fg-muted md:text-lg">

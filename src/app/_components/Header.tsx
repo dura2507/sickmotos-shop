@@ -110,12 +110,12 @@ export function Header() {
       </div>
 
       <nav className="hidden md:block">
-        <ul className="mx-auto flex max-w-7xl items-center gap-7 px-6 pb-3">
+        <ul className="mx-auto flex max-w-7xl items-center justify-center gap-8 px-6 pb-3">
           {nav.map((item) => (
             <li key={item.label}>
               <Link
                 href={item.href}
-                className="text-xs font-medium uppercase tracking-[0.12em] text-fg-muted transition-colors hover:text-accent"
+                className="text-xs font-medium uppercase tracking-[0.14em] text-fg-muted transition-colors hover:text-accent"
               >
                 {item.label}
               </Link>
