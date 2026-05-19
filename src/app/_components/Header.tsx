@@ -28,12 +28,12 @@ export function Header() {
       <div className="mx-auto flex h-20 max-w-7xl items-center gap-3 px-4 md:h-24 md:gap-4 md:px-6">
         <Link href="/" className="shrink-0">
           <Image
-            src="/sickmotos-original.png"
+            src="/logo-alt-2.png"
             alt="SickMotos"
-            width={300}
-            height={200}
+            width={974}
+            height={626}
             priority
-            className="h-14 w-auto sm:h-16 md:h-24"
+            className="h-14 w-auto sm:h-16 md:h-20"
           />
         </Link>
 

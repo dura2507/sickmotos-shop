@@ -47,67 +47,61 @@ export function Hero() {
 
           <form
             role="search"
-            className="mt-2 flex w-full max-w-xl items-center gap-2 border-b border-fg/30 pb-2 transition-colors focus-within:border-accent"
+            className="mt-2 flex w-full max-w-xl items-center overflow-hidden rounded-full border-2 border-accent bg-bg/80 backdrop-blur-sm transition-shadow focus-within:shadow-[0_0_0_4px_rgba(225,6,0,0.18)]"
           >
-            <svg
-              viewBox="0 0 24 24"
-              className="size-5 shrink-0 text-fg-muted"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <circle cx="11" cy="11" r="7" />
-              <path d="M21 21l-4.3-4.3" strokeLinecap="round" />
-            </svg>
+            <span className="grid size-10 shrink-0 place-items-center text-accent md:size-12">
+              <svg
+                viewBox="0 0 24 24"
+                className="size-4 md:size-5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <circle cx="11" cy="11" r="7" />
+                <path d="M21 21l-4.3-4.3" strokeLinecap="round" />
+              </svg>
+            </span>
             <input
               type="search"
               placeholder="Search your bike..."
-              className="min-w-0 flex-1 bg-transparent py-2 text-sm text-fg placeholder:text-fg-dim focus:outline-none md:text-base"
+              className="min-w-0 flex-1 bg-transparent py-2.5 pr-2 text-sm text-fg placeholder:text-fg-dim focus:outline-none md:py-3.5 md:text-base"
             />
             <button
               type="submit"
-              className="shrink-0 text-xs font-bold uppercase tracking-wider text-accent transition-colors hover:text-accent-hi"
+              className="m-1 shrink-0 rounded-full bg-accent px-4 py-2 text-xs font-bold uppercase tracking-wider text-fg transition-colors hover:bg-accent-hi md:px-6 md:py-2.5 md:text-sm"
             >
               Find
             </button>
           </form>
 
           <div className="-mx-4 overflow-x-auto px-4 md:mx-0 md:overflow-visible md:px-0">
-            <div className="flex items-center gap-3 whitespace-nowrap text-xs md:flex-wrap md:gap-x-4 md:whitespace-normal">
-              <span className="text-fg-dim">Quick picks</span>
-              <span aria-hidden className="h-3 w-px bg-accent/60" />
-              {quickPicks.map((b, i) => (
-                <span key={b} className="flex items-center gap-3">
-                  <a
-                    href="#"
-                    className="font-medium uppercase tracking-wider text-fg-muted transition-colors hover:text-accent"
-                  >
-                    {b}
-                  </a>
-                  {i < quickPicks.length - 1 && (
-                    <span aria-hidden className="size-1 rounded-full bg-fg-dim/60" />
-                  )}
-                </span>
+            <div className="flex items-center gap-2 whitespace-nowrap text-[11px] md:flex-wrap md:gap-2 md:whitespace-normal">
+              {quickPicks.map((b) => (
+                <a
+                  key={b}
+                  href="#"
+                  className="rounded-full border border-border-strong/60 px-2.5 py-1 font-medium uppercase tracking-wider text-fg-muted transition-colors hover:border-accent hover:text-accent"
+                >
+                  {b}
+                </a>
               ))}
             </div>
           </div>
 
-          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-fg-muted md:mt-4 md:gap-x-5">
-            <div className="flex items-center gap-2">
+          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] text-fg-muted">
+            <div className="flex items-center gap-1.5">
               <div className="flex gap-0.5 text-accent">
                 {[0, 1, 2, 3, 4].map((i) => (
                   <svg
                     key={i}
                     viewBox="0 0 20 20"
-                    className="size-3.5 fill-current"
+                    className="size-3 fill-current"
                   >
                     <path d="M10 1l2.59 5.95L19 7.95l-4.5 4.4 1.06 6.2L10 15.5l-5.56 3.05L5.5 12.35 1 7.95l6.41-1z" />
                   </svg>
                 ))}
               </div>
-              <span>
-                <span className="font-bold text-fg">4.9</span> verified reviews
-              </span>
+              <span className="font-bold text-fg">4.9</span>
             </div>
             <span aria-hidden className="size-1 rounded-full bg-accent" />
             <span>Worldwide shipping</span>
