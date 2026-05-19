@@ -27,12 +27,12 @@ export function Header() {
       <div className="mx-auto flex h-28 max-w-7xl items-center gap-4 px-6">
         <Link href="/" className="shrink-0">
           <Image
-            src="/sickmotos.svg"
+            src="/sickmotos-original.png"
             alt="SickMotos"
             width={300}
             height={200}
             priority
-            className="h-24 w-auto md:h-28"
+            className="h-20 w-auto md:h-24"
           />
         </Link>
 
@@ -108,12 +108,12 @@ export function Header() {
       </div>
 
       <nav className="hidden border-t border-border md:block">
-        <ul className="mx-auto flex max-w-7xl items-center gap-7 px-6 py-3">
+        <ul className="mx-auto flex max-w-7xl items-center gap-6 px-6 py-2.5">
           {nav.map((item) => (
             <li key={item.label}>
               <Link
                 href={item.href}
-                className="text-sm font-semibold uppercase tracking-wider text-fg-muted transition-colors hover:text-accent"
+                className="text-xs font-medium uppercase tracking-[0.12em] text-fg-muted transition-colors hover:text-accent"
               >
                 {item.label}
               </Link>

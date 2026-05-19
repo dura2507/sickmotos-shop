@@ -47,47 +47,50 @@ export function Hero() {
 
           <form
             role="search"
-            className="mt-2 flex w-full max-w-xl items-center overflow-hidden rounded-full border-2 border-accent bg-bg/80 backdrop-blur-sm transition-shadow focus-within:shadow-[0_0_0_4px_rgba(225,6,0,0.18)]"
+            className="mt-2 flex w-full max-w-xl items-center gap-2 border-b border-fg/30 pb-2 transition-colors focus-within:border-accent"
           >
-            <span className="grid size-12 place-items-center text-accent">
-              <svg
-                viewBox="0 0 24 24"
-                className="size-5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <circle cx="11" cy="11" r="7" />
-                <path d="M21 21l-4.3-4.3" strokeLinecap="round" />
-              </svg>
-            </span>
+            <svg
+              viewBox="0 0 24 24"
+              className="size-5 shrink-0 text-fg-muted"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <circle cx="11" cy="11" r="7" />
+              <path d="M21 21l-4.3-4.3" strokeLinecap="round" />
+            </svg>
             <input
               type="search"
               placeholder="Search your bike: Beta RR 125, KTM SMC, Husqvarna 701..."
-              className="flex-1 bg-transparent py-3.5 pr-4 text-base text-fg placeholder:text-fg-dim focus:outline-none"
+              className="flex-1 bg-transparent py-2 text-base text-fg placeholder:text-fg-dim focus:outline-none"
             />
             <button
               type="submit"
-              className="m-1 rounded-full bg-accent px-6 py-2.5 text-sm font-bold uppercase tracking-wider text-fg transition-colors hover:bg-accent-hi"
+              className="text-xs font-bold uppercase tracking-wider text-accent transition-colors hover:text-accent-hi"
             >
               Find
             </button>
           </form>
 
-          <div className="flex flex-wrap items-center gap-2 text-xs text-fg-muted">
-            <span className="text-fg-dim">Quick picks:</span>
-            {quickPicks.map((b) => (
-              <a
-                key={b}
-                href="#"
-                className="rounded-full border border-border-strong bg-bg/40 px-3 py-1 font-medium uppercase tracking-wider text-fg backdrop-blur-sm transition-colors hover:border-accent hover:text-accent"
-              >
-                {b}
-              </a>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
+            <span className="text-fg-dim">Quick picks</span>
+            <span aria-hidden className="h-3 w-px bg-accent/60" />
+            {quickPicks.map((b, i) => (
+              <span key={b} className="flex items-center gap-3">
+                <a
+                  href="#"
+                  className="font-medium uppercase tracking-wider text-fg-muted transition-colors hover:text-accent"
+                >
+                  {b}
+                </a>
+                {i < quickPicks.length - 1 && (
+                  <span aria-hidden className="size-1 rounded-full bg-fg-dim/60" />
+                )}
+              </span>
             ))}
           </div>
 
-          <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-border/60 pt-5 text-xs text-fg-muted">
+          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-fg-muted">
             <div className="flex items-center gap-2">
               <div className="flex gap-0.5 text-accent">
                 {[0, 1, 2, 3, 4].map((i) => (
@@ -104,9 +107,9 @@ export function Hero() {
                 <span className="font-bold text-fg">4.9</span> verified reviews
               </span>
             </div>
-            <span className="hidden h-3 w-px bg-border-strong sm:inline-block" />
+            <span aria-hidden className="size-1 rounded-full bg-accent" />
             <span>Worldwide shipping</span>
-            <span className="hidden h-3 w-px bg-border-strong sm:inline-block" />
+            <span aria-hidden className="size-1 rounded-full bg-accent" />
             <span>Bitcoin accepted</span>
           </div>
         </div>

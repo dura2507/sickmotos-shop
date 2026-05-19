@@ -44,11 +44,11 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-[2fr_1fr_1fr_1.4fr]">
           <div className="flex flex-col gap-4">
             <Image
-              src="/sickmotos.svg"
+              src="/sickmotos-original.png"
               alt="SickMotos"
-              width={280}
-              height={180}
-              className="h-24 w-auto"
+              width={260}
+              height={170}
+              className="h-20 w-auto"
             />
             <p className="max-w-xs text-sm text-fg-muted">
               Performance parts for Supermoto & Enduro. Engineered in Germany

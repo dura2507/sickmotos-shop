@@ -46,6 +46,7 @@ export function SectionHeader({
           <h2 className="font-display text-4xl uppercase leading-none tracking-tight md:text-5xl">
             {title}
           </h2>
+          <span aria-hidden className="h-0.5 w-12 bg-accent" />
           {subtitle && (
             <p className="max-w-md text-sm text-fg-muted">{subtitle}</p>
           )}
