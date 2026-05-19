@@ -110,7 +110,7 @@ export function Header() {
       </div>
 
       <nav className="hidden md:block">
-        <ul className="mx-auto flex max-w-7xl items-center justify-center gap-8 px-6 pb-3">
+        <ul className="flex w-full items-center justify-center gap-8 px-6 pb-3">
           {nav.map((item) => (
             <li key={item.label}>
               <Link
