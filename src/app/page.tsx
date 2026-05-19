@@ -12,6 +12,7 @@ import { Merchandise } from "./_components/Merchandise";
 import { Founder } from "./_components/Founder";
 import { Reviews } from "./_components/Reviews";
 import { FAQ } from "./_components/FAQ";
+import { BrandMarquee } from "./_components/BrandMarquee";
 
 export default function Home() {
   return (
@@ -22,6 +23,7 @@ export default function Home() {
       <Bestsellers />
       <ActionBanner />
       <LatestArrivals />
+      <BrandMarquee />
       <DNA />
       <GraphicsKits />
       <Stats />

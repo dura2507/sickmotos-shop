@@ -23,9 +23,9 @@ export function ProductCard({ p }: { p: ProductCardData }) {
       : null;
 
   return (
-    <article className="reveal group relative flex flex-col overflow-hidden rounded-lg border border-border bg-surface transition-colors hover:border-border-strong">
+    <article className="reveal group relative flex flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-300 hover:-translate-y-1 hover:border-accent hover:shadow-[0_8px_30px_rgba(225,6,0,0.12)]">
       {discount !== null && discount > 0 && (
-        <span className="absolute left-0 top-0 z-10 rounded-br-lg bg-accent px-2.5 py-1 text-xs font-bold text-fg">
+        <span className="pulse-accent absolute left-0 top-0 z-10 rounded-br-lg bg-accent px-2.5 py-1 text-xs font-bold text-fg">
           {discount}%
         </span>
       )}
