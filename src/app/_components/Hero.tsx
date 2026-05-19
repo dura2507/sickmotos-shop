@@ -13,13 +13,14 @@ export function Hero() {
           priority
           sizes="100vw"
           className="object-cover object-center"
+          style={{ transform: "scaleX(-1)" }}
         />
         <div
           aria-hidden
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(90deg, rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.55) 50%, rgba(10,10,10,0.2) 100%)",
+              "linear-gradient(90deg, rgba(10,10,10,0.88) 0%, rgba(10,10,10,0.65) 35%, rgba(10,10,10,0.1) 70%, rgba(10,10,10,0.05) 100%)",
           }}
         />
         <div
