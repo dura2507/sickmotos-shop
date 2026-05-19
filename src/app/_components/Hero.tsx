@@ -36,9 +36,11 @@ export function Hero() {
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 pt-16 pb-20 md:gap-8 md:px-6 md:pt-28 md:pb-28">
         <div className="flex max-w-2xl flex-col gap-5">
           <h1 className="font-display text-balance text-5xl uppercase leading-[1] tracking-[0.01em] text-zinc-100 sm:text-6xl md:text-7xl">
-            Ride wild.
+            <span className="reveal-word" style={{ animationDelay: "0.05s" }}>Ride</span>{" "}
+            <span className="reveal-word" style={{ animationDelay: "0.2s" }}>wild.</span>
             <br />
-            <span className="italic text-accent/85">Ride free.</span>
+            <span className="reveal-word italic text-accent/85" style={{ animationDelay: "0.45s" }}>Ride</span>{" "}
+            <span className="reveal-word italic text-accent/85" style={{ animationDelay: "0.6s" }}>free.</span>
           </h1>
 
           <p className="max-w-xl text-balance text-sm leading-relaxed text-fg-muted md:text-lg">

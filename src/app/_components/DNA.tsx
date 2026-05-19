@@ -3,6 +3,14 @@ import Image from "next/image";
 export function DNA() {
   return (
     <section className="relative overflow-hidden border-b border-border bg-bg">
+      <div
+        aria-hidden
+        className="drift-glow pointer-events-none absolute -left-32 top-1/2 -z-0 h-[600px] w-[600px] -translate-y-1/2 rounded-full"
+        style={{
+          background:
+            "radial-gradient(closest-side, rgba(225,6,0,0.35), transparent 70%)",
+        }}
+      />
       <div className="absolute inset-y-0 right-0 hidden w-1/2 md:block">
         <Image
           src="/sickmotos-rider.png"

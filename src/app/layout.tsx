@@ -34,6 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${sans.variable} ${display.variable}`}>
       <body className="min-h-screen bg-bg text-fg flex flex-col">
+        <span aria-hidden className="scroll-progress" />
         <PromoBar />
         <Header />
         <main className="flex-1">{children}</main>
