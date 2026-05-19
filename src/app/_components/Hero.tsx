@@ -75,12 +75,12 @@ export function Hero() {
           </form>
 
           <div className="-mx-4 overflow-x-auto px-4 md:mx-0 md:overflow-visible md:px-0">
-            <div className="flex items-center gap-2 whitespace-nowrap text-[11px] md:flex-wrap md:gap-2 md:whitespace-normal">
+            <div className="flex items-center gap-2 whitespace-nowrap text-xs md:flex-wrap md:gap-2 md:whitespace-normal">
               {quickPicks.map((b) => (
                 <a
                   key={b}
                   href="#"
-                  className="rounded-full border border-border-strong/60 px-2.5 py-1 font-medium uppercase tracking-wider text-fg-muted transition-colors hover:border-accent hover:text-accent"
+                  className="rounded-full border border-fg/20 bg-bg/70 px-3 py-1.5 font-semibold uppercase tracking-wider text-fg backdrop-blur-sm transition-colors hover:border-accent hover:text-accent"
                 >
                   {b}
                 </a>
