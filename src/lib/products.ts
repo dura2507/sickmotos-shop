@@ -149,7 +149,7 @@ export function getYears(p: ShopifyProduct): number[] {
     const b = parseInt(m[2], 10);
     for (let y = a; y <= b; y++) years.add(y);
   }
-  return Array.from(years).sort((a, b) => b - a);
+  return Array.from(years).sort((a, b) => a - b);
 }
 
 export function getAllYears(): number[] {
@@ -157,7 +157,7 @@ export function getAllYears(): number[] {
   for (const p of allProducts) {
     for (const y of getYears(p)) all.add(y);
   }
-  return Array.from(all).sort((a, b) => b - a);
+  return Array.from(all).sort((a, b) => a - b);
 }
 
 // ---------------------------------------------------------------------------
@@ -235,7 +235,7 @@ export function getYearsForFit(
     }
     for (const y of getYears(p)) years.add(y);
   }
-  return Array.from(years).sort((a, b) => b - a);
+  return Array.from(years).sort((a, b) => a - b);
 }
 
 // ---------------------------------------------------------------------------

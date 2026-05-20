@@ -302,8 +302,11 @@ export function BikeFinder({
                   No years available for this selection.
                 </p>
               ) : (
-                <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
-                  {availableYears.map((y) => {
+                <div
+                  key={`yr-${selectedBrand ?? "all"}-${selectedModel ?? ""}`}
+                  className="no-scrollbar flex gap-2 overflow-x-auto pb-1"
+                >
+                  {availableYears.map((y, i) => {
                     const active = selectedYear === y;
                     return (
                       <button
@@ -316,11 +319,12 @@ export function BikeFinder({
                             selectedModel
                           )
                         }
-                        className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wider transition-colors duration-150 ${
+                        className={`pop-in shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wider transition-colors duration-150 ${
                           active
                             ? "border-accent bg-accent text-fg"
                             : "border-border-strong bg-surface text-fg-muted hover:border-accent/60 hover:bg-surface-2 hover:text-fg"
                         }`}
+                        style={{ animationDelay: `${Math.min(i * 25, 600)}ms` }}
                       >
                         {y}
                       </button>
