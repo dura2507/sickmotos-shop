@@ -73,19 +73,19 @@ export function PurchasePanel({ product: p }: { product: Product }) {
             <span>({p.reviewCount})</span>
           </span>
         </div>
-        <h1 className="font-display text-3xl uppercase leading-tight tracking-tight md:text-4xl">
+        <h1 className="font-display text-2xl uppercase leading-tight tracking-tight md:text-3xl">
           {product_full_title(p)}
         </h1>
-        <div className="mt-1 flex items-baseline gap-3">
-          <span className="font-display text-4xl text-fg">
+        <div className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <span className="font-display text-3xl text-fg md:text-4xl">
             {fmt(unitPrice)}
           </span>
           {p.comparePrice && (
-            <span className="text-lg text-fg-dim line-through">
+            <span className="text-base text-fg-dim line-through">
               {fmt(p.comparePrice)}
             </span>
           )}
-          <span className="text-xs text-fg-dim">incl. VAT</span>
+          <span className="text-[11px] text-fg-dim">incl. VAT</span>
         </div>
         {p.stockLeft <= 3 && (
           <div className="mt-1 flex items-center gap-2 text-xs text-accent">
@@ -116,7 +116,7 @@ export function PurchasePanel({ product: p }: { product: Product }) {
                   onClick={() =>
                     setVariantSel((prev) => ({ ...prev, [g.key]: v.id }))
                   }
-                  className={`flex flex-col items-start gap-0.5 rounded-lg border px-3 py-2.5 text-left transition-colors ${
+                  className={`flex flex-col items-start gap-0.5 rounded-lg border px-3 py-2 text-left transition-colors ${
                     selected
                       ? "border-accent bg-accent/10 text-fg"
                       : v.available
@@ -124,7 +124,7 @@ export function PurchasePanel({ product: p }: { product: Product }) {
                       : "border-border bg-surface/30 text-fg-dim line-through opacity-60"
                   }`}
                 >
-                  <span className="text-xs font-bold uppercase tracking-wider">
+                  <span className="text-[11px] font-bold uppercase tracking-wider">
                     {v.label}
                   </span>
                   {v.sub && (
@@ -233,10 +233,10 @@ export function PurchasePanel({ product: p }: { product: Product }) {
         </div>
         <button
           type="button"
-          className="group flex flex-1 items-center justify-between gap-3 rounded-full bg-accent px-6 py-3 text-sm font-bold uppercase tracking-wider text-fg transition-colors hover:bg-accent-hi"
+          className="group flex flex-1 items-center justify-between gap-2 rounded-full bg-accent px-5 py-3 text-xs font-bold uppercase tracking-wider text-fg transition-colors hover:bg-accent-hi md:text-sm"
         >
           <span>Add to cart</span>
-          <span className="font-display text-base">{fmt(total)}</span>
+          <span className="font-display text-sm md:text-base">{fmt(total)}</span>
         </button>
       </div>
 
