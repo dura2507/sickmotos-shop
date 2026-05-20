@@ -2,6 +2,23 @@
 
 import { useEffect, useState } from "react";
 
+function StepDot({ done }: { done: boolean }) {
+  return (
+    <span
+      aria-hidden
+      className={`inline-flex size-3 items-center justify-center rounded-full transition-colors ${
+        done ? "bg-accent" : "border border-fg-dim/60 bg-transparent"
+      }`}
+    >
+      {done && (
+        <svg viewBox="0 0 24 24" className="size-2 text-fg" fill="none" stroke="currentColor" strokeWidth={4}>
+          <path d="M5 12l4 4L19 6" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )}
+    </span>
+  );
+}
+
 type Props = {
   brands: { name: string; count: number }[];
   years: number[];
@@ -141,15 +158,7 @@ export function BikeFinder({
           <div className="flex flex-col gap-5 px-6 pb-6">
             <div className="flex flex-col gap-2">
               <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-fg-dim">
-                <span
-                  className={`inline-flex size-5 items-center justify-center rounded-full border text-[10px] font-bold leading-none ${
-                    selectedBrand
-                      ? "border-accent bg-accent text-fg"
-                      : "border-fg-dim text-fg-dim"
-                  }`}
-                >
-                  <span className="translate-y-[0.5px]">1</span>
-                </span>
+                <StepDot done={!!selectedBrand} />
                 Brand
               </span>
               <div className="flex flex-wrap gap-2">
@@ -184,15 +193,7 @@ export function BikeFinder({
 
             <div className="flex flex-col gap-2">
               <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-fg-dim">
-                <span
-                  className={`inline-flex size-5 items-center justify-center rounded-full border text-[10px] font-bold leading-none ${
-                    selectedYear
-                      ? "border-accent bg-accent text-fg"
-                      : "border-fg-dim text-fg-dim"
-                  }`}
-                >
-                  <span className="translate-y-[0.5px]">2</span>
-                </span>
+                <StepDot done={!!selectedYear} />
                 Year
               </span>
               <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
