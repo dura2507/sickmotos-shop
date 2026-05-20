@@ -142,13 +142,13 @@ export function BikeFinder({
             <div className="flex flex-col gap-2">
               <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-fg-dim">
                 <span
-                  className={`grid size-4 place-items-center rounded-full border text-[9px] font-bold ${
+                  className={`inline-flex size-5 items-center justify-center rounded-full border text-[10px] font-bold leading-none ${
                     selectedBrand
                       ? "border-accent bg-accent text-fg"
                       : "border-fg-dim text-fg-dim"
                   }`}
                 >
-                  1
+                  <span className="translate-y-[0.5px]">1</span>
                 </span>
                 Brand
               </span>
@@ -185,13 +185,13 @@ export function BikeFinder({
             <div className="flex flex-col gap-2">
               <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-fg-dim">
                 <span
-                  className={`grid size-4 place-items-center rounded-full border text-[9px] font-bold ${
+                  className={`inline-flex size-5 items-center justify-center rounded-full border text-[10px] font-bold leading-none ${
                     selectedYear
                       ? "border-accent bg-accent text-fg"
                       : "border-fg-dim text-fg-dim"
                   }`}
                 >
-                  2
+                  <span className="translate-y-[0.5px]">2</span>
                 </span>
                 Year
               </span>
