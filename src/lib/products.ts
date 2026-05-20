@@ -207,6 +207,37 @@ export function getModelsForBrand(brand: string): { name: string; count: number 
     .sort((a, b) => b.count - a.count);
 }
 
+// Years that actually apply for a given brand + optional model. Used by the
+// Bike Finder so the year row only shows realistic options.
+export function getYearsForFit(
+  brand: string,
+  model: string | null
+): number[] {
+  const years = new Set<number>();
+  const brandLower = brand.toLowerCase();
+  const modelLower = model?.toLowerCase();
+  for (const p of allProducts) {
+    if (!getBikeBrands(p).includes(brand as BikeBrand)) continue;
+    if (modelLower) {
+      const productModels = getModels(p).map((m) => m.toLowerCase());
+      if (!productModels.includes(modelLower)) continue;
+    } else {
+      // No model selected: still require the product to belong to the brand
+      const productModels = getModels(p);
+      if (
+        productModels.length > 0 &&
+        !productModels.some((m) =>
+          m.toLowerCase().startsWith(brandLower + " ")
+        )
+      ) {
+        continue;
+      }
+    }
+    for (const y of getYears(p)) years.add(y);
+  }
+  return Array.from(years).sort((a, b) => b - a);
+}
+
 // ---------------------------------------------------------------------------
 // Display helpers
 

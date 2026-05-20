@@ -25,6 +25,7 @@ type Props = {
   brands: { name: string; count: number }[];
   years: number[];
   modelsByBrand: Record<string, ModelOption[]>;
+  yearsByFit: Record<string, number[]>;
   selectedBrand: string | null;
   selectedYear: number | null;
   selectedModel: string | null;
@@ -41,6 +42,7 @@ export function BikeFinder({
   brands,
   years,
   modelsByBrand,
+  yearsByFit,
   selectedBrand,
   selectedYear,
   selectedModel,
@@ -86,6 +88,27 @@ export function BikeFinder({
     () => (selectedBrand ? modelsByBrand[selectedBrand] ?? [] : []),
     [selectedBrand, modelsByBrand]
   );
+
+  // Year choices narrow down once brand or model is picked. Without any
+  // brand we still show every year so users can browse by year alone.
+  const availableYears = useMemo(() => {
+    if (selectedBrand && selectedModel) {
+      return yearsByFit[`${selectedBrand}::${selectedModel}`] ?? [];
+    }
+    if (selectedBrand) {
+      return yearsByFit[selectedBrand] ?? [];
+    }
+    return years;
+  }, [selectedBrand, selectedModel, yearsByFit, years]);
+
+  // If the previously selected year is no longer available after a
+  // brand/model change, drop it.
+  useEffect(() => {
+    if (selectedYear === null) return;
+    if (availableYears.includes(selectedYear)) return;
+    onChange(selectedBrand, null, selectedModel);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [availableYears.join(",")]);
 
   const summaryParts = [
     selectedBrand,
@@ -274,31 +297,37 @@ export function BikeFinder({
                 <StepDot done={!!selectedYear} />
                 Year
               </span>
-              <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
-                {years.map((y) => {
-                  const active = selectedYear === y;
-                  return (
-                    <button
-                      key={y}
-                      type="button"
-                      onClick={() =>
-                        onChange(
-                          selectedBrand,
-                          active ? null : y,
-                          selectedModel
-                        )
-                      }
-                      className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wider transition-colors duration-150 ${
-                        active
-                          ? "border-accent bg-accent text-fg"
-                          : "border-border-strong bg-surface text-fg-muted hover:border-accent/60 hover:bg-surface-2 hover:text-fg"
-                      }`}
-                    >
-                      {y}
-                    </button>
-                  );
-                })}
-              </div>
+              {availableYears.length === 0 ? (
+                <p className="text-xs text-fg-dim">
+                  No years available for this selection.
+                </p>
+              ) : (
+                <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
+                  {availableYears.map((y) => {
+                    const active = selectedYear === y;
+                    return (
+                      <button
+                        key={y}
+                        type="button"
+                        onClick={() =>
+                          onChange(
+                            selectedBrand,
+                            active ? null : y,
+                            selectedModel
+                          )
+                        }
+                        className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wider transition-colors duration-150 ${
+                          active
+                            ? "border-accent bg-accent text-fg"
+                            : "border-border-strong bg-surface text-fg-muted hover:border-accent/60 hover:bg-surface-2 hover:text-fg"
+                        }`}
+                      >
+                        {y}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
         </div>

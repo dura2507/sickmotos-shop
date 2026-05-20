@@ -22,6 +22,7 @@ type Props = {
   brandCounts: Record<string, number>;
   years: number[];
   modelsByBrand: Record<string, { name: string; count: number }[]>;
+  yearsByFit: Record<string, number[]>;
   initialCategory?: string;
   initialBrand?: string;
   initialYear?: number;
@@ -34,6 +35,7 @@ export function ShopBrowser({
   brandCounts,
   years,
   modelsByBrand,
+  yearsByFit,
   initialCategory,
   initialBrand,
   initialYear,
@@ -200,6 +202,7 @@ export function ShopBrowser({
         brands={brandList}
         years={years}
         modelsByBrand={modelsByBrand}
+        yearsByFit={yearsByFit}
         selectedBrand={bikeBrand}
         selectedYear={bikeYear}
         selectedModel={bikeModel}
