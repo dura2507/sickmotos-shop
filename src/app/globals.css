@@ -54,7 +54,7 @@ main > section {
   position: relative;
 }
 
-main > section:nth-of-type(4n)::before {
+main > section:nth-of-type(2n)::before {
   content: "";
   position: absolute;
   top: -1px;

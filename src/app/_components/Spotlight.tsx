@@ -23,14 +23,14 @@ export function Spotlight() {
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 md:grid-cols-[1.1fr_1fr]">
         <div className="relative aspect-square w-full max-w-[560px] justify-self-center md:order-2">
           <Image
-            src="https://www.sick-motos.com/cdn/shop/files/AAFD1335-22B2-4BA7-B533-249564ECDB50_1024x1024.jpg?v=1769075218"
+            src="/products/led-v7-rage.png"
             alt="SICKMOTOS LED RGBW V7 Rage Edition"
             fill
             sizes="(max-width: 768px) 100vw, 560px"
-            className="reveal-soft rounded-2xl object-cover"
+            className="reveal-soft float-y object-contain"
             style={{
               filter:
-                "drop-shadow(0 0 50px rgba(225,6,0,0.45)) drop-shadow(0 30px 80px rgba(0,0,0,0.6))",
+                "drop-shadow(0 0 60px rgba(225,6,0,0.55)) drop-shadow(0 30px 80px rgba(0,0,0,0.7))",
             }}
           />
 
