@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const cols = [
   {
     title: "Shop",
@@ -41,9 +43,15 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-6 py-14">
         <div className="grid gap-10 md:grid-cols-[2fr_1fr_1fr_1.4fr]">
           <div className="flex flex-col gap-4">
-            <span className="font-display text-4xl uppercase tracking-tight text-fg md:text-5xl">
-              Sick<span className="text-accent">Motos</span>
-            </span>
+            <Image
+              src="/logo-alt-2.png"
+              alt="SickMotos"
+              width={974}
+              height={626}
+              sizes="240px"
+              style={{ width: "auto", height: "96px" }}
+              className="self-start"
+            />
             <p className="max-w-xs text-sm text-fg-muted">
               Performance parts for Supermoto & Enduro. Engineered in Germany
               by Thomas Krawietz.
