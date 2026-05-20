@@ -21,7 +21,7 @@ export function InfoTabs({ product: p }: { product: Product }) {
   return (
     <section className="border-y border-border bg-surface/30 py-16 md:py-20">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="flex gap-1 overflow-x-auto border-b border-border">
+        <div className="-mx-6 flex gap-1 overflow-x-auto whitespace-nowrap border-b border-border px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {tabs.map((t) => (
             <button
               key={t.key}

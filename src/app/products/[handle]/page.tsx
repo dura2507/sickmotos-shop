@@ -32,7 +32,7 @@ export default async function ProductPage({
         </nav>
       </div>
 
-      <section className="relative isolate overflow-hidden border-b border-border py-10 md:py-16">
+      <section className="relative isolate border-b border-border py-10 md:py-16" style={{ overflowX: "clip" as const }}>
         <div
           aria-hidden
           className="drift-glow pointer-events-none absolute -left-40 top-1/3 -z-10 size-[640px] rounded-full"
