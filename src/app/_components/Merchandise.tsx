@@ -4,26 +4,22 @@ const items = [
   {
     title: "SICKMOTOS Hoodie Man",
     price: "€79,00",
-    image:
-      "https://www.sick-motos.com/cdn/shop/files/IMG-7450_1024x1024.jpg?v=1750940078",
+    image: "/products/hoodie-man.png",
   },
   {
     title: "T-Shirt Black Edition #NOHATE #BIKERSUNITED",
     price: "€22,90",
-    image:
-      "https://www.sick-motos.com/cdn/shop/files/2_b1d3a4d6-7467-48ce-9ba5-4beffa239df9_1024x1024.png?v=1750939851",
+    image: "/products/tshirt-black.png",
   },
   {
     title: "T-Shirt Neon Orange Edition",
     price: "€19,99",
-    image:
-      "https://www.sick-motos.com/cdn/shop/files/406ED40B-BEE8-4579-BE82-98C0315F6778_1024x1024.jpg?v=1750939571",
+    image: "/products/tshirt-orange.png",
   },
   {
     title: "T-Shirt Women Neon Pink Edition",
     price: "€19,99",
-    image:
-      "https://www.sick-motos.com/cdn/shop/files/29F8A412-B1A2-47DD-8307-0B047A496B4B_1024x1024.jpg?v=1750939566",
+    image: "/products/tshirt-pink.png",
   },
 ];
 
@@ -52,9 +48,9 @@ export function Merchandise() {
           {items.map((it) => (
             <article
               key={it.title}
-              className="reveal group flex flex-col overflow-hidden rounded-lg border border-border bg-bg transition-colors hover:border-border-strong"
+              className="reveal group flex flex-col overflow-hidden rounded-lg border border-border bg-bg transition-all duration-300 hover:-translate-y-1 hover:border-accent"
             >
-              <div className="relative aspect-square overflow-hidden border-b border-border bg-white">
+              <div className="relative aspect-square overflow-hidden border-b border-border bg-gradient-to-br from-surface-2 to-bg">
                 <Image
                   src={it.image}
                   alt={it.title}

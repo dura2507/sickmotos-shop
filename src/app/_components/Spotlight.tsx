@@ -23,7 +23,7 @@ export function Spotlight() {
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 md:grid-cols-[1.1fr_1fr]">
         <div className="relative aspect-square w-full max-w-[560px] justify-self-center md:order-2">
           <Image
-            src="https://www.sick-motos.com/cdn/shop/files/AAFD1335-22B2-4BA7-B533-249564ECDB50_1024x1024.jpg"
+            src="/products/led-v7-rage.png"
             alt="SICKMOTOS LED RGBW V7 Rage Edition"
             fill
             sizes="(max-width: 768px) 100vw, 560px"

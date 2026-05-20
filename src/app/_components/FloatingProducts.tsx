@@ -4,24 +4,21 @@ const products = [
   {
     title: "Titanium",
     sub: "Lighter. Sharper. Louder.",
-    image:
-      "https://www.sick-motos.com/cdn/shop/files/6C631DE0-9D31-4384-A7EC-7C12447B25AB_1024x1024.jpg?v=1754641476",
+    image: "/products/beta-rr-t-model.png",
     rotate: -6,
     delay: 0,
   },
   {
     title: "Carbon",
     sub: "Strength without weight.",
-    image:
-      "https://www.sick-motos.com/cdn/shop/files/IMG-3978_1024x1024.png?v=1750940000",
+    image: "/products/carbon-collector-cover.png",
     rotate: 4,
     delay: 1.2,
   },
   {
     title: "Brakes",
     sub: "Stop on a dime.",
-    image:
-      "https://www.sick-motos.com/cdn/shop/files/IMG-3211_1024x1024.jpg?v=1770275582",
+    image: "/products/beta-bremsscheiben.png",
     rotate: -3,
     delay: 2.4,
   },
@@ -82,7 +79,6 @@ export function FloatingProducts() {
                   sizes="(max-width: 768px) 100vw, 340px"
                   className="float-y object-contain transition-transform duration-500 group-hover:scale-110"
                   style={{
-                    mixBlendMode: "multiply",
                     transform: `rotate(${p.rotate}deg)`,
                     animationDelay: `${p.delay}s`,
                     filter:

@@ -29,7 +29,7 @@ export function ProductCard({ p }: { p: ProductCardData }) {
           {discount}%
         </span>
       )}
-      <div className="relative aspect-square overflow-hidden border-b border-border bg-white">
+      <div className="relative aspect-square overflow-hidden border-b border-border bg-gradient-to-br from-surface-2 to-bg">
         <Image
           src={p.image}
           alt={p.title}
