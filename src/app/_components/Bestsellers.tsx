@@ -11,6 +11,7 @@ const products: ProductCardData[] = [
       "https://www.sick-motos.com/cdn/shop/files/C197DA2A-FC9F-4044-8829-376CAC387E84_1024x1024.jpg?v=1750939041",
     fits: ["Beta RR 125", "Minarelli"],
     stockLeft: 1,
+    href: "/products/beta-rr-125-titan-kruemmer",
   },
   {
     title: "SICKMOTOS Tuning Krümmer Titan Beta RR 125 LC T Model 2023-2024 Tayo/Zontes",

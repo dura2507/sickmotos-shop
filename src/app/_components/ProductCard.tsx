@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export type ProductCardData = {
   title: string;
@@ -7,6 +8,7 @@ export type ProductCardData = {
   image: string;
   fits?: string[];
   stockLeft?: number;
+  href?: string;
 };
 
 function parsePrice(price: string): number {
@@ -22,8 +24,11 @@ export function ProductCard({ p }: { p: ProductCardData }) {
         )
       : null;
 
-  return (
-    <article className="reveal group relative flex flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-300 hover:-translate-y-1 hover:border-accent hover:shadow-[0_8px_30px_rgba(225,6,0,0.12)]">
+  const className =
+    "reveal group relative flex flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-300 hover:-translate-y-1 hover:border-accent hover:shadow-[0_8px_30px_rgba(225,6,0,0.12)]";
+
+  const body = (
+    <>
       {discount !== null && discount > 0 && (
         <span className="pulse-accent absolute left-0 top-0 z-10 rounded-br-lg bg-accent px-2.5 py-1 text-xs font-bold text-fg">
           {discount}%
@@ -72,6 +77,15 @@ export function ProductCard({ p }: { p: ProductCardData }) {
           </div>
         )}
       </div>
-    </article>
+    </>
   );
+
+  if (p.href) {
+    return (
+      <Link href={p.href} className={className}>
+        {body}
+      </Link>
+    );
+  }
+  return <article className={className}>{body}</article>;
 }
