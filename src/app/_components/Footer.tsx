@@ -134,9 +134,14 @@ export function Footer() {
         </div>
 
         <div className="mt-10 flex flex-col gap-4 border-t border-border pt-6 md:flex-row md:items-center md:justify-between">
-          <p className="text-xs text-fg-dim">
-            © {new Date().getFullYear()} Sickmotos-Styles · Terms · Imprint · Privacy
-          </p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-fg-dim">
+            <span>© {new Date().getFullYear()} Sickmotos-Styles</span>
+            <a href="#" className="hover:text-fg">Imprint</a>
+            <a href="#" className="hover:text-fg">Terms</a>
+            <a href="#" className="hover:text-fg">Privacy</a>
+            <a href="#" className="hover:text-fg">Returns</a>
+            <a href="#" className="hover:text-fg">Warranty</a>
+          </div>
           <div className="flex flex-wrap items-center gap-2">
             {payments.map((p) => (
               <span

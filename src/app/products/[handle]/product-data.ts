@@ -73,8 +73,8 @@ export const product: Product = {
   brand: "Beta RR 125 LC",
   basePrice: 199,
   comparePrice: 229,
-  rating: 4.9,
-  reviewCount: 38,
+  rating: 5,
+  reviewCount: 2,
   stockLeft: 1,
   images: [
     {
@@ -103,21 +103,13 @@ export const product: Product = {
   ],
   variantGroups: [
     {
-      title: "Engine",
-      key: "engine",
+      title: "Model year",
+      key: "year",
       variants: [
-        { id: "minarelli", label: "Minarelli", sub: "2021-2024", available: true },
-        { id: "tayo", label: "Tayo", sub: "2023-2024", priceModifier: 20, available: true },
-        { id: "zontes", label: "Zontes", sub: "2023-2024", priceModifier: 20, available: true },
-      ],
-    },
-    {
-      title: "Finish",
-      key: "finish",
-      variants: [
-        { id: "raw", label: "Raw titanium", sub: "Classic", available: true },
-        { id: "burnt", label: "Burnt blue", sub: "+€20", priceModifier: 20, available: true },
-        { id: "black", label: "Stealth black", sub: "Sold out", available: false },
+        { id: "2021", label: "2021", available: true },
+        { id: "2022", label: "2022", available: true },
+        { id: "2023", label: "2023", available: true },
+        { id: "2024", label: "2024", available: true },
       ],
     },
   ],
@@ -148,8 +140,8 @@ export const product: Product = {
     },
   ],
   bundle: {
-    title: "Race-ready bundle",
-    subtitle: "The full upgrade Thomas runs on his own bike.",
+    title: "Often bought with",
+    subtitle: "Riders pairing the header with these.",
     items: [
       {
         title: "Titanium header",
@@ -170,46 +162,35 @@ export const product: Product = {
         price: 39,
       },
     ],
-    bundlePrice: 279,
-    savings: 48,
+    bundlePrice: 327,
+    savings: 0,
   },
   description:
-    "Hand-welded titanium header tuned by Thomas Krawietz for the Beta RR 125 LC. Removes 2.23 kg from the stock exhaust and frees up the mid-range without dyno-fighting the standard ECU. Drops straight onto the original mounts with the supplied gaskets and clamps. Built in small batches in the SickMotos workshop in Pöttmes, Germany.",
+    "Tuning Krümmer by SickMoto's für Beta RR 125 LC Minarelli-Motor 2021-2024. Die Sickmotos Krümmerrohre und Kat-Ersatzrohre werden von unseren Technikern handgefertigt. Built in the SickMotos workshop in Pöttmes, Germany.",
   specs: [
-    { label: "Material", value: "Titanium grade 5" },
-    { label: "Weight", value: "0.65 kg (−2.23 kg vs OEM)" },
-    { label: "Diameter", value: "38 mm primary, 42 mm collector" },
-    { label: "Mounting", value: "Plug & Play, OEM bolt pattern" },
-    { label: "Origin", value: "Hand-welded in Pöttmes, Germany" },
+    { label: "Material", value: "Titanium" },
+    { label: "Weight", value: "0,65 kg (−2,23 kg vs. OEM)" },
+    { label: "Fits", value: "Beta RR 125 LC 2021-2024 Minarelli engine" },
+    { label: "Origin", value: "Made in Pöttmes, Germany" },
+    { label: "Delivery", value: "4-8 business days" },
     { label: "Warranty", value: "6 months on material and workmanship" },
   ],
   installation: [
-    "Remove the OEM header (4 bolts at the cylinder, 2 at the muffler).",
-    "Transfer the gasket from the parts bag, seat it on the cylinder face.",
-    "Hand-tight the new header before final torque (8 Nm).",
-    "Re-fit the OEM or aftermarket muffler.",
-    "First start: idle for 2 minutes to seat the titanium colour.",
+    "Contact us via WhatsApp or email if you want installation guidance — Thomas walks you through it.",
   ],
   reviews: [
     {
       name: "Marco R.",
       country: "Italy",
       rating: 5,
-      text: "Sound, weight, build quality. Thomas even answered my questions over WhatsApp.",
+      text: "The titanium exhaust is just insane. Sound, weight, build quality. Thomas even answered my questions over WhatsApp.",
       verified: true,
     },
     {
       name: "Jonas K.",
       country: "Germany",
       rating: 5,
-      text: "Bike feels lighter on the front, throttle response is sharper. Bolted up in 20 minutes.",
-      verified: true,
-    },
-    {
-      name: "Lukas M.",
-      country: "Switzerland",
-      rating: 4,
-      text: "Quality is top, shipping took 9 days to Zurich. Would buy again.",
+      text: "Stage 2 completely transformed the bike. Noticeably more torque in the low end, super clean mapping. Plug and play just like promised.",
       verified: true,
     },
   ],

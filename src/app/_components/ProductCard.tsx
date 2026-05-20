@@ -30,7 +30,7 @@ export function ProductCard({ p }: { p: ProductCardData }) {
   const body = (
     <>
       {discount !== null && discount > 0 && (
-        <span className="pulse-accent absolute left-0 top-0 z-10 rounded-br-lg bg-accent px-2.5 py-1 text-xs font-bold text-fg">
+        <span className="absolute left-0 top-0 z-10 rounded-br-lg bg-accent px-2.5 py-1 text-xs font-bold text-fg">
           {discount}%
         </span>
       )}

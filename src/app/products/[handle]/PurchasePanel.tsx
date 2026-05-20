@@ -59,8 +59,8 @@ export function PurchasePanel({ product: p }: { product: Product }) {
             Fits {p.brand}
           </span>
           {discountPct && (
-            <span className="rounded-full bg-accent px-2.5 py-1 text-[11px] font-bold uppercase text-fg">
-              {discountPct}% off
+            <span className="rounded-full bg-accent/15 px-2.5 py-1 text-[11px] font-bold uppercase text-accent">
+              Save {discountPct}%
             </span>
           )}
           <span className="flex items-center gap-1 text-fg-muted">
@@ -88,8 +88,8 @@ export function PurchasePanel({ product: p }: { product: Product }) {
           <span className="text-[11px] text-fg-dim">incl. VAT</span>
         </div>
         {p.stockLeft <= 3 && (
-          <div className="mt-1 flex items-center gap-2 text-xs text-accent">
-            <span className="pulse-accent inline-flex size-1.5 rounded-full bg-accent" />
+          <div className="mt-1 flex items-center gap-2 text-xs text-fg-muted">
+            <span className="inline-flex size-1.5 rounded-full bg-accent" />
             Only {p.stockLeft} left in stock
           </div>
         )}

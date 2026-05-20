@@ -145,11 +145,11 @@ export function InfoTabs({ product: p }: { product: Product }) {
 }
 
 function BundleCard({ product: p }: { product: Product }) {
-  const totalSeparate = p.bundle.items.reduce((s, i) => s + i.price, 0);
+  const total = p.bundle.items.reduce((s, i) => s + i.price, 0);
   return (
-    <div className="rounded-2xl border border-accent/40 bg-gradient-to-br from-surface-2 to-bg p-5">
-      <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-accent">
-        Bundle deal
+    <div className="rounded-2xl border border-border bg-surface/40 p-5">
+      <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-fg-dim">
+        Often paired
       </span>
       <h3 className="mt-2 font-display text-2xl uppercase tracking-tight">
         {p.bundle.title}
@@ -164,30 +164,12 @@ function BundleCard({ product: p }: { product: Product }) {
           </li>
         ))}
       </ul>
-      <div className="mt-4 flex items-end justify-between border-t border-border pt-4">
-        <div>
-          <div className="text-[10px] uppercase tracking-wider text-fg-dim">
-            Bundle price
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span className="font-display text-2xl text-accent">
-              {fmt(p.bundle.bundlePrice)}
-            </span>
-            <span className="text-xs text-fg-dim line-through">
-              {fmt(totalSeparate)}
-            </span>
-          </div>
-        </div>
-        <span className="rounded-full bg-accent px-2.5 py-1 text-[11px] font-bold uppercase text-fg">
-          Save {fmt(p.bundle.savings)}
+      <div className="mt-4 flex items-baseline justify-between border-t border-border pt-4">
+        <span className="text-[10px] uppercase tracking-wider text-fg-dim">
+          All three together
         </span>
+        <span className="font-display text-2xl text-fg">{fmt(total)}</span>
       </div>
-      <button
-        type="button"
-        className="mt-4 w-full rounded-full border border-accent bg-accent/0 py-2.5 text-xs font-bold uppercase tracking-wider text-accent transition-colors hover:bg-accent hover:text-fg"
-      >
-        Add bundle to cart
-      </button>
     </div>
   );
 }
