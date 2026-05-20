@@ -11,6 +11,7 @@ import {
   type Category,
   fmtEUR,
 } from "@/lib/products";
+import { CustomSelect } from "../_components/CustomSelect";
 
 type SortKey = "popular" | "price-asc" | "price-desc" | "discount" | "newest";
 
@@ -206,16 +207,19 @@ export function ShopBrowser({
           />
         </div>
 
-        <select
+        <CustomSelect
           value={sort}
-          onChange={(e) => setSort(e.target.value as SortKey)}
-          className="cursor-pointer rounded-full border border-border-strong bg-surface px-4 py-2.5 text-sm text-fg-muted focus:border-accent focus:outline-none"
-        >
-          <option value="popular">Sort: relevance</option>
-          <option value="price-asc">Price: low to high</option>
-          <option value="price-desc">Price: high to low</option>
-          <option value="discount">Biggest discount</option>
-        </select>
+          onChange={(v) => setSort(v as SortKey)}
+          label="Sort:"
+          ariaLabel="Sort products"
+          triggerClassName="min-w-[220px]"
+          options={[
+            { value: "popular", label: "Relevance" },
+            { value: "price-asc", label: "Price: low to high" },
+            { value: "price-desc", label: "Price: high to low" },
+            { value: "discount", label: "Biggest discount" },
+          ]}
+        />
 
         <button
           type="button"
@@ -236,7 +240,7 @@ export function ShopBrowser({
 
       <div className="grid gap-10 md:grid-cols-[220px_1fr] md:gap-8 lg:grid-cols-[260px_1fr]">
         <aside className="hidden md:block">
-          <div className="sticky top-32 max-h-[calc(100vh-9rem)] overflow-y-auto pr-2">
+          <div className="no-scrollbar sticky top-32 max-h-[calc(100vh-9rem)] overflow-y-auto pr-1">
             {Filters}
           </div>
         </aside>

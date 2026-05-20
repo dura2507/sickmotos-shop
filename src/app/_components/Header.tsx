@@ -1,17 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { MobileMenu } from "./MobileMenu";
-
-const brands = [
-  "All brands",
-  "Beta",
-  "Husqvarna",
-  "KTM",
-  "Aprilia",
-  "Fantic",
-  "Yamaha",
-  "GasGas",
-];
+import { HeaderSearch } from "./HeaderSearch";
 
 const nav = [
   { label: "Shop", href: "/shop" },
@@ -37,48 +27,7 @@ export function Header() {
           />
         </Link>
 
-        <form
-          role="search"
-          className="hidden flex-1 items-center overflow-hidden rounded-full border border-border-strong bg-surface focus-within:border-accent md:flex"
-        >
-          <select
-            aria-label="Select brand"
-            defaultValue="All brands"
-            className="cursor-pointer appearance-none border-r border-border bg-transparent py-2.5 pl-4 pr-8 text-sm text-fg-muted focus:outline-none"
-            style={{
-              backgroundImage:
-                "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\")",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "right 0.5rem center",
-              backgroundSize: "1rem",
-            }}
-          >
-            {brands.map((b) => (
-              <option key={b}>{b}</option>
-            ))}
-          </select>
-          <input
-            type="search"
-            placeholder="Search exhausts, LEDs, carbon, parts..."
-            className="flex-1 bg-transparent px-4 py-2.5 text-sm text-fg placeholder:text-fg-dim focus:outline-none"
-          />
-          <button
-            type="submit"
-            aria-label="Search"
-            className="grid size-10 place-items-center text-fg-muted hover:text-accent"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              className="size-4"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <circle cx="11" cy="11" r="7" />
-              <path d="M21 21l-4.3-4.3" strokeLinecap="round" />
-            </svg>
-          </button>
-        </form>
+        <HeaderSearch />
 
         <div className="ml-auto flex items-center gap-2">
           <button

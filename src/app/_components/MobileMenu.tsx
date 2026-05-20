@@ -72,7 +72,7 @@ export function MobileMenu() {
               </button>
             </div>
 
-            <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-4">
+            <div className="no-scrollbar flex flex-1 flex-col gap-6 overflow-y-auto p-4">
               <form
                 role="search"
                 onSubmit={close}
