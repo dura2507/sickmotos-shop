@@ -15,7 +15,6 @@ import { FAQ } from "./_components/FAQ";
 import { BrandMarquee } from "./_components/BrandMarquee";
 import { ActivityTicker } from "./_components/ActivityTicker";
 import { Spotlight } from "./_components/Spotlight";
-import { FloatingProducts } from "./_components/FloatingProducts";
 
 export default function Home() {
   return (
@@ -29,7 +28,6 @@ export default function Home() {
       <ActionBanner />
       <LatestArrivals />
       <BrandMarquee />
-      <FloatingProducts />
       <DNA />
       <GraphicsKits />
       <Stats />
