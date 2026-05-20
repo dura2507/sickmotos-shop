@@ -51,15 +51,7 @@ export default async function ProductPage({
       >
         <div
           aria-hidden
-          className="drift-glow pointer-events-none absolute -left-40 top-1/3 -z-10 size-[640px] rounded-full"
-          style={{
-            background:
-              "radial-gradient(closest-side, rgba(225,6,0,0.22), transparent 70%)",
-          }}
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -right-32 -top-32 -z-10 size-[520px] rounded-full"
+          className="pointer-events-none absolute -right-48 top-1/4 -z-10 size-[520px] rounded-full"
           style={{
             background:
               "radial-gradient(closest-side, rgba(225,6,0,0.10), transparent 70%)",
