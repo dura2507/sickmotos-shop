@@ -12,8 +12,11 @@ export function Hero() {
           fill
           priority
           sizes="100vw"
-          className="hero-parallax object-cover object-center"
-          style={{ transform: "scaleX(-1)" }}
+          className="object-cover"
+          style={{
+            transform: "scaleX(-1)",
+            objectPosition: "center 35%",
+          }}
         />
         <div
           aria-hidden
