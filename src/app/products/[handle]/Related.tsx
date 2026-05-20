@@ -6,7 +6,15 @@ import { fmtEUR } from "@/lib/products";
 export function Related({ items }: { items: CardProduct[] }) {
   if (items.length === 0) return null;
   return (
-    <section className="border-b border-border py-16 md:py-20">
+    <section className="relative isolate border-b border-border py-16 md:py-20" style={{ overflowX: "clip" }}>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 opacity-40"
+        style={{
+          background:
+            "radial-gradient(70% 60% at 50% 100%, rgba(225,6,0,0.10), transparent 70%)",
+        }}
+      />
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-8 flex items-end justify-between gap-4">
           <h2 className="font-display text-3xl uppercase tracking-tight md:text-4xl">

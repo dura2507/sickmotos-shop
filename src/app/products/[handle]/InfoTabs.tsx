@@ -15,7 +15,23 @@ export function InfoTabs({ product: p }: { product: DetailViewModel }) {
   const blocks = p.description.split(/\n+/).filter(Boolean);
 
   return (
-    <section className="border-y border-border bg-surface/30 py-16 md:py-20">
+    <section className="relative isolate border-y border-border bg-surface/40 py-16 md:py-20" style={{ overflowX: "clip" }}>
+      <div
+        aria-hidden
+        className="drift-glow pointer-events-none absolute right-[-15%] top-1/2 -z-10 size-[560px] -translate-y-1/2 rounded-full"
+        style={{
+          background:
+            "radial-gradient(closest-side, rgba(225,6,0,0.15), transparent 70%)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px"
+        style={{
+          background:
+            "linear-gradient(90deg, transparent 0%, rgba(225,6,0,0.45) 50%, transparent 100%)",
+        }}
+      />
       <div className="mx-auto max-w-4xl px-6">
         <div className="-mx-6 flex gap-1 overflow-x-auto whitespace-nowrap border-b border-border px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {tabs.map((t) => (

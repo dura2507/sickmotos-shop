@@ -54,7 +54,15 @@ export default async function ProductPage({
           className="drift-glow pointer-events-none absolute -left-40 top-1/3 -z-10 size-[640px] rounded-full"
           style={{
             background:
-              "radial-gradient(closest-side, rgba(225,6,0,0.18), transparent 70%)",
+              "radial-gradient(closest-side, rgba(225,6,0,0.22), transparent 70%)",
+          }}
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-32 -top-32 -z-10 size-[520px] rounded-full"
+          style={{
+            background:
+              "radial-gradient(closest-side, rgba(225,6,0,0.10), transparent 70%)",
           }}
         />
         <div
@@ -68,6 +76,14 @@ export default async function ProductPage({
               "radial-gradient(ellipse at center, black 30%, transparent 75%)",
             WebkitMaskImage:
               "radial-gradient(ellipse at center, black 30%, transparent 75%)",
+          }}
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-10"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(20,20,20,0.5) 0%, transparent 30%, transparent 70%, rgba(20,20,20,0.5) 100%)",
           }}
         />
 
