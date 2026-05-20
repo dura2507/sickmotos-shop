@@ -131,6 +131,36 @@ export function getBikeBrands(p: ShopifyProduct): BikeBrand[] {
 }
 
 // ---------------------------------------------------------------------------
+// Years — extract product-fit years from tags and titles.
+
+const YEAR_RE = /(20[0-2][0-9]|19[89][0-9])/g;
+
+export function getYears(p: ShopifyProduct): number[] {
+  const years = new Set<number>();
+  const blob = p.tags.join(" ") + " " + p.title + " " + p.body_html;
+  for (const m of blob.matchAll(YEAR_RE)) {
+    const y = parseInt(m[1], 10);
+    if (y >= 1980 && y <= 2030) years.add(y);
+  }
+  // expand year ranges like "2021-2024" in titles
+  const rangeRe = /(20[0-2][0-9])\s*[-–]\s*(20[0-2][0-9])/g;
+  for (const m of (p.title + " " + p.tags.join(" ")).matchAll(rangeRe)) {
+    const a = parseInt(m[1], 10);
+    const b = parseInt(m[2], 10);
+    for (let y = a; y <= b; y++) years.add(y);
+  }
+  return Array.from(years).sort((a, b) => b - a);
+}
+
+export function getAllYears(): number[] {
+  const all = new Set<number>();
+  for (const p of allProducts) {
+    for (const y of getYears(p)) all.add(y);
+  }
+  return Array.from(all).sort((a, b) => b - a);
+}
+
+// ---------------------------------------------------------------------------
 // Display helpers
 
 export function getPrice(p: ShopifyProduct): { price: number; compareAt: number | null } {
@@ -205,6 +235,7 @@ export type CardProduct = {
   category: Category;
   inStock: boolean;
   fits: string[];
+  years: number[];
 };
 
 export function toCard(p: ShopifyProduct): CardProduct {
@@ -219,6 +250,7 @@ export function toCard(p: ShopifyProduct): CardProduct {
     category: categorize(p),
     inStock: isInStock(p),
     fits: p.options[0]?.values.slice(0, 4) ?? [],
+    years: getYears(p),
   };
 }
 

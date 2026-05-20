@@ -12,6 +12,7 @@ import {
   fmtEUR,
 } from "@/lib/products";
 import { CustomSelect } from "../_components/CustomSelect";
+import { BikeFinder } from "./BikeFinder";
 
 type SortKey = "popular" | "price-asc" | "price-desc" | "discount" | "newest";
 
@@ -19,24 +20,29 @@ type Props = {
   products: CardProduct[];
   categoryCounts: Record<string, number>;
   brandCounts: Record<string, number>;
+  years: number[];
   initialCategory?: string;
   initialBrand?: string;
+  initialYear?: number;
 };
 
 export function ShopBrowser({
   products,
   categoryCounts,
   brandCounts,
+  years,
   initialCategory,
   initialBrand,
+  initialYear,
 }: Props) {
   const [search, setSearch] = useState("");
   const [activeCategories, setActiveCategories] = useState<Set<string>>(
     () => new Set(initialCategory ? [initialCategory] : [])
   );
-  const [activeBrands, setActiveBrands] = useState<Set<string>>(
-    () => new Set(initialBrand ? [initialBrand] : [])
+  const [bikeBrand, setBikeBrand] = useState<string | null>(
+    initialBrand ?? null
   );
+  const [bikeYear, setBikeYear] = useState<number | null>(initialYear ?? null);
   const [onSaleOnly, setOnSaleOnly] = useState(false);
   const [inStockOnly, setInStockOnly] = useState(true);
   const [sort, setSort] = useState<SortKey>("popular");
@@ -47,10 +53,11 @@ export function ShopBrowser({
     if (activeCategories.size > 0) {
       list = list.filter((p) => activeCategories.has(p.category));
     }
-    if (activeBrands.size > 0) {
-      list = list.filter((p) =>
-        p.brands.some((b) => activeBrands.has(b))
-      );
+    if (bikeBrand) {
+      list = list.filter((p) => p.brands.includes(bikeBrand as BikeBrand));
+    }
+    if (bikeYear) {
+      list = list.filter((p) => p.years.includes(bikeYear));
     }
     if (onSaleOnly) {
       list = list.filter((p) => p.compareAt && p.compareAt > p.price);
@@ -82,7 +89,7 @@ export function ShopBrowser({
         break;
     }
     return list;
-  }, [products, activeCategories, activeBrands, onSaleOnly, inStockOnly, search, sort]);
+  }, [products, activeCategories, bikeBrand, bikeYear, onSaleOnly, inStockOnly, search, sort]);
 
   const toggle = (
     set: Set<string>,
@@ -97,9 +104,15 @@ export function ShopBrowser({
 
   const activeFilterCount =
     activeCategories.size +
-    activeBrands.size +
+    (bikeBrand ? 1 : 0) +
+    (bikeYear ? 1 : 0) +
     (onSaleOnly ? 1 : 0) +
     (search.trim() ? 1 : 0);
+
+  const brandList = (BIKE_BRANDS as readonly string[])
+    .map((name) => ({ name, count: brandCounts[name] ?? 0 }))
+    .filter((b) => b.count > 0)
+    .sort((a, b) => b.count - a.count);
 
   const Filters = (
     <div className="flex flex-col gap-7">
@@ -128,29 +141,6 @@ export function ShopBrowser({
         })}
       </FilterGroup>
 
-      <FilterGroup title="Bike brand">
-        {(BIKE_BRANDS as readonly BikeBrand[]).map((b) => {
-          const count = brandCounts[b] ?? 0;
-          if (count === 0) return null;
-          const active = activeBrands.has(b);
-          return (
-            <button
-              key={b}
-              type="button"
-              onClick={() => toggle(activeBrands, setActiveBrands, b)}
-              className={`flex w-full items-center justify-between rounded px-2 py-1.5 text-left text-sm transition-colors ${
-                active
-                  ? "bg-accent/15 text-accent"
-                  : "text-fg-muted hover:bg-surface hover:text-fg"
-              }`}
-            >
-              <span>{b}</span>
-              <span className="text-[10px] text-fg-dim">{count}</span>
-            </button>
-          );
-        })}
-      </FilterGroup>
-
       <FilterGroup title="Availability">
         <Toggle
           label="In stock only"
@@ -169,7 +159,8 @@ export function ShopBrowser({
           type="button"
           onClick={() => {
             setActiveCategories(new Set());
-            setActiveBrands(new Set());
+            setBikeBrand(null);
+            setBikeYear(null);
             setOnSaleOnly(false);
             setSearch("");
           }}
@@ -188,9 +179,20 @@ export function ShopBrowser({
           Shop the catalog
         </h1>
         <p className="text-sm text-fg-muted">
-          {products.length} products. Filter by bike, category, sale or stock.
+          {products.length} products. Pick your bike or filter by category.
         </p>
       </div>
+
+      <BikeFinder
+        brands={brandList}
+        years={years}
+        selectedBrand={bikeBrand}
+        selectedYear={bikeYear}
+        onChange={(b, y) => {
+          setBikeBrand(b);
+          setBikeYear(y);
+        }}
+      />
 
       <div className="mb-6 flex flex-wrap items-center gap-3">
         <div className="flex flex-1 min-w-[220px] items-center gap-2 rounded-full border border-border-strong bg-surface px-4 focus-within:border-accent">
@@ -324,7 +326,9 @@ export function ShopBrowser({
               </svg>
             </button>
           </div>
-          <div className="flex-1 overflow-y-auto p-4">{Filters}</div>
+          <div className="no-scrollbar flex-1 overflow-y-auto p-4">
+            {Filters}
+          </div>
           <div className="border-t border-border p-4">
             <button
               type="button"
