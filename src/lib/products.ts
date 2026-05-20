@@ -338,6 +338,29 @@ export function getAllCards(): CardProduct[] {
   return allProducts.map(toCard);
 }
 
+// Slim search index used by the live typeahead. Keep keys short to keep
+// the client JS payload small.
+export type SearchEntry = {
+  h: string; // handle
+  t: string; // clean title
+  i: string; // image url
+  p: number; // price
+  f: string[]; // fits (first option values)
+};
+
+export function getSearchIndex(): SearchEntry[] {
+  return allProducts.map((p) => {
+    const { price } = getPrice(p);
+    return {
+      h: p.handle,
+      t: cleanTitle(p.title),
+      i: p.images[0]?.src ?? "",
+      p: price,
+      f: p.options[0]?.values.slice(0, 3) ?? [],
+    };
+  });
+}
+
 // Pick top selling — Shopify doesn't expose sales count via products.json,
 // so we pick on-sale items with the deepest discounts as a proxy.
 export function getTopSelling(n = 4): CardProduct[] {

@@ -1,9 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
+import { getSearchIndex } from "@/lib/products";
+import { SearchSuggest } from "./SearchSuggest";
 
 const quickPicks = ["Beta", "Husqvarna", "KTM", "Aprilia", "Fantic", "Yamaha"];
 
 export function Hero() {
+  const searchIndex = getSearchIndex();
   return (
     <section
       className="relative isolate overflow-hidden border-b border-border"
@@ -52,37 +55,11 @@ export function Hero() {
             in Germany by Thomas Krawietz, Mechatronics Master.
           </p>
 
-          <form
-            role="search"
-            action="/shop"
-            method="get"
-            className="mt-2 flex w-full max-w-md items-center overflow-hidden rounded-full border border-fg/25 bg-bg/60 backdrop-blur-sm transition-colors focus-within:border-accent"
-          >
-            <span className="grid size-9 shrink-0 place-items-center text-fg-muted">
-              <svg
-                viewBox="0 0 24 24"
-                className="size-4"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={1.8}
-              >
-                <circle cx="11" cy="11" r="7" />
-                <path d="M21 21l-4.3-4.3" strokeLinecap="round" />
-              </svg>
-            </span>
-            <input
-              type="search"
-              name="q"
-              placeholder="Search your bike..."
-              className="min-w-0 flex-1 bg-transparent py-2 pr-3 text-xs text-fg placeholder:text-fg-dim focus:outline-none md:text-sm"
-            />
-            <button
-              type="submit"
-              className="shrink-0 pr-4 text-[11px] font-semibold uppercase tracking-wider text-accent transition-colors hover:text-accent-hi"
-            >
-              Find
-            </button>
-          </form>
+          <SearchSuggest
+            index={searchIndex}
+            placeholder="Search your bike..."
+            variant="hero"
+          />
 
           <div className="no-scrollbar -mx-4 overflow-x-auto px-4 md:mx-0 md:overflow-visible md:px-0">
             <div className="flex items-center gap-2 whitespace-nowrap text-xs md:flex-wrap md:gap-2 md:whitespace-normal">
