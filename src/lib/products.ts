@@ -161,6 +161,53 @@ export function getAllYears(): number[] {
 }
 
 // ---------------------------------------------------------------------------
+// Bike models — extract from tags that look like "<Brand> <Model> [year]"
+
+const BRAND_RE = new RegExp(
+  `^(${BIKE_BRANDS.join("|")})\\s+`,
+  "i"
+);
+
+function cleanModelString(s: string): string {
+  // strip trailing year or year range
+  return s
+    .replace(/\s+\d{4}\s*[-–]\s*\d{4}\s*$/i, "")
+    .replace(/\s+\d{4}\s*$/i, "")
+    .trim();
+}
+
+export function getModels(p: ShopifyProduct): string[] {
+  const models = new Set<string>();
+  const candidates = [
+    ...p.tags,
+    ...(p.options[0]?.values ?? []),
+  ];
+  for (const c of candidates) {
+    if (!BRAND_RE.test(c)) continue;
+    if (c.length > 60) continue;
+    const cleaned = cleanModelString(c);
+    if (BIKE_BRANDS.includes(cleaned as BikeBrand)) continue;
+    models.add(cleaned);
+  }
+  return Array.from(models);
+}
+
+export function getModelsForBrand(brand: string): { name: string; count: number }[] {
+  const counts: Record<string, number> = {};
+  const brandLower = brand.toLowerCase();
+  for (const p of allProducts) {
+    if (!getBikeBrands(p).includes(brand as BikeBrand)) continue;
+    for (const model of getModels(p)) {
+      if (!model.toLowerCase().startsWith(brandLower + " ")) continue;
+      counts[model] = (counts[model] ?? 0) + 1;
+    }
+  }
+  return Object.entries(counts)
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count);
+}
+
+// ---------------------------------------------------------------------------
 // Display helpers
 
 export function getPrice(p: ShopifyProduct): { price: number; compareAt: number | null } {
@@ -236,6 +283,7 @@ export type CardProduct = {
   inStock: boolean;
   fits: string[];
   years: number[];
+  models: string[];
 };
 
 export function toCard(p: ShopifyProduct): CardProduct {
@@ -251,6 +299,7 @@ export function toCard(p: ShopifyProduct): CardProduct {
     inStock: isInStock(p),
     fits: p.options[0]?.values.slice(0, 4) ?? [],
     years: getYears(p),
+    models: getModels(p),
   };
 }
 

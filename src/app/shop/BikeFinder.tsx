@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 function StepDot({ done }: { done: boolean }) {
   return (
@@ -19,12 +19,20 @@ function StepDot({ done }: { done: boolean }) {
   );
 }
 
+type ModelOption = { name: string; count: number };
+
 type Props = {
   brands: { name: string; count: number }[];
   years: number[];
+  modelsByBrand: Record<string, ModelOption[]>;
   selectedBrand: string | null;
   selectedYear: number | null;
-  onChange: (brand: string | null, year: number | null) => void;
+  selectedModel: string | null;
+  onChange: (
+    brand: string | null,
+    year: number | null,
+    model: string | null
+  ) => void;
 };
 
 const STORAGE_KEY = "sickmotos:bike-finder";
@@ -32,41 +40,59 @@ const STORAGE_KEY = "sickmotos:bike-finder";
 export function BikeFinder({
   brands,
   years,
+  modelsByBrand,
   selectedBrand,
   selectedYear,
+  selectedModel,
   onChange,
 }: Props) {
   const [open, setOpen] = useState(true);
 
-  // Persist selection so the bike sticks across navigation
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const data = { brand: selectedBrand, year: selectedYear };
-    if (selectedBrand || selectedYear) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    if (selectedBrand || selectedYear || selectedModel) {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({
+          brand: selectedBrand,
+          year: selectedYear,
+          model: selectedModel,
+        })
+      );
     } else {
       localStorage.removeItem(STORAGE_KEY);
     }
-  }, [selectedBrand, selectedYear]);
+  }, [selectedBrand, selectedYear, selectedModel]);
 
-  // Hydrate from storage on first mount (only if parent didn't already set)
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (selectedBrand || selectedYear) return;
+    if (selectedBrand || selectedYear || selectedModel) return;
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return;
-      const data = JSON.parse(raw) as { brand?: string; year?: number };
-      if (data.brand || data.year) {
-        onChange(data.brand ?? null, data.year ?? null);
+      const data = JSON.parse(raw) as {
+        brand?: string;
+        year?: number;
+        model?: string;
+      };
+      if (data.brand || data.year || data.model) {
+        onChange(data.brand ?? null, data.year ?? null, data.model ?? null);
       }
     } catch {}
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const summary = selectedBrand
-    ? `${selectedBrand}${selectedYear ? ` · ${selectedYear}` : ""}`
-    : "Build your fit";
+  const models = useMemo(
+    () => (selectedBrand ? modelsByBrand[selectedBrand] ?? [] : []),
+    [selectedBrand, modelsByBrand]
+  );
+
+  const summaryParts = [
+    selectedBrand,
+    selectedModel ? selectedModel.replace(new RegExp(`^${selectedBrand}\\s+`, "i"), "") : null,
+    selectedYear?.toString(),
+  ].filter(Boolean);
+  const summary = summaryParts.length > 0 ? summaryParts.join(" · ") : "Build your fit";
 
   return (
     <section className="relative isolate mb-10 overflow-hidden rounded-2xl border border-border bg-surface/40">
@@ -107,7 +133,7 @@ export function BikeFinder({
             <span className="font-display text-xl uppercase tracking-tight text-fg md:text-2xl">
               {summary}
             </span>
-            {(selectedBrand || selectedYear) && (
+            {(selectedBrand || selectedYear || selectedModel) && (
               <span className="text-xs text-fg-muted">
                 Showing only parts that fit your bike.
               </span>
@@ -115,19 +141,19 @@ export function BikeFinder({
           </div>
         </div>
         <div className="flex items-center gap-3">
-          {(selectedBrand || selectedYear) && (
+          {(selectedBrand || selectedYear || selectedModel) && (
             <span
               role="button"
               tabIndex={0}
               onClick={(e) => {
                 e.stopPropagation();
-                onChange(null, null);
+                onChange(null, null, null);
               }}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault();
                   e.stopPropagation();
-                  onChange(null, null);
+                  onChange(null, null, null);
                 }
               }}
               className="cursor-pointer rounded-full border border-border-strong px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-fg-muted transition-colors hover:border-accent hover:text-accent"
@@ -168,9 +194,13 @@ export function BikeFinder({
                     <button
                       key={b.name}
                       type="button"
-                      onClick={() =>
-                        onChange(active ? null : b.name, selectedYear)
-                      }
+                      onClick={() => {
+                        if (active) {
+                          onChange(null, selectedYear, null);
+                        } else {
+                          onChange(b.name, selectedYear, null);
+                        }
+                      }}
                       className={`rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors duration-150 ${
                         active
                           ? "border-accent bg-accent text-fg"
@@ -191,6 +221,54 @@ export function BikeFinder({
               </div>
             </div>
 
+            {selectedBrand && models.length > 0 && (
+              <div className="flex flex-col gap-2">
+                <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-fg-dim">
+                  <StepDot done={!!selectedModel} />
+                  Model
+                  <span className="text-fg-dim/70">
+                    ({models.length} for {selectedBrand})
+                  </span>
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {models.map((m) => {
+                    const active = selectedModel === m.name;
+                    const shortName = m.name.replace(
+                      new RegExp(`^${selectedBrand}\\s+`, "i"),
+                      ""
+                    );
+                    return (
+                      <button
+                        key={m.name}
+                        type="button"
+                        onClick={() =>
+                          onChange(
+                            selectedBrand,
+                            selectedYear,
+                            active ? null : m.name
+                          )
+                        }
+                        className={`rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wider transition-colors duration-150 ${
+                          active
+                            ? "border-accent bg-accent text-fg"
+                            : "border-border-strong bg-surface text-fg-muted hover:border-accent/60 hover:bg-surface-2 hover:text-fg"
+                        }`}
+                      >
+                        {shortName}
+                        <span
+                          className={`ml-2 text-[10px] ${
+                            active ? "text-fg/80" : "text-fg-dim"
+                          }`}
+                        >
+                          {m.count}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             <div className="flex flex-col gap-2">
               <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-fg-dim">
                 <StepDot done={!!selectedYear} />
@@ -204,7 +282,11 @@ export function BikeFinder({
                       key={y}
                       type="button"
                       onClick={() =>
-                        onChange(selectedBrand, active ? null : y)
+                        onChange(
+                          selectedBrand,
+                          active ? null : y,
+                          selectedModel
+                        )
                       }
                       className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wider transition-colors duration-150 ${
                         active

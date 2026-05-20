@@ -21,9 +21,11 @@ type Props = {
   categoryCounts: Record<string, number>;
   brandCounts: Record<string, number>;
   years: number[];
+  modelsByBrand: Record<string, { name: string; count: number }[]>;
   initialCategory?: string;
   initialBrand?: string;
   initialYear?: number;
+  initialModel?: string;
 };
 
 export function ShopBrowser({
@@ -31,9 +33,11 @@ export function ShopBrowser({
   categoryCounts,
   brandCounts,
   years,
+  modelsByBrand,
   initialCategory,
   initialBrand,
   initialYear,
+  initialModel,
 }: Props) {
   const [search, setSearch] = useState("");
   const [activeCategories, setActiveCategories] = useState<Set<string>>(
@@ -43,6 +47,7 @@ export function ShopBrowser({
     initialBrand ?? null
   );
   const [bikeYear, setBikeYear] = useState<number | null>(initialYear ?? null);
+  const [bikeModel, setBikeModel] = useState<string | null>(initialModel ?? null);
   const [onSaleOnly, setOnSaleOnly] = useState(false);
   const [inStockOnly, setInStockOnly] = useState(true);
   const [sort, setSort] = useState<SortKey>("popular");
@@ -58,6 +63,12 @@ export function ShopBrowser({
     }
     if (bikeYear) {
       list = list.filter((p) => p.years.includes(bikeYear));
+    }
+    if (bikeModel) {
+      const m = bikeModel.toLowerCase();
+      list = list.filter((p) =>
+        p.models.some((mm) => mm.toLowerCase() === m)
+      );
     }
     if (onSaleOnly) {
       list = list.filter((p) => p.compareAt && p.compareAt > p.price);
@@ -89,7 +100,7 @@ export function ShopBrowser({
         break;
     }
     return list;
-  }, [products, activeCategories, bikeBrand, bikeYear, onSaleOnly, inStockOnly, search, sort]);
+  }, [products, activeCategories, bikeBrand, bikeYear, bikeModel, onSaleOnly, inStockOnly, search, sort]);
 
   const toggle = (
     set: Set<string>,
@@ -106,6 +117,7 @@ export function ShopBrowser({
     activeCategories.size +
     (bikeBrand ? 1 : 0) +
     (bikeYear ? 1 : 0) +
+    (bikeModel ? 1 : 0) +
     (onSaleOnly ? 1 : 0) +
     (search.trim() ? 1 : 0);
 
@@ -161,6 +173,7 @@ export function ShopBrowser({
             setActiveCategories(new Set());
             setBikeBrand(null);
             setBikeYear(null);
+            setBikeModel(null);
             setOnSaleOnly(false);
             setSearch("");
           }}
@@ -186,11 +199,14 @@ export function ShopBrowser({
       <BikeFinder
         brands={brandList}
         years={years}
+        modelsByBrand={modelsByBrand}
         selectedBrand={bikeBrand}
         selectedYear={bikeYear}
-        onChange={(b, y) => {
+        selectedModel={bikeModel}
+        onChange={(b, y, m) => {
           setBikeBrand(b);
           setBikeYear(y);
+          setBikeModel(m);
         }}
       />
 
