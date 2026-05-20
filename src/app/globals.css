@@ -142,10 +142,12 @@ html {
 
 @keyframes hero-zoom {
   from {
-    transform: scale(1) translateY(0) scaleX(-1);
+    transform: scale(1.02) scaleX(-1);
+    transform-origin: center;
   }
   to {
-    transform: scale(1.12) translateY(8%) scaleX(-1);
+    transform: scale(1.08) scaleX(-1);
+    transform-origin: center;
   }
 }
 

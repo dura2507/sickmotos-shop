@@ -4,7 +4,7 @@ const quickPicks = ["Beta", "Husqvarna", "KTM", "Aprilia", "Fantic", "Yamaha"];
 
 export function Hero() {
   return (
-    <section className="relative isolate overflow-hidden border-b border-border">
+    <section className="relative isolate flex min-h-[540px] flex-col justify-center overflow-hidden border-b border-border md:min-h-[640px]">
       <div className="absolute inset-0 -z-10">
         <Image
           src="/hero-trails.png"
