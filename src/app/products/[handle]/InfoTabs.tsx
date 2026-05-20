@@ -15,13 +15,34 @@ export function InfoTabs({ product: p }: { product: DetailViewModel }) {
   const blocks = p.description.split(/\n+/).filter(Boolean);
 
   return (
-    <section className="relative isolate border-y border-border bg-surface/40 py-16 md:py-20" style={{ overflowX: "clip" }}>
+    <section className="relative isolate border-y border-border py-16 md:py-20" style={{ overflowX: "clip" }}>
       <div
         aria-hidden
-        className="drift-glow pointer-events-none absolute right-[-15%] top-1/2 -z-10 size-[560px] -translate-y-1/2 rounded-full"
+        className="pointer-events-none absolute inset-0 -z-20"
         style={{
           background:
-            "radial-gradient(closest-side, rgba(225,6,0,0.15), transparent 70%)",
+            "linear-gradient(180deg, #141414 0%, #101010 50%, #141414 100%)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 opacity-[0.06]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
+          backgroundSize: "44px 44px",
+          maskImage:
+            "linear-gradient(180deg, transparent 0%, black 30%, black 70%, transparent 100%)",
+          WebkitMaskImage:
+            "linear-gradient(180deg, transparent 0%, black 30%, black 70%, transparent 100%)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="drift-glow pointer-events-none absolute right-[-18%] top-1/2 -z-10 size-[520px] -translate-y-1/2 rounded-full"
+        style={{
+          background:
+            "radial-gradient(closest-side, rgba(225,6,0,0.18), transparent 70%)",
         }}
       />
       <div

@@ -34,14 +34,6 @@ export function Gallery({
           sizes="(max-width: 768px) 100vw, 60vw"
           className="reveal-soft object-cover"
         />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(80% 60% at 50% 100%, rgba(225,6,0,0.18), transparent 70%)",
-          }}
-        />
       </div>
 
       <div className="-mx-1 flex gap-2 overflow-x-auto px-1 md:mx-0 md:w-20 md:flex-col md:overflow-visible md:px-0">
