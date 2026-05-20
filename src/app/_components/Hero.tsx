@@ -4,7 +4,10 @@ const quickPicks = ["Beta", "Husqvarna", "KTM", "Aprilia", "Fantic", "Yamaha"];
 
 export function Hero() {
   return (
-    <section className="relative isolate overflow-hidden border-b border-border">
+    <section
+      className="relative isolate overflow-hidden border-b border-border"
+      style={{ aspectRatio: "19 / 10" }}
+    >
       <div className="absolute inset-0 -z-10">
         <Image
           src="/hero-trails.png"
@@ -12,11 +15,8 @@ export function Hero() {
           fill
           priority
           sizes="100vw"
-          className="object-cover"
-          style={{
-            transform: "scaleX(-1)",
-            objectPosition: "center 45%",
-          }}
+          className="object-cover object-center"
+          style={{ transform: "scaleX(-1)" }}
         />
         <div
           aria-hidden
@@ -36,7 +36,7 @@ export function Hero() {
         />
       </div>
 
-      <div className="mx-auto flex min-h-[560px] max-w-7xl flex-col gap-6 px-4 pt-16 pb-20 md:min-h-[680px] md:gap-8 md:px-6 md:pt-24 md:pb-28 lg:min-h-[740px]">
+      <div className="mx-auto flex h-full min-h-[560px] max-w-7xl flex-col justify-center gap-6 px-4 py-16 md:gap-8 md:px-6 md:py-20">
         <div className="flex max-w-2xl flex-col gap-5">
           <h1 className="font-display text-balance text-5xl uppercase leading-[1] tracking-[0.01em] text-zinc-100 sm:text-6xl md:text-7xl">
             <span className="reveal-word" style={{ animationDelay: "0.05s" }}>Ride</span>{" "}
