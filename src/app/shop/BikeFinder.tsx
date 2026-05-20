@@ -162,10 +162,10 @@ export function BikeFinder({
                       onClick={() =>
                         onChange(active ? null : b.name, selectedYear)
                       }
-                      className={`rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition-all duration-200 hover:-translate-y-0.5 ${
+                      className={`rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors duration-150 ${
                         active
                           ? "border-accent bg-accent text-fg"
-                          : "border-border-strong bg-surface text-fg-muted hover:border-fg/40 hover:text-fg"
+                          : "border-border-strong bg-surface text-fg-muted hover:border-accent/60 hover:bg-surface-2 hover:text-fg"
                       }`}
                     >
                       {b.name}
@@ -205,10 +205,10 @@ export function BikeFinder({
                       onClick={() =>
                         onChange(selectedBrand, active ? null : y)
                       }
-                      className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wider transition-all duration-200 hover:-translate-y-0.5 ${
+                      className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wider transition-colors duration-150 ${
                         active
                           ? "border-accent bg-accent text-fg"
-                          : "border-border-strong bg-surface text-fg-muted hover:border-fg/40 hover:text-fg"
+                          : "border-border-strong bg-surface text-fg-muted hover:border-accent/60 hover:bg-surface-2 hover:text-fg"
                       }`}
                     >
                       {y}
