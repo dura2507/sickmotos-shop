@@ -42,6 +42,7 @@ export function LatestArrivals() {
     <section className="border-b border-border bg-surface/30 py-16 md:py-20">
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader
+          index="02"
           kicker="New in"
           title="Latest arrivals"
           subtitle="Fresh stock added this week."

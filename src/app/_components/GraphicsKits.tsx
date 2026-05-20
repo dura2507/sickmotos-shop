@@ -38,6 +38,7 @@ export function GraphicsKits() {
     <section className="border-b border-border py-16 md:py-20">
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader
+          index="03"
           kicker="Make your bike yours"
           title="Graphics kits"
           subtitle="Limited-run designs for Husqvarna, KTM and more."

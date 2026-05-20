@@ -60,14 +60,17 @@ main > section + section::before {
   top: -1px;
   left: 50%;
   transform: translateX(-50%);
-  width: min(70%, 720px);
-  height: 1px;
+  width: min(80%, 960px);
+  height: 2px;
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(225, 6, 0, 0.55) 50%,
+    rgba(225, 6, 0, 0.7) 35%,
+    rgba(225, 6, 0, 0.9) 50%,
+    rgba(225, 6, 0, 0.7) 65%,
     transparent 100%
   );
+  box-shadow: 0 0 12px rgba(225, 6, 0, 0.35);
   z-index: 1;
   pointer-events: none;
 }

@@ -37,6 +37,7 @@ export function Bestsellers() {
     <section id="bestseller" className="border-b border-border py-16 md:py-20">
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader
+          index="01"
           kicker="The Top 3"
           title="Top selling"
           subtitle="The titanium exhausts riders keep coming back for."

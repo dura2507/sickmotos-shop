@@ -47,10 +47,20 @@ function CountUp({ stat }: { stat: Stat }) {
   }, [stat.target]);
 
   return (
-    <span ref={ref} className="font-display text-5xl uppercase tracking-tight text-accent md:text-6xl">
+    <span ref={ref} className="flex items-baseline gap-1 font-display text-5xl uppercase tracking-tight text-accent md:text-6xl">
       {stat.prefix}
       {value}
       {stat.suffix}
+      <svg
+        viewBox="0 0 24 24"
+        className="size-5 text-accent md:size-6"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2.4}
+        aria-hidden
+      >
+        <path d="M6 18L18 6M18 6h-7M18 6v7" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
     </span>
   );
 }

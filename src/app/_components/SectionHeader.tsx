@@ -6,6 +6,7 @@ type Props = {
   subtitle?: string;
   viewAllHref?: string;
   backdropImage?: string;
+  index?: string;
 };
 
 export function SectionHeader({
@@ -14,6 +15,7 @@ export function SectionHeader({
   subtitle,
   viewAllHref,
   backdropImage,
+  index,
 }: Props) {
   return (
     <div className="reveal relative isolate mb-10 overflow-hidden rounded-lg border border-border bg-surface/50">
@@ -37,19 +39,29 @@ export function SectionHeader({
         </>
       )}
       <div className="flex flex-wrap items-end justify-between gap-4 px-6 py-8 md:px-8">
-        <div className="flex flex-col gap-2">
-          {kicker && (
-            <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-accent">
-              {kicker}
+        <div className="flex items-end gap-4 md:gap-6">
+          {index && (
+            <span
+              aria-hidden
+              className="font-display text-5xl leading-none text-accent/30 md:text-7xl"
+            >
+              {index}
             </span>
           )}
-          <h2 className="font-display text-4xl uppercase leading-none tracking-tight md:text-5xl">
-            {title}
-          </h2>
-          <span aria-hidden className="h-0.5 w-12 bg-accent" />
-          {subtitle && (
-            <p className="max-w-md text-sm text-fg-muted">{subtitle}</p>
-          )}
+          <div className="flex flex-col gap-2">
+            {kicker && (
+              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-accent">
+                {kicker}
+              </span>
+            )}
+            <h2 className="font-display text-4xl uppercase leading-none tracking-tight md:text-5xl">
+              {title}
+            </h2>
+            <span aria-hidden className="h-0.5 w-12 bg-accent" />
+            {subtitle && (
+              <p className="max-w-md text-sm text-fg-muted">{subtitle}</p>
+            )}
+          </div>
         </div>
         {viewAllHref && (
           <a
