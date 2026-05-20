@@ -32,7 +32,7 @@ export function Gallery({
           fill
           priority
           sizes="(max-width: 768px) 100vw, 60vw"
-          className="reveal-soft object-cover"
+          className="object-cover"
         />
       </div>
 
@@ -54,6 +54,7 @@ export function Gallery({
               alt=""
               fill
               sizes="80px"
+              loading="eager"
               className="object-cover"
             />
           </button>

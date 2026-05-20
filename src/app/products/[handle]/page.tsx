@@ -1,12 +1,16 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Gallery } from "./Gallery";
 import { PurchasePanel } from "./PurchasePanel";
 import { InfoTabs } from "./InfoTabs";
 import { Related } from "./Related";
 import {
+  cleanTitle,
+  getPrice,
   getProductByHandle,
   getProductHandles,
+  htmlToBlocks,
   toDetailViewModel,
 } from "@/lib/products";
 
@@ -14,6 +18,35 @@ export const dynamicParams = true;
 
 export function generateStaticParams() {
   return getProductHandles().map((handle) => ({ handle }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ handle: string }>;
+}): Promise<Metadata> {
+  const { handle } = await params;
+  const p = getProductByHandle(handle);
+  if (!p) return { title: "Product not found — SickMotos" };
+  const { price } = getPrice(p);
+  const title = `${cleanTitle(p.title)} — SickMotos`;
+  const desc = htmlToBlocks(p.body_html)[0]?.slice(0, 160) ??
+    `Performance part for ${p.vendor || "SickMotos"}.`;
+  const image = p.images[0]?.src;
+  return {
+    title,
+    description: desc,
+    openGraph: {
+      title,
+      description: desc,
+      type: "website",
+      images: image ? [{ url: image }] : [],
+    },
+    other: {
+      "product:price:amount": price.toFixed(2),
+      "product:price:currency": "EUR",
+    },
+  };
 }
 
 export default async function ProductPage({

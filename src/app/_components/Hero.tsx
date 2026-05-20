@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const quickPicks = ["Beta", "Husqvarna", "KTM", "Aprilia", "Fantic", "Yamaha"];
 
@@ -83,13 +84,13 @@ export function Hero() {
           <div className="no-scrollbar -mx-4 overflow-x-auto px-4 md:mx-0 md:overflow-visible md:px-0">
             <div className="flex items-center gap-2 whitespace-nowrap text-xs md:flex-wrap md:gap-2 md:whitespace-normal">
               {quickPicks.map((b) => (
-                <a
+                <Link
                   key={b}
-                  href="#"
+                  href={`/shop?brand=${encodeURIComponent(b)}`}
                   className="rounded-full border border-fg/20 bg-bg/70 px-3 py-1.5 font-semibold uppercase tracking-wider text-fg backdrop-blur-sm transition-colors hover:border-accent hover:text-accent"
                 >
                   {b}
-                </a>
+                </Link>
               ))}
             </div>
           </div>
