@@ -97,14 +97,9 @@ export function PurchasePanel({ product: p }: { product: Product }) {
 
       {p.variantGroups.map((g) => (
         <div key={g.key} className="flex flex-col gap-2">
-          <div className="flex items-baseline justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-fg-dim">
-              {g.title}
-            </span>
-            <span className="text-xs text-fg-muted">
-              {g.variants.find((v) => v.id === variantSel[g.key])?.label}
-            </span>
-          </div>
+          <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-fg-dim">
+            {g.title}
+          </span>
           <div className="grid grid-cols-3 gap-2">
             {g.variants.map((v) => {
               const selected = variantSel[g.key] === v.id;
@@ -156,7 +151,7 @@ export function PurchasePanel({ product: p }: { product: Product }) {
                 key={a.id}
                 type="button"
                 onClick={() => toggleAddon(a.id)}
-                className={`group flex items-center gap-3 rounded-lg border p-3 text-left transition-all ${
+                className={`group flex items-center gap-3 rounded-lg border p-2.5 text-left transition-all ${
                   checked
                     ? "border-accent bg-accent/10"
                     : "border-border bg-surface hover:border-fg/30"
@@ -181,12 +176,12 @@ export function PurchasePanel({ product: p }: { product: Product }) {
                     </svg>
                   )}
                 </span>
-                <div className="relative size-12 shrink-0 overflow-hidden rounded-md border border-border bg-gradient-to-br from-surface-2 to-bg">
+                <div className="relative size-20 shrink-0 overflow-hidden rounded-md border border-border bg-gradient-to-br from-surface-2 to-bg">
                   <Image
                     src={a.image}
                     alt=""
                     fill
-                    sizes="48px"
+                    sizes="80px"
                     className="object-cover"
                   />
                 </div>
@@ -240,18 +235,14 @@ export function PurchasePanel({ product: p }: { product: Product }) {
         </button>
       </div>
 
-      <div className="grid grid-cols-3 gap-2 text-[11px] text-fg-muted">
+      <div className="grid grid-cols-2 gap-2 text-[11px] text-fg-muted">
         <span className="flex flex-col items-center gap-1 rounded-lg border border-border bg-surface/40 p-2.5 text-center">
           <span className="text-fg">Worldwide</span>
           <span className="text-fg-dim">5-10 days</span>
         </span>
         <span className="flex flex-col items-center gap-1 rounded-lg border border-border bg-surface/40 p-2.5 text-center">
-          <span className="text-fg">6 mo</span>
+          <span className="text-fg">6 months</span>
           <span className="text-fg-dim">warranty</span>
-        </span>
-        <span className="flex flex-col items-center gap-1 rounded-lg border border-border bg-surface/40 p-2.5 text-center">
-          <span className="text-fg">WhatsApp</span>
-          <span className="text-fg-dim">support</span>
         </span>
       </div>
     </div>
