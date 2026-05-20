@@ -4,7 +4,17 @@ import { Gallery } from "./Gallery";
 import { PurchasePanel } from "./PurchasePanel";
 import { InfoTabs } from "./InfoTabs";
 import { Related } from "./Related";
-import { product } from "./product-data";
+import {
+  getProductByHandle,
+  getProductHandles,
+  toDetailViewModel,
+} from "@/lib/products";
+
+export const dynamicParams = true;
+
+export function generateStaticParams() {
+  return getProductHandles().map((handle) => ({ handle }));
+}
 
 export default async function ProductPage({
   params,
@@ -12,9 +22,9 @@ export default async function ProductPage({
   params: Promise<{ handle: string }>;
 }) {
   const { handle } = await params;
-  // For now only one hardcoded product. Will branch by handle once Shopify
-  // is wired up.
-  if (handle !== product.handle) notFound();
+  const shopify = getProductByHandle(handle);
+  if (!shopify) notFound();
+  const product = toDetailViewModel(shopify);
 
   return (
     <>
@@ -24,15 +34,21 @@ export default async function ProductPage({
             Home
           </Link>
           <span className="text-fg-dim">/</span>
-          <Link href={product.categoryHref} className="hover:text-fg">
+          <Link
+            href={`/shop?category=${encodeURIComponent(product.category)}`}
+            className="hover:text-fg"
+          >
             {product.category}
           </Link>
           <span className="text-fg-dim">/</span>
-          <span className="text-fg">{product.title}</span>
+          <span className="line-clamp-1 text-fg">{product.title}</span>
         </nav>
       </div>
 
-      <section className="relative isolate border-b border-border py-10 md:py-16" style={{ overflowX: "clip" as const }}>
+      <section
+        className="relative isolate border-b border-border py-10 md:py-16"
+        style={{ overflowX: "clip" }}
+      >
         <div
           aria-hidden
           className="drift-glow pointer-events-none absolute -left-40 top-1/3 -z-10 size-[640px] rounded-full"
@@ -52,14 +68,6 @@ export default async function ProductPage({
               "radial-gradient(ellipse at center, black 30%, transparent 75%)",
             WebkitMaskImage:
               "radial-gradient(ellipse at center, black 30%, transparent 75%)",
-          }}
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute right-0 top-0 -z-10 h-full w-1/3"
-          style={{
-            background:
-              "linear-gradient(135deg, transparent 0%, rgba(225,6,0,0.06) 100%)",
           }}
         />
 

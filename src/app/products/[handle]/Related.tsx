@@ -1,8 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { RelatedProduct } from "./product-data";
+import type { CardProduct } from "@/lib/products";
+import { fmtEUR } from "@/lib/products";
 
-export function Related({ items }: { items: RelatedProduct[] }) {
+export function Related({ items }: { items: CardProduct[] }) {
+  if (items.length === 0) return null;
   return (
     <section className="border-b border-border py-16 md:py-20">
       <div className="mx-auto max-w-7xl px-6">
@@ -11,7 +13,7 @@ export function Related({ items }: { items: RelatedProduct[] }) {
             Riders also bought
           </h2>
           <Link
-            href="/"
+            href="/shop"
             className="text-sm font-semibold text-fg-muted underline-offset-4 hover:text-accent hover:underline"
           >
             View all
@@ -25,25 +27,27 @@ export function Related({ items }: { items: RelatedProduct[] }) {
               className="reveal-soft group flex flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-300 hover:-translate-y-1 hover:border-accent"
             >
               <div className="relative aspect-square overflow-hidden border-b border-border bg-gradient-to-br from-surface-2 to-bg">
-                <Image
-                  src={p.image}
-                  alt={p.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 25vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
+                {p.image && (
+                  <Image
+                    src={p.image}
+                    alt={p.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 25vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                )}
               </div>
               <div className="flex flex-col gap-2 p-4">
-                <h3 className="text-sm font-medium leading-snug text-fg">
+                <h3 className="line-clamp-2 text-sm font-medium leading-snug text-fg">
                   {p.title}
                 </h3>
                 <div className="flex items-baseline gap-2">
                   <span className="text-base font-semibold text-fg">
-                    {p.price}
+                    {fmtEUR(p.price)}
                   </span>
-                  {p.comparePrice && (
+                  {p.compareAt && p.compareAt > p.price && (
                     <span className="text-xs text-fg-dim line-through">
-                      {p.comparePrice}
+                      {fmtEUR(p.compareAt)}
                     </span>
                   )}
                 </div>

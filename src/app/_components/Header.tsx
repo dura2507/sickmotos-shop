@@ -14,12 +14,12 @@ const brands = [
 ];
 
 const nav = [
-  { label: "LED Headlights", href: "#" },
-  { label: "Exhaust", href: "#" },
-  { label: "Carbon Parts", href: "#" },
-  { label: "ECU Tuning", href: "#" },
-  { label: "Merchandise", href: "#" },
-  { label: "Titanium Screws", href: "#" },
+  { label: "Shop", href: "/shop" },
+  { label: "LED Headlights", href: "/shop?category=LED+Headlights" },
+  { label: "Exhaust", href: "/shop?category=Exhaust" },
+  { label: "Carbon Parts", href: "/shop?category=Carbon+Parts" },
+  { label: "ECU Tuning", href: "/shop?category=ECU+Tuning" },
+  { label: "Merchandise", href: "/shop?category=Merchandise" },
 ];
 
 export function Header() {

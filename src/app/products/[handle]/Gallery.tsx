@@ -8,15 +8,27 @@ export function Gallery({
 }: {
   images: { src: string; alt: string }[];
 }) {
+  const safeImages = images.length > 0 ? images : [];
   const [active, setActive] = useState(0);
+  const current = safeImages[active] ?? safeImages[0];
+
+  if (!current) {
+    return (
+      <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-surface-2 to-bg">
+        <div className="absolute inset-0 grid place-items-center text-xs uppercase tracking-wider text-fg-dim">
+          No image available
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-3 md:flex-row-reverse md:gap-4">
       <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-surface-2 to-bg">
         <Image
           key={active}
-          src={images[active].src}
-          alt={images[active].alt}
+          src={current.src}
+          alt={current.alt}
           fill
           priority
           sizes="(max-width: 768px) 100vw, 60vw"
@@ -33,7 +45,7 @@ export function Gallery({
       </div>
 
       <div className="-mx-1 flex gap-2 overflow-x-auto px-1 md:mx-0 md:w-20 md:flex-col md:overflow-visible md:px-0">
-        {images.map((img, i) => (
+        {safeImages.map((img, i) => (
           <button
             key={img.src}
             type="button"
