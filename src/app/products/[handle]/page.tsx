@@ -33,8 +33,10 @@ export default async function ProductPage({
       </div>
 
       <section className="border-b border-border py-10 md:py-16">
-        <div className="mx-auto grid max-w-7xl gap-10 px-6 md:grid-cols-[1.2fr_1fr] md:gap-12">
-          <Gallery images={product.images} />
+        <div className="mx-auto grid max-w-7xl gap-10 px-6 md:grid-cols-[1fr_1fr] md:gap-12 lg:grid-cols-[1fr_1.1fr]">
+          <div className="md:max-w-[520px]">
+            <Gallery images={product.images} />
+          </div>
           <div className="md:sticky md:top-32 md:self-start">
             <PurchasePanel product={product} />
           </div>
