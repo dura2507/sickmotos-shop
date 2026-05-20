@@ -54,6 +54,8 @@ export function Hero() {
 
           <form
             role="search"
+            action="/shop"
+            method="get"
             className="mt-2 flex w-full max-w-md items-center overflow-hidden rounded-full border border-fg/25 bg-bg/60 backdrop-blur-sm transition-colors focus-within:border-accent"
           >
             <span className="grid size-9 shrink-0 place-items-center text-fg-muted">
@@ -70,6 +72,7 @@ export function Hero() {
             </span>
             <input
               type="search"
+              name="q"
               placeholder="Search your bike..."
               className="min-w-0 flex-1 bg-transparent py-2 pr-3 text-xs text-fg placeholder:text-fg-dim focus:outline-none md:text-sm"
             />

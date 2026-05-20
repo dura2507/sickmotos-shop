@@ -27,6 +27,7 @@ type Props = {
   initialBrand?: string;
   initialYear?: number;
   initialModel?: string;
+  initialSearch?: string;
 };
 
 export function ShopBrowser({
@@ -40,8 +41,9 @@ export function ShopBrowser({
   initialBrand,
   initialYear,
   initialModel,
+  initialSearch,
 }: Props) {
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(initialSearch ?? "");
   const [activeCategories, setActiveCategories] = useState<Set<string>>(
     () => new Set(initialCategory ? [initialCategory] : [])
   );

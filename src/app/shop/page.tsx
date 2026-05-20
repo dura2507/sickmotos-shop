@@ -21,6 +21,7 @@ export default async function ShopPage({
     brand?: string;
     year?: string;
     model?: string;
+    q?: string;
   }>;
 }) {
   const sp = await searchParams;
@@ -59,6 +60,7 @@ export default async function ShopPage({
       initialBrand={sp.brand}
       initialYear={initialYear && !isNaN(initialYear) ? initialYear : undefined}
       initialModel={sp.model}
+      initialSearch={sp.q}
     />
   );
 }
