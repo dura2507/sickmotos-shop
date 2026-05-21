@@ -5,11 +5,11 @@ import { MobileMenu } from "./MobileMenu";
 import { HeaderSearch } from "./HeaderSearch";
 
 const nav = [
-  { label: "Shop", href: "/shop" },
-  { label: "LED Headlights", href: "/shop?category=LED+Headlights" },
+  { label: "All Parts", href: "/shop" },
   { label: "Exhaust", href: "/shop?category=Exhaust" },
+  { label: "LED Headlights", href: "/shop?category=LED+Headlights" },
   { label: "Carbon Parts", href: "/shop?category=Carbon+Parts" },
-  { label: "ECU Tuning", href: "/shop?category=ECU+Tuning" },
+  { label: "Graphics", href: "/shop?category=Graphics" },
   { label: "Merchandise", href: "/shop?category=Merchandise" },
 ];
 

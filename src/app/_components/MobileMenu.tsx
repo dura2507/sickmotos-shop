@@ -5,12 +5,12 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 const nav = [
-  { label: "LED Headlights", href: "#" },
-  { label: "Exhaust", href: "#" },
-  { label: "Carbon Parts", href: "#" },
-  { label: "ECU Tuning", href: "#" },
-  { label: "Merchandise", href: "#" },
-  { label: "Titanium Screws", href: "#" },
+  { label: "All Parts", href: "/shop" },
+  { label: "Exhaust", href: "/shop?category=Exhaust" },
+  { label: "LED Headlights", href: "/shop?category=LED+Headlights" },
+  { label: "Carbon Parts", href: "/shop?category=Carbon+Parts" },
+  { label: "Graphics", href: "/shop?category=Graphics" },
+  { label: "Merchandise", href: "/shop?category=Merchandise" },
 ];
 
 const brands = ["Beta", "Husqvarna", "KTM", "Aprilia", "Fantic", "Yamaha"];
@@ -75,6 +75,8 @@ export function MobileMenu() {
             <div className="no-scrollbar flex flex-1 flex-col gap-6 overflow-y-auto p-4">
               <form
                 role="search"
+                action="/shop"
+                method="get"
                 onSubmit={close}
                 className="flex items-center gap-2 border-b border-fg/30 pb-2 focus-within:border-accent"
               >
@@ -84,6 +86,7 @@ export function MobileMenu() {
                 </svg>
                 <input
                   type="search"
+                  name="q"
                   placeholder="Search your bike or part..."
                   className="flex-1 bg-transparent py-2 text-base text-fg placeholder:text-fg-dim focus:outline-none"
                 />
@@ -114,14 +117,14 @@ export function MobileMenu() {
                 </span>
                 <div className="flex flex-wrap gap-2">
                   {brands.map((b) => (
-                    <a
+                    <Link
                       key={b}
-                      href="#"
+                      href={`/shop?brand=${encodeURIComponent(b)}`}
                       onClick={close}
                       className="rounded-full border border-border-strong px-3 py-1.5 text-sm font-medium uppercase tracking-wider text-fg-muted hover:border-accent hover:text-accent"
                     >
                       {b}
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </div>
