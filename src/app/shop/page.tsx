@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { getShopData } from "@/lib/products";
 import { ShopBrowser } from "./ShopBrowser";
+import { ShopSkeleton } from "./ShopSkeleton";
 
 // Static: HTML is cached at the edge. Filter state is read from the URL on
 // the client via useSearchParams, so we never need the server to re-render
@@ -14,7 +15,7 @@ export const metadata = {
 export default function ShopPage() {
   const data = getShopData();
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<ShopSkeleton />}>
       <ShopBrowser
         products={data.products}
         categoryCounts={data.categoryCounts}

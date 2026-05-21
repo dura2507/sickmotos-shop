@@ -279,9 +279,60 @@ export function ShopBrowser({
         </aside>
 
         <div>
-          <p className="mb-4 text-xs text-fg-dim">
-            Showing {filtered.length} of {products.length} products
-          </p>
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <p className="text-xs text-fg-dim">
+              Showing {filtered.length} of {products.length} products
+            </p>
+            {activeFilterCount > 0 && (
+              <span className="text-xs text-fg-dim">·</span>
+            )}
+            {Array.from(activeCategories).map((c) => (
+              <FilterChip
+                key={`cat-${c}`}
+                label={c}
+                onRemove={() =>
+                  setActiveCategories((prev) => {
+                    const next = new Set(prev);
+                    next.delete(c);
+                    return next;
+                  })
+                }
+              />
+            ))}
+            {bikeBrand && (
+              <FilterChip
+                label={bikeBrand}
+                onRemove={() => {
+                  setBikeBrand(null);
+                  setBikeModel(null);
+                }}
+              />
+            )}
+            {bikeModel && (
+              <FilterChip
+                label={bikeModel.replace(
+                  new RegExp(`^${bikeBrand}\\s+`, "i"),
+                  ""
+                )}
+                onRemove={() => setBikeModel(null)}
+              />
+            )}
+            {bikeYear && (
+              <FilterChip
+                label={String(bikeYear)}
+                onRemove={() => setBikeYear(null)}
+              />
+            )}
+            {onSaleOnly && (
+              <FilterChip label="On sale" onRemove={() => setOnSaleOnly(false)} />
+            )}
+            {search.trim() && (
+              <FilterChip
+                label={`"${search.trim()}"`}
+                onRemove={() => setSearch("")}
+              />
+            )}
+          </div>
           {filtered.length === 0 ? (
             <div className="rounded-lg border border-border bg-surface p-10 text-center text-sm text-fg-muted">
               No products match these filters.
@@ -389,6 +440,33 @@ function FilterGroup({
       </span>
       {children}
     </div>
+  );
+}
+
+function FilterChip({
+  label,
+  onRemove,
+}: {
+  label: string;
+  onRemove: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onRemove}
+      className="group inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent transition-colors hover:border-accent hover:bg-accent/20"
+    >
+      <span>{label}</span>
+      <svg
+        viewBox="0 0 24 24"
+        className="size-3 opacity-70 group-hover:opacity-100"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2.5}
+      >
+        <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
+      </svg>
+    </button>
   );
 }
 
