@@ -346,6 +346,8 @@ export type SearchEntry = {
   i: string; // image url
   p: number; // price
   f: string[]; // fits (first option values)
+  b: string[]; // bike brands this product fits
+  m: string[]; // bike models this product fits (lowercased for cheap matching)
 };
 
 export function getSearchIndex(): SearchEntry[] {
@@ -357,6 +359,8 @@ export function getSearchIndex(): SearchEntry[] {
       i: p.images[0]?.src ?? "",
       p: price,
       f: p.options[0]?.values.slice(0, 3) ?? [],
+      b: getBikeBrands(p),
+      m: getModels(p).map((s) => s.toLowerCase()),
     };
   });
 }

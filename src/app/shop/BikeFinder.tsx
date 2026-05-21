@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { readBike, writeBike } from "@/lib/bikeStore";
 
 function StepDot({ done }: { done: boolean }) {
   return (
@@ -36,8 +37,6 @@ type Props = {
   ) => void;
 };
 
-const STORAGE_KEY = "sickmotos:bike-finder";
-
 export function BikeFinder({
   brands,
   years,
@@ -51,36 +50,19 @@ export function BikeFinder({
   const [open, setOpen] = useState(true);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (selectedBrand || selectedYear || selectedModel) {
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify({
-          brand: selectedBrand,
-          year: selectedYear,
-          model: selectedModel,
-        })
-      );
-    } else {
-      localStorage.removeItem(STORAGE_KEY);
-    }
+    writeBike({
+      brand: selectedBrand,
+      model: selectedModel,
+      year: selectedYear,
+    });
   }, [selectedBrand, selectedYear, selectedModel]);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
     if (selectedBrand || selectedYear || selectedModel) return;
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return;
-      const data = JSON.parse(raw) as {
-        brand?: string;
-        year?: number;
-        model?: string;
-      };
-      if (data.brand || data.year || data.model) {
-        onChange(data.brand ?? null, data.year ?? null, data.model ?? null);
-      }
-    } catch {}
+    const saved = readBike();
+    if (saved.brand || saved.year || saved.model) {
+      onChange(saved.brand, saved.year, saved.model);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

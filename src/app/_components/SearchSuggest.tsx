@@ -28,6 +28,9 @@ type Props = {
   variant?: Variant;
   /** Append this brand to /shop link on free-text submit (header use). */
   brand?: string;
+  /** Restrict product suggestions to parts fitting this bike. */
+  filterBrand?: string;
+  filterModel?: string;
 };
 
 export function SearchSuggest({
@@ -37,6 +40,8 @@ export function SearchSuggest({
   placeholder = "Search your bike or part...",
   variant = "hero",
   brand,
+  filterBrand,
+  filterModel,
 }: Props) {
   const router = useRouter();
   const [q, setQ] = useState("");
@@ -154,10 +159,25 @@ export function SearchSuggest({
 
   const productSuggestions = useMemo(() => {
     if (mode !== "products") return [];
+    const modelLower = filterModel?.toLowerCase();
+    // Pre-filter to parts that fit the saved bike (if any).
+    const pool = filterBrand
+      ? index.filter((e) => {
+          if (!e.b?.includes(filterBrand)) return false;
+          if (modelLower && !e.m?.includes(modelLower)) return false;
+          return true;
+        })
+      : index;
+
     const term = q.trim().toLowerCase();
-    if (term.length < 2) return [];
+    // With a bike picked we show top parts even before the user types;
+    // without one we still require >=2 chars to keep the dropdown tidy.
+    if (term.length < 2) {
+      if (!filterBrand) return [];
+      return pool.slice(0, 7);
+    }
     const words = term.split(/\s+/);
-    return index
+    return pool
       .map((e) => {
         const hay = (e.t + " " + e.f.join(" ")).toLowerCase();
         const score = scoreHay(hay, words, e.t.toLowerCase());
@@ -167,7 +187,7 @@ export function SearchSuggest({
       .sort((a, b) => b.score - a.score)
       .slice(0, 7)
       .map((x) => x.e);
-  }, [q, index, mode]);
+  }, [q, index, mode, filterBrand, filterModel]);
 
   const totalCount = bikeSuggestions.length + productSuggestions.length;
 
@@ -197,6 +217,8 @@ export function SearchSuggest({
     const params = new URLSearchParams();
     if (q.trim()) params.set("q", q.trim());
     if (brand && brand !== "all") params.set("brand", brand);
+    if (filterBrand) params.set("brand", filterBrand);
+    if (filterModel) params.set("model", filterModel);
     router.push(`/shop?${params.toString()}`);
     setOpen(false);
   }
