@@ -9,10 +9,10 @@ export function Hero() {
   const bikes = getBikeIndex();
   return (
     <section
-      className="relative isolate overflow-hidden border-b border-border"
+      className="relative isolate border-b border-border"
       style={{ aspectRatio: "19 / 10" }}
     >
-      <div className="absolute inset-0 -z-10">
+      <div className="absolute inset-0 -z-10 overflow-hidden">
         <Image
           src="/hero-trails.png"
           alt=""
