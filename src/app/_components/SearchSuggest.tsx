@@ -2,9 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { createPortal } from "react-dom";
 import {
-  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -42,54 +40,12 @@ export function SearchSuggest({
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
-  const [mounted, setMounted] = useState(false);
-  const [pos, setPos] = useState<{
-    top: number;
-    left: number;
-    width: number;
-    maxH: number;
-  } | null>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
-  const formRef = useRef<HTMLFormElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Position the portal-rendered dropdown flush against the input. We render
-  // it through a portal so the Hero's overflow-hidden doesn't clip it, and
-  // we cap max-height to the remaining viewport so it never spills offscreen.
-  const updatePos = useCallback(() => {
-    const el = formRef.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    const margin = 12;
-    const top = r.bottom + 8;
-    const maxH = Math.max(220, window.innerHeight - top - margin);
-    setPos({ top, left: r.left, width: r.width, maxH });
-  }, []);
-
-  useEffect(() => {
-    if (!open) return;
-    updatePos();
-    const onScroll = () => updatePos();
-    const onResize = () => updatePos();
-    window.addEventListener("scroll", onScroll, true);
-    window.addEventListener("resize", onResize);
-    return () => {
-      window.removeEventListener("scroll", onScroll, true);
-      window.removeEventListener("resize", onResize);
-    };
-  }, [open, updatePos]);
 
   useEffect(() => {
     if (!open) return;
     const onDown = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (wrapRef.current?.contains(target)) return;
-      if (dropdownRef.current?.contains(target)) return;
-      setOpen(false);
+      if (!wrapRef.current?.contains(e.target as Node)) setOpen(false);
     };
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
@@ -207,7 +163,6 @@ export function SearchSuggest({
   return (
     <div ref={wrapRef} className={wrapClass}>
       <form
-        ref={formRef}
         role="search"
         action="/shop"
         method="get"
@@ -261,20 +216,13 @@ export function SearchSuggest({
         )}
       </form>
 
-      {showDropdown && mounted && pos &&
-        createPortal(
+      {showDropdown && (
         <div
-          ref={dropdownRef}
-          className="fixed z-[60] flex flex-col overflow-hidden rounded-2xl border border-border bg-bg/95 shadow-2xl backdrop-blur-md"
-          style={{
-            top: pos.top,
-            left: pos.left,
-            width: pos.width,
-            minWidth: isHero ? undefined : 320,
-            maxHeight: pos.maxH,
-          }}
+          className={`absolute left-0 right-0 z-50 mt-2 max-h-[440px] overflow-hidden rounded-2xl border border-border bg-bg/95 shadow-2xl backdrop-blur-md ${
+            isHero ? "" : "min-w-[320px]"
+          }`}
         >
-          <ul className="no-scrollbar flex-1 overflow-y-auto p-1.5">
+          <ul className="no-scrollbar max-h-[400px] overflow-y-auto p-1.5">
             {mode === "bikes" && (
               <>
                 {q.trim().length < 1 && (
@@ -364,8 +312,7 @@ export function SearchSuggest({
                 : "Browse the full catalog →"}
             </button>
           </div>
-        </div>,
-        document.body
+        </div>
       )}
     </div>
   );
