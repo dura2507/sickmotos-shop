@@ -22,11 +22,11 @@ export function BrandMarquee() {
           Parts for
         </span>
       </div>
-      <div className="marquee gap-12 whitespace-nowrap">
+      <div className="marquee marquee-continuous gap-12 whitespace-nowrap pointer-events-none">
         {loop.map((b, i) => (
           <span
             key={`${b}-${i}`}
-            className="font-display text-3xl uppercase tracking-tight text-fg-muted transition-colors hover:text-accent md:text-4xl"
+            className="font-display text-3xl uppercase tracking-tight text-fg-muted md:text-4xl"
           >
             {b}
           </span>
