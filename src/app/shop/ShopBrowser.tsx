@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import {
-  BIKE_BRANDS,
   CATEGORIES,
   type BikeBrand,
   type CardProduct,
@@ -22,57 +21,56 @@ type Props = {
   categoryCounts: Record<string, number>;
   brandCounts: Record<string, number>;
   years: number[];
+  brandList: { name: string; count: number }[];
   modelsByBrand: Record<string, { name: string; count: number }[]>;
   yearsByFit: Record<string, number[]>;
-  initialCategory?: string;
-  initialBrand?: string;
-  initialYear?: number;
-  initialModel?: string;
-  initialSearch?: string;
 };
 
 export function ShopBrowser({
   products,
   categoryCounts,
-  brandCounts,
   years,
+  brandList,
   modelsByBrand,
   yearsByFit,
-  initialCategory,
-  initialBrand,
-  initialYear,
-  initialModel,
-  initialSearch,
 }: Props) {
-  const [search, setSearch] = useState(initialSearch ?? "");
-  const [activeCategories, setActiveCategories] = useState<Set<string>>(
-    () => new Set(initialCategory ? [initialCategory] : [])
-  );
+  // Seed initial state from URL so the first paint already reflects the link
+  // the user clicked. Subsequent navigations are picked up by the effect.
+  const sp = useSearchParams();
+  const [search, setSearch] = useState(() => sp.get("q") ?? "");
+  const [activeCategories, setActiveCategories] = useState<Set<string>>(() => {
+    const c = sp.get("category");
+    return new Set(c ? [c] : []);
+  });
   const [bikeBrand, setBikeBrand] = useState<string | null>(
-    initialBrand ?? null
+    () => sp.get("brand")
   );
-  const [bikeYear, setBikeYear] = useState<number | null>(initialYear ?? null);
-  const [bikeModel, setBikeModel] = useState<string | null>(initialModel ?? null);
+  const [bikeYear, setBikeYear] = useState<number | null>(() => {
+    const y = sp.get("year");
+    const n = y ? parseInt(y, 10) : NaN;
+    return !isNaN(n) ? n : null;
+  });
+  const [bikeModel, setBikeModel] = useState<string | null>(
+    () => sp.get("model")
+  );
   const [onSaleOnly, setOnSaleOnly] = useState(false);
   const [inStockOnly, setInStockOnly] = useState(true);
   const [sort, setSort] = useState<SortKey>("popular");
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  // Keep filter state in sync with the URL. Next.js does NOT remount the page
-  // when only the query string changes, so without this every header link
-  // after the first click would silently do nothing.
-  const searchParams = useSearchParams();
+  // Next does not remount on query-only navigation, so we re-sync state when
+  // the URL changes (header tab, hero picker, brand chip, etc).
   useEffect(() => {
-    const cat = searchParams.get("category");
+    const cat = sp.get("category");
     setActiveCategories(cat ? new Set([cat]) : new Set());
-    setBikeBrand(searchParams.get("brand"));
-    setBikeModel(searchParams.get("model"));
-    const yr = searchParams.get("year");
+    setBikeBrand(sp.get("brand"));
+    setBikeModel(sp.get("model"));
+    const yr = sp.get("year");
     const yrNum = yr ? parseInt(yr, 10) : NaN;
     setBikeYear(!isNaN(yrNum) ? yrNum : null);
-    setSearch(searchParams.get("q") ?? "");
+    setSearch(sp.get("q") ?? "");
     setDrawerOpen(false);
-  }, [searchParams]);
+  }, [sp]);
 
   const filtered = useMemo(() => {
     let list = products;
@@ -141,11 +139,6 @@ export function ShopBrowser({
     (bikeModel ? 1 : 0) +
     (onSaleOnly ? 1 : 0) +
     (search.trim() ? 1 : 0);
-
-  const brandList = (BIKE_BRANDS as readonly string[])
-    .map((name) => ({ name, count: brandCounts[name] ?? 0 }))
-    .filter((b) => b.count > 0)
-    .sort((a, b) => b.count - a.count);
 
   const Filters = (
     <div className="flex flex-col gap-7">

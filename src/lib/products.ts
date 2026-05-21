@@ -433,6 +433,63 @@ export function countByBrand(): Record<string, number> {
 }
 
 // ---------------------------------------------------------------------------
+// Shop data, pre-computed once per server process. The previous code rebuilt
+// every count/model/year map on every request (and getModels re-ran regex per
+// call), which made /shop visibly slow under cold starts. This package is
+// shipped to ShopBrowser as one frozen blob.
+
+export type ShopData = {
+  products: CardProduct[];
+  categoryCounts: Record<Category, number>;
+  brandCounts: Record<string, number>;
+  years: number[];
+  brandList: { name: string; count: number }[];
+  modelsByBrand: Record<string, { name: string; count: number }[]>;
+  yearsByFit: Record<string, number[]>;
+};
+
+let cachedShopData: ShopData | null = null;
+
+export function getShopData(): ShopData {
+  if (cachedShopData) return cachedShopData;
+
+  const products = allProducts.map(toCard);
+  const categoryCounts = countByCategory();
+  const brandCounts = countByBrand();
+  const years = getAllYears();
+
+  const brandList = (BIKE_BRANDS as readonly string[])
+    .map((name) => ({ name, count: brandCounts[name] ?? 0 }))
+    .filter((b) => b.count > 0)
+    .sort((a, b) => b.count - a.count);
+
+  const modelsByBrand: Record<string, { name: string; count: number }[]> = {};
+  const yearsByFit: Record<string, number[]> = {};
+  for (const b of BIKE_BRANDS) {
+    const models = getModelsForBrand(b);
+    if (models.length > 0) modelsByBrand[b] = models;
+    const brandYears = getYearsForFit(b, null);
+    if (brandYears.length > 0) yearsByFit[b] = brandYears;
+    for (const m of models) {
+      const k = `${b}::${m.name}`;
+      const ys = getYearsForFit(b, m.name);
+      if (ys.length > 0) yearsByFit[k] = ys;
+    }
+  }
+
+  cachedShopData = {
+    products,
+    categoryCounts,
+    brandCounts,
+    years,
+    brandList,
+    modelsByBrand,
+    yearsByFit,
+  };
+  return cachedShopData;
+}
+
+// ---------------------------------------------------------------------------
 // Detail-page view model. Keeps the existing component API stable while
 // reading from real Shopify product data.
 
