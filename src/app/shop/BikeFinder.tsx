@@ -142,13 +142,6 @@ export function BikeFinder({
         className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
       >
         <div className="flex items-center gap-4">
-          <span className="grid size-10 place-items-center rounded-full border border-accent/40 bg-accent/10 text-accent">
-            <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth={1.8}>
-              <circle cx="6" cy="18" r="3" />
-              <circle cx="18" cy="18" r="3" />
-              <path d="M9 18h6M6 18l3-9h6l3 9M12 9V6h4" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </span>
           <div className="flex flex-col">
             <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-accent">
               Bike finder

@@ -240,13 +240,6 @@ export function SearchSuggest({
                         active === i ? "bg-accent/10" : "hover:bg-surface"
                       }`}
                     >
-                      <span className="grid size-9 shrink-0 place-items-center rounded-full border border-accent/40 bg-accent/10 text-accent">
-                        <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={1.8}>
-                          <circle cx="6" cy="18" r="3" />
-                          <circle cx="18" cy="18" r="3" />
-                          <path d="M9 18h6M6 18l3-9h6l3 9M12 9V6h4" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </span>
                       <div className="flex min-w-0 flex-1 flex-col">
                         <span className="text-[10px] font-bold uppercase tracking-wider text-fg-dim">
                           {b.brand}
