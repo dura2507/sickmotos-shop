@@ -2,7 +2,9 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { createPortal } from "react-dom";
 import {
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -40,46 +42,82 @@ export function SearchSuggest({
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
-  const [maxH, setMaxH] = useState<number>(440);
-  const [flipUp, setFlipUp] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  // Frozen coords for the portaled dropdown. We snapshot the input position
+  // when the dropdown opens and DON'T update on scroll, so the panel stays
+  // exactly where it appeared instead of bouncing around with the page.
+  const [coords, setCoords] = useState<{
+    top: number;
+    left: number;
+    width: number;
+    maxH: number;
+    flipUp: boolean;
+  } | null>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const openScrollY = useRef(0);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const measure = useCallback(() => {
+    const r = formRef.current?.getBoundingClientRect();
+    if (!r) return null;
+    const margin = 16;
+    const below = window.innerHeight - r.bottom - margin;
+    const above = r.top - margin;
+    const preferred = 440;
+    const shouldFlip = below < 260 && above > below + 40;
+    const available = shouldFlip ? above : below;
+    const maxH = Math.min(preferred, Math.max(180, available));
+    return {
+      top: shouldFlip ? r.top - 8 - maxH : r.bottom + 8,
+      left: r.left,
+      width: r.width,
+      maxH,
+      flipUp: shouldFlip,
+    };
+  }, []);
+
+  // Snapshot position the moment the dropdown opens. Re-measure on resize
+  // (layout actually changed). Close on big scroll so we don't strand a
+  // floating panel above unrelated content.
+  useEffect(() => {
+    if (!open) {
+      setCoords(null);
+      return;
+    }
+    const c = measure();
+    if (c) setCoords(c);
+    openScrollY.current = window.scrollY;
+
+    const onResize = () => {
+      const nc = measure();
+      if (nc) setCoords(nc);
+    };
+    const onScroll = () => {
+      if (Math.abs(window.scrollY - openScrollY.current) > 80) setOpen(false);
+    };
+    window.addEventListener("resize", onResize);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [open, measure]);
 
   useEffect(() => {
     if (!open) return;
     const onDown = (e: MouseEvent) => {
-      if (!wrapRef.current?.contains(e.target as Node)) setOpen(false);
+      const t = e.target as Node;
+      if (wrapRef.current?.contains(t)) return;
+      if (dropdownRef.current?.contains(t)) return;
+      setOpen(false);
     };
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
-  }, [open]);
-
-  // Decide whether to drop down or flip up based on where the input sits in
-  // the viewport, and cap height to the available space so the last rows are
-  // always reachable.
-  useEffect(() => {
-    if (!open) return;
-    const measure = () => {
-      const r = formRef.current?.getBoundingClientRect();
-      if (!r) return;
-      const margin = 16;
-      const below = window.innerHeight - r.bottom - margin;
-      const above = r.top - margin;
-      const preferred = 440;
-      // Flip up only if we're really short below AND there's clearly more
-      // space above. Avoids jitter near the threshold.
-      const shouldFlip = below < 260 && above > below + 40;
-      setFlipUp(shouldFlip);
-      const available = shouldFlip ? above : below;
-      setMaxH(Math.min(preferred, Math.max(180, available)));
-    };
-    measure();
-    window.addEventListener("resize", measure);
-    window.addEventListener("scroll", measure, true);
-    return () => {
-      window.removeEventListener("resize", measure);
-      window.removeEventListener("scroll", measure, true);
-    };
   }, [open]);
 
   // Score a haystack against the query words. Returns null if any word missing.
@@ -248,12 +286,19 @@ export function SearchSuggest({
         )}
       </form>
 
-      {showDropdown && (
+      {showDropdown && mounted && coords &&
+        createPortal(
         <div
-          className={`absolute left-0 right-0 z-50 flex flex-col overflow-hidden rounded-2xl border border-border-strong bg-bg shadow-2xl ring-1 ring-black/40 ${
-            flipUp ? "bottom-full mb-2" : "top-full mt-2"
-          } ${isHero ? "" : "min-w-[320px]"}`}
-          style={{ maxHeight: maxH }}
+          ref={dropdownRef}
+          className={`fixed z-[60] flex flex-col overflow-hidden rounded-2xl border border-border-strong bg-bg shadow-2xl ring-1 ring-black/40 ${
+            isHero ? "" : "min-w-[320px]"
+          }`}
+          style={{
+            top: coords.top,
+            left: coords.left,
+            width: coords.width,
+            maxHeight: coords.maxH,
+          }}
         >
           <ul className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-1.5">
             {mode === "bikes" && (
@@ -345,7 +390,8 @@ export function SearchSuggest({
                 : "Browse the full catalog →"}
             </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
