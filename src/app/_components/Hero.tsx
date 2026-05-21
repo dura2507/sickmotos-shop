@@ -1,12 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getSearchIndex } from "@/lib/products";
+import { getBikeIndex } from "@/lib/products";
 import { SearchSuggest } from "./SearchSuggest";
 
 const quickPicks = ["Beta", "Husqvarna", "KTM", "Aprilia", "Fantic", "Yamaha"];
 
 export function Hero() {
-  const searchIndex = getSearchIndex();
+  const bikes = getBikeIndex();
   return (
     <section
       className="relative isolate overflow-hidden border-b border-border"
@@ -56,8 +56,9 @@ export function Hero() {
           </p>
 
           <SearchSuggest
-            index={searchIndex}
-            placeholder="Search your bike..."
+            bikes={bikes}
+            mode="bikes"
+            placeholder="Search your bike: KTM EXC, Beta RR 125..."
             variant="hero"
           />
 

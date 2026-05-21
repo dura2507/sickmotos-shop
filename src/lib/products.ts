@@ -361,6 +361,36 @@ export function getSearchIndex(): SearchEntry[] {
   });
 }
 
+// Unique bike list across the whole catalog. Used by the hero typeahead
+// so riders can pick their bike and jump to a pre-filtered /shop.
+export type BikeEntry = {
+  brand: string;
+  model: string;   // full string like "Beta RR 125 LC"
+  short: string;   // model without the brand prefix
+  count: number;   // product count
+};
+
+export function getBikeIndex(): BikeEntry[] {
+  const map = new Map<string, BikeEntry>();
+  for (const p of allProducts) {
+    for (const m of getModels(p)) {
+      const brand = BIKE_BRANDS.find((b) =>
+        m.toLowerCase().startsWith(b.toLowerCase() + " ")
+      );
+      if (!brand) continue;
+      const short = m.slice(brand.length + 1);
+      const key = `${brand}::${m}`;
+      const existing = map.get(key);
+      if (existing) {
+        existing.count += 1;
+      } else {
+        map.set(key, { brand, model: m, short, count: 1 });
+      }
+    }
+  }
+  return Array.from(map.values()).sort((a, b) => b.count - a.count);
+}
+
 // Pick top selling — Shopify doesn't expose sales count via products.json,
 // so we pick on-sale items with the deepest discounts as a proxy.
 export function getTopSelling(n = 4): CardProduct[] {

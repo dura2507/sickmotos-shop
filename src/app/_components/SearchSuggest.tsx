@@ -10,23 +10,28 @@ import {
   type FormEvent,
   type KeyboardEvent,
 } from "react";
-import type { SearchEntry } from "@/lib/products";
+import type { BikeEntry, SearchEntry } from "@/lib/products";
 
 const fmt = (n: number) =>
   n.toLocaleString("de-DE", { style: "currency", currency: "EUR" });
 
 type Variant = "hero" | "header";
+type Mode = "products" | "bikes";
 
 type Props = {
-  index: SearchEntry[];
+  index?: SearchEntry[];
+  bikes?: BikeEntry[];
+  mode?: Mode;
   placeholder?: string;
   variant?: Variant;
-  /** Append this brand to /shop link on free-text submit. */
+  /** Append this brand to /shop link on free-text submit (header use). */
   brand?: string;
 };
 
 export function SearchSuggest({
-  index,
+  index = [],
+  bikes = [],
+  mode = "products",
   placeholder = "Search your bike or part...",
   variant = "hero",
   brand,
@@ -37,7 +42,6 @@ export function SearchSuggest({
   const [active, setActive] = useState(-1);
   const wrapRef = useRef<HTMLDivElement>(null);
 
-  // Close on outside click
   useEffect(() => {
     if (!open) return;
     const onDown = (e: MouseEvent) => {
@@ -47,40 +51,79 @@ export function SearchSuggest({
     return () => document.removeEventListener("mousedown", onDown);
   }, [open]);
 
-  const suggestions = useMemo(() => {
+  // Score a haystack against the query words. Returns null if any word missing.
+  function scoreHay(hay: string, words: string[], titleHay: string) {
+    let score = 0;
+    for (const w of words) {
+      if (!hay.includes(w)) return null;
+      if (titleHay.includes(w)) score += 2;
+      else score += 1;
+      if (titleHay.startsWith(w)) score += 3;
+    }
+    return score;
+  }
+
+  const bikeSuggestions = useMemo(() => {
+    if (mode !== "bikes") return [];
+    const term = q.trim().toLowerCase();
+    if (term.length < 1) {
+      // Show top bikes (by product count) as initial picks
+      return bikes.slice(0, 8);
+    }
+    const words = term.split(/\s+/);
+    return bikes
+      .map((b) => {
+        const hay = b.model.toLowerCase();
+        const score = scoreHay(hay, words, hay);
+        return score === null ? null : { b, score: score + Math.log(b.count + 1) };
+      })
+      .filter((x): x is { b: BikeEntry; score: number } => x !== null)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 8)
+      .map((x) => x.b);
+  }, [q, bikes, mode]);
+
+  const productSuggestions = useMemo(() => {
+    if (mode !== "products") return [];
     const term = q.trim().toLowerCase();
     if (term.length < 2) return [];
     const words = term.split(/\s+/);
     return index
       .map((e) => {
         const hay = (e.t + " " + e.f.join(" ")).toLowerCase();
-        let score = 0;
-        for (const w of words) {
-          if (!hay.includes(w)) return null;
-          // Title hits score higher than fits hits
-          if (e.t.toLowerCase().includes(w)) score += 2;
-          else score += 1;
-          // Starts-with bonus
-          if (e.t.toLowerCase().startsWith(w)) score += 3;
-        }
-        return { e, score };
+        const score = scoreHay(hay, words, e.t.toLowerCase());
+        return score === null ? null : { e, score };
       })
       .filter((x): x is { e: SearchEntry; score: number } => x !== null)
       .sort((a, b) => b.score - a.score)
       .slice(0, 7)
       .map((x) => x.e);
-  }, [q, index]);
+  }, [q, index, mode]);
 
-  function go(handle: string) {
+  const totalCount = bikeSuggestions.length + productSuggestions.length;
+
+  function goBike(b: BikeEntry) {
+    setOpen(false);
+    const params = new URLSearchParams({ brand: b.brand, model: b.model });
+    router.push(`/shop?${params.toString()}`);
+  }
+
+  function goProduct(handle: string) {
     setOpen(false);
     router.push(`/products/${handle}`);
   }
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
-    if (active >= 0 && suggestions[active]) {
-      go(suggestions[active].h);
-      return;
+    if (active >= 0) {
+      if (mode === "bikes" && bikeSuggestions[active]) {
+        goBike(bikeSuggestions[active]);
+        return;
+      }
+      if (mode === "products" && productSuggestions[active]) {
+        goProduct(productSuggestions[active].h);
+        return;
+      }
     }
     const params = new URLSearchParams();
     if (q.trim()) params.set("q", q.trim());
@@ -93,7 +136,7 @@ export function SearchSuggest({
     if (!open) return;
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setActive((i) => Math.min(suggestions.length - 1, i + 1));
+      setActive((i) => Math.min(totalCount - 1, i + 1));
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setActive((i) => Math.max(-1, i - 1));
@@ -110,6 +153,12 @@ export function SearchSuggest({
   const wrapClass = isHero
     ? "relative mt-2 w-full max-w-md"
     : "relative flex flex-1 items-center gap-2 rounded-full border border-border-strong bg-surface px-4 transition-colors focus-within:border-accent";
+
+  const showDropdown = open && (
+    bikeSuggestions.length > 0 ||
+    productSuggestions.length > 0 ||
+    (q.trim().length >= 2 && mode === "products")
+  );
 
   return (
     <div ref={wrapRef} className={wrapClass}>
@@ -167,18 +216,59 @@ export function SearchSuggest({
         )}
       </form>
 
-      {open && suggestions.length > 0 && (
+      {showDropdown && (
         <div
-          className={`absolute left-0 right-0 z-50 mt-2 max-h-[420px] overflow-hidden rounded-2xl border border-border bg-bg/95 shadow-2xl backdrop-blur-md ${
+          className={`absolute left-0 right-0 z-50 mt-2 max-h-[440px] overflow-hidden rounded-2xl border border-border bg-bg/95 shadow-2xl backdrop-blur-md ${
             isHero ? "" : "min-w-[320px]"
           }`}
         >
-          <ul className="no-scrollbar max-h-[420px] overflow-y-auto p-1.5">
-            {suggestions.map((s, i) => (
+          <ul className="no-scrollbar max-h-[400px] overflow-y-auto p-1.5">
+            {mode === "bikes" && (
+              <>
+                {q.trim().length < 1 && (
+                  <li className="px-3 pb-1 pt-1 text-[10px] font-bold uppercase tracking-[0.2em] text-fg-dim">
+                    Popular bikes
+                  </li>
+                )}
+                {bikeSuggestions.map((b, i) => (
+                  <li key={`${b.brand}-${b.model}`}>
+                    <button
+                      type="button"
+                      onClick={() => goBike(b)}
+                      onMouseEnter={() => setActive(i)}
+                      className={`group flex w-full items-center gap-3 rounded-xl p-2.5 text-left transition-colors ${
+                        active === i ? "bg-accent/10" : "hover:bg-surface"
+                      }`}
+                    >
+                      <span className="grid size-9 shrink-0 place-items-center rounded-full border border-accent/40 bg-accent/10 text-accent">
+                        <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={1.8}>
+                          <circle cx="6" cy="18" r="3" />
+                          <circle cx="18" cy="18" r="3" />
+                          <path d="M9 18h6M6 18l3-9h6l3 9M12 9V6h4" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </span>
+                      <div className="flex min-w-0 flex-1 flex-col">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-fg-dim">
+                          {b.brand}
+                        </span>
+                        <span className="truncate font-display text-base uppercase tracking-tight text-fg">
+                          {b.short}
+                        </span>
+                      </div>
+                      <span className="shrink-0 text-xs text-fg-dim">
+                        {b.count} {b.count === 1 ? "part" : "parts"}
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </>
+            )}
+
+            {mode === "products" && productSuggestions.map((s, i) => (
               <li key={s.h}>
                 <button
                   type="button"
-                  onClick={() => go(s.h)}
+                  onClick={() => goProduct(s.h)}
                   onMouseEnter={() => setActive(i)}
                   className={`group flex w-full items-center gap-3 rounded-xl p-2 text-left transition-colors ${
                     active === i ? "bg-accent/10" : "hover:bg-surface"
@@ -209,6 +299,12 @@ export function SearchSuggest({
                 </button>
               </li>
             ))}
+
+            {mode === "products" && q.trim().length >= 2 && productSuggestions.length === 0 && (
+              <li className="px-3 py-4 text-center text-xs text-fg-muted">
+                No products match &ldquo;{q}&rdquo;.
+              </li>
+            )}
           </ul>
           <div className="border-t border-border p-1.5">
             <button
@@ -216,22 +312,13 @@ export function SearchSuggest({
               onClick={onSubmit}
               className="block w-full rounded-xl p-2 text-left text-xs font-semibold uppercase tracking-wider text-fg-muted hover:bg-surface hover:text-accent"
             >
-              See all results for &ldquo;{q}&rdquo; →
+              {mode === "bikes"
+                ? "Browse the full catalog →"
+                : q.trim()
+                ? `See all results for "${q}" →`
+                : "Browse the full catalog →"}
             </button>
           </div>
-        </div>
-      )}
-
-      {open && q.trim().length >= 2 && suggestions.length === 0 && (
-        <div className="absolute left-0 right-0 z-50 mt-2 rounded-2xl border border-border bg-bg/95 p-4 text-center text-xs text-fg-muted shadow-2xl backdrop-blur-md">
-          No matches for &ldquo;{q}&rdquo;.{" "}
-          <button
-            type="button"
-            onClick={onSubmit}
-            className="font-semibold text-accent hover:underline"
-          >
-            Search the catalog
-          </button>
         </div>
       )}
     </div>
