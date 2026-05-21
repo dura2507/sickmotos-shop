@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { readBike, subscribeBike, writeBike, type SavedBike } from "@/lib/bikeStore";
 
 const nav = [
   { label: "All Parts", href: "/shop" },
@@ -18,10 +19,19 @@ const brands = ["Beta", "Husqvarna", "KTM", "Aprilia", "Fantic", "Yamaha"];
 export function MobileMenu() {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [bike, setBike] = useState<SavedBike>({ brand: null, model: null, year: null });
 
   useEffect(() => {
     setMounted(true);
+    setBike(readBike());
+    return subscribeBike(setBike);
   }, []);
+
+  const hasBike = !!(bike.brand || bike.model);
+  const shortModel = bike.model && bike.brand
+    ? bike.model.replace(new RegExp(`^${bike.brand}\\s+`, "i"), "")
+    : bike.model;
+  const chipLabel = bike.model ? `${bike.brand} ${shortModel}` : bike.brand ?? "";
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -73,6 +83,39 @@ export function MobileMenu() {
             </div>
 
             <div className="no-scrollbar flex flex-1 flex-col gap-6 overflow-y-auto p-4">
+              {hasBike ? (
+                <div className="flex items-center justify-between gap-3 rounded-2xl border border-accent/40 bg-accent/10 p-3">
+                  <div className="flex min-w-0 flex-col">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-accent/80">
+                      Your bike
+                    </span>
+                    <span className="truncate font-display text-lg uppercase tracking-tight text-fg">
+                      {chipLabel}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => writeBike({ brand: null, model: null, year: null })}
+                    className="shrink-0 rounded-full border border-border-strong px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-fg-muted hover:border-accent hover:text-accent"
+                  >
+                    Clear
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  href="/shop"
+                  onClick={close}
+                  className="flex items-center justify-between gap-3 rounded-2xl border border-border-strong bg-surface/40 p-3 text-sm text-fg-muted hover:border-accent hover:text-accent"
+                >
+                  <span className="font-display text-base uppercase tracking-tight text-fg">
+                    Pick your bike
+                  </span>
+                  <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={1.8}>
+                    <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </Link>
+              )}
+
               <form
                 role="search"
                 action="/shop"
@@ -87,9 +130,11 @@ export function MobileMenu() {
                 <input
                   type="search"
                   name="q"
-                  placeholder="Search your bike or part..."
+                  placeholder={hasBike ? `Parts that fit ${chipLabel}...` : "Search your bike or part..."}
                   className="flex-1 bg-transparent py-2 text-base text-fg placeholder:text-fg-dim focus:outline-none"
                 />
+                {bike.brand && <input type="hidden" name="brand" value={bike.brand} />}
+                {bike.model && <input type="hidden" name="model" value={bike.model} />}
               </form>
 
               <nav>

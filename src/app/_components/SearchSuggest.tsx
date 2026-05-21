@@ -87,8 +87,11 @@ export function SearchSuggest({
   }, []);
 
   // Snapshot position the moment the dropdown opens. Re-measure on resize
-  // (layout actually changed). Close on big scroll so we don't strand a
-  // floating panel above unrelated content.
+  // (layout actually changed) but NOT on scroll, so the panel stays put
+  // visually instead of bouncing along with the page. Click-outside and
+  // Escape close it; we don't auto-close on scroll because mobile browsers
+  // routinely scroll the page when an input gains focus and that would
+  // dismiss the dropdown before the user ever saw it.
   useEffect(() => {
     if (!open) {
       setCoords(null);
@@ -102,14 +105,9 @@ export function SearchSuggest({
       const nc = measure();
       if (nc) setCoords(nc);
     };
-    const onScroll = () => {
-      if (Math.abs(window.scrollY - openScrollY.current) > 80) setOpen(false);
-    };
     window.addEventListener("resize", onResize);
-    window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       window.removeEventListener("resize", onResize);
-      window.removeEventListener("scroll", onScroll);
     };
   }, [open, measure]);
 
