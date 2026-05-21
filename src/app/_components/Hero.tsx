@@ -9,10 +9,10 @@ export function Hero() {
   const bikes = getBikeIndex();
   return (
     <section
-      className="relative isolate border-b border-border"
+      className="relative border-b border-border"
       style={{ aspectRatio: "19 / 10" }}
     >
-      <div className="absolute inset-0 -z-10 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden">
         <Image
           src="/hero-trails.png"
           alt=""
@@ -40,7 +40,7 @@ export function Hero() {
         />
       </div>
 
-      <div className="mx-auto flex h-full min-h-[560px] max-w-7xl flex-col justify-center gap-6 px-4 py-16 md:gap-8 md:px-6 md:py-20">
+      <div className="relative mx-auto flex h-full min-h-[560px] max-w-7xl flex-col justify-center gap-6 px-4 py-16 md:gap-8 md:px-6 md:py-20">
         <div className="flex max-w-2xl flex-col gap-5">
           <h1 className="font-display text-balance text-5xl uppercase leading-[1] tracking-[0.01em] text-zinc-100 sm:text-6xl md:text-7xl">
             <span className="reveal-word" style={{ animationDelay: "0.05s" }}>Ride</span>{" "}

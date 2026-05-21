@@ -40,7 +40,10 @@ export function SearchSuggest({
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
+  const [maxH, setMaxH] = useState<number>(440);
+  const [flipUp, setFlipUp] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -49,6 +52,34 @@ export function SearchSuggest({
     };
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
+  }, [open]);
+
+  // Decide whether to drop down or flip up based on where the input sits in
+  // the viewport, and cap height to the available space so the last rows are
+  // always reachable.
+  useEffect(() => {
+    if (!open) return;
+    const measure = () => {
+      const r = formRef.current?.getBoundingClientRect();
+      if (!r) return;
+      const margin = 16;
+      const below = window.innerHeight - r.bottom - margin;
+      const above = r.top - margin;
+      const preferred = 440;
+      // Flip up only if we're really short below AND there's clearly more
+      // space above. Avoids jitter near the threshold.
+      const shouldFlip = below < 260 && above > below + 40;
+      setFlipUp(shouldFlip);
+      const available = shouldFlip ? above : below;
+      setMaxH(Math.min(preferred, Math.max(180, available)));
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    window.addEventListener("scroll", measure, true);
+    return () => {
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", measure, true);
+    };
   }, [open]);
 
   // Score a haystack against the query words. Returns null if any word missing.
@@ -163,6 +194,7 @@ export function SearchSuggest({
   return (
     <div ref={wrapRef} className={wrapClass}>
       <form
+        ref={formRef}
         role="search"
         action="/shop"
         method="get"
@@ -218,11 +250,12 @@ export function SearchSuggest({
 
       {showDropdown && (
         <div
-          className={`absolute left-0 right-0 z-50 mt-2 max-h-[440px] overflow-hidden rounded-2xl border border-border bg-bg/95 shadow-2xl backdrop-blur-md ${
-            isHero ? "" : "min-w-[320px]"
-          }`}
+          className={`absolute left-0 right-0 z-50 flex flex-col overflow-hidden rounded-2xl border border-border-strong bg-bg shadow-2xl ring-1 ring-black/40 ${
+            flipUp ? "bottom-full mb-2" : "top-full mt-2"
+          } ${isHero ? "" : "min-w-[320px]"}`}
+          style={{ maxHeight: maxH }}
         >
-          <ul className="no-scrollbar max-h-[400px] overflow-y-auto p-1.5">
+          <ul className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-1.5">
             {mode === "bikes" && (
               <>
                 {q.trim().length < 1 && (
