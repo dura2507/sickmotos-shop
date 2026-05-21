@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import {
   BIKE_BRANDS,
   countByBrand,
@@ -49,18 +50,20 @@ export default async function ShopPage({
   }
 
   return (
-    <ShopBrowser
-      products={products}
-      categoryCounts={countByCategory()}
-      brandCounts={countByBrand()}
-      years={getAllYears()}
-      modelsByBrand={modelsByBrand}
-      yearsByFit={yearsByFit}
-      initialCategory={sp.category}
-      initialBrand={sp.brand}
-      initialYear={initialYear && !isNaN(initialYear) ? initialYear : undefined}
-      initialModel={sp.model}
-      initialSearch={sp.q}
-    />
+    <Suspense fallback={null}>
+      <ShopBrowser
+        products={products}
+        categoryCounts={countByCategory()}
+        brandCounts={countByBrand()}
+        years={getAllYears()}
+        modelsByBrand={modelsByBrand}
+        yearsByFit={yearsByFit}
+        initialCategory={sp.category}
+        initialBrand={sp.brand}
+        initialYear={initialYear && !isNaN(initialYear) ? initialYear : undefined}
+        initialModel={sp.model}
+        initialSearch={sp.q}
+      />
+    </Suspense>
   );
 }

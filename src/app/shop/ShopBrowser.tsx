@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import {
   BIKE_BRANDS,
   CATEGORIES,
@@ -56,6 +57,22 @@ export function ShopBrowser({
   const [inStockOnly, setInStockOnly] = useState(true);
   const [sort, setSort] = useState<SortKey>("popular");
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // Keep filter state in sync with the URL. Next.js does NOT remount the page
+  // when only the query string changes, so without this every header link
+  // after the first click would silently do nothing.
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const cat = searchParams.get("category");
+    setActiveCategories(cat ? new Set([cat]) : new Set());
+    setBikeBrand(searchParams.get("brand"));
+    setBikeModel(searchParams.get("model"));
+    const yr = searchParams.get("year");
+    const yrNum = yr ? parseInt(yr, 10) : NaN;
+    setBikeYear(!isNaN(yrNum) ? yrNum : null);
+    setSearch(searchParams.get("q") ?? "");
+    setDrawerOpen(false);
+  }, [searchParams]);
 
   const filtered = useMemo(() => {
     let list = products;
