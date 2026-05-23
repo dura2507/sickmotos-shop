@@ -190,12 +190,12 @@ function cleanModelString(s: string): string {
 }
 
 export function getModels(p: ShopifyProduct): string[] {
+  // Only use tags. The first option's values are product variant labels
+  // (e.g. 'Beta RR 125 LC 2021-2024 Titan Power Bomb EG-ABE') which are
+  // not bike models and pollute the BikeFinder with dozens of fake
+  // entries per brand.
   const models = new Set<string>();
-  const candidates = [
-    ...p.tags,
-    ...(p.options[0]?.values ?? []),
-  ];
-  for (const c of candidates) {
+  for (const c of p.tags) {
     if (!BRAND_RE.test(c)) continue;
     if (c.length > 60) continue;
     const cleaned = cleanModelString(c);

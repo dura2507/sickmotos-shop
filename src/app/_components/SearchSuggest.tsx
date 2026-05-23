@@ -62,6 +62,7 @@ export function SearchSuggest({
   const formRef = useRef<HTMLFormElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const openScrollY = useRef(0);
+  const openAt = useRef(0);
 
   useEffect(() => {
     setMounted(true);
@@ -86,12 +87,11 @@ export function SearchSuggest({
     };
   }, []);
 
-  // Snapshot position the moment the dropdown opens. Re-measure on resize
-  // (layout actually changed) but NOT on scroll, so the panel stays put
-  // visually instead of bouncing along with the page. Click-outside and
-  // Escape close it; we don't auto-close on scroll because mobile browsers
-  // routinely scroll the page when an input gains focus and that would
-  // dismiss the dropdown before the user ever saw it.
+  // Snapshot position the moment the dropdown opens; re-measure on resize.
+  // Close on intentional scroll so the panel doesn't float orphaned over
+  // unrelated content once the input scrolls off. A short grace window
+  // absorbs the mobile browser's automatic scroll-to-focus that fires right
+  // after the input gets focused.
   useEffect(() => {
     if (!open) {
       setCoords(null);
@@ -100,14 +100,21 @@ export function SearchSuggest({
     const c = measure();
     if (c) setCoords(c);
     openScrollY.current = window.scrollY;
+    openAt.current = Date.now();
 
     const onResize = () => {
       const nc = measure();
       if (nc) setCoords(nc);
     };
+    const onScroll = () => {
+      if (Date.now() - openAt.current < 500) return;
+      if (Math.abs(window.scrollY - openScrollY.current) > 80) setOpen(false);
+    };
     window.addEventListener("resize", onResize);
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("scroll", onScroll);
     };
   }, [open, measure]);
 
