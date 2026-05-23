@@ -145,23 +145,39 @@ export function getBikeBrands(p: ShopifyProduct): BikeBrand[] {
 
 // ---------------------------------------------------------------------------
 // Years — extract product-fit years from tags and titles.
+//
+// We deliberately ignore body_html (marketing copy mentions historical
+// years that have nothing to do with bike fit) and standalone year tags
+// like '2008-2013' on cross-compat products (those are the fit ranges
+// for OTHER brand/model combos on the same SKU and would pollute the
+// year row for unrelated models).
 
 const YEAR_RE = /(20[0-2][0-9]|19[89][0-9])/g;
+const RANGE_RE = /(20[0-2][0-9])\s*[-–]\s*(20[0-2][0-9])/g;
+
+function yearsFromString(s: string, into: Set<number>) {
+  for (const m of s.matchAll(YEAR_RE)) {
+    const y = parseInt(m[1], 10);
+    if (y >= 1990 && y <= 2030) into.add(y);
+  }
+  for (const m of s.matchAll(RANGE_RE)) {
+    const a = parseInt(m[1], 10);
+    const b = parseInt(m[2], 10);
+    for (let y = a; y <= b; y++) into.add(y);
+  }
+}
 
 export function getYears(p: ShopifyProduct): number[] {
   const years = new Set<number>();
-  const blob = p.tags.join(" ") + " " + p.title + " " + p.body_html;
-  for (const m of blob.matchAll(YEAR_RE)) {
-    const y = parseInt(m[1], 10);
-    if (y >= 1980 && y <= 2030) years.add(y);
+  // Only year tags that also mention a brand are kept (so a generic
+  // '2008-2013' tag on a cross-compat brake disc doesn't bleed into
+  // every brand's filter). The product title carries explicit fit
+  // ranges and is always considered.
+  for (const t of p.tags) {
+    if (!BRAND_RE.test(t)) continue;
+    yearsFromString(t, years);
   }
-  // expand year ranges like "2021-2024" in titles
-  const rangeRe = /(20[0-2][0-9])\s*[-–]\s*(20[0-2][0-9])/g;
-  for (const m of (p.title + " " + p.tags.join(" ")).matchAll(rangeRe)) {
-    const a = parseInt(m[1], 10);
-    const b = parseInt(m[2], 10);
-    for (let y = a; y <= b; y++) years.add(y);
-  }
+  yearsFromString(p.title, years);
   return Array.from(years).sort((a, b) => a - b);
 }
 
@@ -235,7 +251,6 @@ export function getYearsForFit(
       const productModels = getModels(p).map((m) => m.toLowerCase());
       if (!productModels.includes(modelLower)) continue;
     } else {
-      // No model selected: still require the product to belong to the brand
       const productModels = getModels(p);
       if (
         productModels.length > 0 &&
@@ -246,7 +261,22 @@ export function getYearsForFit(
         continue;
       }
     }
-    for (const y of getYears(p)) years.add(y);
+
+    // Cross-compat products list multiple brands in their tags but only
+    // reference one in the title (e.g. an injector titled "...Yamaha WR
+    // 125 X/R 2009-2016" that's also tagged Beta RR 125 LC). Title-derived
+    // years apply to THIS brand only when the title mentions it; otherwise
+    // they belong to a different brand entirely.
+    for (const t of p.tags) {
+      const tagBrand = BIKE_BRANDS.find((b) =>
+        t.toLowerCase().startsWith(b.toLowerCase() + " ")
+      );
+      if (tagBrand?.toLowerCase() !== brandLower) continue;
+      yearsFromString(t, years);
+    }
+    if (p.title.toLowerCase().includes(brandLower)) {
+      yearsFromString(p.title, years);
+    }
   }
   return Array.from(years).sort((a, b) => a - b);
 }
