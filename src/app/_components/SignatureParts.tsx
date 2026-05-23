@@ -16,17 +16,17 @@ const parts: Part[] = [
     label: "Signature LED",
     title: "Hexagon Angel Eye RGBW",
     pitch:
-      "Plug-and-play E-geprüfte Headlights. Tagfahrlicht, RGB-Ring, kein gebastel an der Original-Verkabelung.",
+      "Plug-and-play, E-approved headlights with daytime running ring and RGB modes. No splicing the OEM loom.",
     href: "/shop?category=LED+Headlights",
     src: "/builds/macro-hexagon-led-red.jpg",
     alt: "Red hexagon angel eye LED headlight installed on bike",
     focal: "object-[50%_45%]",
   },
   {
-    label: "Race-Hardware",
-    title: "Titan-Krümmer Handmade",
+    label: "Race hardware",
+    title: "Titanium Krummer, handmade",
     pitch:
-      "Stundenlang gebogen, mit der Hand geschweißt, hitzeblau angelaufen. Hörbarer Power-Gain für 125 4-Takt.",
+      "Bent by hand, TIG-welded, heat-blued. Audible torque gain on the Beta and Fantic 125 4-stroke.",
     href: "/shop?category=Exhaust",
     src: "/builds/macro-krummer-rainbow.jpg",
     alt: "Handmade titanium exhaust manifold with rainbow heat colors",
@@ -34,9 +34,9 @@ const parts: Part[] = [
   },
   {
     label: "Fuel & ECU",
-    title: "FuelX & ECU-Tuning",
+    title: "FuelX & ECU tuning",
     pitch:
-      "Live Air/Fuel-Anpassung ohne Map-Verlust. Direkt auf den Auspuff abgestimmt. Mehr Drehmoment, sauberer Ansprech.",
+      "Live air-fuel correction without losing the OEM map. Dialed in to match the Krummer for crisper throttle.",
     href: "/shop?category=ECU+Tuning",
     src: "/builds/macro-krummer-fantic-side.jpg",
     alt: "FuelX tuning installed on Fantic bike",
@@ -62,11 +62,11 @@ export function SignatureParts() {
             Signature parts
           </span>
           <h2 className="font-display text-balance text-4xl uppercase leading-[1.05] tracking-tight md:text-5xl">
-            Drei Teile auf die wir uns einen Namen gemacht haben.
+            Three parts that built the SickMotos name.
           </h2>
           <p className="text-sm text-fg-muted md:text-base">
-            Keine Marketing-Specs. Das was wir tagtäglich an Beta- und Fantic-
-             4-Takter dranschrauben und auch selbst fahren.
+            No marketing specs. The exact hardware we bolt to Beta and Fantic
+            125 4-strokes every day, and ride ourselves.
           </p>
         </div>
 
@@ -95,7 +95,7 @@ export function SignatureParts() {
                 </h3>
                 <p className="text-sm text-fg-muted">{p.pitch}</p>
                 <span className="mt-auto inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-accent transition-colors group-hover:text-accent-hi">
-                  Zur Kategorie
+                  Shop the category
                   <svg viewBox="0 0 24 24" className="size-3.5" fill="none" stroke="currentColor" strokeWidth={2.4}>
                     <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>

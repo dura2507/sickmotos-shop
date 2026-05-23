@@ -7,11 +7,11 @@ export function Founder() {
       className="relative isolate overflow-hidden border-b border-border"
     >
       <Image
-        src="/builds/lifestyle-beta-cyan-low.jpg"
+        src="/builds/macro-krummer-rainbow.jpg"
         alt=""
         fill
         sizes="100vw"
-        className="-z-10 object-cover object-[50%_25%] opacity-50"
+        className="-z-10 object-cover object-center opacity-40"
       />
       <div
         aria-hidden

@@ -25,9 +25,9 @@ export function Hero() {
           </h1>
 
           <p className="max-w-xl text-balance text-sm leading-relaxed text-fg-muted md:text-base lg:text-lg">
-            Performance parts for Beta and Fantic 125 4-stroke. Titan-Krümmer,
-            Hexagon-LED, FuelX und ECU-Tuning. Designed, tested and ridden by
-            Thomas Krawietz, Mechatronics Master.
+            Performance parts for Beta and Fantic 125 4-stroke. Titanium
+            manifolds, hexagon LED, FuelX and ECU tuning. Designed, tested and
+            ridden by Thomas Krawietz, Mechatronics Master.
           </p>
 
           <SearchSuggest
