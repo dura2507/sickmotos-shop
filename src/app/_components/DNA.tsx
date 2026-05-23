@@ -13,7 +13,7 @@ export function DNA() {
       />
       <div className="absolute inset-y-0 right-0 hidden w-1/2 md:block">
         <Image
-          src="/sickmotos-rider.png"
+          src="/builds/lifestyle-beta-cyan-front.jpg"
           alt=""
           fill
           sizes="50vw"
@@ -45,7 +45,7 @@ export function DNA() {
         <div className="md:hidden">
           <div className="relative aspect-[4/3] overflow-hidden rounded-lg border border-border">
             <Image
-              src="/sickmotos-rider.png"
+              src="/builds/lifestyle-beta-cyan-front.jpg"
               alt=""
               fill
               sizes="100vw"

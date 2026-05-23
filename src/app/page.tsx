@@ -1,13 +1,16 @@
 import { Hero } from "./_components/Hero";
 import { BikeBrandStrip } from "./_components/BikeBrandStrip";
 import { TrustBar } from "./_components/TrustBar";
+import { FeaturedBuilds } from "./_components/FeaturedBuilds";
 import { Bestsellers } from "./_components/Bestsellers";
+import { SignatureParts } from "./_components/SignatureParts";
 import { ActionBanner } from "./_components/ActionBanner";
 import { LatestArrivals } from "./_components/LatestArrivals";
 import { DNA } from "./_components/DNA";
 import { GraphicsKits } from "./_components/GraphicsKits";
 import { Categories } from "./_components/Categories";
 import { Merchandise } from "./_components/Merchandise";
+import { TestCenter } from "./_components/TestCenter";
 import { Founder } from "./_components/Founder";
 import { Reviews } from "./_components/Reviews";
 import { FAQ } from "./_components/FAQ";
@@ -19,8 +22,10 @@ export default function Home() {
     <>
       <Hero />
       <TrustBar />
+      <FeaturedBuilds />
       <BikeBrandStrip />
       <Bestsellers />
+      <SignatureParts />
       <Spotlight />
       <ActionBanner />
       <LatestArrivals />
@@ -29,6 +34,7 @@ export default function Home() {
       <GraphicsKits />
       <Categories />
       <Merchandise />
+      <TestCenter />
       <Founder />
       <Reviews />
       <FAQ />
