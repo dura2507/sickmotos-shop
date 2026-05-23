@@ -4,7 +4,7 @@ export function TestCenter() {
   return (
     <section className="relative overflow-hidden border-b border-border bg-bg">
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-20 md:grid-cols-[1fr_1.1fr] md:items-center md:gap-14 md:py-24">
-        <div className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-border shadow-2xl ring-1 ring-black/40 md:aspect-[3/4]">
+        <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-border shadow-2xl ring-1 ring-black/40 md:aspect-[3/4]">
           <Image
             src="/builds/build-beta-blue-countryside.jpg"
             alt="SickMotos-tuned Beta RR 125"

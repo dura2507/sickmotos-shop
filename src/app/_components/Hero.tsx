@@ -74,7 +74,7 @@ export function Hero() {
         </div>
 
         <div className="relative">
-          <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl ring-1 ring-black/40 sm:aspect-[4/5] lg:aspect-[3/4]">
+          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl ring-1 ring-black/40 sm:aspect-[4/5] lg:aspect-[3/4]">
             <Image
               src="/builds/hero-beta-cyan-sunset.jpg"
               alt="SickMotos-tuned Beta RR 125 at sunset"

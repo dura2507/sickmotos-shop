@@ -77,7 +77,7 @@ export function SignatureParts() {
               href={p.href}
               className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-surface transition-all duration-300 hover:-translate-y-1 hover:border-accent"
             >
-              <div className="relative aspect-[4/3] w-full overflow-hidden border-b border-border">
+              <div className="relative aspect-[16/9] w-full overflow-hidden border-b border-border sm:aspect-[4/3]">
                 <Image
                   src={p.src}
                   alt={p.alt}

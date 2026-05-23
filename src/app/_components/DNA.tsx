@@ -43,7 +43,7 @@ export function DNA() {
           </p>
         </div>
         <div className="md:hidden">
-          <div className="relative aspect-[4/3] overflow-hidden rounded-lg border border-border">
+          <div className="relative aspect-[16/9] overflow-hidden rounded-lg border border-border">
             <Image
               src="/builds/lifestyle-beta-cyan-front.jpg"
               alt=""

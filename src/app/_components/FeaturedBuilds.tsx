@@ -64,14 +64,14 @@ export function FeaturedBuilds() {
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3 md:gap-5">
+        <div className="grid gap-4 sm:gap-5 md:grid-cols-3">
           {builds.map((b) => (
             <Link
               key={b.model + b.tagline}
               href={b.href}
               className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-surface transition-all duration-300 hover:-translate-y-1 hover:border-accent"
             >
-              <div className="relative aspect-[3/4] w-full overflow-hidden">
+              <div className="relative aspect-[16/10] w-full overflow-hidden md:aspect-[3/4]">
                 <Image
                   src={b.src}
                   alt={b.alt}

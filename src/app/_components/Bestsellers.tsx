@@ -20,7 +20,7 @@ export function Bestsellers() {
           backdropImage={backdrop}
         />
         <BrandPillTabs />
-        <div className="grid gap-5 md:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3">
           {products.map((p) => (
             <Link
               key={p.handle}
