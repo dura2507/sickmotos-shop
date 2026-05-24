@@ -34,14 +34,14 @@ const builds: Build[] = [
     focal: "object-[55%_50%]",
   },
   {
-    brand: "Beta",
-    model: "RR 125 LC",
-    tagline: "Golden hour mood",
-    parts: ["Angel Eye White", "Slick graphics kit", "FuelX map"],
-    href: "/shop?brand=Beta",
-    src: "/builds/lifestyle-beta-cyan-front.jpg",
-    alt: "Rider with Beta RR 125 at sunset",
-    focal: "object-[50%_30%]",
+    brand: "Fantic",
+    model: "XMF 125",
+    tagline: "Wheelie spec",
+    parts: ["Hexagon LED", "Titanium Krummer", "Custom graphics"],
+    href: "/shop?brand=Fantic",
+    src: "/builds/build-fantic-xmf-wheelie.jpg",
+    alt: "Fantic XMF 125 in red with Wheelie graphics",
+    focal: "object-[50%_50%]",
   },
 ];
 
