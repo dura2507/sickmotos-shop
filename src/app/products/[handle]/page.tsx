@@ -58,9 +58,68 @@ export default async function ProductPage({
   const shopify = getProductByHandle(handle);
   if (!shopify) notFound();
   const product = toDetailViewModel(shopify);
+  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.sick-motos.com";
+
+  // Schema.org Product structured data for Google rich results.
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.title,
+    description: product.highlights.join(" ").slice(0, 500),
+    image: product.images.map((i) => i.src),
+    sku: shopify.variants[0]?.sku ?? handle,
+    brand: { "@type": "Brand", name: shopify.vendor || "SickMotos" },
+    offers: product.variants.length > 1 ? {
+      "@type": "AggregateOffer",
+      priceCurrency: "EUR",
+      lowPrice: Math.min(...product.variants.map((v) => v.price)).toFixed(2),
+      highPrice: Math.max(...product.variants.map((v) => v.price)).toFixed(2),
+      offerCount: product.variants.length,
+      availability: product.inStock
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      url: `${base}/products/${handle}`,
+    } : {
+      "@type": "Offer",
+      priceCurrency: "EUR",
+      price: product.basePrice.toFixed(2),
+      availability: product.inStock
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      url: `${base}/products/${handle}`,
+    },
+  };
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: base },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: product.category,
+        item: `${base}/shop?category=${encodeURIComponent(product.category)}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: product.title,
+        item: `${base}/products/${handle}`,
+      },
+    ],
+  };
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
       <div className="border-b border-border bg-bg">
         <nav className="mx-auto flex max-w-7xl items-center gap-2 px-6 py-4 text-xs text-fg-muted">
           <Link href="/" className="hover:text-fg">
