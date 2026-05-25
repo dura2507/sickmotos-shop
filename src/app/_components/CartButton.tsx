@@ -16,9 +16,12 @@ export function CartButton() {
     };
     refresh();
     const unsub = subscribeCart(refresh);
+    const onOpen = () => setOpen(true);
+    window.addEventListener("sickmotos:open-cart", onOpen);
     return () => {
       cancelled = true;
       unsub();
+      window.removeEventListener("sickmotos:open-cart", onOpen);
     };
   }, []);
 

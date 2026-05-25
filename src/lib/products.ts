@@ -548,6 +548,15 @@ export type DetailVariant = {
   available: boolean;
 };
 
+export type DetailVariantFull = {
+  gid: string; // gid://shopify/ProductVariant/N
+  price: number;
+  compareAt: number | null;
+  available: boolean;
+  // option values keyed by lowercased option name -> value
+  options: Record<string, string>;
+};
+
 export type DetailViewModel = {
   handle: string;
   title: string;
@@ -564,6 +573,9 @@ export type DetailViewModel = {
     key: string;
     variants: DetailVariant[];
   }[];
+  // Flat list of every Shopify variant with the gid we need for cart ops.
+  // The selected user options resolve to one of these via key matching.
+  variants: DetailVariantFull[];
   description: string;
   specs: { label: string; value: string }[];
   related: CardProduct[];
@@ -628,6 +640,22 @@ export function toDetailViewModel(p: ShopifyProduct): DetailViewModel {
     .slice(0, 4)
     .map(toCard);
 
+  const optionNames = p.options.map((o) => o.name);
+  const variants: DetailVariantFull[] = p.variants.map((v) => {
+    const options: Record<string, string> = {};
+    optionNames.forEach((name, i) => {
+      const val = i === 0 ? v.option1 : i === 1 ? v.option2 : v.option3;
+      if (val) options[name.toLowerCase().replace(/\s+/g, "-")] = val;
+    });
+    return {
+      gid: `gid://shopify/ProductVariant/${v.id}`,
+      price: parseFloat(v.price ?? "0"),
+      compareAt: v.compare_at_price ? parseFloat(v.compare_at_price) : null,
+      available: v.available,
+      options,
+    };
+  });
+
   return {
     handle: p.handle,
     title: cleanTitle(p.title),
@@ -640,6 +668,7 @@ export function toDetailViewModel(p: ShopifyProduct): DetailViewModel {
     fitOn: p.options[0]?.values ?? [],
     highlights: blocks.slice(0, 4),
     variantGroups,
+    variants,
     description: blocks.join("\n\n"),
     specs: extractSpecsFromHtml(p.body_html, p),
     related,

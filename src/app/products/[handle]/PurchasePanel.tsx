@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { addToCart } from "@/lib/cartStore";
 import type { DetailViewModel } from "@/lib/products";
 
 const fmt = (n: number) =>
@@ -16,6 +17,8 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
     return init;
   });
   const [qty, setQty] = useState(1);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const selectedVariants = useMemo(
     () =>
@@ -25,17 +28,46 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
     [p.variantGroups, variantSel]
   );
 
-  const variantSurcharge = selectedVariants.reduce(
-    (sum, v) => sum + (v.priceModifier ?? 0),
-    0
-  );
+  // Resolve user selection against the flat variant list to find the
+  // Shopify variant GID we need to send to the cart API.
+  const activeVariant = useMemo(() => {
+    if (p.variants.length === 0) return null;
+    if (p.variants.length === 1) return p.variants[0];
+    return (
+      p.variants.find((v) =>
+        Object.entries(variantSel).every(
+          ([key, val]) => v.options[key] === val
+        )
+      ) ?? null
+    );
+  }, [p.variants, variantSel]);
 
-  const unitPrice = p.basePrice + variantSurcharge;
+  const unitPrice = activeVariant?.price ?? p.basePrice;
+  const compareAt = activeVariant?.compareAt ?? p.comparePrice;
   const total = unitPrice * qty;
+  const inStock = activeVariant ? activeVariant.available : p.inStock;
   const discountPct =
-    p.comparePrice && p.comparePrice > p.basePrice
-      ? Math.round((1 - p.basePrice / p.comparePrice) * 100)
+    compareAt && compareAt > unitPrice
+      ? Math.round((1 - unitPrice / compareAt) * 100)
       : null;
+
+  async function handleAddToCart() {
+    if (!activeVariant) {
+      setError("Select a variant first.");
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    try {
+      await addToCart({ merchandiseId: activeVariant.gid, quantity: qty });
+      // Auto-open the cart drawer via a global event the header can listen to.
+      window.dispatchEvent(new CustomEvent("sickmotos:open-cart"));
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -59,14 +91,14 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
           <span className="font-display text-3xl text-fg md:text-4xl">
             {fmt(unitPrice)}
           </span>
-          {p.comparePrice && (
+          {compareAt && compareAt > unitPrice && (
             <span className="text-base text-fg-dim line-through">
-              {fmt(p.comparePrice)}
+              {fmt(compareAt)}
             </span>
           )}
           <span className="text-[11px] text-fg-dim">incl. VAT</span>
         </div>
-        {!p.inStock && (
+        {!inStock && (
           <div className="mt-1 text-xs text-accent">Currently sold out</div>
         )}
       </div>
@@ -135,17 +167,24 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
         </div>
         <button
           type="button"
-          disabled={!p.inStock}
+          disabled={!inStock || busy}
+          onClick={handleAddToCart}
           className="group flex flex-1 items-center justify-between gap-2 rounded-full bg-accent px-5 py-3 text-xs font-bold uppercase tracking-wider text-fg transition-colors hover:bg-accent-hi disabled:cursor-not-allowed disabled:bg-surface-2 disabled:text-fg-dim md:text-sm"
         >
-          <span>{p.inStock ? "Add to cart" : "Sold out"}</span>
-          {p.inStock && (
+          <span>{busy ? "Adding..." : inStock ? "Add to cart" : "Sold out"}</span>
+          {inStock && !busy && (
             <span className="font-display text-sm md:text-base">
               {fmt(total)}
             </span>
           )}
         </button>
       </div>
+
+      {error && (
+        <div className="-mt-3 rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-xs text-accent">
+          {error}
+        </div>
+      )}
 
       <div className="grid grid-cols-2 gap-2 text-[11px] text-fg-muted">
         <span className="flex flex-col items-center gap-1 rounded-lg border border-border bg-surface/40 p-2.5 text-center">
