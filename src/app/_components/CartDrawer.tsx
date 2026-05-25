@@ -23,11 +23,20 @@ type Props = {
   onClose: () => void;
 };
 
+type CrossSellItem = {
+  handle: string;
+  title: string;
+  price: number;
+  compareAt: number | null;
+  image: string;
+};
+
 export function CartDrawer({ open, onClose }: Props) {
   const [cart, setCart] = useState<Cart | null>(null);
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [busyLineId, setBusyLineId] = useState<string | null>(null);
+  const [crossSell, setCrossSell] = useState<CrossSellItem[]>([]);
 
   useEffect(() => setMounted(true), []);
 
@@ -45,6 +54,20 @@ export function CartDrawer({ open, onClose }: Props) {
     refresh();
     return subscribeCart(() => refresh());
   }, [refresh]);
+
+  // Pull cross-sell suggestions when the drawer opens. Exclude handles
+  // already in the cart so we don't propose what's already there.
+  useEffect(() => {
+    if (!open) return;
+    const excludes = (cart?.lines.nodes ?? [])
+      .map((l) => l.merchandise.product.handle)
+      .filter(Boolean);
+    const qs = excludes.map((h) => `exclude=${encodeURIComponent(h)}`).join("&");
+    fetch(`/api/cross-sell?${qs}`)
+      .then((r) => (r.ok ? r.json() : { items: [] }))
+      .then((d) => setCrossSell(d.items ?? []))
+      .catch(() => setCrossSell([]));
+  }, [open, cart]);
 
   // Lock background scroll while open. The drawer has its own scroll.
   useEffect(() => {
@@ -166,6 +189,48 @@ export function CartDrawer({ open, onClose }: Props) {
               >
                 Continue browsing
               </button>
+            </div>
+          )}
+
+          {!isEmpty && crossSell.length > 0 && (
+            <div className="border-t border-border bg-surface/30 px-4 pt-4 pb-2">
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-fg-dim">
+                Add to your order
+              </span>
+              <ul className="mt-3 flex flex-col gap-2">
+                {crossSell.map((cs) => (
+                  <li key={cs.handle}>
+                    <a
+                      href={`/products/${cs.handle}`}
+                      onClick={onClose}
+                      className="group flex items-center gap-3 rounded-lg border border-border bg-bg p-2.5 transition-colors hover:border-accent"
+                    >
+                      <div className="relative size-12 shrink-0 overflow-hidden rounded-md border border-border bg-surface">
+                        {cs.image && (
+                          <Image
+                            src={cs.image}
+                            alt={cs.title}
+                            fill
+                            sizes="48px"
+                            className="object-cover"
+                          />
+                        )}
+                      </div>
+                      <div className="flex min-w-0 flex-1 flex-col">
+                        <span className="line-clamp-2 text-xs text-fg">
+                          {cs.title}
+                        </span>
+                        <span className="mt-0.5 text-[11px] font-semibold text-accent">
+                          {fmt(cs.price.toFixed(2), cart!.cost.subtotalAmount.currencyCode)}
+                        </span>
+                      </div>
+                      <svg viewBox="0 0 24 24" className="size-4 shrink-0 text-fg-muted transition-colors group-hover:text-accent" fill="none" stroke="currentColor" strokeWidth={2}>
+                        <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
 

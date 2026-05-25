@@ -16,12 +16,14 @@ import { Reviews } from "./_components/Reviews";
 import { FAQ } from "./_components/FAQ";
 import { BrandMarquee } from "./_components/BrandMarquee";
 import { Spotlight } from "./_components/Spotlight";
+import { UniqueClaim } from "./_components/UniqueClaim";
 
 export default function Home() {
   return (
     <>
       <Hero />
       <TrustBar />
+      <UniqueClaim />
       <FeaturedBuilds />
       <BikeBrandStrip />
       <Bestsellers />

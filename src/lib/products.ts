@@ -440,12 +440,54 @@ export function getBikeIndex(): BikeEntry[] {
 
 // Pick top selling — Shopify doesn't expose sales count via products.json,
 // so we pick on-sale items with the deepest discounts as a proxy.
-export function getTopSelling(n = 4): CardProduct[] {
-  return allProducts
+// Manual bestseller curation per Thomas: focus on the 4-stroke Titan
+// Krummer (Beta/Fantic/Yamaha) and the Hexagon LED line — his actual
+// unique products. The list lives in src/data/bestsellers.json; if it's
+// empty or its handles don't match any product, we fall back to the
+// 'biggest discount among in-stock products' proxy.
+import bestsellerHandles from "@/data/bestsellers.json";
+
+export function getTopSelling(n = 6): CardProduct[] {
+  const handles = bestsellerHandles as string[];
+  const curated = handles
+    .map((h) => allProducts.find((p) => p.handle === h))
+    .filter((p): p is ShopifyProduct => !!p)
+    .map(toCard);
+  if (curated.length >= n) return curated.slice(0, n);
+
+  const fallback = allProducts
     .filter((p) => isOnSale(p) && isInStock(p))
     .sort((a, b) => (discountPct(b) ?? 0) - (discountPct(a) ?? 0))
-    .slice(0, n)
+    .filter((p) => !curated.some((c) => c.handle === p.handle))
+    .slice(0, n - curated.length)
     .map(toCard);
+
+  return [...curated, ...fallback].slice(0, n);
+}
+
+// Small cross-sell list used by the cart drawer. Picks a handful of
+// universally-useful add-ons (titanium screws, axle sliders, bar ends,
+// graphics kits) that pair with almost any tuning order.
+const CROSS_SELL_TAGS = [
+  "titanschraube",
+  "titanium screw",
+  "axle slider",
+  "bar end",
+  "kettenrad",
+  "razor",
+];
+
+export function getCrossSell(excludeHandles: string[] = [], n = 3): CardProduct[] {
+  const matches = allProducts
+    .filter((p) => !excludeHandles.includes(p.handle))
+    .filter((p) => isInStock(p))
+    .filter((p) => {
+      const hay = (p.title + " " + p.tags.join(" ")).toLowerCase();
+      return CROSS_SELL_TAGS.some((t) => hay.includes(t));
+    });
+  // Stable order: cheapest first so the upsell looks affordable.
+  matches.sort((a, b) => getPrice(a).price - getPrice(b).price);
+  return matches.slice(0, n).map(toCard);
 }
 
 export function getLatestArrivals(n = 8): CardProduct[] {
