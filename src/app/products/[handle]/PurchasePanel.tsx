@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 import { addToCart } from "@/lib/cartStore";
 import type { DetailViewModel } from "@/lib/products";
 
@@ -60,6 +61,10 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
     setError(null);
     try {
       await addToCart({ merchandiseId: activeVariant.gid, quantity: qty });
+      trackEvent("add_to_cart", {
+        props: { product: p.title, handle: p.handle, qty },
+        revenue: { currency: "EUR", amount: unitPrice * qty },
+      });
       // Auto-open the cart drawer via a global event the header can listen to.
       window.dispatchEvent(new CustomEvent("sickmotos:open-cart"));
     } catch (e) {

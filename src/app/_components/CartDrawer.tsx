@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { trackEvent } from "@/lib/analytics";
 import {
   fetchCart,
   removeFromCart,
@@ -266,6 +267,17 @@ export function CartDrawer({ open, onClose }: Props) {
             </p>
             <a
               href={cart!.checkoutUrl}
+              onClick={() =>
+                trackEvent("begin_checkout", {
+                  props: {
+                    items: cart!.totalQuantity,
+                  },
+                  revenue: {
+                    currency: cart!.cost.subtotalAmount.currencyCode,
+                    amount: parseFloat(cart!.cost.subtotalAmount.amount),
+                  },
+                })
+              }
               className="flex h-12 items-center justify-center gap-2 rounded-full bg-accent text-sm font-bold uppercase tracking-wider text-fg transition-colors hover:bg-accent-hi"
             >
               Checkout
