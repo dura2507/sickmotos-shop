@@ -1,29 +1,36 @@
 import Image from "next/image";
 
-const cols = [
+type FooterLink = { label: string; href: string };
+
+const cols: { title: string; links: FooterLink[] }[] = [
   {
     title: "Shop",
     links: [
-      "LED Headlights",
-      "Exhaust",
-      "Carbon Parts",
-      "ECU Tuning",
-      "Merchandise",
-      "Titanium Screws",
+      { label: "Exhaust", href: "/shop?category=Exhaust" },
+      { label: "LED Headlights", href: "/shop?category=LED+Headlights" },
+      { label: "Carbon Parts", href: "/shop?category=Carbon+Parts" },
+      { label: "Graphics", href: "/shop?category=Graphics" },
+      { label: "Merchandise", href: "/shop?category=Merchandise" },
+      { label: "All parts", href: "/shop" },
     ],
   },
   {
     title: "Service",
-    links: ["Shipping", "Returns", "Warranty", "FAQ", "Contact"],
+    links: [
+      { label: "Shipping & delivery", href: "/legal/versand" },
+      { label: "Returns", href: "/legal/widerruf" },
+      { label: "Blog", href: "/blog" },
+      { label: "WhatsApp", href: "https://wa.me/4917634658003" },
+    ],
   },
   {
     title: "Contact",
     links: [
-      "+49 176 34658003",
-      "sickMotos-styles@freenet.de",
-      "Obere Str. 18, 86554 Pöttmes",
-      "Mon-Sat 9-22, Sun 10-18",
-      "@sickmotos_official",
+      { label: "+49 176 34658003", href: "tel:+4917634658003" },
+      { label: "sickMotos-styles@freenet.de", href: "mailto:sickMotos-styles@freenet.de" },
+      { label: "Obere Str. 18, 86554 Pöttmes", href: "https://maps.google.com/?q=Obere+Str.+18,+86554+P%C3%B6ttmes" },
+      { label: "Mon-Sat 9-22, Sun 10-18", href: "#" },
+      { label: "@sickmotos_official", href: "https://instagram.com/sickmotos_official" },
     ],
   },
 ];
@@ -119,12 +126,15 @@ export function Footer() {
               </div>
               <ul className="flex flex-col gap-2">
                 {c.links.map((l) => (
-                  <li key={l}>
+                  <li key={l.label}>
                     <a
-                      href="#"
+                      href={l.href}
                       className="text-sm text-fg-muted transition-colors hover:text-fg"
+                      {...(l.href.startsWith("http") && !l.href.includes("sick-motos.com")
+                        ? { target: "_blank", rel: "noopener noreferrer" }
+                        : {})}
                     >
-                      {l}
+                      {l.label}
                     </a>
                   </li>
                 ))}
