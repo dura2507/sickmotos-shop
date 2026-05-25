@@ -272,7 +272,11 @@ export function BikeFinder({
                 <StepDot done={!!selectedYear} />
                 Year
               </span>
-              {availableYears.length === 0 ? (
+              {!selectedBrand ? (
+                <p className="text-xs text-fg-dim">
+                  Pick a brand first to see compatible years.
+                </p>
+              ) : availableYears.length === 0 ? (
                 <p className="text-xs text-fg-dim">
                   No years available for this selection.
                 </p>
