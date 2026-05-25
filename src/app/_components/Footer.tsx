@@ -140,6 +140,7 @@ export function Footer() {
             <a href="/legal/agb" className="hover:text-fg">AGB</a>
             <a href="/legal/datenschutz" className="hover:text-fg">Datenschutz</a>
             <a href="/legal/widerruf" className="hover:text-fg">Widerruf</a>
+            <a href="/legal/versand" className="hover:text-fg">Versand</a>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             {payments.map((p) => (

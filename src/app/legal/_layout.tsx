@@ -27,3 +27,111 @@ export function LegalLayout({
     </article>
   );
 }
+
+// Very small Markdown-ish renderer for legal text imported from
+// src/data/legal/*.md (the existing Shopify policies). Handles ##
+// headings, "- " bullets, paragraph breaks (blank line), and a few
+// inline links via the link map. Anything else is rendered as plain
+// text paragraphs. Keeps us off any third-party markdown dependency.
+
+type Block =
+  | { type: "h2"; text: string }
+  | { type: "p"; text: string }
+  | { type: "ul"; items: string[] };
+
+function parseBlocks(src: string): Block[] {
+  const lines = src.split(/\r?\n/);
+  const out: Block[] = [];
+  let paragraph: string[] = [];
+  let list: string[] | null = null;
+
+  const flushParagraph = () => {
+    if (paragraph.length) {
+      out.push({ type: "p", text: paragraph.join(" ").trim() });
+      paragraph = [];
+    }
+  };
+  const flushList = () => {
+    if (list && list.length) {
+      out.push({ type: "ul", items: list });
+    }
+    list = null;
+  };
+
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line) {
+      flushParagraph();
+      flushList();
+      continue;
+    }
+    if (line.startsWith("## ")) {
+      flushParagraph();
+      flushList();
+      out.push({ type: "h2", text: line.slice(3).trim() });
+      continue;
+    }
+    if (line.startsWith("- ")) {
+      flushParagraph();
+      if (!list) list = [];
+      list.push(line.slice(2).trim());
+      continue;
+    }
+    flushList();
+    paragraph.push(line);
+  }
+  flushParagraph();
+  flushList();
+  return out;
+}
+
+// Inline email/url -> <a>. Keep the regex tight so we don't mangle
+// numbers or other prose.
+function autoLink(text: string): ReactNode[] {
+  const parts: ReactNode[] = [];
+  const re = /([a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,})|(https?:\/\/[^\s)]+)/gi;
+  let last = 0;
+  let m: RegExpExecArray | null;
+  let key = 0;
+  while ((m = re.exec(text))) {
+    if (m.index > last) parts.push(text.slice(last, m.index));
+    const matched = m[0];
+    if (matched.includes("@")) {
+      parts.push(
+        <a key={key++} href={`mailto:${matched}`}>
+          {matched}
+        </a>
+      );
+    } else {
+      parts.push(
+        <a key={key++} href={matched} target="_blank" rel="noopener noreferrer">
+          {matched}
+        </a>
+      );
+    }
+    last = m.index + matched.length;
+  }
+  if (last < text.length) parts.push(text.slice(last));
+  return parts;
+}
+
+export function LegalText({ source }: { source: string }) {
+  const blocks = parseBlocks(source);
+  return (
+    <>
+      {blocks.map((b, i) => {
+        if (b.type === "h2") return <h2 key={i}>{b.text}</h2>;
+        if (b.type === "ul") {
+          return (
+            <ul key={i}>
+              {b.items.map((it, j) => (
+                <li key={j}>{autoLink(it)}</li>
+              ))}
+            </ul>
+          );
+        }
+        return <p key={i}>{autoLink(b.text)}</p>;
+      })}
+    </>
+  );
+}

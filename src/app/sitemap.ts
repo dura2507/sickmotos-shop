@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/legal/agb`, changeFrequency: "yearly", priority: 0.1 },
     { url: `${BASE}/legal/datenschutz`, changeFrequency: "yearly", priority: 0.1 },
     { url: `${BASE}/legal/widerruf`, changeFrequency: "yearly", priority: 0.1 },
+    { url: `${BASE}/legal/versand`, changeFrequency: "yearly", priority: 0.2 },
   ];
 
   const products: MetadataRoute.Sitemap = allProducts.map((p) => ({

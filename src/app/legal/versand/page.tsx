@@ -3,20 +3,20 @@ import { join } from "node:path";
 import { LegalLayout, LegalText } from "../_layout";
 
 export const metadata = {
-  title: "Datenschutz — SickMotos",
+  title: "Versand — SickMotos",
   robots: { index: true, follow: true },
 };
 
-// Source: src/data/legal/datenschutz.md, mirrored 1:1 from the existing
-// sick-motos.com /policies/privacy-policy.
+// Source: src/data/legal/versand.md, mirrored 1:1 from the existing
+// sick-motos.com /policies/shipping-policy.
 const source = readFileSync(
-  join(process.cwd(), "src/data/legal/datenschutz.md"),
+  join(process.cwd(), "src/data/legal/versand.md"),
   "utf8"
 );
 
-export default function DatenschutzPage() {
+export default function VersandPage() {
   return (
-    <LegalLayout title="Datenschutz" updated="2026-05-25">
+    <LegalLayout title="Versand & Lieferung" updated="2026-05-25">
       <LegalText source={source} />
     </LegalLayout>
   );

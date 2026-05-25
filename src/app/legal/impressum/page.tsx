@@ -5,46 +5,60 @@ export const metadata = {
   robots: { index: true, follow: true },
 };
 
-// Placeholder content. Thomas needs to provide the actual Impressum data
-// for the German § 5 TMG requirement. Replace the marked fields below
-// with his official business details.
+// Content carried over 1:1 from the existing sick-motos.com Shopify
+// shop /policies/legal-notice. If Thomas updates it on the old site,
+// re-paste here.
 
 export default function ImpressumPage() {
   return (
     <LegalLayout title="Impressum" updated="2026-05-25">
       <h2>Angaben gemäß § 5 TMG</h2>
       <p>
-        <strong>SickMotos</strong>
+        <strong>Sickmotos-Styles</strong>
         <br />
-        Thomas Krawietz
+        IVO Scrivano
         <br />
-        {/* TODO: street + number */}
-        Musterstraße 1
+        SICKMOTOS
         <br />
-        {/* TODO: postcode + city */}
-        00000 Musterstadt
+        Obere Str. 18
+        <br />
+        86554 Pöttmes
         <br />
         Deutschland
       </p>
 
+      <h2>Vertreten durch</h2>
+      <p>Priscilla Sebastiani</p>
+
       <h2>Kontakt</h2>
       <p>
-        Telefon: {/* TODO */} +49 000 0000000
+        Telefon: 095 819 5453
+        <br />
+        Fax: 0827658565
         <br />
         E-Mail:{" "}
-        <a href="mailto:info@sick-motos.com">info@sick-motos.com</a>
+        <a href="mailto:SickMotos-styles@freenet.de">
+          SickMotos-styles@freenet.de
+        </a>
+      </p>
+
+      <h2>Registereintrag</h2>
+      <p>
+        Eintragung im Registergericht: Amtsgericht Aichach
+        <br />
+        Registernummer: OIB
       </p>
 
       <h2>Umsatzsteuer-ID</h2>
       <p>
-        Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:
+        Umsatzsteuer-Identifikationsnummer nach §27a Umsatzsteuergesetz:
         <br />
-        {/* TODO */} DE000000000
+        OIB 82202950050
       </p>
 
       <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
       <p>
-        Thomas Krawietz
+        Priscilla Sebastiani
         <br />
         Anschrift wie oben
       </p>
