@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getSearchIndex } from "@/lib/products";
+import { CartButton } from "./CartButton";
 import { MobileMenu } from "./MobileMenu";
 import { HeaderSearch } from "./HeaderSearch";
 
@@ -42,20 +43,7 @@ export function Header() {
               <path d="M4 21c2-4 6-6 8-6s6 2 8 6" strokeLinecap="round" />
             </svg>
           </button>
-          <button
-            type="button"
-            aria-label="Cart"
-            className="relative grid size-9 place-items-center rounded-full border border-border-strong text-fg-muted hover:border-accent hover:text-fg"
-          >
-            <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={1.8}>
-              <path d="M3 5h2l2.5 11h11l2-8H6.5" strokeLinecap="round" strokeLinejoin="round" />
-              <circle cx="9" cy="20" r="1.4" />
-              <circle cx="17" cy="20" r="1.4" />
-            </svg>
-            <span className="absolute -right-1 -top-1 grid size-4 place-items-center rounded-full bg-accent text-[10px] font-bold text-fg">
-              0
-            </span>
-          </button>
+          <CartButton />
           <MobileMenu />
         </div>
       </div>
