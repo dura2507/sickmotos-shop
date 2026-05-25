@@ -33,16 +33,16 @@ export function Header() {
         <HeaderSearch index={searchIndex} />
 
         <div className="ml-auto flex items-center gap-2">
-          <button
-            type="button"
-            aria-label="Account"
-            className="hidden size-9 place-items-center rounded-full border border-border-strong text-fg-muted hover:border-accent hover:text-fg md:grid"
+          <a
+            href="https://sick-motos.com/account"
+            aria-label="My account"
+            className="hidden size-9 place-items-center rounded-full border border-border-strong text-fg-muted transition-colors hover:border-accent hover:text-fg md:grid"
           >
             <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={1.8}>
               <circle cx="12" cy="8" r="4" />
               <path d="M4 21c2-4 6-6 8-6s6 2 8 6" strokeLinecap="round" />
             </svg>
-          </button>
+          </a>
           <CartButton />
           <MobileMenu />
         </div>

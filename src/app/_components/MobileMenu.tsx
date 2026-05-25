@@ -175,10 +175,21 @@ export function MobileMenu() {
               </div>
 
               <a
+                href="https://sick-motos.com/account"
+                onClick={close}
+                className="mt-auto flex items-center justify-center gap-2 rounded-full border border-border-strong py-3 text-sm font-bold uppercase tracking-wider text-fg-muted transition-colors hover:border-accent hover:text-accent"
+              >
+                <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={1.8}>
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M4 21c2-4 6-6 8-6s6 2 8 6" strokeLinecap="round" />
+                </svg>
+                My account / orders
+              </a>
+              <a
                 href="https://wa.me/4917634658003"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-auto flex items-center justify-center gap-2 rounded-full bg-[#25D366] py-3 text-sm font-bold uppercase tracking-wider text-white"
+                className="flex items-center justify-center gap-2 rounded-full bg-[#25D366] py-3 text-sm font-bold uppercase tracking-wider text-white"
               >
                 <svg viewBox="0 0 24 24" className="size-5" fill="currentColor">
                   <path d="M20.5 3.5A11.8 11.8 0 0012 0C5.4 0 0 5.4 0 12c0 2.1.5 4.1 1.6 5.9L0 24l6.3-1.6c1.7.9 3.7 1.4 5.7 1.4 6.6 0 12-5.4 12-12 0-3.2-1.3-6.2-3.5-8.3z" />

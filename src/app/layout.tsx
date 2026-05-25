@@ -12,6 +12,12 @@ import { WhatsAppFloat } from "./_components/WhatsAppFloat";
 // plausible.io (e.g. 'sick-motos.com'). If unset, the script is omitted.
 const PLAUSIBLE_DOMAIN = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
 
+// Google Tag Manager. Set NEXT_PUBLIC_GTM_ID to e.g. 'GTM-XXXXX'. Inside
+// GTM configure GA4 Config tag + GA4 Event tags for view_item,
+// add_to_cart, begin_checkout, plus Google Ads Conversion tag. Lets
+// Thomas swap pixels (Meta, TikTok, Klaviyo) without code changes.
+const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID;
+
 const sans = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
@@ -48,8 +54,27 @@ export default function RootLayout({
             strategy="afterInteractive"
           />
         )}
+        {GTM_ID && (
+          <Script id="gtm-init" strategy="afterInteractive">
+            {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','${GTM_ID}');`}
+          </Script>
+        )}
       </head>
       <body className="min-h-screen bg-bg text-fg flex flex-col">
+        {GTM_ID && (
+          <noscript>
+            <iframe
+              src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+              height="0"
+              width="0"
+              style={{ display: "none", visibility: "hidden" }}
+            />
+          </noscript>
+        )}
         <span aria-hidden className="scroll-progress" />
         <PromoBar />
         <Header />
