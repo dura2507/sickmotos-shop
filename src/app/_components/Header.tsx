@@ -33,8 +33,8 @@ export function Header() {
         <HeaderSearch index={searchIndex} />
 
         <div className="ml-auto flex items-center gap-2">
-          <a
-            href="https://sick-motos.com/account"
+          <Link
+            href="/account"
             aria-label="My account"
             className="hidden size-9 place-items-center rounded-full border border-border-strong text-fg-muted transition-colors hover:border-accent hover:text-fg md:grid"
           >
@@ -42,7 +42,7 @@ export function Header() {
               <circle cx="12" cy="8" r="4" />
               <path d="M4 21c2-4 6-6 8-6s6 2 8 6" strokeLinecap="round" />
             </svg>
-          </a>
+          </Link>
           <CartButton />
           <MobileMenu />
         </div>

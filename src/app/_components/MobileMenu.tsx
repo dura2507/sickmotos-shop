@@ -174,8 +174,8 @@ export function MobileMenu() {
                 </div>
               </div>
 
-              <a
-                href="https://sick-motos.com/account"
+              <Link
+                href="/account"
                 onClick={close}
                 className="mt-auto flex items-center justify-center gap-2 rounded-full border border-border-strong py-3 text-sm font-bold uppercase tracking-wider text-fg-muted transition-colors hover:border-accent hover:text-accent"
               >
@@ -184,7 +184,7 @@ export function MobileMenu() {
                   <path d="M4 21c2-4 6-6 8-6s6 2 8 6" strokeLinecap="round" />
                 </svg>
                 My account / orders
-              </a>
+              </Link>
               <a
                 href="https://wa.me/4917634658003"
                 target="_blank"
