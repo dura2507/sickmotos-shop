@@ -10,7 +10,7 @@ export function Hero() {
   return (
     <section className="relative border-b border-border">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 pb-10 pt-10 md:gap-12 md:px-6 md:pb-16 md:pt-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16 lg:py-20">
-        <div className="flex max-w-2xl flex-col gap-5 lg:gap-7">
+        <div className="flex min-w-0 max-w-2xl flex-col gap-5 lg:gap-7">
           <span className="inline-flex w-fit items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.25em] text-accent">
             <span className="size-1.5 rounded-full bg-accent pulse-accent" />
             Engineered in Germany

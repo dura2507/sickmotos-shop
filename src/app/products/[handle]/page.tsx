@@ -121,7 +121,7 @@ export default async function ProductPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
       <div className="border-b border-border bg-bg">
-        <nav className="mx-auto flex max-w-7xl items-center gap-2 px-6 py-4 text-xs text-fg-muted">
+        <nav className="mx-auto flex max-w-7xl items-center gap-2 px-4 py-4 text-xs text-fg-muted md:px-6">
           <Link href="/" className="hover:text-fg">
             Home
           </Link>
@@ -171,11 +171,11 @@ export default async function ProductPage({
           }}
         />
 
-        <div className="mx-auto grid max-w-7xl gap-10 px-6 md:grid-cols-[1fr_1fr] md:gap-12 lg:grid-cols-[1fr_1.1fr]">
-          <div className="md:max-w-[520px]">
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 md:grid-cols-[1fr_1fr] md:gap-12 md:px-6 lg:grid-cols-[1fr_1.1fr]">
+          <div className="min-w-0 md:max-w-[520px]">
             <Gallery images={product.images} />
           </div>
-          <div className="md:sticky md:top-32 md:self-start">
+          <div className="min-w-0 md:sticky md:top-32 md:self-start">
             <PurchasePanel product={product} />
           </div>
         </div>
