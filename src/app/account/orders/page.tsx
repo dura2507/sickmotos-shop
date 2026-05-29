@@ -1,8 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { customerGql } from "@/lib/customerAccount";
-import { getValidAccessToken } from "@/lib/customerSession";
+import { getCustomer, getCustomerToken } from "@/lib/customerStorefront";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -24,65 +23,13 @@ const fmtDate = (iso: string) =>
     year: "numeric",
   });
 
-type OrdersData = {
-  customer: {
-    orders: {
-      nodes: Array<{
-        id: string;
-        name: string;
-        processedAt: string;
-        financialStatus: string | null;
-        fulfillmentStatus: string | null;
-        totalPrice: { amount: string; currencyCode: string };
-        lineItems: {
-          nodes: Array<{
-            title: string;
-            quantity: number;
-            image: { url: string; altText: string | null } | null;
-          }>;
-        };
-      }>;
-    };
-  };
-};
-
-const ORDERS_QUERY = /* GraphQL */ `
-  query Orders {
-    customer {
-      orders(first: 50, reverse: true) {
-        nodes {
-          id
-          name
-          processedAt
-          financialStatus
-          fulfillmentStatus
-          totalPrice { amount currencyCode }
-          lineItems(first: 5) {
-            nodes {
-              title
-              quantity
-              image { url altText }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
 export default async function OrdersPage() {
-  const token = await getValidAccessToken();
-  if (!token) redirect("/account/login?returnTo=/account/orders");
-
-  let data: OrdersData | null = null;
-  let errorMessage: string | null = null;
-  try {
-    data = await customerGql<OrdersData>(token, ORDERS_QUERY);
-  } catch (e) {
-    errorMessage = (e as Error).message;
+  if (!(await getCustomerToken())) {
+    redirect("/account/login?returnTo=/account/orders");
   }
 
-  const orders = data?.customer?.orders?.nodes ?? [];
+  const customer = await getCustomer();
+  const orders = customer?.orders.nodes ?? [];
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-12 md:py-20">
@@ -99,12 +46,6 @@ export default async function OrdersPage() {
       <h1 className="font-display text-4xl uppercase tracking-tight md:text-5xl">
         All orders
       </h1>
-
-      {errorMessage && (
-        <p className="mt-6 rounded-lg border border-accent/40 bg-accent/10 p-3 text-xs text-accent">
-          {errorMessage}
-        </p>
-      )}
 
       {orders.length === 0 ? (
         <div className="mt-10 rounded-2xl border border-border bg-surface/40 p-10 text-center">
@@ -129,10 +70,10 @@ export default async function OrdersPage() {
                     className="relative size-12 shrink-0 overflow-hidden rounded border border-border bg-surface"
                     title={li.title}
                   >
-                    {li.image && (
+                    {li.variant?.image && (
                       <Image
-                        src={li.image.url}
-                        alt={li.image.altText ?? li.title}
+                        src={li.variant.image.url}
+                        alt={li.variant.image.altText ?? li.title}
                         fill
                         sizes="48px"
                         className="object-cover"

@@ -1,12 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import {
-  CUSTOMER_OVERVIEW_QUERY,
-  customerGql,
-  type CustomerOverview,
-} from "@/lib/customerAccount";
-import { getValidAccessToken } from "@/lib/customerSession";
+import { getCustomer, getCustomerToken } from "@/lib/customerStorefront";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -29,26 +24,18 @@ const fmtDate = (iso: string) =>
   });
 
 export default async function AccountPage() {
-  const token = await getValidAccessToken();
-  if (!token) redirect("/account/login");
+  if (!(await getCustomerToken())) redirect("/account/login");
 
-  let data: CustomerOverview | null = null;
-  let errorMessage: string | null = null;
-  try {
-    data = await customerGql<CustomerOverview>(token, CUSTOMER_OVERVIEW_QUERY);
-  } catch (e) {
-    errorMessage = (e as Error).message;
-  }
+  const customer = await getCustomer();
 
-  if (!data?.customer) {
+  if (!customer) {
     return (
       <div className="mx-auto max-w-3xl px-6 py-16 md:py-24">
         <h1 className="font-display text-4xl uppercase tracking-tight">
           My account
         </h1>
         <p className="mt-4 text-sm text-fg-muted">
-          We could not load your account.{" "}
-          {errorMessage ? <code className="text-xs">{errorMessage}</code> : null}
+          Your session has expired. Please sign in again.
         </p>
         <Link
           href="/account/logout"
@@ -60,9 +47,9 @@ export default async function AccountPage() {
     );
   }
 
-  const c = data.customer;
+  const c = customer;
   const fullName = [c.firstName, c.lastName].filter(Boolean).join(" ").trim();
-  const greeting = fullName || c.emailAddress?.emailAddress || "Welcome back";
+  const greeting = fullName || c.email || "Welcome back";
   const recent = c.orders.nodes;
 
   return (
@@ -75,10 +62,8 @@ export default async function AccountPage() {
           <h1 className="mt-2 font-display text-4xl uppercase tracking-tight md:text-5xl">
             Hi, {greeting}.
           </h1>
-          {c.emailAddress?.emailAddress && (
-            <p className="mt-2 text-sm text-fg-muted">
-              {c.emailAddress.emailAddress}
-            </p>
+          {c.email && (
+            <p className="mt-2 text-sm text-fg-muted">{c.email}</p>
           )}
         </div>
         <Link
@@ -134,10 +119,10 @@ export default async function AccountPage() {
                         className="relative size-10 shrink-0 overflow-hidden rounded border border-border bg-surface"
                         title={li.title}
                       >
-                        {li.image && (
+                        {li.variant?.image && (
                           <Image
-                            src={li.image.url}
-                            alt={li.image.altText ?? li.title}
+                            src={li.variant.image.url}
+                            alt={li.variant.image.altText ?? li.title}
                             fill
                             sizes="40px"
                             className="object-cover"
