@@ -200,7 +200,7 @@ export function ShopBrowser({
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-6 py-10 md:py-14">
+    <div className="mx-auto max-w-7xl px-4 py-10 md:px-6 md:py-14">
       <div className="mb-8 flex flex-col gap-4">
         <h1 className="font-display text-4xl uppercase tracking-tight md:text-5xl">
           Shop the catalog
@@ -225,9 +225,9 @@ export function ShopBrowser({
         }}
       />
 
-      <div className="mb-6 flex flex-wrap items-center gap-3">
-        <div className="flex flex-1 min-w-[220px] items-center gap-2 rounded-full border border-border-strong bg-surface px-4 focus-within:border-accent">
-          <svg viewBox="0 0 24 24" className="size-4 text-fg-muted" fill="none" stroke="currentColor" strokeWidth={2}>
+      <div className="mb-6 flex flex-col gap-3 md:flex-row md:flex-wrap md:items-center">
+        <div className="flex items-center gap-2 rounded-full border border-border-strong bg-surface px-4 focus-within:border-accent md:flex-1 md:min-w-[220px]">
+          <svg viewBox="0 0 24 24" className="size-4 shrink-0 text-fg-muted" fill="none" stroke="currentColor" strokeWidth={2}>
             <circle cx="11" cy="11" r="7" />
             <path d="M21 21l-4.3-4.3" strokeLinecap="round" />
           </svg>
@@ -236,39 +236,41 @@ export function ShopBrowser({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by part or bike..."
-            className="flex-1 bg-transparent py-2.5 text-sm text-fg placeholder:text-fg-dim focus:outline-none"
+            className="min-w-0 flex-1 bg-transparent py-2.5 text-sm text-fg placeholder:text-fg-dim focus:outline-none"
           />
         </div>
 
-        <CustomSelect
-          value={sort}
-          onChange={(v) => setSort(v as SortKey)}
-          label="Sort:"
-          ariaLabel="Sort products"
-          triggerClassName="min-w-[220px]"
-          options={[
-            { value: "popular", label: "Relevance" },
-            { value: "price-asc", label: "Price: low to high" },
-            { value: "price-desc", label: "Price: high to low" },
-            { value: "discount", label: "Biggest discount" },
-          ]}
-        />
+        <div className="flex items-center gap-3">
+          <CustomSelect
+            value={sort}
+            onChange={(v) => setSort(v as SortKey)}
+            label="Sort:"
+            ariaLabel="Sort products"
+            className="flex-1 md:flex-none md:min-w-[220px]"
+            options={[
+              { value: "popular", label: "Relevance" },
+              { value: "price-asc", label: "Price: low to high" },
+              { value: "price-desc", label: "Price: high to low" },
+              { value: "discount", label: "Biggest discount" },
+            ]}
+          />
 
-        <button
-          type="button"
-          onClick={() => setDrawerOpen(true)}
-          className="flex items-center gap-2 rounded-full border border-border-strong bg-surface px-4 py-2.5 text-sm font-semibold text-fg md:hidden"
-        >
-          <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={2}>
-            <path d="M4 6h16M7 12h10M10 18h4" strokeLinecap="round" />
-          </svg>
-          Filters
-          {activeFilterCount > 0 && (
-            <span className="grid size-5 place-items-center rounded-full bg-accent text-[10px] font-bold text-fg">
-              {activeFilterCount}
-            </span>
-          )}
-        </button>
+          <button
+            type="button"
+            onClick={() => setDrawerOpen(true)}
+            className="flex shrink-0 items-center gap-2 rounded-full border border-border-strong bg-surface px-4 py-2.5 text-sm font-semibold text-fg md:hidden"
+          >
+            <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path d="M4 6h16M7 12h10M10 18h4" strokeLinecap="round" />
+            </svg>
+            Filters
+            {activeFilterCount > 0 && (
+              <span className="grid size-5 place-items-center rounded-full bg-accent text-[10px] font-bold text-fg">
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
+        </div>
       </div>
 
       <div className="grid gap-10 md:grid-cols-[220px_1fr] md:gap-8 lg:grid-cols-[260px_1fr]">
@@ -338,7 +340,7 @@ export function ShopBrowser({
               No products match these filters.
             </div>
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
               {filtered.map((p) => (
                 <Link
                   key={p.handle}
