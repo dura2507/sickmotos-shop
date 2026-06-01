@@ -17,11 +17,13 @@ import { FAQ } from "./_components/FAQ";
 import { BrandMarquee } from "./_components/BrandMarquee";
 import { Spotlight } from "./_components/Spotlight";
 import { UniqueClaim } from "./_components/UniqueClaim";
+import { SloganBanner } from "./_components/SloganBanner";
 
 export default function Home() {
   return (
     <>
       <Hero />
+      <SloganBanner />
       <TrustBar />
       <UniqueClaim />
       <FeaturedBuilds />

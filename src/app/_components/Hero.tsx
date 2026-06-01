@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { getBikeIndex } from "@/lib/products";
 import { SearchSuggest } from "./SearchSuggest";
-import { RotatingSlogan } from "./RotatingSlogan";
 
 const quickPicks = ["Beta", "Husqvarna", "KTM", "Aprilia", "Fantic", "Yamaha"];
 
@@ -24,8 +23,6 @@ export function Hero() {
             <span className="reveal-word italic text-accent/85" style={{ animationDelay: "0.45s" }}>Ride</span>{" "}
             <span className="reveal-word italic text-accent/85" style={{ animationDelay: "0.6s" }}>free.</span>
           </h1>
-
-          <RotatingSlogan />
 
           <p className="max-w-xl text-balance text-sm leading-relaxed text-fg-muted md:text-base lg:text-lg">
             Performance parts for Beta and Fantic 125 4-stroke. Titanium
