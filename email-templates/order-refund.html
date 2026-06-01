@@ -1,0 +1,75 @@
+{% comment %}
+  SickMotos branded ORDER REFUND email.
+  Paste into: Shopify Admin -> Settings -> Notifications -> Order refund
+  -> Edit code -> replace the whole "Email body (HTML)".
+{% endcomment %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light only">
+  <meta name="supported-color-schemes" content="light">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <title>{{ shop.name }}</title>
+</head>
+<body style="margin:0;padding:0;background:#ebebeb;-webkit-text-size-adjust:100%;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ebebeb;">
+    <tr>
+      <td align="center" style="padding:24px 12px;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:600px;background:#ffffff;border-radius:14px;overflow:hidden;">
+
+          <tr>
+            <td align="center" style="background:#0a0a0a;padding:28px 24px;">
+              {% if shop.email_logo_url %}
+                <img src="{{ shop.email_logo_url }}" alt="{{ shop.name }}" width="150" style="display:block;border:0;width:150px;max-width:60%;height:auto;">
+              {% else %}
+                <span style="font-family:'Oswald',Arial,sans-serif;font-size:30px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#ffffff;">{{ shop.name }}</span>
+              {% endif %}
+            </td>
+          </tr>
+          <tr><td style="height:4px;background:#e10600;line-height:4px;font-size:0;">&nbsp;</td></tr>
+
+          <tr>
+            <td style="padding:36px 36px 8px 36px;">
+              <h1 style="margin:0;font-family:'Oswald','Arial Narrow',Helvetica,Arial,sans-serif;font-size:30px;line-height:1.1;font-weight:700;letter-spacing:.02em;text-transform:uppercase;color:#18181b;">Refund issued</h1>
+              <p style="margin:14px 0 0 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#3f3f46;">
+                Hi{% if customer.first_name %} {{ customer.first_name }}{% endif %}, we have refunded your order <strong style="color:#18181b;">{{ order_name }}</strong>. The amount goes back to your original payment method and can take a few business days to appear.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Refund amount box -->
+          <tr>
+            <td style="padding:24px 36px 8px 36px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;border-radius:10px;">
+                <tr>
+                  <td style="padding:18px 22px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+                    <span style="display:block;font-family:'Oswald',Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#71717a;">Amount refunded</span>
+                    <span style="display:block;font-family:'Oswald',Arial,sans-serif;font-size:26px;font-weight:700;color:#e10600;margin-top:4px;">{{ amount | money_with_currency }}</span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr><td style="padding:30px 36px 0 36px;"><div style="border-top:1px solid #e5e7eb;font-size:0;line-height:0;">&nbsp;</div></td></tr>
+          <tr>
+            <td style="padding:18px 36px 36px 36px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+              <p style="margin:0 0 6px 0;font-size:13px;color:#52525b;">Questions about your refund? We are one message away.</p>
+              <p style="margin:0 0 14px 0;">
+                <a href="https://wa.me/4917634658003" style="color:#e10600;text-decoration:none;font-weight:600;font-size:13px;">Chat on WhatsApp</a>
+                <span style="color:#d4d4d8;">&nbsp;|&nbsp;</span>
+                <a href="mailto:{{ shop.email }}" style="color:#e10600;text-decoration:none;font-weight:600;font-size:13px;">Email us</a>
+              </p>
+              <p style="margin:0;font-size:11px;line-height:1.6;color:#a1a1aa;">{{ shop.name }} &middot; Engineered in Germany</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

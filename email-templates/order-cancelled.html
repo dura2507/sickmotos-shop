@@ -1,0 +1,101 @@
+{% comment %}
+  SickMotos branded ORDER CANCELED email.
+  Paste into: Shopify Admin -> Settings -> Notifications -> Order canceled
+  -> Edit code -> replace the whole "Email body (HTML)".
+{% endcomment %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light only">
+  <meta name="supported-color-schemes" content="light">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <title>{{ shop.name }}</title>
+</head>
+<body style="margin:0;padding:0;background:#ebebeb;-webkit-text-size-adjust:100%;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ebebeb;">
+    <tr>
+      <td align="center" style="padding:24px 12px;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:600px;background:#ffffff;border-radius:14px;overflow:hidden;">
+
+          <tr>
+            <td align="center" style="background:#0a0a0a;padding:28px 24px;">
+              {% if shop.email_logo_url %}
+                <img src="{{ shop.email_logo_url }}" alt="{{ shop.name }}" width="150" style="display:block;border:0;width:150px;max-width:60%;height:auto;">
+              {% else %}
+                <span style="font-family:'Oswald',Arial,sans-serif;font-size:30px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#ffffff;">{{ shop.name }}</span>
+              {% endif %}
+            </td>
+          </tr>
+          <tr><td style="height:4px;background:#e10600;line-height:4px;font-size:0;">&nbsp;</td></tr>
+
+          <tr>
+            <td style="padding:36px 36px 8px 36px;">
+              <h1 style="margin:0;font-family:'Oswald','Arial Narrow',Helvetica,Arial,sans-serif;font-size:30px;line-height:1.1;font-weight:700;letter-spacing:.02em;text-transform:uppercase;color:#18181b;">Order canceled</h1>
+              <p style="margin:14px 0 0 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#3f3f46;">
+                Hi{% if customer.first_name %} {{ customer.first_name }}{% endif %}, your order <strong style="color:#18181b;">{{ order_name }}</strong> has been canceled.{% if financial_status == 'refunded' or financial_status == 'voided' %} If you were charged, a refund is on its way to your original payment method.{% endif %}
+              </p>
+            </td>
+          </tr>
+
+          <!-- Items -->
+          <tr>
+            <td style="padding:28px 36px 0 36px;">
+              <p style="margin:0 0 12px 0;font-family:'Oswald',Arial,sans-serif;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#71717a;">Canceled items</p>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                {% for line in subtotal_line_items %}
+                <tr>
+                  <td width="64" valign="top" style="padding:10px 0;">
+                    {% if line.image %}
+                      <img src="{{ line | img_url: 'compact_cropped' }}" alt="{{ line.title | escape }}" width="56" style="display:block;border:1px solid #e5e7eb;border-radius:8px;width:56px;height:56px;object-fit:cover;">
+                    {% endif %}
+                  </td>
+                  <td valign="top" style="padding:10px 0 10px 14px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+                    <span style="display:block;font-size:14px;font-weight:600;color:#18181b;">{{ line.title }}</span>
+                    {% if line.variant.title and line.variant.title != 'Default Title' %}
+                      <span style="display:block;font-size:12px;color:#71717a;">{{ line.variant.title }}</span>
+                    {% endif %}
+                    <span style="display:block;font-size:12px;color:#71717a;">Qty {{ line.quantity }}</span>
+                  </td>
+                  <td valign="top" align="right" style="padding:10px 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#18181b;white-space:nowrap;">
+                    {{ line.final_line_price | money }}
+                  </td>
+                </tr>
+                {% endfor %}
+              </table>
+            </td>
+          </tr>
+
+          <!-- Total -->
+          <tr>
+            <td style="padding:18px 36px 0 36px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #e5e7eb;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+                <tr>
+                  <td style="padding:14px 0 0 0;font-family:'Oswald',Arial,sans-serif;font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#18181b;">Order total</td>
+                  <td align="right" style="padding:14px 0 0 0;font-family:'Oswald',Arial,sans-serif;font-size:18px;font-weight:700;color:#e10600;">{{ total_price | money }}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr><td style="padding:30px 36px 0 36px;"><div style="border-top:1px solid #e5e7eb;font-size:0;line-height:0;">&nbsp;</div></td></tr>
+          <tr>
+            <td style="padding:18px 36px 36px 36px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+              <p style="margin:0 0 6px 0;font-size:13px;color:#52525b;">Changed your mind or canceled by mistake? We are one message away.</p>
+              <p style="margin:0 0 14px 0;">
+                <a href="https://wa.me/4917634658003" style="color:#e10600;text-decoration:none;font-weight:600;font-size:13px;">Chat on WhatsApp</a>
+                <span style="color:#d4d4d8;">&nbsp;|&nbsp;</span>
+                <a href="mailto:{{ shop.email }}" style="color:#e10600;text-decoration:none;font-weight:600;font-size:13px;">Email us</a>
+              </p>
+              <p style="margin:0;font-size:11px;line-height:1.6;color:#a1a1aa;">{{ shop.name }} &middot; Engineered in Germany</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
