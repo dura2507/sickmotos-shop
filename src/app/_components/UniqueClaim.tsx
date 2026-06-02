@@ -12,11 +12,11 @@ const points = [
   },
   {
     label: "Hexagon Angel Eye",
-    text: "RGBW colour ring or hexagon, controlled by app. All-white daytime low beam, all-white high beam, plus a stealth mode to hide it via the app.",
+    text: "RGBW colour ring or hexagon via app control. All-white daytime low beam, all-white night-ride high beam, plus a stealth mode to hide it via the app.",
   },
   {
     label: "FuelX & ECU tuning",
-    text: "Crisper throttle response and longer engine life from a dialed-in air-fuel mixture — tuned away from lean E5 and E5+ fuel.",
+    text: "Crisper throttle response and maximum engine life from a perfect air-fuel mixture. Give your engine what it deserves, away from lean E5 and E5+ fuel.",
   },
 ];
 
