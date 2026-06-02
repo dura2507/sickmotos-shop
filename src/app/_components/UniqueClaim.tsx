@@ -3,18 +3,20 @@
 // Fantic und Yamaha." Lift that as a small but loud claim block right
 // after the Hero, before the Featured Builds and Bestsellers.
 
+// Card copy from Thomas (Telegram 2026-06-01), placed on the feature-card
+// section he referenced. NOTE: no LED legality / E-marking wording (his rule).
 const points = [
   {
-    label: "Worldwide exclusive",
-    text: "4-stroke Titanium Krummer for Beta, Fantic and Yamaha 125 — built and TIG-welded by Thomas himself, available nowhere else.",
+    label: "Exhaust systems",
+    text: "2- and 4-stroke titanium exhaust headers and pipes, built and TIG-welded in-house for Beta, Fantic and Yamaha. Available nowhere else.",
   },
   {
     label: "Hexagon Angel Eye",
-    text: "Plug-and-play LED hexagon headlights with daytime running ring, E-approved and engineered specifically for current-gen Beta and Sherco frames.",
+    text: "RGBW colour ring or hexagon, controlled by app. All-white daytime low beam, all-white high beam, plus a stealth mode to hide it via the app.",
   },
   {
     label: "FuelX & ECU tuning",
-    text: "Live air-fuel correction matched to our Krummer. Crisper throttle, no map loss, fully reversible.",
+    text: "Crisper throttle response and longer engine life from a dialed-in air-fuel mixture — tuned away from lean E5 and E5+ fuel.",
   },
 ];
 

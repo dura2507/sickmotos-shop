@@ -49,9 +49,8 @@ export function Hero() {
         />
 
         <p className="max-w-xl text-balance text-sm leading-relaxed text-zinc-200 md:text-base lg:text-lg">
-          Premium brakes, angel eyes, exhaust systems and custom parts for the
-          supermoto universe. Designed, tested and ridden by Thomas Krawietz,
-          Mechatronics Master.
+          Performance parts for the supermoto universe. 2- and 4-stroke, 50 to
+          700 ccm — KTM, Husqvarna, Beta, Fantic, Sherco and many more.
         </p>
 
         <div className="flex flex-wrap items-center gap-3">
