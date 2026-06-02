@@ -45,7 +45,7 @@ export function Hero() {
         <img
           src="/brand/ride-in-style.svg"
           alt="Ride in style. Faster than others."
-          className="reveal-soft w-full max-w-[300px] drop-shadow-[0_8px_30px_rgba(0,0,0,0.6)] sm:max-w-[400px] md:max-w-[480px]"
+          className="reveal-soft w-full max-w-[230px] drop-shadow-[0_8px_30px_rgba(0,0,0,0.6)] sm:max-w-[310px] md:max-w-[370px]"
         />
 
         <p className="max-w-xl text-balance text-sm leading-relaxed text-zinc-200 md:text-base lg:text-lg">
