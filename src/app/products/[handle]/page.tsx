@@ -5,6 +5,7 @@ import { Gallery } from "./Gallery";
 import { PurchasePanel } from "./PurchasePanel";
 import { InfoTabs } from "./InfoTabs";
 import { Related } from "./Related";
+import { AddOns } from "./AddOns";
 import {
   cleanTitle,
   getPrice,
@@ -177,6 +178,7 @@ export default async function ProductPage({
           </div>
           <div className="min-w-0 md:sticky md:top-32 md:self-start">
             <PurchasePanel product={product} />
+            <AddOns items={product.related} />
           </div>
         </div>
       </section>
