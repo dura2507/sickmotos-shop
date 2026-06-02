@@ -49,8 +49,10 @@ export function Hero() {
         />
 
         <p className="max-w-xl text-balance text-sm leading-relaxed text-zinc-200 md:text-base lg:text-lg">
-          Performance parts for the supermoto universe. 2- and 4-stroke, 50 to
-          700 ccm — KTM, Husqvarna, Beta, Fantic, Sherco and many more.
+          Performance parts for the supermoto universe — 2- and 4-stroke, 50 to
+          700 ccm, for KTM, Husqvarna, Beta, Fantic, Sherco and many more.
+          Titanium exhaust systems, LED headlights, ECU tuning and engine hard
+          parts, carefully developed and improved to perfection.
         </p>
 
         <div className="flex flex-wrap items-center gap-3">

@@ -35,26 +35,12 @@ export function DNA() {
             Made in Germany
           </span>
           <h2 className="font-display text-balance text-4xl uppercase leading-[1.05] tracking-tight md:text-5xl">
-            Performance parts for the supermoto universe.
+            Every SickMotos product carries the DNA of decades of passion and
+            relentless refinement.
           </h2>
           <p className="max-w-md text-base leading-relaxed text-fg-muted">
-            2- and 4-stroke, 50 to 700 ccm. KTM, Husqvarna, Beta, Fantic,
-            Sherco and many more. Carefully developed and improved to
-            perfection.
+            Designed to inspire. Built to last. Tested where it counts.
           </p>
-          <ul className="grid max-w-md grid-cols-1 gap-x-6 gap-y-2.5 text-sm sm:grid-cols-2">
-            {[
-              "Titanium exhaust systems",
-              "LED headlights",
-              "ECU tuning & electronics",
-              "Engine tuning hard parts",
-            ].map((item) => (
-              <li key={item} className="flex items-center gap-2 text-fg">
-                <span className="size-1.5 shrink-0 rounded-full bg-accent" />
-                {item}
-              </li>
-            ))}
-          </ul>
           <p className="font-display text-sm uppercase tracking-[0.18em] text-fg-muted">
             SickMotos parts — made to stand out.
           </p>
