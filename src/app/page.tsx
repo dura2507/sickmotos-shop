@@ -1,41 +1,44 @@
 import { Hero } from "./_components/Hero";
-import { BikeBrandStrip } from "./_components/BikeBrandStrip";
 import { TrustBar } from "./_components/TrustBar";
-import { FeaturedBuilds } from "./_components/FeaturedBuilds";
+import { Categories } from "./_components/Categories";
+import { ShopByModel } from "./_components/ShopByModel";
 import { Bestsellers } from "./_components/Bestsellers";
 import { SignatureParts } from "./_components/SignatureParts";
-import { ActionBanner } from "./_components/ActionBanner";
+import { FeaturedBuilds } from "./_components/FeaturedBuilds";
 import { LatestArrivals } from "./_components/LatestArrivals";
-import { DNA } from "./_components/DNA";
+import { Spotlight } from "./_components/Spotlight";
+import { ActionBanner } from "./_components/ActionBanner";
 import { GraphicsKits } from "./_components/GraphicsKits";
-import { Categories } from "./_components/Categories";
 import { Merchandise } from "./_components/Merchandise";
+import { BrandMarquee } from "./_components/BrandMarquee";
+import { UniqueClaim } from "./_components/UniqueClaim";
+import { DNA } from "./_components/DNA";
 import { TestCenter } from "./_components/TestCenter";
 import { Founder } from "./_components/Founder";
 import { Reviews } from "./_components/Reviews";
 import { FAQ } from "./_components/FAQ";
-import { BrandMarquee } from "./_components/BrandMarquee";
-import { Spotlight } from "./_components/Spotlight";
-import { UniqueClaim } from "./_components/UniqueClaim";
 
 export default function Home() {
   return (
     <>
+      {/* Shopping focus up top (Thomas: fast selection, category + model) */}
       <Hero />
       <TrustBar />
-      <UniqueClaim />
-      <FeaturedBuilds />
-      <BikeBrandStrip />
+      <Categories />
+      <ShopByModel />
       <Bestsellers />
       <SignatureParts />
+      <FeaturedBuilds />
+      <LatestArrivals />
       <Spotlight />
       <ActionBanner />
-      <LatestArrivals />
-      <BrandMarquee />
-      <DNA />
       <GraphicsKits />
-      <Categories />
       <Merchandise />
+
+      {/* Bottom third: info, examples, company (Thomas: ab 2/3 Infos/Firma) */}
+      <BrandMarquee />
+      <UniqueClaim />
+      <DNA />
       <TestCenter />
       <Founder />
       <Reviews />
