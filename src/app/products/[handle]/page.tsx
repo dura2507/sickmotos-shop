@@ -6,6 +6,7 @@ import { PurchasePanel } from "./PurchasePanel";
 import { InfoTabs } from "./InfoTabs";
 import { Related } from "./Related";
 import { AddOns } from "./AddOns";
+import { VariantImageProvider } from "./VariantImageContext";
 import {
   cleanTitle,
   getPrice,
@@ -172,15 +173,17 @@ export default async function ProductPage({
           }}
         />
 
-        <div className="mx-auto grid max-w-7xl gap-10 px-4 md:grid-cols-[1fr_1fr] md:gap-12 md:px-6 lg:grid-cols-[1fr_1.1fr]">
-          <div className="min-w-0 md:max-w-[520px]">
-            <Gallery images={product.images} />
+        <VariantImageProvider>
+          <div className="mx-auto grid max-w-7xl gap-10 px-4 md:grid-cols-[1fr_1fr] md:gap-12 md:px-6 lg:grid-cols-[1fr_1.1fr]">
+            <div className="min-w-0 md:max-w-[520px]">
+              <Gallery images={product.images} />
+            </div>
+            <div className="min-w-0 md:sticky md:top-32 md:self-start">
+              <PurchasePanel product={product} />
+              <AddOns items={product.related} />
+            </div>
           </div>
-          <div className="min-w-0 md:sticky md:top-32 md:self-start">
-            <PurchasePanel product={product} />
-            <AddOns items={product.related} />
-          </div>
-        </div>
+        </VariantImageProvider>
       </section>
 
       <InfoTabs product={product} />

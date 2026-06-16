@@ -597,6 +597,9 @@ export type DetailVariantFull = {
   available: boolean;
   // option values keyed by lowercased option name -> value
   options: Record<string, string>;
+  // variant's own image src (matches one of the gallery images) so the
+  // gallery can switch to it when this variant is selected.
+  image: string | null;
 };
 
 export type DetailViewModel = {
@@ -695,6 +698,7 @@ export function toDetailViewModel(p: ShopifyProduct): DetailViewModel {
       compareAt: v.compare_at_price ? parseFloat(v.compare_at_price) : null,
       available: v.available,
       options,
+      image: v.featured_image?.src ?? null,
     };
   });
 

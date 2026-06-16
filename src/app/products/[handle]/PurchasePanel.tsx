@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { trackAddToCart } from "@/lib/analytics";
 import { addToCart } from "@/lib/cartStore";
 import type { DetailViewModel } from "@/lib/products";
+import { useVariantImage } from "./VariantImageContext";
 
 const fmt = (n: number) =>
   n.toLocaleString("de-DE", { style: "currency", currency: "EUR" });
@@ -42,6 +43,12 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
       ) ?? null
     );
   }, [p.variants, variantSel]);
+
+  // Tell the gallery to switch to the selected variant's image.
+  const vi = useVariantImage();
+  useEffect(() => {
+    if (activeVariant?.image && vi) vi.setActiveSrc(activeVariant.image);
+  }, [activeVariant?.image, vi]);
 
   const unitPrice = activeVariant?.price ?? p.basePrice;
   const compareAt = activeVariant?.compareAt ?? p.comparePrice;

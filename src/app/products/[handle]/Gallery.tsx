@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useVariantImage } from "./VariantImageContext";
 
 export function Gallery({
   images,
@@ -11,6 +12,14 @@ export function Gallery({
   const safeImages = images.length > 0 ? images : [];
   const [active, setActive] = useState(0);
   const current = safeImages[active] ?? safeImages[0];
+
+  // When a variant with its own image is selected, jump the gallery to it.
+  const vi = useVariantImage();
+  useEffect(() => {
+    if (!vi?.activeSrc) return;
+    const idx = safeImages.findIndex((img) => img.src === vi.activeSrc);
+    if (idx >= 0) setActive(idx);
+  }, [vi?.activeSrc, safeImages]);
 
   if (!current) {
     return (
