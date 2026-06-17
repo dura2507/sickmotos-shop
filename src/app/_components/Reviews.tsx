@@ -2,21 +2,25 @@ const reviews = [
   {
     name: "Dominic Lenk",
     country: "Austria",
+    flag: "🇦🇹",
     text: "Super quality and perfect fit. 👍",
   },
   {
     name: "Dominik M",
     country: "Romania",
+    flag: "🇷🇴",
     text: "Super fast shipping! The product looks great, I'm already looking forward to installing it 👍",
   },
   {
     name: "El HaMbRiO",
     country: "Germany",
+    flag: "🇩🇪",
     text: "I am really satisfied with the service. The questions are also answered quickly.",
   },
   {
     name: "Jim The Barber",
     country: "Luxembourg",
+    flag: "🇱🇺",
     text: "The graphics are sick 🔥🪒💪🏼",
   },
 ];
@@ -70,7 +74,10 @@ export function Reviews() {
               </p>
               <div className="border-t border-border pt-3 text-sm">
                 <div className="font-semibold text-fg">{r.name}</div>
-                <div className="text-xs text-fg-muted">{r.country}</div>
+                <div className="flex items-center gap-1.5 text-xs text-fg-muted">
+                  <span className="text-sm leading-none">{r.flag}</span>
+                  {r.country}
+                </div>
               </div>
             </article>
           ))}

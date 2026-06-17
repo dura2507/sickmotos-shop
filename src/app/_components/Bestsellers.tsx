@@ -5,7 +5,7 @@ import { SectionHeader } from "./SectionHeader";
 import { BrandPillTabs } from "./BrandPillTabs";
 
 export function Bestsellers() {
-  const products = getTopSelling(3);
+  const products = getTopSelling(5);
   const backdrop = products[0]?.image;
 
   return (
@@ -13,9 +13,9 @@ export function Bestsellers() {
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader
           index="01"
-          kicker="Best deals"
+          kicker="Bestsellers"
           title="Top selling"
-          subtitle="Live from the catalog: the deepest discounts riders are grabbing right now."
+          subtitle="The parts riders order most, straight from our sales data."
           viewAllHref="/shop"
           backdropImage={backdrop}
         />

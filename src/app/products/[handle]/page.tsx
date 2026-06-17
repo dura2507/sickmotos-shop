@@ -180,7 +180,7 @@ export default async function ProductPage({
             </div>
             <div className="min-w-0 md:sticky md:top-32 md:self-start">
               <PurchasePanel product={product} />
-              <AddOns items={product.related} />
+              <AddOns items={product.addOns} />
             </div>
           </div>
         </VariantImageProvider>

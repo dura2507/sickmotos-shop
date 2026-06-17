@@ -6,7 +6,7 @@ import { fmtEUR } from "@/lib/products";
 // "Add-on Einblendung" Thomas asked for: complementary parts shown right under
 // the buy panel so riders can add them to the build.
 export function AddOns({ items }: { items: CardProduct[] }) {
-  const list = items.slice(0, 3);
+  const list = items.slice(0, 5);
   if (list.length === 0) return null;
 
   return (

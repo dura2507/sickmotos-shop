@@ -1,4 +1,10 @@
 import raw from "@/data/products.json";
+import addonsRaw from "@/data/addons.json";
+
+// Curated add-ons scraped 1:1 from the live sick-motos.com product pages
+// (the ".add-ones" section Thomas set up). Maps a product handle to the
+// handles of its add-on products. Only ~25 products have curated add-ons.
+const ADDON_MAP = addonsRaw as Record<string, string[]>;
 
 export type ShopifyVariant = {
   id: number;
@@ -624,6 +630,9 @@ export type DetailViewModel = {
   description: string;
   specs: { label: string; value: string }[];
   related: CardProduct[];
+  // Curated add-ons from the original site (e.g. LED -> converter + warranty).
+  // Empty for most products; the AddOns panel hides itself when empty.
+  addOns: CardProduct[];
 };
 
 const SPEC_PATTERNS: { label: string; rx: RegExp }[] = [
@@ -685,6 +694,13 @@ export function toDetailViewModel(p: ShopifyProduct): DetailViewModel {
     .slice(0, 4)
     .map(toCard);
 
+  // Resolve curated add-on handles to product cards, preserving the order
+  // Thomas set on the original site. Skip any that no longer exist.
+  const addOns = (ADDON_MAP[p.handle] ?? [])
+    .map((h) => allProducts.find((q) => q.handle === h))
+    .filter((q): q is ShopifyProduct => Boolean(q))
+    .map(toCard);
+
   const optionNames = p.options.map((o) => o.name);
   const variants: DetailVariantFull[] = p.variants.map((v) => {
     const options: Record<string, string> = {};
@@ -718,6 +734,7 @@ export function toDetailViewModel(p: ShopifyProduct): DetailViewModel {
     description: blocks.join("\n\n"),
     specs: extractSpecsFromHtml(p.body_html, p),
     related,
+    addOns,
   };
 }
 
