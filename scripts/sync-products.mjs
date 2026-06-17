@@ -8,8 +8,17 @@
  * "prebuild"). When the Shopify webhook fires its deploy hook, Vercel
  * rebuilds, which triggers this script, which gives us fresh data.
  *
- * Configuration via env var (with sensible default):
+ * Configuration via env vars (with sensible defaults):
  *   SHOPIFY_STORE_DOMAIN  (e.g. sickmotos.myshopify.com)
+ *   SHOPIFY_MARKET_COUNTRY (ISO code, e.g. DE) — pins the Market so prices
+ *     are deterministic regardless of where the build runs.
+ *
+ * Why the country pin matters: Shopify Markets serves geo-adjusted prices
+ * on /products.json based on the *requester's* region. Vercel build servers
+ * run in the US, so without this pin the build baked US-market prices
+ * (~+20%) into the static site and every EU customer saw inflated prices.
+ * We pin to the primary market (DE/EU) so the baked prices match what real
+ * customers see on www.sick-motos.com.
  *
  * /products.json is paginated 250 at a time. We loop until we get fewer
  * than 250 results back.
@@ -20,6 +29,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const DOMAIN = process.env.SHOPIFY_STORE_DOMAIN || "sickmotos.myshopify.com";
+const COUNTRY = process.env.SHOPIFY_MARKET_COUNTRY || "DE";
 const OUT = join(
   dirname(fileURLToPath(import.meta.url)),
   "..",
@@ -31,7 +41,7 @@ const OUT = join(
 async function main() {
   const all = [];
   for (let page = 1; page < 50; page++) {
-    const url = `https://${DOMAIN}/products.json?limit=250&page=${page}`;
+    const url = `https://${DOMAIN}/products.json?limit=250&page=${page}&country=${COUNTRY}`;
     const r = await fetch(url);
     if (!r.ok) {
       throw new Error(`Shopify products.json page ${page}: ${r.status}`);
