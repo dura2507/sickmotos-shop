@@ -34,7 +34,7 @@ export function Bestsellers() {
                     alt={p.title}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="object-contain p-2 transition-transform duration-500 group-hover:scale-105"
                   />
                 )}
                 {p.compareAt && p.compareAt > p.price && (

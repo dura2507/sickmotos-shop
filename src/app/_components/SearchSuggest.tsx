@@ -379,7 +379,7 @@ export function SearchSuggest({
                         alt=""
                         fill
                         sizes="48px"
-                        className="object-cover"
+                        className="object-contain p-0.5"
                       />
                     )}
                   </div>

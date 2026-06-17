@@ -32,7 +32,7 @@ export function Gallery({
   }
 
   return (
-    <div className="flex flex-col gap-3 md:flex-row-reverse md:gap-4">
+    <div className="flex flex-col gap-3 md:flex-row-reverse md:items-start md:gap-4">
       <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-surface-2 to-bg">
         <Image
           key={active}
@@ -41,7 +41,7 @@ export function Gallery({
           fill
           priority
           sizes="(max-width: 768px) 100vw, 60vw"
-          className="object-cover"
+          className="object-contain p-3 md:p-5"
         />
       </div>
 
@@ -64,7 +64,7 @@ export function Gallery({
               fill
               sizes="80px"
               loading="eager"
-              className="object-cover"
+              className="object-contain p-1"
             />
           </button>
         ))}

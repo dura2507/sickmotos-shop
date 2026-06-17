@@ -212,7 +212,7 @@ export function CartDrawer({ open, onClose }: Props) {
                             alt={cs.title}
                             fill
                             sizes="48px"
-                            className="object-cover"
+                            className="object-contain p-0.5"
                           />
                         )}
                       </div>
@@ -252,7 +252,7 @@ export function CartDrawer({ open, onClose }: Props) {
                           alt={img.altText ?? line.merchandise.product.title}
                           fill
                           sizes="80px"
-                          className="object-cover"
+                          className="object-contain p-1"
                         />
                       )}
                     </div>

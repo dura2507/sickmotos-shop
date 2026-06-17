@@ -31,7 +31,7 @@ export function AddOns({ items }: { items: CardProduct[] }) {
                   alt={p.title}
                   fill
                   sizes="56px"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="object-contain p-1 transition-transform duration-500 group-hover:scale-105"
                 />
               )}
             </div>
