@@ -89,11 +89,6 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
         <div className="flex flex-wrap items-center gap-2 text-xs">
-          {p.fitOn[0] && (
-            <span className="rounded-full border border-fg/20 bg-bg/60 px-2.5 py-1 font-semibold uppercase tracking-wider text-fg-muted">
-              Fits {p.fitOn[0]}
-            </span>
-          )}
           {discountPct && (
             <span className="rounded-full bg-accent/15 px-2.5 py-1 text-[11px] font-bold uppercase text-accent">
               Save {discountPct}%
@@ -118,6 +113,27 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
           <div className="mt-1 text-xs text-accent">Currently sold out</div>
         )}
       </div>
+
+      {p.fitsOn.length > 0 && (
+        <div className="flex flex-col gap-2 rounded-xl border border-border bg-surface/40 p-3.5">
+          <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-fg-dim">
+            <svg viewBox="0 0 24 24" className="size-3.5 text-accent" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            Fits on
+          </span>
+          <div className="flex flex-wrap gap-1.5">
+            {p.fitsOn.map((m) => (
+              <span
+                key={m}
+                className="rounded-full border border-accent/30 bg-accent/5 px-2.5 py-1 text-xs font-medium text-fg"
+              >
+                {m}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {p.variantGroups
         .filter((g) => g.variants.length > 1)

@@ -1,10 +1,16 @@
 import raw from "@/data/products.json";
 import addonsRaw from "@/data/addons.json";
+import fitmentRaw from "@/data/fitment.json";
 
 // Curated add-ons scraped 1:1 from the live sick-motos.com product pages
 // (the ".add-ones" section Thomas set up). Maps a product handle to the
 // handles of its add-on products. Only ~25 products have curated add-ons.
 const ADDON_MAP = addonsRaw as Record<string, string[]>;
+
+// "Fits on" bike fitment scraped 1:1 from the live site's product pages
+// (the "Fits on" section). Maps a handle to the compatible bike/model
+// strings exactly as Thomas wrote them. ~324 products carry fitment.
+const FITMENT_MAP = fitmentRaw as Record<string, string[]>;
 
 export type ShopifyVariant = {
   id: number;
@@ -633,6 +639,8 @@ export type DetailViewModel = {
   // Curated add-ons from the original site (e.g. LED -> converter + warranty).
   // Empty for most products; the AddOns panel hides itself when empty.
   addOns: CardProduct[];
+  // "Fits on" bike/model strings, scraped 1:1 from the original site.
+  fitsOn: string[];
 };
 
 const SPEC_PATTERNS: { label: string; rx: RegExp }[] = [
@@ -735,6 +743,7 @@ export function toDetailViewModel(p: ShopifyProduct): DetailViewModel {
     specs: extractSpecsFromHtml(p.body_html, p),
     related,
     addOns,
+    fitsOn: FITMENT_MAP[p.handle] ?? [],
   };
 }
 
