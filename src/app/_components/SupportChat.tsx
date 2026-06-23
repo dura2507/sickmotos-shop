@@ -27,6 +27,13 @@ export function SupportChat() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
   }, [messages, open]);
 
+  // Let any "Ask the SickBot" CTA on the page open the chat.
+  useEffect(() => {
+    const openChat = () => setOpen(true);
+    window.addEventListener("sickmotos:open-chat", openChat);
+    return () => window.removeEventListener("sickmotos:open-chat", openChat);
+  }, []);
+
   async function send(text: string) {
     const content = text.trim();
     if (!content || busy) return;

@@ -1,3 +1,5 @@
+import { AskSickBot } from "./AskSickBot";
+
 const faqs = [
   {
     q: "What types of products does SickMotos offer?",
@@ -17,13 +19,13 @@ const faqs = [
   },
   {
     q: "Can I get a custom performance setup for my motorbike?",
-    a: "Yes. Contact Thomas directly via WhatsApp or email with your bike details and goals, and we'll put together a tailored package.",
+    a: "Yes. Ask the SickBot (the chat button, bottom-right) or use the contact form with your bike details and goals, and we'll put together a tailored package.",
   },
 ];
 
 export function FAQ() {
   return (
-    <section className="border-b border-border py-20 md:py-24">
+    <section id="faq" className="scroll-mt-24 border-b border-border py-20 md:py-24">
       <div className="mx-auto max-w-7xl px-6">
         <h2 className="mb-10 font-display text-4xl uppercase tracking-tight md:text-5xl">
           Frequently asked
@@ -54,6 +56,19 @@ export function FAQ() {
               </div>
             </details>
           ))}
+        </div>
+
+        <div className="mt-8 flex flex-col items-start gap-4 rounded-2xl border border-accent/30 bg-accent/[0.06] p-6 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="font-display text-xl uppercase tracking-tight text-fg">
+              Still not sure?
+            </p>
+            <p className="mt-1 text-sm text-fg-muted">
+              Ask the SickBot — our assistant answers shipping, fitment and
+              converter questions in seconds.
+            </p>
+          </div>
+          <AskSickBot label="Ask the SickBot" className="shrink-0" />
         </div>
       </div>
     </section>

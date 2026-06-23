@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { AskSickBot } from "./AskSickBot";
 
 // Per Thomas (Telegram 2026-05-25): the SickMotos rental in Zadar is
 // the brand's second pillar that should support the shop. Test Center
@@ -72,14 +73,11 @@ export function TestCenter() {
                 <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </a>
-            <a
-              href="https://wa.me/4917634658003"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[11px] font-bold uppercase tracking-wider text-fg-muted transition-colors hover:text-accent"
-            >
-              WhatsApp the crew →
-            </a>
+            <AskSickBot
+              variant="link"
+              label="Questions? Ask the SickBot"
+              className="text-[11px] uppercase tracking-wider"
+            />
           </div>
         </div>
       </div>

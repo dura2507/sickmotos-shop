@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCustomer, getCustomerToken } from "@/lib/customerStorefront";
+import { AskSickBot } from "@/app/_components/AskSickBot";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -174,16 +175,10 @@ export default async function AccountPage() {
             Need help?
           </span>
           <p className="mt-2 text-sm text-fg-muted">
-            Drop us a line — fastest way is WhatsApp.
+            Got a question about an order or a part? The SickBot answers
+            instantly.
           </p>
-          <a
-            href="https://wa.me/4917634658003"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-3 inline-block rounded-full border border-border-strong px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-fg-muted hover:border-accent hover:text-accent"
-          >
-            WhatsApp the crew →
-          </a>
+          <AskSickBot variant="ghost" label="Ask the SickBot" className="mt-3" />
         </div>
       </section>
     </div>
