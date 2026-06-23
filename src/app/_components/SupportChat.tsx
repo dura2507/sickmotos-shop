@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
 const GREETING =
-  "Hey! 👋 I'm the SickMotos assistant. Ask me anything about shipping, fitment, converters, payments, returns or our parts — I'll sort it right here.";
+  "Hey, I'm the SickMotos assistant. Ask me anything about shipping, fitment, converters, payments, returns or our parts — I'll sort it right here.";
 
 const SUGGESTIONS = [
   "How long does shipping take?",
@@ -13,6 +13,50 @@ const SUGGESTIONS = [
   "Which payment methods?",
   "What's your return policy?",
 ];
+
+// Light markdown rendering for the bot's replies: **bold**, "- " bullets and
+// line breaks — so structured answers look clean instead of showing raw **.
+function renderInline(text: string): ReactNode[] {
+  return text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
+    /^\*\*[^*]+\*\*$/.test(part) ? (
+      <strong key={i} className="font-semibold text-fg">
+        {part.slice(2, -2)}
+      </strong>
+    ) : (
+      <span key={i}>{part}</span>
+    )
+  );
+}
+
+function renderRich(text: string): ReactNode {
+  const lines = text.split("\n");
+  const blocks: ReactNode[] = [];
+  let bullets: string[] = [];
+  const flush = (key: string) => {
+    if (bullets.length) {
+      blocks.push(
+        <ul key={key} className="my-1 list-disc space-y-0.5 pl-4">
+          {bullets.map((b, i) => (
+            <li key={i}>{renderInline(b)}</li>
+          ))}
+        </ul>
+      );
+      bullets = [];
+    }
+  };
+  lines.forEach((line, i) => {
+    const t = line.trim();
+    const m = t.match(/^[-*•]\s+(.*)/);
+    if (m) {
+      bullets.push(m[1]);
+    } else {
+      flush(`ul-${i}`);
+      if (t) blocks.push(<p key={`p-${i}`} className="[&:not(:first-child)]:mt-1.5">{renderInline(t)}</p>);
+    }
+  });
+  flush("ul-end");
+  return blocks;
+}
 
 export function SupportChat() {
   const [open, setOpen] = useState(false);
@@ -56,7 +100,7 @@ export function SupportChat() {
           content:
             data.reply ||
             data.error ||
-            "Something went wrong — please message us on WhatsApp.",
+            "Something went wrong — please try again in a moment.",
         },
       ]);
     } catch {
@@ -64,7 +108,7 @@ export function SupportChat() {
         ...m,
         {
           role: "assistant",
-          content: "Connection issue — please message us on WhatsApp.",
+          content: "Connection issue — please try again in a moment.",
         },
       ]);
     } finally {
@@ -74,7 +118,13 @@ export function SupportChat() {
 
   return (
     <>
-      {/* Launcher — sits above the WhatsApp button */}
+      {/* Launcher with a subtle attention pulse (only while closed) */}
+      {!open && (
+        <span
+          aria-hidden
+          className="pointer-events-none fixed bottom-4 right-4 z-20 size-12 animate-ping rounded-full bg-accent/40 [animation-duration:2.5s] md:bottom-6 md:right-6 md:size-14"
+        />
+      )}
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
@@ -115,13 +165,13 @@ export function SupportChat() {
                 className={m.role === "user" ? "flex justify-end" : "flex justify-start"}
               >
                 <div
-                  className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-3.5 py-2 text-sm leading-relaxed ${
+                  className={`max-w-[85%] rounded-2xl px-3.5 py-2 text-sm leading-relaxed ${
                     m.role === "user"
-                      ? "rounded-br-sm bg-accent text-fg"
+                      ? "whitespace-pre-wrap rounded-br-sm bg-accent text-fg"
                       : "rounded-bl-sm bg-surface text-fg-muted"
                   }`}
                 >
-                  {m.content}
+                  {m.role === "assistant" ? renderRich(m.content) : m.content}
                 </div>
               </div>
             ))}
