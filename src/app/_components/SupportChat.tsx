@@ -154,7 +154,7 @@ export function SupportChat() {
       )}
 
       {open && (
-        <div className="fixed bottom-20 right-4 z-40 flex h-[60vh] max-h-[520px] w-[calc(100vw-2rem)] max-w-sm flex-col overflow-hidden rounded-2xl border border-border bg-bg shadow-2xl md:bottom-24 md:right-6">
+        <div className="fixed bottom-20 right-4 z-40 flex h-[60vh] max-h-[520px] w-[calc(100vw-2rem)] max-w-sm flex-col overflow-hidden rounded-2xl border border-accent/60 bg-bg shadow-2xl shadow-accent/10 ring-1 ring-accent/20 md:bottom-24 md:right-6">
           {/* Header (red bar, per the reference design) */}
           <div className="flex items-center gap-3 bg-accent px-4 py-3 text-white">
             <span className="grid size-9 shrink-0 place-items-center rounded-full bg-white text-accent shadow-sm">
@@ -163,7 +163,7 @@ export function SupportChat() {
               </svg>
             </span>
             <div className="min-w-0">
-              <div className="text-lg font-bold leading-tight tracking-tight text-white">
+              <div className="text-base font-bold leading-tight tracking-tight text-white">
                 SickBot
               </div>
               <div className="flex items-center gap-1.5 text-xs text-white/85">
