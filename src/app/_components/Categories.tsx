@@ -9,7 +9,7 @@ type CatMeta = { image: string; color: string; desc: string };
 
 const META: Record<string, CatMeta> = {
   Exhaust: {
-    image: "/builds/macro-krummer-fantic-side.jpg",
+    image: "https://cdn.shopify.com/s/files/1/0534/7380/4477/files/IMG-4958.jpg?v=1778737420",
     color: "#c2410c",
     desc: "2- and 4-stroke titanium headers and pipes",
   },
@@ -29,7 +29,7 @@ const META: Record<string, CatMeta> = {
     desc: "FuelX and ECU — crisper throttle, longer engine life",
   },
   "Carbon Parts": {
-    image: "https://cdn.shopify.com/s/files/1/0534/7380/4477/files/IMG-1542.jpg?v=1760010458",
+    image: "https://cdn.shopify.com/s/files/1/0534/7380/4477/files/IMG-2005.jpg?v=1762291117",
     color: "#3f3f46",
     desc: "Featherweight carbon, built in-house",
   },
@@ -44,7 +44,7 @@ const META: Record<string, CatMeta> = {
     desc: "Race-grade titanium hardware",
   },
   Merchandise: {
-    image: "/builds/lifestyle-beta-cyan-front.jpg",
+    image: "https://cdn.shopify.com/s/files/1/0534/7380/4477/files/IMG-7450.jpg?v=1750940078",
     color: "#b45309",
     desc: "Wear the brand",
   },
@@ -54,9 +54,9 @@ const META: Record<string, CatMeta> = {
     desc: "Supermoto rim sets and rolling hardware",
   },
   Other: {
-    image: "https://cdn.shopify.com/s/files/1/0534/7380/4477/files/IMG-0321.jpg?v=1755786666",
+    image: "https://cdn.shopify.com/s/files/1/0534/7380/4477/products/image_f2fcab8f-2e30-45e5-a7fc-8c6d9af2906c.jpg?v=1750939636",
     color: "#b91c1c",
-    desc: "Bar ends, sliders and everything else",
+    desc: "Titanium hardware and everything else",
   },
 };
 
