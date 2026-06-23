@@ -9,11 +9,12 @@ export function ActionBanner() {
         style={{ clipPath: "polygon(40% 0, 100% 0, 100% 100%, 0 100%)" }}
       />
       <Image
-        src="/builds/build-fantic-bold-red.jpg"
+        src="/builds/build-beta-blue-countryside.jpg"
         alt=""
         fill
         sizes="100vw"
-        className="-z-10 object-cover object-[80%_50%]"
+        quality={90}
+        className="-z-10 object-cover object-[50%_42%]"
       />
       <div
         aria-hidden

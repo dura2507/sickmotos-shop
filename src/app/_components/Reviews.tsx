@@ -1,26 +1,28 @@
-const reviews = [
+import { Flag, type FlagCode } from "./Flag";
+
+const reviews: { name: string; country: string; code: FlagCode; text: string }[] = [
   {
     name: "Dominic Lenk",
     country: "Austria",
-    flag: "🇦🇹",
+    code: "AT",
     text: "Super quality and perfect fit. 👍",
   },
   {
     name: "Dominik M",
     country: "Romania",
-    flag: "🇷🇴",
+    code: "RO",
     text: "Super fast shipping! The product looks great, I'm already looking forward to installing it 👍",
   },
   {
     name: "El HaMbRiO",
     country: "Germany",
-    flag: "🇩🇪",
+    code: "DE",
     text: "I am really satisfied with the service. The questions are also answered quickly.",
   },
   {
     name: "Jim The Barber",
     country: "Luxembourg",
-    flag: "🇱🇺",
+    code: "LU",
     text: "The graphics are sick 🔥🪒💪🏼",
   },
 ];
@@ -75,7 +77,7 @@ export function Reviews() {
               <div className="border-t border-border pt-3 text-sm">
                 <div className="font-semibold text-fg">{r.name}</div>
                 <div className="flex items-center gap-1.5 text-xs text-fg-muted">
-                  <span className="text-sm leading-none">{r.flag}</span>
+                  <Flag code={r.code} className="h-3 w-[18px]" />
                   {r.country}
                 </div>
               </div>
