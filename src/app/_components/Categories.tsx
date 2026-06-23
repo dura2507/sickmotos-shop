@@ -19,7 +19,7 @@ const META: Record<string, CatMeta> = {
     desc: "RGBW and hexagon angel eyes, app-controlled",
   },
   Brakes: {
-    image: "/builds/build-beta-blue-countryside.jpg",
+    image: "https://cdn.shopify.com/s/files/1/0534/7380/4477/files/IMG-3211.jpg?v=1770275582",
     color: "#1d4ed8",
     desc: "Performance braking for maximum control",
   },
@@ -29,7 +29,7 @@ const META: Record<string, CatMeta> = {
     desc: "FuelX and ECU — crisper throttle, longer engine life",
   },
   "Carbon Parts": {
-    image: "/builds/macro-krummer-fantic-engine.jpg",
+    image: "https://cdn.shopify.com/s/files/1/0534/7380/4477/files/IMG-1542.jpg?v=1760010458",
     color: "#3f3f46",
     desc: "Featherweight carbon, built in-house",
   },
@@ -49,14 +49,14 @@ const META: Record<string, CatMeta> = {
     desc: "Wear the brand",
   },
   Wheels: {
-    image: "/builds/build-fantic-xmf-wheelie.jpg",
+    image: "https://cdn.shopify.com/s/files/1/0534/7380/4477/files/IMG-1730.jpg?v=1760691304",
     color: "#a16207",
-    desc: "Wheels and rolling hardware",
+    desc: "Supermoto rim sets and rolling hardware",
   },
   Other: {
-    image: "/builds/hero-beta-cyan-sunset.jpg",
+    image: "https://cdn.shopify.com/s/files/1/0534/7380/4477/files/IMG-0321.jpg?v=1755786666",
     color: "#b91c1c",
-    desc: "Everything else for your supermoto",
+    desc: "Bar ends, sliders and everything else",
   },
 };
 
