@@ -5,7 +5,6 @@ import "./globals.css";
 import { PromoBar } from "./_components/PromoBar";
 import { Header } from "./_components/Header";
 import { Footer } from "./_components/Footer";
-import { WhatsAppFloat } from "./_components/WhatsAppFloat";
 import { SupportChat } from "./_components/SupportChat";
 
 // Plausible.io analytics. GDPR-friendly, no cookies, no banner needed.
@@ -81,7 +80,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
-        <WhatsAppFloat />
         <SupportChat />
       </body>
     </html>

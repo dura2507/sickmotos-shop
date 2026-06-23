@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 type Msg = { role: "user" | "assistant"; content: string };
 
 const GREETING =
-  "Hey! 👋 I'm the SickMotos assistant. Ask me about shipping, fitment, payments, returns or our parts. For order status or a custom setup, I'll point you to WhatsApp.";
+  "Hey! 👋 I'm the SickMotos assistant. Ask me anything about shipping, fitment, converters, payments, returns or our parts — I'll sort it right here.";
 
 const SUGGESTIONS = [
   "How long does shipping take?",
@@ -72,7 +72,7 @@ export function SupportChat() {
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-label={open ? "Close chat" : "Open chat"}
-        className="float-y fixed bottom-20 right-4 z-30 grid size-12 place-items-center rounded-full bg-accent text-fg shadow-lg transition-transform hover:scale-105 active:scale-95 md:bottom-24 md:right-6 md:size-14"
+        className="float-y fixed bottom-4 right-4 z-30 grid size-12 place-items-center rounded-full bg-accent text-fg shadow-lg transition-transform hover:scale-105 active:scale-95 md:bottom-6 md:right-6 md:size-14"
       >
         {open ? (
           <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth={2.4}>
@@ -86,7 +86,7 @@ export function SupportChat() {
       </button>
 
       {open && (
-        <div className="fixed bottom-36 right-4 z-40 flex h-[60vh] max-h-[520px] w-[calc(100vw-2rem)] max-w-sm flex-col overflow-hidden rounded-2xl border border-border bg-bg shadow-2xl md:bottom-40 md:right-6">
+        <div className="fixed bottom-20 right-4 z-40 flex h-[60vh] max-h-[520px] w-[calc(100vw-2rem)] max-w-sm flex-col overflow-hidden rounded-2xl border border-border bg-bg shadow-2xl md:bottom-24 md:right-6">
           {/* Header */}
           <div className="flex items-center gap-3 border-b border-border bg-surface px-4 py-3">
             <span className="grid size-8 place-items-center rounded-full bg-accent/15">

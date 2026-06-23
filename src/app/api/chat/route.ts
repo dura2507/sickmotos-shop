@@ -85,12 +85,14 @@ export async function POST(req: Request) {
       .trim();
 
     return NextResponse.json({
-      reply: reply || "Sorry, I couldn't generate a reply. Please try WhatsApp.",
+      reply:
+        reply ||
+        "Sorry, I couldn't generate a reply just now — please try rephrasing your question.",
     });
   } catch (e) {
     console.error("[chat] Anthropic error:", e);
     return NextResponse.json(
-      { error: "Chat is temporarily unavailable. Please try WhatsApp." },
+      { error: "Chat is temporarily unavailable. Please try again in a moment." },
       { status: 502 }
     );
   }
