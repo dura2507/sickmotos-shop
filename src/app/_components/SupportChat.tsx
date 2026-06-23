@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 type Msg = { role: "user" | "assistant"; content: string };
 
 const GREETING =
-  "Hey, I'm the SickMotos assistant. Ask me anything about shipping, fitment, converters, payments, returns or our parts — I'll sort it right here.";
+  "Hey, I'm SickBot — your go-to for anything supermoto: shipping, fitment, converters, payments, returns or parts. How can I help?";
 
 const SUGGESTIONS = [
   "How long does shipping take?",
@@ -118,42 +118,61 @@ export function SupportChat() {
 
   return (
     <>
-      {/* Launcher with a subtle attention pulse (only while closed) */}
-      {!open && (
-        <span
-          aria-hidden
-          className="pointer-events-none fixed bottom-4 right-4 z-20 size-12 animate-ping rounded-full bg-accent/40 [animation-duration:2.5s] md:bottom-6 md:right-6 md:size-14"
-        />
-      )}
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        aria-label={open ? "Close chat" : "Open chat"}
-        className="float-y fixed bottom-4 right-4 z-30 grid size-12 place-items-center rounded-full bg-accent text-fg shadow-lg transition-transform hover:scale-105 active:scale-95 md:bottom-6 md:right-6 md:size-14"
-      >
-        {open ? (
+      {/* Launcher: closed shows an animated "Ask SickBot" nudge + pulsing
+          button; open shows the close button. */}
+      {open ? (
+        <button
+          type="button"
+          onClick={() => setOpen(false)}
+          aria-label="Close chat"
+          className="fixed bottom-4 right-4 z-30 grid size-12 place-items-center rounded-full bg-accent text-fg shadow-lg transition-transform hover:scale-105 active:scale-95 md:bottom-6 md:right-6 md:size-14"
+        >
           <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth={2.4}>
             <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
           </svg>
-        ) : (
-          <svg viewBox="0 0 24 24" className="size-6 md:size-7" fill="none" stroke="currentColor" strokeWidth={2}>
-            <path d="M21 11.5a8.5 8.5 0 01-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1121 11.5z" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        )}
-      </button>
+        </button>
+      ) : (
+        <div className="fixed bottom-4 right-4 z-30 flex items-center gap-2.5 md:bottom-6 md:right-6">
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="float-y pop-in rounded-full border border-accent/40 bg-bg/90 px-3.5 py-2 text-xs font-bold uppercase tracking-wider text-fg shadow-lg backdrop-blur-sm transition-colors hover:border-accent hover:text-accent"
+          >
+            Ask <span className="text-accent">SickBot</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            aria-label="Open chat"
+            className="pulse-accent grid size-12 shrink-0 place-items-center rounded-full bg-accent text-fg shadow-lg transition-transform hover:scale-110 active:scale-95 md:size-14"
+          >
+            <svg viewBox="0 0 24 24" className="size-6 md:size-7" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path d="M21 11.5a8.5 8.5 0 01-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1121 11.5z" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </div>
+      )}
 
       {open && (
         <div className="fixed bottom-20 right-4 z-40 flex h-[60vh] max-h-[520px] w-[calc(100vw-2rem)] max-w-sm flex-col overflow-hidden rounded-2xl border border-border bg-bg shadow-2xl md:bottom-24 md:right-6">
           {/* Header */}
           <div className="flex items-center gap-3 border-b border-border bg-surface px-4 py-3">
-            <span className="grid size-8 place-items-center rounded-full bg-accent/15">
-              <span className="size-2.5 rounded-full bg-accent" />
+            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-accent text-fg">
+              <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path d="M21 11.5a8.5 8.5 0 01-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1121 11.5z" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </span>
             <div className="min-w-0">
-              <div className="font-display text-sm uppercase tracking-wide text-fg">
-                SickMotos Assistant
+              <div className="font-display text-base uppercase tracking-wide text-fg">
+                SickBot
               </div>
-              <div className="text-[11px] text-fg-dim">Usually replies instantly</div>
+              <div className="flex items-center gap-1.5 text-[11px] text-fg-dim">
+                <span className="relative flex size-2">
+                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-green-500 opacity-70" />
+                  <span className="relative inline-flex size-2 rounded-full bg-green-500" />
+                </span>
+                Online
+              </div>
             </div>
           </div>
 
