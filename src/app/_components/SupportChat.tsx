@@ -163,10 +163,10 @@ export function SupportChat() {
               </svg>
             </span>
             <div className="min-w-0">
-              <div className="font-display text-base uppercase tracking-wide text-fg">
+              <div className="text-lg font-bold leading-tight tracking-tight text-fg">
                 SickBot
               </div>
-              <div className="flex items-center gap-1.5 text-[11px] text-fg-dim">
+              <div className="flex items-center gap-1.5 text-xs text-fg-dim">
                 <span className="relative flex size-2">
                   <span className="absolute inline-flex size-full animate-ping rounded-full bg-green-500 opacity-70" />
                   <span className="relative inline-flex size-2 rounded-full bg-green-500" />
