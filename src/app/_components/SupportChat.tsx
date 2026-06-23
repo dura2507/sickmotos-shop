@@ -155,21 +155,21 @@ export function SupportChat() {
 
       {open && (
         <div className="fixed bottom-20 right-4 z-40 flex h-[60vh] max-h-[520px] w-[calc(100vw-2rem)] max-w-sm flex-col overflow-hidden rounded-2xl border border-border bg-bg shadow-2xl md:bottom-24 md:right-6">
-          {/* Header */}
-          <div className="flex items-center gap-3 border-b border-border bg-surface px-4 py-3">
-            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-accent text-fg">
+          {/* Header (red bar, per the reference design) */}
+          <div className="flex items-center gap-3 bg-accent px-4 py-3 text-white">
+            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-white text-accent shadow-sm">
               <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth={2}>
                 <path d="M21 11.5a8.5 8.5 0 01-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1121 11.5z" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </span>
             <div className="min-w-0">
-              <div className="text-lg font-bold leading-tight tracking-tight text-fg">
+              <div className="text-lg font-bold leading-tight tracking-tight text-white">
                 SickBot
               </div>
-              <div className="flex items-center gap-1.5 text-xs text-fg-dim">
+              <div className="flex items-center gap-1.5 text-xs text-white/85">
                 <span className="relative flex size-2">
-                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-green-500 opacity-70" />
-                  <span className="relative inline-flex size-2 rounded-full bg-green-500" />
+                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-white opacity-70" />
+                  <span className="relative inline-flex size-2 rounded-full bg-white" />
                 </span>
                 Online
               </div>
