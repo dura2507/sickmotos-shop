@@ -38,9 +38,9 @@ const parts: Part[] = [
     pitch:
       "Live air-fuel correction without losing the OEM map. Dialed in to match the Krummer for crisper throttle.",
     href: "/shop?category=ECU+Tuning",
-    src: "/builds/macro-krummer-fantic-side.jpg",
-    alt: "FuelX tuning installed on Fantic bike",
-    focal: "object-[50%_55%]",
+    src: "https://cdn.shopify.com/s/files/1/0534/7380/4477/files/49FB8537-7656-4EFF-9152-C222480A77E3.webp?v=1750938873",
+    alt: "FuelX Autotune module for live air-fuel correction",
+    focal: "object-center",
   },
 ];
 
