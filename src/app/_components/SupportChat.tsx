@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 type Msg = { role: "user" | "assistant"; content: string };
 
 const GREETING =
-  "Hey, I'm SickBot — your go-to for anything supermoto: shipping, fitment, converters, payments, returns or parts. How can I help?";
+  "Hey, I'm SickBot, your go-to for anything supermoto: shipping, fitment, converters, payments, returns or parts. How can I help?";
 
 const SUGGESTIONS = [
   "How long does shipping take?",
@@ -181,10 +181,21 @@ export function SupportChat() {
             {messages.map((m, i) => (
               <div
                 key={i}
-                className={m.role === "user" ? "flex justify-end" : "flex justify-start"}
+                className={
+                  m.role === "user"
+                    ? "flex justify-end"
+                    : "flex items-end justify-start gap-2"
+                }
               >
+                {m.role === "assistant" && (
+                  <span className="grid size-7 shrink-0 place-items-center self-end rounded-full bg-accent text-fg">
+                    <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={2}>
+                      <path d="M21 11.5a8.5 8.5 0 01-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1121 11.5z" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                )}
                 <div
-                  className={`max-w-[85%] rounded-2xl px-3.5 py-2 text-sm leading-relaxed ${
+                  className={`max-w-[80%] rounded-2xl px-3.5 py-2 text-sm leading-relaxed ${
                     m.role === "user"
                       ? "whitespace-pre-wrap rounded-br-sm bg-accent text-fg"
                       : "rounded-bl-sm bg-surface text-fg-muted"
@@ -208,13 +219,13 @@ export function SupportChat() {
 
             {/* Quick suggestions, only before the first user message */}
             {messages.length === 1 && (
-              <div className="flex flex-wrap gap-2 pt-1">
+              <div className="flex flex-col items-start gap-2 pt-1">
                 {SUGGESTIONS.map((s) => (
                   <button
                     key={s}
                     type="button"
                     onClick={() => send(s)}
-                    className="rounded-full border border-border bg-surface/60 px-3 py-1.5 text-xs text-fg-muted transition-colors hover:border-accent hover:text-fg"
+                    className="rounded-full border border-border bg-surface/60 px-3.5 py-2 text-xs text-fg-muted transition-colors hover:border-accent hover:text-fg"
                   >
                     {s}
                   </button>
