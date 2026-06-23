@@ -9,7 +9,7 @@ type CatMeta = { image: string; color: string; desc: string };
 
 const META: Record<string, CatMeta> = {
   Exhaust: {
-    image: "https://cdn.shopify.com/s/files/1/0534/7380/4477/files/IMG-4958.jpg?v=1778737420",
+    image: "https://cdn.shopify.com/s/files/1/0534/7380/4477/files/IMG-2429.jpg?v=1765303282",
     color: "#c2410c",
     desc: "2- and 4-stroke titanium headers and pipes",
   },
