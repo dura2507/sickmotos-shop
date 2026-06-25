@@ -182,18 +182,9 @@ export function SupportChat() {
               <div
                 key={i}
                 className={
-                  m.role === "user"
-                    ? "flex justify-end"
-                    : "flex items-end justify-start gap-2"
+                  m.role === "user" ? "flex justify-end" : "flex justify-start"
                 }
               >
-                {m.role === "assistant" && (
-                  <span className="grid size-7 shrink-0 place-items-center self-end rounded-full bg-accent text-fg">
-                    <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={2}>
-                      <path d="M21 11.5a8.5 8.5 0 01-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1121 11.5z" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </span>
-                )}
                 <div
                   className={`max-w-[80%] rounded-2xl px-3.5 py-2 text-sm leading-relaxed ${
                     m.role === "user"
