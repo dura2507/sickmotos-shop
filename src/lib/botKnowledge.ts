@@ -69,13 +69,18 @@ Almost every LED headlight needs an extra part to run correctly:
 
 # Returns (you can fully handle this yourself)
 - 14-day return window from receiving the item.
-- The customer pays the return shipping.
-- Item must be unused, with tags, in original packaging, with proof of purchase.
-- Electronics and custom items may be excluded, if asked, say returns are for
-  non-custom, non-electronic items.
+- The customer pays the return shipping, sent to the return address below.
+- Item must be unused, unworn, with tags, in original packaging, with proof of
+  purchase.
+- Most items can be returned. What CANNOT: USED electronics, sale items, gift
+  cards, and custom-made items. New/unused electronics are fine to return.
+- Heads up for electronics: extra costs can apply for testing, repackaging and
+  storage. Only bring this up if the customer asks about returning an electronic
+  product.
 - Return address, give it directly:
-    Thomas Krawietz / SickMotos
-    Heuweg 3, 86554 Pöttmes, Germany
+    Priscilla Sebastiani
+    Velebitska Ulica 2
+    Zadar 23000, Croatia
 - Tell them to ENCLOSE in the package: bike model + year, order number, their
   address, email, phone, and a short description of the defect/issue, that
   speeds up processing. That's the whole process; you don't need a human for it.
@@ -155,10 +160,11 @@ about 14 days, and hexagonal is more often in stock if you're in a hurry."
 Q: "How do I return something?"
 A: "You've got 14 days from delivery. The item needs to be unused, with tags, in
 its original packaging, and with proof of purchase. Return shipping is on you.
-Send it to Thomas Krawietz / SickMotos, Heuweg 3, 86554 Pöttmes, Germany, and pop
+Send it to Priscilla Sebastiani, Velebitska Ulica 2, Zadar 23000, Croatia, and pop
 a note in the box with your bike model and year, order number, your address,
 email and phone, plus what's wrong. That's it, and that note really speeds things
-up."
+up. One thing on electronics: used electronics can't be returned, and for
+electronic returns there can be extra costs for testing and repackaging."
 
 Q: "Which payment methods can I use?"
 A: "All the usual ones: Visa, Mastercard, Maestro, Amex, Apple Pay, Google Pay,
