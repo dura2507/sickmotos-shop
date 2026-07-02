@@ -81,14 +81,12 @@ TELEGRAM_BOT_TOKEN=...             # only for the feedback-poll workflow, not th
 
 ## 6. Pending before go-live
 
-**Code (ready to build):**
-- [ ] Honest made-to-order / low-stock UX (see §8): made-to-order badge + lead time
-      for LED lamps & titanium headers (~2-3 weeks), and a prominent "made to order,
-      6+ weeks" notice for wheels on the product page AND in cart/checkout. Real
-      "only X left" only when Shopify inventory is genuinely low.
-- [ ] Made-to-order lead-time display using Thomas's timeline: production 3-7d, gap 2d,
-      test from day 10-12, gap 2d, pack/ship 1-2d (~2-3 weeks total).
-- [ ] **301 redirects** old Shopify URLs -> new routes in `next.config.ts` (SEO).
+**Code:**
+- [x] Honest made-to-order / low-stock UX (`src/lib/leadTime.ts`): made-to-order badge +
+      lead time for LED lamps & titanium headers (~2-3 weeks) and a highlighted "made to
+      order, 6+ weeks" notice for wheels on the product page, in the shop grid, and per
+      line in the cart. No fake stock counters.
+- [x] **301 redirects** old Shopify URLs -> new routes in `next.config.ts` (308, verified).
 - [ ] Cookie-consent banner on this site once analytics is enabled (the Shopify theme's
       consent app does not run headless).
 - [ ] Reviews are static; Judge.me/Trustpilot are Shopify-theme apps and won't render
