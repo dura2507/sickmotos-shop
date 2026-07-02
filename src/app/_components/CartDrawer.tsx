@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { trackBeginCheckout } from "@/lib/analytics";
+import { leadTimeForTitle } from "@/lib/leadTime";
 import {
   fetchCart,
   removeFromCart,
@@ -243,6 +244,7 @@ export function CartDrawer({ open, onClose }: Props) {
                   .filter((o) => o.value && o.name.toLowerCase() !== "title")
                   .map((o) => o.value)
                   .join(" / ");
+                const lead = leadTimeForTitle(line.merchandise.product.title);
                 return (
                   <li key={line.id} className="flex gap-3 p-4">
                     <div className="relative size-20 shrink-0 overflow-hidden rounded-md border border-border bg-surface">
@@ -266,6 +268,21 @@ export function CartDrawer({ open, onClose }: Props) {
                       {variantTitle && (
                         <span className="truncate text-[11px] text-fg-dim">
                           {variantTitle}
+                        </span>
+                      )}
+                      {lead && (
+                        <span
+                          className={`inline-flex items-center gap-1 self-start rounded px-1.5 py-0.5 text-[10px] font-semibold ${
+                            lead.long
+                              ? "bg-accent/15 text-accent"
+                              : "bg-surface-2 text-fg-muted"
+                          }`}
+                        >
+                          <svg viewBox="0 0 24 24" className="size-3" fill="none" stroke="currentColor" strokeWidth={2}>
+                            <path d="M12 8v4l3 2" strokeLinecap="round" strokeLinejoin="round" />
+                            <circle cx="12" cy="12" r="9" />
+                          </svg>
+                          {lead.badge}, {lead.short}
                         </span>
                       )}
                       <div className="mt-1 flex items-center justify-between gap-3">

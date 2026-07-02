@@ -1,6 +1,7 @@
 import raw from "@/data/products.json";
 import addonsRaw from "@/data/addons.json";
 import fitmentRaw from "@/data/fitment.json";
+import { leadTimeFor } from "@/lib/leadTime";
 
 // Curated add-ons scraped 1:1 from the live sick-motos.com product pages
 // (the ".add-ones" section Thomas set up). Maps a product handle to the
@@ -658,7 +659,11 @@ function extractSpecsFromHtml(html: string, p: ShopifyProduct) {
   }
   if (p.vendor) specs.push({ label: "Brand", value: p.vendor });
   if (p.product_type) specs.push({ label: "Category", value: p.product_type });
-  specs.push({ label: "Delivery", value: "4-8 business days" });
+  const lead = leadTimeFor(categorize(p));
+  specs.push({
+    label: "Delivery",
+    value: lead ? `Made to order, ${lead.short}` : "4-8 business days",
+  });
   specs.push({
     label: "Warranty",
     value: "6 months on material and workmanship",

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { trackAddToCart } from "@/lib/analytics";
 import { addToCart } from "@/lib/cartStore";
+import { leadTimeFor } from "@/lib/leadTime";
 import type { DetailViewModel } from "@/lib/products";
 import { useVariantImage } from "./VariantImageContext";
 
@@ -58,6 +59,7 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
     compareAt && compareAt > unitPrice
       ? Math.round((1 - unitPrice / compareAt) * 100)
       : null;
+  const lead = leadTimeFor(p.category);
 
   async function handleAddToCart() {
     if (!activeVariant) {
@@ -113,6 +115,29 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
           <div className="mt-1 text-xs text-accent">Currently sold out</div>
         )}
       </div>
+
+      {lead && (
+        <div
+          className={`flex items-start gap-2.5 rounded-xl border p-3.5 ${
+            lead.long
+              ? "border-accent/40 bg-accent/[0.07]"
+              : "border-border bg-surface/40"
+          }`}
+        >
+          <svg viewBox="0 0 24 24" className="mt-0.5 size-4 shrink-0 text-accent" fill="none" stroke="currentColor" strokeWidth={2}>
+            <path d="M12 8v4l3 2" strokeLinecap="round" strokeLinejoin="round" />
+            <circle cx="12" cy="12" r="9" />
+          </svg>
+          <div className="flex flex-col gap-0.5">
+            <span className="text-xs font-bold uppercase tracking-wider text-fg">
+              {lead.badge} · {lead.short}
+            </span>
+            <span className="text-xs leading-relaxed text-fg-muted">
+              {lead.note}
+            </span>
+          </div>
+        </div>
+      )}
 
       {p.fitsOn.length > 0 && (
         <div className="flex flex-col gap-2 rounded-xl border border-border bg-surface/40 p-3.5">
@@ -220,8 +245,8 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
 
       <div className="grid grid-cols-2 gap-2 text-[11px] text-fg-muted">
         <span className="flex flex-col items-center gap-1 rounded-lg border border-border bg-surface/40 p-2.5 text-center">
-          <span className="text-fg">Worldwide</span>
-          <span className="text-fg-dim">5-10 days</span>
+          <span className="text-fg">{lead ? "Made to order" : "Worldwide"}</span>
+          <span className="text-fg-dim">{lead ? lead.short : "5-10 days"}</span>
         </span>
         <span className="flex flex-col items-center gap-1 rounded-lg border border-border bg-surface/40 p-2.5 text-center">
           <span className="text-fg">6 months</span>

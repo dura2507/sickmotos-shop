@@ -11,6 +11,7 @@ import {
   type Category,
   fmtEUR,
 } from "@/lib/products";
+import { leadTimeFor } from "@/lib/leadTime";
 import { CustomSelect } from "../_components/CustomSelect";
 import { BikeFinder } from "./BikeFinder";
 
@@ -372,6 +373,18 @@ export function ShopBrowser({
                     <h3 className="line-clamp-2 text-sm font-medium text-fg">
                       {p.title}
                     </h3>
+                    {(() => {
+                      const lead = leadTimeFor(p.category);
+                      return lead ? (
+                        <span className="inline-flex w-fit items-center gap-1 rounded bg-surface-2 px-1.5 py-0.5 text-[10px] font-semibold text-fg-muted">
+                          <svg viewBox="0 0 24 24" className="size-3 text-accent" fill="none" stroke="currentColor" strokeWidth={2}>
+                            <path d="M12 8v4l3 2" strokeLinecap="round" strokeLinejoin="round" />
+                            <circle cx="12" cy="12" r="9" />
+                          </svg>
+                          {lead.badge}
+                        </span>
+                      ) : null;
+                    })()}
                     <div className="mt-auto flex items-baseline gap-2">
                       <span className="text-base font-semibold text-fg">
                         {fmtEUR(p.price)}
