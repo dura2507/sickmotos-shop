@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { trackAddToCart } from "@/lib/analytics";
+import { trackAddToCart, trackViewItem } from "@/lib/analytics";
 import { addToCart } from "@/lib/cartStore";
 import { leadTimeFor } from "@/lib/leadTime";
 import type { DetailViewModel } from "@/lib/products";
@@ -50,6 +50,18 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
   useEffect(() => {
     if (activeVariant?.image && vi) vi.setActiveSrc(activeVariant.image);
   }, [activeVariant?.image, vi]);
+
+  // Fire view_item once per product view (base price is stable per product).
+  useEffect(() => {
+    trackViewItem({
+      item_id: p.handle,
+      item_name: p.title,
+      price: p.basePrice,
+      item_brand: p.brand,
+      item_category: p.category,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [p.handle]);
 
   const unitPrice = activeVariant?.price ?? p.basePrice;
   const compareAt = activeVariant?.compareAt ?? p.comparePrice;

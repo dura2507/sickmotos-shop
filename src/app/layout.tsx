@@ -6,6 +6,7 @@ import { PromoBar } from "./_components/PromoBar";
 import { Header } from "./_components/Header";
 import { Footer } from "./_components/Footer";
 import { SupportChat } from "./_components/SupportChat";
+import { CookieConsent } from "./_components/CookieConsent";
 
 // Plausible.io analytics. GDPR-friendly, no cookies, no banner needed.
 // Set NEXT_PUBLIC_PLAUSIBLE_DOMAIN in Vercel to the domain registered at
@@ -55,13 +56,22 @@ export default function RootLayout({
           />
         )}
         {GTM_ID && (
-          <Script id="gtm-init" strategy="afterInteractive">
-            {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+          <>
+            {/* Google Consent Mode v2: everything denied by default so GTM
+                boots but ad/analytics tags stay dormant until the user clicks
+                accept in the cookie banner (see CookieConsent.tsx). Must run
+                BEFORE gtm.js so the default state is set on the first tick. */}
+            <Script id="gtm-consent-default" strategy="beforeInteractive">
+              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=gtag;gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',functionality_storage:'granted',security_storage:'granted',wait_for_update:500});`}
+            </Script>
+            <Script id="gtm-init" strategy="afterInteractive">
+              {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','${GTM_ID}');`}
-          </Script>
+            </Script>
+          </>
         )}
       </head>
       <body className="min-h-screen bg-bg text-fg flex flex-col">
@@ -81,6 +91,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <main className="flex-1">{children}</main>
         <Footer />
         <SupportChat />
+        {GTM_ID && <CookieConsent />}
       </body>
     </html>
   );
