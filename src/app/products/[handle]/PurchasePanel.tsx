@@ -140,24 +140,53 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
 
       {lead && (
         <div
-          className={`flex items-start gap-2.5 rounded-xl border p-3.5 ${
+          className={`flex flex-col gap-3 rounded-xl border p-3.5 ${
             lead.long
               ? "border-accent/40 bg-accent/[0.07]"
               : "border-border bg-surface/40"
           }`}
         >
-          <svg viewBox="0 0 24 24" className="mt-0.5 size-4 shrink-0 text-accent" fill="none" stroke="currentColor" strokeWidth={2}>
-            <path d="M12 8v4l3 2" strokeLinecap="round" strokeLinejoin="round" />
-            <circle cx="12" cy="12" r="9" />
-          </svg>
-          <div className="flex flex-col gap-0.5">
-            <span className="text-xs font-bold uppercase tracking-wider text-fg">
-              {lead.badge} · {lead.short}
-            </span>
-            <span className="text-xs leading-relaxed text-fg-muted">
-              {lead.note}
-            </span>
+          <div className="flex items-start gap-2.5">
+            <svg viewBox="0 0 24 24" className="mt-0.5 size-4 shrink-0 text-accent" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path d="M12 8v4l3 2" strokeLinecap="round" strokeLinejoin="round" />
+              <circle cx="12" cy="12" r="9" />
+            </svg>
+            <div className="flex flex-col gap-0.5">
+              <span className="text-xs font-bold uppercase tracking-wider text-fg">
+                {lead.badge} · {lead.short}
+              </span>
+              <span className="text-xs leading-relaxed text-fg-muted">
+                {lead.note}
+              </span>
+            </div>
           </div>
+          {lead.steps && (
+            <details className="group border-t border-border pt-3">
+              <summary className="flex cursor-pointer items-center justify-between gap-2 text-[11px] font-bold uppercase tracking-[0.15em] text-fg-dim transition-colors hover:text-fg [&::-webkit-details-marker]:hidden">
+                <span>How your order is built</span>
+                <svg viewBox="0 0 24 24" className="size-3.5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" strokeWidth={2.4}>
+                  <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </summary>
+              <ol className="mt-3 flex flex-col gap-2.5">
+                {lead.steps.map((s, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <span className="grid size-6 shrink-0 place-items-center rounded-full bg-accent/15 text-[10px] font-bold text-accent">
+                      {i + 1}
+                    </span>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-fg">
+                        {s.day} · {s.label}
+                      </span>
+                      <span className="text-[11px] leading-relaxed text-fg-muted">
+                        {s.detail}
+                      </span>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </details>
+          )}
         </div>
       )}
 

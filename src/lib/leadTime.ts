@@ -14,6 +14,10 @@ export type LeadTime = {
   short: string; // compact duration, e.g. "approx. 2-3 weeks"
   note: string; // one-line explanation for detail/cart
   long: boolean; // true for the very long lead (wheels)
+  // Step-by-step production timeline Thomas wants shown so customers see the
+  // QA process behind the wait (not just a number). Optional: wheels don't show
+  // a detailed breakdown because the 6+ weeks is dominated by external supply.
+  steps?: { day: string; label: string; detail: string }[];
 };
 
 export function leadTimeFor(category: string): LeadTime | null {
@@ -31,6 +35,11 @@ export function leadTimeFor(category: string): LeadTime | null {
       short: "approx. 2-3 weeks",
       note: "Handcrafted and tested before it ships, so expect about 2 to 3 weeks. Built in the order things come in.",
       long: false,
+      steps: [
+        { day: "Day 1-7", label: "Production", detail: "Built by hand in our workshop." },
+        { day: "Day 10-12", label: "Testing", detail: "Every unit is tested before it leaves." },
+        { day: "Day 13-15", label: "Packing & shipping", detail: "Boxed with care and handed to the carrier." },
+      ],
     };
   }
   return null;
