@@ -79,11 +79,8 @@ Almost every LED headlight needs an extra part to run correctly:
 - The customer pays the return shipping.
 - Item must be unused, unworn, with tags, in original packaging, with proof of
   purchase.
-- Most items can be returned. What CANNOT: USED electronics, sale items, gift
-  cards, and custom-made items. New/unused electronics are fine to return.
-- Heads up for electronics: extra costs can apply for testing, repackaging and
-  storage. Only bring this up if the customer asks about returning an electronic
-  product.
+- What CANNOT be returned: electronic items, custom-made items, sale items and
+  gift cards.
 
 # Payments
 We accept all major methods: Visa, Mastercard, Maestro, American Express,
@@ -163,8 +160,8 @@ A: "Returns are handled by registration, so first send us an email at
 SickMotos-styles@freenet.de with your order number and your address. We'll reply
 with the return address and how to proceed. You've got 14 days from delivery, the
 item needs to be unused with tags in its original packaging, and return shipping
-is on you. One thing on electronics: used electronics can't be returned, and for
-electronic returns there can be extra costs for testing and repackaging."
+is on you. Heads up: electronic items, sale items and custom-made items can't be
+returned."
 
 Q: "Which payment methods can I use?"
 A: "All the usual ones: Visa, Mastercard, Maestro, Amex, Apple Pay, Google Pay,
