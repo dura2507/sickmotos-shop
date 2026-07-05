@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { trackAddToCart, trackViewItem } from "@/lib/analytics";
-import { addToCart } from "@/lib/cartStore";
+import { addLinesToCart } from "@/lib/cartStore";
+import { isConverter, isLamp } from "@/lib/essentials";
 import { leadTimeFor } from "@/lib/leadTime";
 import type { DetailViewModel } from "@/lib/products";
 import { useVariantImage } from "./VariantImageContext";
@@ -72,6 +73,11 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
       ? Math.round((1 - unitPrice / compareAt) * 100)
       : null;
   const lead = leadTimeFor(p.category);
+  const productIsLamp = isLamp(p.handle, p.title, p.category);
+  const converterAddon = productIsLamp
+    ? p.addOns.find((a) => isConverter(a.handle, a.title) && a.defaultVariantGid)
+    : undefined;
+  const [bundleConverter, setBundleConverter] = useState(true);
 
   async function handleAddToCart() {
     if (!activeVariant) {
@@ -81,7 +87,11 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
     setBusy(true);
     setError(null);
     try {
-      await addToCart({ merchandiseId: activeVariant.gid, quantity: qty });
+      const lines = [{ merchandiseId: activeVariant.gid, quantity: qty }];
+      if (converterAddon && bundleConverter && converterAddon.defaultVariantGid) {
+        lines.push({ merchandiseId: converterAddon.defaultVariantGid, quantity: 1 });
+      }
+      await addLinesToCart(lines);
       trackAddToCart({
         item_id: p.handle,
         item_name: p.title,
@@ -207,6 +217,33 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
             </div>
           </div>
         ))}
+
+      {converterAddon && (
+        <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-accent/50 bg-accent/[0.08] p-3.5 transition-colors hover:border-accent">
+          <input
+            type="checkbox"
+            checked={bundleConverter}
+            onChange={(e) => setBundleConverter(e.target.checked)}
+            className="mt-0.5 size-4 shrink-0 accent-[var(--color-accent)]"
+          />
+          <div className="flex flex-col gap-0.5">
+            <span className="flex items-center gap-2 text-sm font-semibold text-fg">
+              Add the required converter
+              <span className="rounded bg-accent/25 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-accent">
+                Required
+              </span>
+            </span>
+            <span className="text-xs text-fg-muted">
+              The LED does not work without it. Adds {fmt(converterAddon.price)} to your order.
+              {!bundleConverter && (
+                <span className="mt-1 block font-semibold text-accent">
+                  Heads up: without the converter the lamp will not work.
+                </span>
+              )}
+            </span>
+          </div>
+        </label>
+      )}
 
       <div className="flex items-stretch gap-3">
         <div className="flex items-center rounded-full border border-border-strong">

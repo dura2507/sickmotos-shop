@@ -371,7 +371,16 @@ export type CardProduct = {
   fits: string[];
   years: number[];
   models: string[];
+  // Storefront variant gid of the first available variant. Needed for
+  // one-click auto-add flows (e.g. lamp -> converter) where we don't want
+  // the customer to first click through to the product page.
+  defaultVariantGid: string | null;
 };
+
+function defaultVariantGid(p: ShopifyProduct): string | null {
+  const v = p.variants.find((x) => x.available) ?? p.variants[0];
+  return v ? `gid://shopify/ProductVariant/${v.id}` : null;
+}
 
 export function toCard(p: ShopifyProduct): CardProduct {
   const { price, compareAt } = getPrice(p);
@@ -387,6 +396,7 @@ export function toCard(p: ShopifyProduct): CardProduct {
     fits: p.options[0]?.values.slice(0, 4) ?? [],
     years: getYears(p),
     models: getModels(p),
+    defaultVariantGid: defaultVariantGid(p),
   };
 }
 

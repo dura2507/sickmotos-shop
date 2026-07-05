@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { trackBeginCheckout } from "@/lib/analytics";
+import { isConverter, isLamp } from "@/lib/essentials";
 import { leadTimeForTitle } from "@/lib/leadTime";
 import {
   fetchCart,
@@ -117,6 +118,21 @@ export function CartDrawer({ open, onClose }: Props) {
   if (!mounted || !open) return null;
 
   const isEmpty = !cart || cart.lines.nodes.length === 0;
+
+  // Warn if a lamp is in the cart without its converter. The lamp physically
+  // does not work without a converter, so we shout about it (accent red) so
+  // the customer can add one back before they check out.
+  const lampWithoutConverter = (() => {
+    if (!cart) return false;
+    const lamps = cart.lines.nodes.filter((l) =>
+      isLamp(l.merchandise.product.handle, l.merchandise.product.title)
+    );
+    if (lamps.length === 0) return false;
+    const hasConverter = cart.lines.nodes.some((l) =>
+      isConverter(l.merchandise.product.handle, l.merchandise.product.title)
+    );
+    return !hasConverter;
+  })();
 
   return createPortal(
     <div
@@ -336,6 +352,28 @@ export function CartDrawer({ open, onClose }: Props) {
         {/* Footer */}
         {!isEmpty && (
           <div className="border-t border-border p-5">
+            {lampWithoutConverter && (
+              <div className="mb-3 flex items-start gap-2 rounded-lg border border-accent bg-accent/10 p-3 text-xs text-fg">
+                <svg viewBox="0 0 24 24" className="mt-0.5 size-4 shrink-0 text-accent" fill="none" stroke="currentColor" strokeWidth={2}>
+                  <path d="M12 9v4M12 17h.01" strokeLinecap="round" />
+                  <path d="M10.3 3.9L2.5 17a2 2 0 001.7 3h15.6a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z" strokeLinejoin="round" />
+                </svg>
+                <div>
+                  <p className="font-bold text-accent">Your LED will not work.</p>
+                  <p className="mt-0.5 text-fg-muted">
+                    You have a LED headlight in your cart but no converter. The lamp physically will not turn on without one. Please add the matching converter before checkout.
+                  </p>
+                </div>
+              </div>
+            )}
+            <div className="mb-3 flex flex-col gap-1.5 rounded-lg border border-border bg-surface/50 p-3 text-[11px] text-fg-muted">
+              <p>
+                <span className="font-semibold text-fg">Double-check your address</span> at checkout, street and house number must both be filled in.
+              </p>
+              <p>
+                <span className="font-semibold text-fg">No email means no order tracking.</span> Please provide one so you get shipping updates.
+              </p>
+            </div>
             <div className="mb-3 flex items-baseline justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-fg-muted">
                 Subtotal

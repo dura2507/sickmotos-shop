@@ -12,6 +12,7 @@ import {
   fmtEUR,
 } from "@/lib/products";
 import { leadTimeFor } from "@/lib/leadTime";
+import { readBikes, subscribeBikes, type Bike } from "@/lib/myBikes";
 import { CustomSelect } from "../_components/CustomSelect";
 import { BikeFinder } from "./BikeFinder";
 
@@ -58,6 +59,14 @@ export function ShopBrowser({
   const [inStockOnly, setInStockOnly] = useState(true);
   const [sort, setSort] = useState<SortKey>("popular");
   const [drawerOpen, setDrawerOpen] = useState(false);
+  // "Fit to my bikes" — filter the grid to parts that fit ANY bike the customer
+  // has saved in their garage. Read from localStorage so no server roundtrip.
+  const [savedBikes, setSavedBikes] = useState<Bike[]>([]);
+  const [garageFilter, setGarageFilter] = useState<Bike[]>([]);
+  useEffect(() => {
+    setSavedBikes(readBikes());
+    return subscribeBikes(() => setSavedBikes(readBikes()));
+  }, []);
 
   // Next does not remount on query-only navigation, so we re-sync state when
   // the URL changes (header tab, hero picker, brand chip, etc).
@@ -78,17 +87,31 @@ export function ShopBrowser({
     if (activeCategories.size > 0) {
       list = list.filter((p) => activeCategories.has(p.category));
     }
-    if (bikeBrand) {
-      list = list.filter((p) => p.brands.includes(bikeBrand as BikeBrand));
-    }
-    if (bikeYear) {
-      list = list.filter((p) => p.years.includes(bikeYear));
-    }
-    if (bikeModel) {
-      const m = bikeModel.toLowerCase();
+    if (garageFilter.length > 0) {
+      // Fit to any of the customer's saved bikes: brand match is the primary
+      // criterion, year narrows further when the product has a known year list.
+      // Model-string matching is intentionally NOT strict here because product
+      // model tags and bike model strings don't share a canonical form.
       list = list.filter((p) =>
-        p.models.some((mm) => mm.toLowerCase() === m)
+        garageFilter.some((b) => {
+          if (!p.brands.includes(b.brand as BikeBrand)) return false;
+          if (b.year && p.years.length > 0 && !p.years.includes(b.year)) return false;
+          return true;
+        })
       );
+    } else {
+      if (bikeBrand) {
+        list = list.filter((p) => p.brands.includes(bikeBrand as BikeBrand));
+      }
+      if (bikeYear) {
+        list = list.filter((p) => p.years.includes(bikeYear));
+      }
+      if (bikeModel) {
+        const m = bikeModel.toLowerCase();
+        list = list.filter((p) =>
+          p.models.some((mm) => mm.toLowerCase() === m)
+        );
+      }
     }
     if (onSaleOnly) {
       list = list.filter((p) => p.compareAt && p.compareAt > p.price);
@@ -120,7 +143,7 @@ export function ShopBrowser({
         break;
     }
     return list;
-  }, [products, activeCategories, bikeBrand, bikeYear, bikeModel, onSaleOnly, inStockOnly, search, sort]);
+  }, [products, activeCategories, bikeBrand, bikeYear, bikeModel, garageFilter, onSaleOnly, inStockOnly, search, sort]);
 
   const toggle = (
     set: Set<string>,
@@ -211,6 +234,47 @@ export function ShopBrowser({
         </p>
       </div>
 
+      {savedBikes.length > 0 && (
+        <div className="mb-4 flex flex-col gap-2.5 rounded-2xl border border-accent/40 bg-accent/[0.06] p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap items-center gap-2">
+            <svg viewBox="0 0 24 24" className="size-4 text-accent" fill="none" stroke="currentColor" strokeWidth={2}>
+              <circle cx="6" cy="17" r="4" />
+              <circle cx="18" cy="17" r="4" />
+              <path d="M6 17l4-7h5l3 7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <span className="text-sm font-semibold text-fg">Your garage</span>
+            <span className="text-xs text-fg-muted">
+              {savedBikes.length} bike{savedBikes.length === 1 ? "" : "s"} saved
+            </span>
+          </div>
+          {garageFilter.length === 0 ? (
+            <button
+              type="button"
+              onClick={() => {
+                setGarageFilter(savedBikes);
+                setBikeBrand(null);
+                setBikeYear(null);
+                setBikeModel(null);
+              }}
+              className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-fg transition-colors hover:bg-accent-hi"
+            >
+              Show what fits
+              <svg viewBox="0 0 24 24" className="size-3.5" fill="none" stroke="currentColor" strokeWidth={2.4}>
+                <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setGarageFilter([])}
+              className="inline-flex items-center gap-2 rounded-full border border-accent/60 bg-transparent px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-accent transition-colors hover:bg-accent/10"
+            >
+              Show all again
+            </button>
+          )}
+        </div>
+      )}
+
       <BikeFinder
         brands={brandList}
         years={years}
@@ -289,6 +353,15 @@ export function ShopBrowser({
             {activeFilterCount > 0 && (
               <span className="text-xs text-fg-dim">·</span>
             )}
+            {garageFilter.map((b) => (
+              <FilterChip
+                key={`garage-${b.id}`}
+                label={`${b.brand} ${b.model}`}
+                onRemove={() =>
+                  setGarageFilter((prev) => prev.filter((x) => x.id !== b.id))
+                }
+              />
+            ))}
             {Array.from(activeCategories).map((c) => (
               <FilterChip
                 key={`cat-${c}`}

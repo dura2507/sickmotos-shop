@@ -76,6 +76,29 @@ export default async function AccountPage() {
       </header>
 
       <section className="mb-10">
+        <Link
+          href="/account/bikes"
+          className="group mb-8 flex items-center gap-4 rounded-2xl border border-accent/40 bg-accent/[0.06] p-5 transition-colors hover:border-accent"
+        >
+          <span className="grid size-12 shrink-0 place-items-center rounded-full bg-accent/15 text-accent">
+            <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth={2}>
+              <circle cx="6" cy="17" r="4" />
+              <circle cx="18" cy="17" r="4" />
+              <path d="M6 17l4-7h5l3 7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+          <div className="flex-1">
+            <p className="font-display text-lg uppercase tracking-tight text-fg">
+              My garage
+            </p>
+            <p className="text-xs text-fg-muted">
+              Save your bikes so every list can show only what fits.
+            </p>
+          </div>
+          <svg viewBox="0 0 24 24" className="size-5 text-fg-muted transition-colors group-hover:text-accent" fill="none" stroke="currentColor" strokeWidth={2}>
+            <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </Link>
         <div className="mb-4 flex items-baseline justify-between">
           <h2 className="font-display text-2xl uppercase tracking-tight md:text-3xl">
             Recent orders

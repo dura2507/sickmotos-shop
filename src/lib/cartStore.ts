@@ -64,10 +64,17 @@ export async function fetchCart(): Promise<Cart | null> {
 }
 
 export async function addToCart(line: CartLineInput): Promise<Cart> {
+  return addLinesToCart([line]);
+}
+
+// Add multiple lines in one round-trip. Used for the lamp-plus-converter auto
+// bundle: we want a single cart mutation so the user never sees a half-added
+// state and the converter can't be dropped by a transient error.
+export async function addLinesToCart(lines: CartLineInput[]): Promise<Cart> {
   const cartId = readId();
   const { cart } = await api<{ cart: Cart }>("POST", {
     cartId: cartId ?? undefined,
-    lines: [line],
+    lines,
   });
   writeId(cart.id);
   return cart;

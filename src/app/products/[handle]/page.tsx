@@ -7,6 +7,7 @@ import { InfoTabs } from "./InfoTabs";
 import { Related } from "./Related";
 import { AddOns } from "./AddOns";
 import { VariantImageProvider } from "./VariantImageContext";
+import { isLamp } from "@/lib/essentials";
 import {
   cleanTitle,
   getPrice,
@@ -180,7 +181,10 @@ export default async function ProductPage({
             </div>
             <div className="min-w-0 md:sticky md:top-32 md:self-start">
               <PurchasePanel product={product} />
-              <AddOns items={product.addOns} />
+              <AddOns
+                items={product.addOns}
+                lampAutoBundled={isLamp(product.handle, product.title, product.category)}
+              />
             </div>
           </div>
         </VariantImageProvider>
