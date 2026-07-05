@@ -44,7 +44,7 @@ export function TestCenter() {
           <p className="text-sm text-fg-muted md:text-base">
             On holiday near Zadar? Our motorcycle rental doubles as a live
             test center for the full SickMotos spec. Throw a leg over a tuned
-            Beta or Fantic 125, feel the Krummer and the LED hexagon on real
+            Beta or Fantic 125, feel the Krümmer and the LED hexagon on real
             Croatian coastline, then order the exact configuration you just
             rode. The same crew that builds the parts maintains the fleet.
           </p>

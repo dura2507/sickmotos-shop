@@ -24,7 +24,7 @@ const parts: Part[] = [
   },
   {
     label: "Race hardware",
-    title: "Titanium Krummer, handmade",
+    title: "Titanium Krümmer, handmade",
     pitch:
       "Bent by hand, TIG-welded, heat-blued. Audible torque gain on the Beta and Fantic 125 4-stroke.",
     href: "/shop?category=Exhaust",
@@ -36,7 +36,7 @@ const parts: Part[] = [
     label: "Fuel & ECU",
     title: "FuelX & ECU tuning",
     pitch:
-      "Live air-fuel correction without losing the OEM map. Dialed in to match the Krummer for crisper throttle.",
+      "Live air-fuel correction without losing the OEM map. Dialed in to match the Krümmer for crisper throttle.",
     href: "/shop?category=ECU+Tuning",
     src: "https://cdn.shopify.com/s/files/1/0534/7380/4477/files/49FB8537-7656-4EFF-9152-C222480A77E3.webp?v=1750938873",
     alt: "FuelX Autotune module for live air-fuel correction",
