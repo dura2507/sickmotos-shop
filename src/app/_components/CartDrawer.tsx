@@ -366,13 +366,32 @@ export function CartDrawer({ open, onClose }: Props) {
                 </div>
               </div>
             )}
-            <div className="mb-3 flex flex-col gap-1.5 rounded-lg border border-border bg-surface/50 p-3 text-[11px] text-fg-muted">
-              <p>
-                <span className="font-semibold text-fg">Double-check your address</span> at checkout, street and house number must both be filled in.
+            <div className="mb-3 flex flex-col gap-2.5 rounded-xl border-2 border-accent/60 bg-accent/[0.08] p-3.5 text-xs text-fg">
+              <p className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.15em] text-accent">
+                <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={2.4}>
+                  <path d="M12 9v4M12 17h.01" strokeLinecap="round" />
+                  <circle cx="12" cy="12" r="9" />
+                </svg>
+                Before you continue, please check
               </p>
-              <p>
-                <span className="font-semibold text-fg">No email means no order tracking.</span> Please provide one so you get shipping updates.
-              </p>
+              <div className="flex items-start gap-2.5">
+                <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-accent text-[10px] font-bold text-fg">1</span>
+                <p className="leading-snug">
+                  <span className="font-bold text-fg">Full address, including house number.</span>{" "}
+                  <span className="text-fg-muted">
+                    Missing house number is our #1 delivery problem. Street, house number, postcode, city, country — nothing may be blank.
+                  </span>
+                </p>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-accent text-[10px] font-bold text-fg">2</span>
+                <p className="leading-snug">
+                  <span className="font-bold text-fg">Enter a real email address.</span>{" "}
+                  <span className="text-fg-muted">
+                    Without one there is <span className="font-bold text-accent">no shipping tracking</span> and no order updates. You will not know when your parts arrive.
+                  </span>
+                </p>
+              </div>
             </div>
             <div className="mb-3 flex items-baseline justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-fg-muted">
