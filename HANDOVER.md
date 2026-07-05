@@ -1,6 +1,6 @@
 # SickMotos Shop — Handover
 
-Last updated: 2026-06-28
+Last updated: 2026-07-06
 
 Headless storefront that replaces the Shopify-themed shop at sick-motos.com.
 Client: Thomas Krawietz. Performance parts for supermoto / enduro.
@@ -53,7 +53,7 @@ TELEGRAM_BOT_TOKEN=...             # only for the feedback-poll workflow, not th
   (per-product cross-sell, scraped 1:1 from the old site), `fitment.json` ("Fits on"
   model lists), `bestsellers.json` (featured top-5), `legal/*.md` (policy texts).
 - `src/lib/products.ts` is the data layer: categorize(), ADDON_MAP, FITMENT_MAP,
-  BIKE_BRANDS, getTopSelling(), DetailViewModel.
+  BIKE_BRANDS, getTopSelling(), DetailViewModel, defaultVariantGid on CardProduct.
 - Legal pages render markdown from `src/data/legal/*.md` via `src/app/legal/`.
 
 ## 4. SickBot (support chat)
@@ -69,6 +69,11 @@ TELEGRAM_BOT_TOKEN=...             # only for the feedback-poll workflow, not th
   spaced hyphen " - "), basically no emojis.
 - Top real questions (from Shopify Inbox): #1 LED converter vs Akku set; made-to-order
   timing; fitment (H4/H1); returns; pricing.
+- Akku-Set logic per Thomas: Akku Set needed when bike is modified (removed limiter,
+  tuning header, big-bore cylinder, tuned charging system or regulator) OR when the
+  model has no battery from the factory. Otherwise the Converter (3-pin or 4-pin).
+- Returns are **email-registration only**. Bot never posts a physical return address;
+  it directs customers to email `SickMotos-styles@freenet.de` with their order number.
 
 ## 5. Status: done
 
@@ -78,50 +83,70 @@ TELEGRAM_BOT_TOKEN=...             # only for the feedback-poll workflow, not th
 - 11 Shopify email templates branded + checkout branding done.
 - SickBot live (red-header design, registration-based returns answer, Akku logic).
 - Promo bar targets new customers ("New here? 5% off your first order").
+- **Made-to-order UX** (`src/lib/leadTime.ts`): made-to-order badge + lead time for
+  LED lamps and titanium headers (~2-3 weeks) and a highlighted "made to order,
+  6+ weeks" notice for wheels on the product page, in the shop grid, and per line
+  in the cart. No fake stock counters.
+- **301 redirects** old Shopify URLs -> new routes in `next.config.ts` (308, verified).
+- **Analytics wired**: GTM Consent Mode v2 default DENIED before gtm.js loads; cookie
+  banner (`CookieConsent.tsx`) writes consent update on Accept / Only-essential; GA4
+  `view_item`, `add_to_cart`, `begin_checkout` events. Plausible fallback via env.
+- **Converter guard-rail** (Thomas): on LED lamp product pages a red "REQUIRED"
+  checkbox pre-adds the matching converter when the customer clicks Add-to-cart;
+  cart drawer shows a red "Your LED will not work." banner if a lamp is in the
+  cart without a converter. `src/lib/essentials.ts` + `PurchasePanel.tsx` +
+  `CartDrawer.tsx` + `addLinesToCart()` in `cartStore.ts`.
+- **My garage** (Thomas): `/account/bikes` lets riders save their bikes (brand /
+  model / year) in localStorage; ShopBrowser shows a "Your garage · N bikes saved
+  · Show what fits" tile that filters the grid to matching brand + year. Not
+  synced across devices (localStorage-only); post-launch sync via Shopify
+  customer metafield is deferred unless data shows it's needed.
+- **Idiot-proof cart warnings** (Thomas): red-framed "Before you continue, please
+  check" panel above the Checkout button with two numbered items — (1) full
+  address including house number, (2) enter a real email or you get no tracking.
+- **Public return address removed** everywhere on our side (widerruf.md, Shopify
+  Refund policy). Returns run by email registration only. Impressum still lists
+  the business address (§ 5 TMG requirement).
+- **Krümmer typo fix**: user-facing "Krummer" strings replaced with "Krümmer" on
+  Signature parts, Featured builds, Test center cards.
 
 ## 6. Pending before go-live
 
-**Code:**
-- [x] Honest made-to-order / low-stock UX (`src/lib/leadTime.ts`): made-to-order badge +
-      lead time for LED lamps & titanium headers (~2-3 weeks) and a highlighted "made to
-      order, 6+ weeks" notice for wheels on the product page, in the shop grid, and per
-      line in the cart. No fake stock counters.
-- [x] **301 redirects** old Shopify URLs -> new routes in `next.config.ts` (308, verified).
-- [ ] Cookie-consent banner on this site once analytics is enabled (the Shopify theme's
-      consent app does not run headless).
-- [ ] Reviews are static; Judge.me/Trustpilot are Shopify-theme apps and won't render
-      headless. Decide: keep static or integrate via API.
+**Code / repo:**
+- [ ] Reviews on the site are static; Judge.me/Trustpilot are Shopify-theme apps
+      and won't render headless. Decide: keep static or integrate via API.
+- [ ] Optional: remove unused `WhatsAppFloat.tsx`.
 
 **Shopify admin:**
-- [x] Reverted the Return & refund policy address back to the Zadar address.
-- [x] EXTRA5 limited to new customers ("Customers who haven't purchased") and
-      one use per customer. TODO with Thomas: today it only applies to
-      11 specific collections (his original setup); clarify whether this stays
-      or should be widened to "All products".
-- [ ] Confirm Thomas receives order notifications.
-- [ ] Klarna: separate Shopify Payment method still to be enabled and connected
-      to Thomas's Klarna merchant account.
+- [x] Return & refund policy: address removed, email-registration wording.
+- [x] EXTRA5 limited to "Customers who haven't purchased" + one use per customer.
+      TODO with Thomas: today it only applies to 11 specific collections (his
+      original setup); clarify whether this stays or should be widened to "All
+      products".
+- [x] Confirmed Thomas receives order notifications (email + iPhone push, all orders).
+- [ ] Klarna: enable in Settings -> Payments -> Add payment method, requires a
+      Klarna merchant account on Klarna's side. Thomas can add it any time after
+      launch, it does not block go-live.
 
 **Go-live (technical):**
-- [ ] Full Vercel prod env (Shopify tokens, `SHOPIFY_MARKET_COUNTRY=DE`,
-      `ANTHROPIC_API_KEY`, analytics id).
-- [ ] Stage on `new.sick-motos.com` (CNAME -> `cname.vercel-dns.com`), then DNS switch:
-      apex A `23.227.38.32` -> `76.76.21.21`, www CNAME -> `cname.vercel-dns.com`
+- [ ] End-to-end test order via a 100%-discount code (not Shopify test mode,
+      which would disturb the still-live old store; gateway is Viva.com). Then
+      one real low-value order + refund as the final proof. Test mobile + desktop.
+- [ ] Stage on `new.sick-motos.com` (CNAME -> `cname.vercel-dns.com`), then DNS
+      switch: apex A `23.227.38.32` -> `76.76.21.21`, www CNAME -> `cname.vercel-dns.com`
       (GoDaddy). Lower TTL first. Keep the old shop as fallback for rollback.
-- [ ] End-to-end test order via a 100%-discount code (not Shopify test mode, which would
-      disturb the still-live old store; gateway is Viva.com). Then one real low-value
-      order + refund as the final proof. Test mobile + desktop.
+- [ ] Vercel prod env is complete (Shopify tokens, `SHOPIFY_MARKET_COUNTRY=DE`,
+      `ANTHROPIC_API_KEY`, GTM + Plausible ids). Verified.
 
 **Marketing / tracking:**
 - [ ] Conversion tracking across the headless/checkout boundary (critical for ads).
+      Set up in GTM after DNS switch.
 - [ ] Google Merchant Center feed on the new domain; Search Console sitemap post-DNS.
-- [ ] Analytics: pick GTM or Plausible, set the id in Vercel.
 - [ ] Google Ads: external contractor runs a 1-month trial, then reassess in-house.
       Keep Thomas as owner of all Google accounts; contractor only as a manager.
 
 **Security / housekeeping:**
 - [ ] Rotate `ANTHROPIC_API_KEY`.
-- [ ] Optional: remove unused `WhatsAppFloat.tsx`.
 
 ## 7. External systems
 
@@ -129,7 +154,7 @@ TELEGRAM_BOT_TOKEN=...             # only for the feedback-poll workflow, not th
   Fulfillment in-house (Thomas ships). Shopify Inbox is the real customer-Q&A source.
 - **Domain**: sick-motos.com on GoDaddy, DNS switch to Vercel pending (see §6).
 - **Google**: Merchant Center + Ads (feed apps "Nabu for Google Feed" / "Casa Google
-  Shopping" already installed).
+  Shopping" already installed on the old Shopify theme).
 - **Telegram**: client feedback flows through a monitoring bot in a shop group; used to
   collect Thomas's instructions. Token lives only in `.env.local`, never in git.
 
@@ -139,13 +164,26 @@ TELEGRAM_BOT_TOKEN=...             # only for the feedback-poll workflow, not th
   unfair commercial practice under the German UWG / EU Omnibus directive (abmahnbar).
   Use truthful made-to-order messaging instead (these items genuinely are built to
   order), which delivers the same urgency legally.
-- **Returns by registration is fine; do not obstruct returns.** Routing returns through
-  an email registration (customer emails for the return address) is a normal RMA flow.
-  Deliberately hiding the address behind a broken/unsolvable captcha is not acceptable:
-  the 14-day right of withdrawal is protected, and the Widerrufsbelehrung/Impressum must
-  legally contain a contact address (Art. 246a EGBGB). Keep the required address in the
-  legal pages; run the operational flow via email registration.
-- **Returns rules (per Thomas):** customer pays return shipping; used electronics are not
-  returnable (new/unused electronics are); electronics returns may incur testing /
-  repackaging / storage costs. Align the legal Widerruf text with "only USED electronics
-  excluded" (currently it reads as all electronics).
+- **Returns by email registration only.** No physical return address is published on
+  our public site or in the Shopify Refund policy — customers must email to receive
+  it. The Impressum still lists the business address (Obere Str. 18, Pöttmes) which
+  satisfies § 5 TMG and Art. 246a EGBGB; withdrawal declarations go there.
+- **Returns rules (per Thomas):** customer pays return shipping; sale items, gift
+  cards, custom items and electronic items are non-returnable (matches the original
+  written policy). Electronics returns can incur testing / repackaging / storage costs.
+
+## 9. Post-launch cleanup (money and hygiene)
+
+Once the DNS points to Vercel and the old Shopify shop is not in use anymore:
+
+- **Uninstall two paid Shopify apps** the new site replaces; they only exist for the
+  old theme. Saves **$58/month (~€650/year)** for Thomas:
+  - `EasySearch - YMM` — $19/mo. Year/Make/Model bike filter widget. Replaced by
+    our built-in Bike Finder (`/shop`) and My Garage (`/account/bikes`).
+  - `Instant AI Page Builder` — $39/mo. Drag-and-drop landing pages on the theme.
+    Replaced by our coded pages.
+- **Do NOT uninstall before the old shop is fully offline** — DNS rollback would
+  break those widgets on the fallback shop otherwise. Order: (1) DNS switch stable
+  for a week, (2) uninstall apps.
+- Consider whether to uninstall the model-filter app / other apps that Thomas
+  never actually used.
