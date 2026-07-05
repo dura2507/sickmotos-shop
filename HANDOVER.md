@@ -93,10 +93,14 @@ TELEGRAM_BOT_TOKEN=...             # only for the feedback-poll workflow, not th
       headless. Decide: keep static or integrate via API.
 
 **Shopify admin:**
-- [ ] Revert the Return & refund policy address back to the Zadar address (it was
-      temporarily changed to Pöttmes). Repo `widerruf.md` is already correct (Zadar).
-- [ ] Limit discount code EXTRA5 to new customers / one per customer.
+- [x] Reverted the Return & refund policy address back to the Zadar address.
+- [x] EXTRA5 limited to new customers ("Customers who haven't purchased") and
+      one use per customer. TODO with Thomas: today it only applies to
+      11 specific collections (his original setup); clarify whether this stays
+      or should be widened to "All products".
 - [ ] Confirm Thomas receives order notifications.
+- [ ] Klarna: separate Shopify Payment method still to be enabled and connected
+      to Thomas's Klarna merchant account.
 
 **Go-live (technical):**
 - [ ] Full Vercel prod env (Shopify tokens, `SHOPIFY_MARKET_COUNTRY=DE`,
