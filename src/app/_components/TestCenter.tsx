@@ -50,8 +50,8 @@ export function TestCenter() {
           </p>
           <ul className="grid gap-2 text-sm text-fg-muted sm:grid-cols-2">
             {[
-              "Beta RR 125 SickBuild",
-              "Fantic XEF / XMF 125 SickBuild",
+              "Beta RR 1XX LC SickMotos Build",
+              "KTM Duke 125 / 390 SickMotos Mapping and Exhaust System",
               "By the day or by the week",
               "One-click ordering of the ridden spec",
             ].map((line) => (

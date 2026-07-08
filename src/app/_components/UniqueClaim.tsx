@@ -12,7 +12,7 @@ const points = [
   },
   {
     label: "Hexagon Angel Eye",
-    text: "RGBW colour ring or hexagon via app control. All-white daytime low beam, all-white night-ride high beam, plus a stealth mode to hide it via the app. E-marking: small.",
+    text: "RGBW colour ring or hexagon via app control. All-white daytime low beam, all-white night-ride high beam, plus a stealth mode to hide it via the app. E-marking.",
   },
   {
     label: "FuelX & ECU tuning",
