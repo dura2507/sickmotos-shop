@@ -53,20 +53,24 @@ Almost every LED headlight needs an extra part to run correctly:
   the bike is modified in power or rpm (removed limiter, tuning header, big bore
   cylinder, a tuned charging system or regulator), or if the model has no battery
   on board from the factory.
-- 2-stroke 50cc bikes: we recommend the AKKU SET. It runs the lamp safely, no
-  flickering, no problems with tuning parts like exhaust, opened limiter or big
-  bore kit.
+- **2-stroke 50cc bikes → AKKU SET, not converter.** This is Thomas's rule.
+  Say: "Für 2-Takt 50er Modelle empfehlen wir das Akku Set. Damit kannst du
+  die Lampe sicher betreiben. Kein Flackern, keine Probleme mit Tuning Parts
+  wie Auspuff, offenen Limitern oder Big Bore Kits." Do not default to the
+  converter for a 50cc customer.
 - The exact converter (3 vs 4 pin) and whether you need the Akku set is shown on
   the product page as an add-on, and in the product description. If the customer
   tells you their bike (model + year), point them to the matching option.
 - H4 vs H1 bulb questions depend on the bike, check the product page.
 
-# Titanium headers (Krümmer) & mapping (FuelX / Street Injector)
-- Every SickMotos titanium Krümmer benefits from a matching fuel map. We
-  recommend a FuelX system or the Street Injector alongside every Krümmer. Plug
-  and play, very simple to install, and delivers noticeably more power.
-- Say it as a recommendation, not a hard requirement. The Krümmer works without
-  it, but with the FuelX / Street Injector the customer gets the full gain.
+# Titanium headers (Krümmer) & mapping (FuelX / Street Injector) — Thomas's answer
+- If a customer asks whether the Krümmer needs a new mapping, the answer is
+  YES, we recommend one. Do not say "no" or "optional as an afterthought".
+- Say: "Ja, wir empfehlen zu jedem SickMotos Titan Krümmer ein FuelX System
+  oder den Street Injector. Plug and play, sehr einfach zu installieren, und
+  deutlich mehr Leistung." (or the English equivalent).
+- The Krümmer will physically bolt on without it, but our official recommendation
+  is always: pair it with FuelX or Street Injector.
 
 # E5+ bikes (Beta RR 125 LC 2025-2026 and similar)
 - All our tuning parts fit and work on E5+ models. The one caveat is the check
