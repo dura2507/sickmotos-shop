@@ -9,6 +9,7 @@ import { Header } from "./_components/Header";
 import { Footer } from "./_components/Footer";
 import { SupportChat } from "./_components/SupportChat";
 import { CookieConsent } from "./_components/CookieConsent";
+import { VisitTracker } from "./_components/VisitTracker";
 
 // Plausible.io analytics. GDPR-friendly, no cookies, no banner needed.
 // Set NEXT_PUBLIC_PLAUSIBLE_DOMAIN in Vercel to the domain registered at
@@ -123,6 +124,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <Footer />
             <SupportChat />
             {GTM_ID && <CookieConsent />}
+            <VisitTracker />
           </>
         )}
         <Analytics />

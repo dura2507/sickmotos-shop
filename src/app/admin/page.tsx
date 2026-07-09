@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { isPersistent, listConversations } from "@/lib/adminStore";
+import { loadAnalytics } from "@/lib/analyticsStore";
 
 export const dynamic = "force-dynamic";
 
@@ -37,8 +38,14 @@ function StatCard({
 }
 
 export default async function AdminHome() {
-  const conversations = await listConversations(200);
+  const [conversations, analytics] = await Promise.all([
+    listConversations(200),
+    loadAnalytics(),
+  ]);
   const persistent = isPersistent();
+  const maxDay = analytics.perDay.reduce((m, d) => Math.max(m, d.views), 0);
+  const todaysVisitors = analytics.perDay[analytics.perDay.length - 1]?.visitors ?? 0;
+  const todaysViews = analytics.perDay[analytics.perDay.length - 1]?.views ?? 0;
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -86,6 +93,16 @@ export default async function AdminHome() {
 
       <section className="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatCard
+          label="Besucher heute"
+          value={String(todaysVisitors)}
+          sub={`${todaysViews} Seitenaufrufe`}
+        />
+        <StatCard
+          label="Besucher 7 Tage"
+          value={String(analytics.totalVisitors7d)}
+          sub={`${analytics.totalViews7d} Seitenaufrufe`}
+        />
+        <StatCard
           label="Chats heute"
           value={String(chatsToday)}
           sub={`${chats7d} in den letzten 7 Tagen`}
@@ -95,6 +112,56 @@ export default async function AdminHome() {
           value={String(unreviewed)}
           sub={unreviewed > 0 ? "wollen deine Aufmerksamkeit" : "alles sauber"}
         />
+      </section>
+
+      <section className="mb-8 rounded-xl border border-border bg-surface/40 p-4">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-[10px] font-bold uppercase tracking-[0.15em] text-fg-dim">
+            Besucher letzte 30 Tage
+          </h2>
+          <Link
+            href="/admin/visitors"
+            className="text-[11px] font-bold uppercase tracking-widest text-accent hover:text-accent-hi"
+          >
+            Details →
+          </Link>
+        </div>
+        {maxDay === 0 ? (
+          <p className="text-xs text-fg-muted">
+            Noch keine Besuche gezählt. Sobald jemand die Seite aufruft,
+            erscheint hier ein Balken.
+          </p>
+        ) : (
+          <>
+            <div className="flex h-24 items-end gap-1">
+              {analytics.perDay.map((d) => {
+                const heightPct = maxDay > 0 ? (d.views / maxDay) * 100 : 0;
+                return (
+                  <div
+                    key={d.date}
+                    className="group relative flex h-full flex-1 flex-col items-center justify-end"
+                    title={`${d.date}: ${d.views} Aufrufe · ${d.visitors} Besucher`}
+                  >
+                    <div
+                      className="w-full bg-accent/70 transition-colors hover:bg-accent"
+                      style={{
+                        height: `${heightPct}%`,
+                        minHeight: d.views > 0 ? "2px" : "0",
+                      }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-2 flex justify-between font-mono text-[10px] text-fg-dim">
+              <span>{analytics.perDay[0]?.date.slice(5)}</span>
+              <span>heute</span>
+            </div>
+          </>
+        )}
+      </section>
+
+      <section className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatCard
           label="Ø Nachrichten/Chat"
           value={avgMsgs}
@@ -104,6 +171,30 @@ export default async function AdminHome() {
           label="Chats gesamt"
           value={String(conversations.length)}
           sub="in Live-Ansicht"
+        />
+        <StatCard
+          label="Top-Land 30 T"
+          value={
+            analytics.topCountries[0]?.key === "??"
+              ? "?"
+              : analytics.topCountries[0]?.key ?? "—"
+          }
+          sub={
+            analytics.topCountries[0]
+              ? `${analytics.topCountries[0].views} Aufrufe`
+              : "keine Daten"
+          }
+        />
+        <StatCard
+          label="Top-Referrer 30 T"
+          value={
+            analytics.topReferrers[0]?.key.slice(0, 12) ?? "—"
+          }
+          sub={
+            analytics.topReferrers[0]
+              ? `${analytics.topReferrers[0].views} Aufrufe`
+              : "keine Daten"
+          }
         />
       </section>
 
