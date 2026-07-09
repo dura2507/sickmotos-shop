@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { isPersistent, listConversations } from "@/lib/adminStore";
 import { loadAnalytics } from "@/lib/analyticsStore";
+import { loadOrdersSnapshot, formatEUR, customerName } from "@/lib/orders";
 
 export const dynamic = "force-dynamic";
 
@@ -38,9 +39,10 @@ function StatCard({
 }
 
 export default async function AdminHome() {
-  const [conversations, analytics] = await Promise.all([
+  const [conversations, analytics, orders] = await Promise.all([
     listConversations(200),
     loadAnalytics(),
+    loadOrdersSnapshot(),
   ]);
   const persistent = isPersistent();
   const maxDay = analytics.perDay.reduce((m, d) => Math.max(m, d.views), 0);
@@ -93,14 +95,18 @@ export default async function AdminHome() {
 
       <section className="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatCard
+          label="Umsatz heute"
+          value={formatEUR(orders.todayRevenueEUR)}
+          sub={
+            orders.todayOrderCount === 1
+              ? "1 Bestellung"
+              : `${orders.todayOrderCount} Bestellungen`
+          }
+        />
+        <StatCard
           label="Besucher heute"
           value={String(todaysVisitors)}
           sub={`${todaysViews} Seitenaufrufe`}
-        />
-        <StatCard
-          label="Besucher 7 Tage"
-          value={String(analytics.totalVisitors7d)}
-          sub={`${analytics.totalViews7d} Seitenaufrufe`}
         />
         <StatCard
           label="Chats heute"
@@ -111,6 +117,24 @@ export default async function AdminHome() {
           label="Ungelesen"
           value={String(unreviewed)}
           sub={unreviewed > 0 ? "wollen deine Aufmerksamkeit" : "alles sauber"}
+        />
+      </section>
+
+      <section className="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-3">
+        <StatCard
+          label="Umsatz 7 Tage"
+          value={formatEUR(orders.revenue7dEUR)}
+          sub={`${orders.orders7dCount} Bestellungen`}
+        />
+        <StatCard
+          label="Umsatz 30 Tage"
+          value={formatEUR(orders.revenue30dEUR)}
+          sub={`${orders.orders30dCount} Bestellungen`}
+        />
+        <StatCard
+          label="Besucher 7 Tage"
+          value={String(analytics.totalVisitors7d)}
+          sub={`${analytics.totalViews7d} Seitenaufrufe`}
         />
       </section>
 
@@ -197,6 +221,50 @@ export default async function AdminHome() {
           }
         />
       </section>
+
+      {orders.recent.length > 0 && (
+        <section className="mb-6 rounded-xl border border-border bg-surface/40">
+          <div className="flex items-center justify-between border-b border-border px-4 py-3">
+            <h2 className="text-xs font-bold uppercase tracking-[0.12em] text-fg">
+              Neueste Bestellungen
+            </h2>
+            <Link
+              href="/admin/orders"
+              className="text-[11px] font-bold uppercase tracking-widest text-accent hover:text-accent-hi"
+            >
+              Alle anzeigen →
+            </Link>
+          </div>
+          <ul className="divide-y divide-border">
+            {orders.recent.slice(0, 5).map((o) => {
+              const t = new Date(o.createdAt).toLocaleString("de-DE", {
+                day: "2-digit",
+                month: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+              return (
+                <li key={o.id} className="flex items-center gap-3 px-4 py-3">
+                  <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-sm font-semibold text-fg">
+                        {o.name}
+                      </span>
+                      <span className="text-xs text-fg-muted line-clamp-1">
+                        {customerName(o)}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-fg-dim">{t}</p>
+                  </div>
+                  <p className="shrink-0 font-mono text-sm font-bold text-fg tabular-nums">
+                    {formatEUR(Number.parseFloat(o.totalPrice.amount))}
+                  </p>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
 
       <section className="rounded-xl border border-border bg-surface/40">
         <div className="flex items-center justify-between border-b border-border px-4 py-3">
