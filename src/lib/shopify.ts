@@ -208,6 +208,27 @@ const CART_FRAGMENT = `
 // Storefront mutations DON'T benefit from Next's cache, so always
 // revalidate:false (or pass through a route handler with no cache).
 
+// Shopify Markets returns a checkoutUrl on our custom domain (e.g.
+// https://www.sick-motos.com/cart/c/XXX) because that's the "primary" domain
+// wired to this Market. But our Next.js app doesn't serve /cart/* — it lives
+// on Vercel. Rewriting the host to sickmotos.myshopify.com sends the buyer
+// straight to Shopify's checkout server, which is what actually processes it.
+function fixCheckoutHost<T extends { checkoutUrl?: string } | null>(cart: T): T {
+  if (!cart || !cart.checkoutUrl) return cart;
+  try {
+    const u = new URL(cart.checkoutUrl);
+    if (u.hostname !== "sickmotos.myshopify.com") {
+      u.hostname = "sickmotos.myshopify.com";
+      u.protocol = "https:";
+      u.port = "";
+      cart.checkoutUrl = u.toString();
+    }
+  } catch {
+    // Leave it alone if the URL is unparseable.
+  }
+  return cart;
+}
+
 export async function cartCreate(
   lines: { merchandiseId: string; quantity: number }[]
 ): Promise<StorefrontCart> {
@@ -221,7 +242,7 @@ export async function cartCreate(
      }`,
     { variables: { input: { lines } }, revalidate: false }
   );
-  return data.cartCreate.cart;
+  return fixCheckoutHost(data.cartCreate.cart);
 }
 
 export async function cartGet(cartId: string): Promise<StorefrontCart | null> {
@@ -232,7 +253,7 @@ export async function cartGet(cartId: string): Promise<StorefrontCart | null> {
      }`,
     { variables: { id: cartId }, revalidate: false }
   );
-  return data.cart;
+  return fixCheckoutHost(data.cart);
 }
 
 export async function cartLinesAdd(
@@ -249,7 +270,7 @@ export async function cartLinesAdd(
      }`,
     { variables: { cartId, lines }, revalidate: false }
   );
-  return data.cartLinesAdd.cart;
+  return fixCheckoutHost(data.cartLinesAdd.cart);
 }
 
 export async function cartLinesUpdate(
@@ -268,7 +289,7 @@ export async function cartLinesUpdate(
      }`,
     { variables: { cartId, lines }, revalidate: false }
   );
-  return data.cartLinesUpdate.cart;
+  return fixCheckoutHost(data.cartLinesUpdate.cart);
 }
 
 export async function cartLinesRemove(
@@ -287,5 +308,5 @@ export async function cartLinesRemove(
      }`,
     { variables: { cartId, lineIds }, revalidate: false }
   );
-  return data.cartLinesRemove.cart;
+  return fixCheckoutHost(data.cartLinesRemove.cart);
 }
