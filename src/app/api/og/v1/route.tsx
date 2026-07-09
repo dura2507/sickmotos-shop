@@ -1,12 +1,11 @@
 import { ImageResponse } from "next/og";
 import { OG_SIZE, ogAssets } from "@/lib/ogAssets";
 
-// V1 — full-bleed hero mirror. Uses the same Beta-cyan-sunset photo the site
-// hero uses, same dark gradient overlays, same accent pill, same slogan SVG.
-// A share of sick-motos.com looks like a screenshot of the hero.
+// V1 — full-bleed hero mirror. The exact photo, overlays, accent pill and
+// text stack the site hero uses. Feels like a screenshot of the landing page.
 
 export async function GET() {
-  const { betaSunset, sloganSvg } = await ogAssets();
+  const { betaSunset } = await ogAssets();
   return new ImageResponse(
     (
       <div
@@ -35,7 +34,7 @@ export async function GET() {
             position: "absolute",
             inset: 0,
             background:
-              "linear-gradient(180deg, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.5) 42%, rgba(0,0,0,0.9) 100%)",
+              "linear-gradient(180deg, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.55) 42%, rgba(0,0,0,0.92) 100%)",
             display: "flex",
           }}
         />
@@ -44,7 +43,7 @@ export async function GET() {
             position: "absolute",
             inset: 0,
             background:
-              "linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 55%, rgba(0,0,0,0) 100%)",
+              "linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 55%, rgba(0,0,0,0) 100%)",
             display: "flex",
           }}
         />
@@ -70,10 +69,10 @@ export async function GET() {
               borderRadius: 999,
               padding: "8px 20px",
               width: "fit-content",
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: 800,
               letterSpacing: 6,
-              color: "#ff2b1e",
+              color: "#ff3a2e",
               textTransform: "uppercase",
             }}
           >
@@ -89,17 +88,47 @@ export async function GET() {
             Supermoto Performance Parts
           </div>
 
-          <img
-            src={sloganSvg}
-            style={{ width: 620, height: "auto", objectFit: "contain" }}
-          />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 4,
+              marginTop: 8,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                fontSize: 128,
+                lineHeight: 0.95,
+                fontWeight: 900,
+                color: "#ffffff",
+                letterSpacing: -3,
+              }}
+            >
+              RIDE IN
+            </div>
+            <div
+              style={{
+                display: "flex",
+                fontSize: 128,
+                lineHeight: 0.95,
+                fontWeight: 900,
+                color: "#E10600",
+                letterSpacing: -3,
+                fontStyle: "italic",
+              }}
+            >
+              STYLE.
+            </div>
+          </div>
 
           <div
             style={{
               display: "flex",
               alignItems: "center",
               gap: 16,
-              marginTop: 30,
+              marginTop: 24,
             }}
           >
             <div
@@ -113,7 +142,7 @@ export async function GET() {
             <div
               style={{
                 display: "flex",
-                fontSize: 30,
+                fontSize: 28,
                 color: "#ffffff",
                 fontWeight: 700,
                 letterSpacing: 1,

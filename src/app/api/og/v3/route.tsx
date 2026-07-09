@@ -2,10 +2,10 @@ import { ImageResponse } from "next/og";
 import { OG_SIZE, ogAssets } from "@/lib/ogAssets";
 
 // V3 — product macro. Rainbow titanium Krümmer as the full-bleed hero, dark
-// glass panel bottom-left with the slogan and URL. Craftsman signal.
+// glass panel bottom-left with lockup. Craftsman signal.
 
 export async function GET() {
-  const { krummerRainbow, sloganSvg } = await ogAssets();
+  const { krummerRainbow } = await ogAssets();
   return new ImageResponse(
     (
       <div
@@ -34,7 +34,7 @@ export async function GET() {
             position: "absolute",
             inset: 0,
             background:
-              "linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 45%, rgba(0,0,0,0.9) 100%)",
+              "linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.92) 100%)",
             display: "flex",
           }}
         />
@@ -42,13 +42,13 @@ export async function GET() {
         <div
           style={{
             position: "absolute",
-            top: 44,
+            top: 42,
             left: 60,
             display: "flex",
             alignItems: "center",
             gap: 12,
             padding: "10px 20px",
-            background: "rgba(0,0,0,0.65)",
+            background: "rgba(0,0,0,0.7)",
             border: "2px solid #E10600",
             borderRadius: 999,
           }}
@@ -83,19 +83,40 @@ export async function GET() {
             bottom: 50,
             display: "flex",
             flexDirection: "column",
-            gap: 20,
-            width: "60%",
+            gap: 14,
+            width: "70%",
           }}
         >
-          <img
-            src={sloganSvg}
-            style={{ width: 540, height: "auto", objectFit: "contain" }}
-          />
+          <div
+            style={{
+              display: "flex",
+              fontSize: 96,
+              lineHeight: 0.95,
+              fontWeight: 900,
+              color: "#ffffff",
+              letterSpacing: -2,
+            }}
+          >
+            RIDE IN
+          </div>
+          <div
+            style={{
+              display: "flex",
+              fontSize: 96,
+              lineHeight: 0.95,
+              fontWeight: 900,
+              color: "#E10600",
+              letterSpacing: -2,
+            }}
+          >
+            STYLE.
+          </div>
           <div
             style={{
               display: "flex",
               alignItems: "center",
               gap: 14,
+              marginTop: 20,
             }}
           >
             <div

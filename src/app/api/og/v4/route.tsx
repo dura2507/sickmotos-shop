@@ -1,12 +1,11 @@
 import { ImageResponse } from "next/og";
 import { OG_SIZE, ogAssets } from "@/lib/ogAssets";
 
-// V4 — night LED. Hexagon Angel Eye LED close-up as the hero, dark red glow
-// dominates. Slogan lockup floats centered over the top. Signals the LED
-// signature product line.
+// V4 — night LED. Hexagon Angel Eye LED close-up, deep dark, red glow.
+// Signature LED headlight product line.
 
 export async function GET() {
-  const { hexagonLedRed, sloganSvg } = await ogAssets();
+  const { hexagonLedRed } = await ogAssets();
   return new ImageResponse(
     (
       <div
@@ -35,7 +34,7 @@ export async function GET() {
             position: "absolute",
             inset: 0,
             background:
-              "linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0) 100%)",
+              "linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 55%, rgba(0,0,0,0) 100%)",
             display: "flex",
           }}
         />
@@ -44,7 +43,7 @@ export async function GET() {
             position: "absolute",
             inset: 0,
             background:
-              "linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%)",
+              "linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 45%, rgba(0,0,0,0.85) 100%)",
             display: "flex",
           }}
         />
@@ -56,7 +55,7 @@ export async function GET() {
             flexDirection: "column",
             justifyContent: "center",
             padding: "60px 72px",
-            gap: 26,
+            gap: 20,
             width: "62%",
           }}
         >
@@ -66,17 +65,39 @@ export async function GET() {
               fontSize: 20,
               fontWeight: 900,
               color: "#E10600",
-              letterSpacing: 6,
+              letterSpacing: 5,
               textTransform: "uppercase",
             }}
           >
             Angel Eye · Hexagon · RGBW
           </div>
 
-          <img
-            src={sloganSvg}
-            style={{ width: 560, height: "auto", objectFit: "contain" }}
-          />
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <div
+              style={{
+                display: "flex",
+                fontSize: 104,
+                lineHeight: 0.95,
+                fontWeight: 900,
+                color: "#ffffff",
+                letterSpacing: -2,
+              }}
+            >
+              RIDE IN
+            </div>
+            <div
+              style={{
+                display: "flex",
+                fontSize: 104,
+                lineHeight: 0.95,
+                fontWeight: 900,
+                color: "#E10600",
+                letterSpacing: -2,
+              }}
+            >
+              STYLE.
+            </div>
+          </div>
 
           <div
             style={{
@@ -90,14 +111,7 @@ export async function GET() {
             LED headlights with app control, titanium exhausts, ECU tuning.
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 14,
-              marginTop: 10,
-            }}
-          >
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
             <div
               style={{
                 display: "flex",
