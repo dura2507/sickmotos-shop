@@ -12,11 +12,9 @@ export const contentType = "image/png";
 // logo + kicker + tagline + URL, cropped bike photo bleeding in from the right
 // under a dark-to-transparent gradient.
 export default async function OpengraphImage() {
-  const [logoBuf, bikeBuf] = await Promise.all([
-    readFile(join(process.cwd(), "public/sickmotos-original.png")),
-    readFile(join(process.cwd(), "public/builds/build-fantic-bold-red.jpg")),
-  ]);
-  const logoSrc = `data:image/png;base64,${logoBuf.toString("base64")}`;
+  const bikeBuf = await readFile(
+    join(process.cwd(), "public/builds/build-fantic-bold-red.jpg")
+  );
   const bikeSrc = `data:image/jpeg;base64,${bikeBuf.toString("base64")}`;
 
   return new ImageResponse(
@@ -63,11 +61,40 @@ export default async function OpengraphImage() {
             height: "100%",
           }}
         >
-          <div style={{ display: "flex" }}>
-            <img
-              src={logoSrc}
-              style={{ height: 92, width: "auto", objectFit: "contain" }}
-            />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 14,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                width: 52,
+                height: 52,
+                background: "#E10600",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 32,
+                fontWeight: 900,
+                color: "#ffffff",
+                letterSpacing: -1,
+              }}
+            >
+              S
+            </div>
+            <div
+              style={{
+                display: "flex",
+                fontSize: 40,
+                color: "#ffffff",
+                fontWeight: 900,
+                letterSpacing: 1,
+              }}
+            >
+              SICKMOTOS
+            </div>
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
