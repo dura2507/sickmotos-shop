@@ -27,7 +27,6 @@ const cols: { title: string; links: FooterLink[] }[] = [
   {
     title: "Contact",
     links: [
-      { label: "+49 176 34658003", href: "tel:+4917634658003" },
       { label: "sickMotos-styles@freenet.de", href: "mailto:sickMotos-styles@freenet.de" },
       { label: "Obere Str. 18, 86554 Pöttmes", href: "https://maps.google.com/?q=Obere+Str.+18,+86554+P%C3%B6ttmes" },
       { label: "Mon-Sat 9-22, Sun 10-18", href: "#" },
@@ -96,15 +95,6 @@ export function Footer() {
                 <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={1.8}>
                   <rect x="3" y="5" width="18" height="14" rx="2" />
                   <path d="M3 7l9 6 9-6" strokeLinecap="round" />
-                </svg>
-              </a>
-              <a
-                href="tel:+4917634658003"
-                aria-label="Phone"
-                className="grid size-10 place-items-center rounded-full border border-border-strong text-fg-muted transition-all hover:border-accent hover:text-accent hover:-translate-y-0.5"
-              >
-                <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={1.8}>
-                  <path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z" strokeLinejoin="round" />
                 </svg>
               </a>
             </div>
