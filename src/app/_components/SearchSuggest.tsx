@@ -71,19 +71,24 @@ export function SearchSuggest({
   const measure = useCallback(() => {
     const r = formRef.current?.getBoundingClientRect();
     if (!r) return null;
+    // Use the visual viewport when available so the mobile keyboard doesn't
+    // trick us into thinking there is no room below the input.
+    const vv = window.visualViewport;
+    const viewportHeight = vv ? vv.height : window.innerHeight;
+    const viewportOffsetY = vv ? vv.offsetTop : 0;
     const margin = 16;
-    const below = window.innerHeight - r.bottom - margin;
-    const above = r.top - margin;
+    const below = viewportHeight - (r.bottom - viewportOffsetY) - margin;
     const preferred = 440;
-    const shouldFlip = below < 260 && above > below + 40;
-    const available = shouldFlip ? above : below;
-    const maxH = Math.min(preferred, Math.max(180, available));
+    // Always render below the input to keep the dropdown from covering the
+    // textbox on mobile. Cap the max height to whatever room is left; the
+    // dropdown scrolls internally when the list is longer.
+    const maxH = Math.min(preferred, Math.max(200, below));
     return {
-      top: shouldFlip ? r.top - 8 - maxH : r.bottom + 8,
+      top: r.bottom + 8,
       left: r.left,
       width: r.width,
       maxH,
-      flipUp: shouldFlip,
+      flipUp: false,
     };
   }, []);
 
@@ -102,19 +107,25 @@ export function SearchSuggest({
     openScrollY.current = window.scrollY;
     openAt.current = Date.now();
 
-    const onResize = () => {
+    // Follow the input while the dropdown is open. Mobile browsers scroll the
+    // focused input into view a few frames after focus; if we froze the
+    // dropdown's coords once, it would end up covering the input's new
+    // position. Re-measuring on every scroll and viewport change keeps it
+    // pinned right under the input.
+    const remeasure = () => {
       const nc = measure();
       if (nc) setCoords(nc);
     };
-    const onScroll = () => {
-      if (Date.now() - openAt.current < 500) return;
-      if (Math.abs(window.scrollY - openScrollY.current) > 80) setOpen(false);
-    };
-    window.addEventListener("resize", onResize);
-    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", remeasure);
+    window.addEventListener("scroll", remeasure, { passive: true });
+    const vv = window.visualViewport;
+    vv?.addEventListener("resize", remeasure);
+    vv?.addEventListener("scroll", remeasure);
     return () => {
-      window.removeEventListener("resize", onResize);
-      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", remeasure);
+      window.removeEventListener("scroll", remeasure);
+      vv?.removeEventListener("resize", remeasure);
+      vv?.removeEventListener("scroll", remeasure);
     };
   }, [open, measure]);
 
