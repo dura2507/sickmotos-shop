@@ -15,6 +15,7 @@
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { buildSystemPrompt } from "@/lib/botKnowledge";
+import { appendConversation } from "@/lib/adminStore";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -34,7 +35,7 @@ export async function POST(req: Request) {
     );
   }
 
-  let body: { messages?: ClientMessage[] };
+  let body: { messages?: ClientMessage[]; conversationId?: string | null };
   try {
     body = await req.json();
   } catch {
@@ -84,11 +85,25 @@ export async function POST(req: Request) {
       .join("\n")
       .trim();
 
-    return NextResponse.json({
-      reply:
-        reply ||
-        "Sorry, I couldn't generate a reply just now — please try rephrasing your question.",
-    });
+    const finalReply =
+      reply ||
+      "Sorry, I couldn't generate a reply just now — please try rephrasing your question.";
+
+    // Log the turn for Thomas's admin panel. Best-effort — never let a logging
+    // failure break the customer-facing chat.
+    let conversationId = body.conversationId ?? null;
+    try {
+      const lastUser = messages[messages.length - 1];
+      const now = Date.now();
+      conversationId = await appendConversation(conversationId, [
+        { role: "user", content: lastUser.content, at: now },
+        { role: "assistant", content: finalReply, at: now + 1 },
+      ]);
+    } catch (logErr) {
+      console.error("[chat] failed to log conversation:", logErr);
+    }
+
+    return NextResponse.json({ reply: finalReply, conversationId });
   } catch (e) {
     console.error("[chat] Anthropic error:", e);
     return NextResponse.json(

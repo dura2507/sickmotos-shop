@@ -65,6 +65,7 @@ export function SupportChat() {
   ]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
+  const [conversationId, setConversationId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -90,9 +91,13 @@ export function SupportChat() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         // Send only the real conversation (skip the canned greeting).
-        body: JSON.stringify({ messages: next.slice(1) }),
+        body: JSON.stringify({
+          messages: next.slice(1),
+          conversationId,
+        }),
       });
       const data = await res.json();
+      if (data.conversationId) setConversationId(data.conversationId);
       setMessages((m) => [
         ...m,
         {
