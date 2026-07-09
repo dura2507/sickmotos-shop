@@ -1,11 +1,12 @@
 import { ImageResponse } from "next/og";
 import { OG_SIZE, ogAssets } from "@/lib/ogAssets";
 
-// V2 — split card. Dark left panel, Fantic red build bleeding in from the
-// right. A hard red accent bar sits at the seam. Product-forward.
+// V2 — Split card. Dark left panel with the real script logo + Bebas Neue
+// tagline stack, a slim red vertical seam, and the Fantic red build bleeding
+// in from the right. Product-forward, matches site typography.
 
 export async function GET() {
-  const { fanticRed } = await ogAssets();
+  const { fanticRed, logoScript, bebasFont } = await ogAssets();
   return new ImageResponse(
     (
       <div
@@ -15,17 +16,18 @@ export async function GET() {
           height: "100%",
           position: "relative",
           background: "#0a0a0a",
-          fontFamily: "sans-serif",
         }}
       >
         <img
           src={fanticRed}
+          width={1200}
+          height={630}
           style={{
             position: "absolute",
             right: 0,
             top: 0,
             width: "60%",
-            height: "100%",
+            height: 630,
             objectFit: "cover",
             objectPosition: "30% 50%",
           }}
@@ -45,7 +47,7 @@ export async function GET() {
             left: "42%",
             top: 0,
             bottom: 0,
-            width: 8,
+            width: 4,
             background: "#E10600",
             display: "flex",
           }}
@@ -57,33 +59,35 @@ export async function GET() {
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
-            padding: "62px 64px",
+            padding: "56px 60px",
             width: "45%",
             height: "100%",
           }}
         >
+          <div style={{ display: "flex" }}>
+            <img
+              src={logoScript}
+              width={200}
+              height={128}
+              style={{ display: "flex", objectFit: "contain" }}
+            />
+          </div>
+
           <div
             style={{
               display: "flex",
-              fontSize: 22,
-              fontWeight: 900,
-              color: "#E10600",
-              letterSpacing: 5,
-              textTransform: "uppercase",
+              flexDirection: "column",
+              gap: 4,
             }}
           >
-            SickMotos · Since 2015
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             <div
               style={{
                 display: "flex",
-                fontSize: 96,
-                lineHeight: 0.95,
-                fontWeight: 900,
+                fontFamily: "Bebas Neue",
+                fontSize: 116,
+                lineHeight: 0.88,
                 color: "#ffffff",
-                letterSpacing: -2,
+                letterSpacing: 1,
               }}
             >
               RIDE IN
@@ -91,11 +95,11 @@ export async function GET() {
             <div
               style={{
                 display: "flex",
-                fontSize: 96,
-                lineHeight: 0.95,
-                fontWeight: 900,
-                color: "#E10600",
-                letterSpacing: -2,
+                fontFamily: "Bebas Neue",
+                fontSize: 116,
+                lineHeight: 0.88,
+                color: "#ffffff",
+                letterSpacing: 1,
               }}
             >
               STYLE.
@@ -103,19 +107,24 @@ export async function GET() {
             <div
               style={{
                 display: "flex",
-                fontSize: 26,
-                color: "#c9c9c9",
+                fontFamily: "Bebas Neue",
+                fontSize: 32,
+                color: "#E10600",
+                letterSpacing: 3,
                 marginTop: 16,
-                lineHeight: 1.3,
               }}
             >
-              Titanium exhaust, LED,
-              ECU tuning. Handmade
-              in Germany.
+              FASTER THAN OTHERS.
             </div>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 14,
+            }}
+          >
             <div
               style={{
                 display: "flex",
@@ -127,17 +136,28 @@ export async function GET() {
             <div
               style={{
                 display: "flex",
-                fontSize: 26,
+                fontFamily: "Bebas Neue",
+                fontSize: 30,
                 color: "#ffffff",
-                fontWeight: 700,
+                letterSpacing: 2,
               }}
             >
-              sick-motos.com
+              SICK-MOTOS.COM
             </div>
           </div>
         </div>
       </div>
     ),
-    { ...OG_SIZE }
+    {
+      ...OG_SIZE,
+      fonts: [
+        {
+          name: "Bebas Neue",
+          data: bebasFont,
+          style: "normal",
+          weight: 400,
+        },
+      ],
+    }
   );
 }

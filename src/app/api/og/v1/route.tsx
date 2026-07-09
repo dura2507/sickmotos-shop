@@ -1,11 +1,13 @@
 import { ImageResponse } from "next/og";
 import { OG_SIZE, ogAssets } from "@/lib/ogAssets";
 
-// V1 — full-bleed hero mirror. The exact photo, overlays, accent pill and
-// text stack the site hero uses. Feels like a screenshot of the landing page.
+// V1 — Hero mirror. Beta sunset photo full-bleed, dark gradient overlays, real
+// header script logo top-left, Bebas Neue oversized "RIDE IN STYLE." in the
+// site's display treatment. No pills, no boxed chrome, matches the landing
+// page hero style directly.
 
 export async function GET() {
-  const { betaSunset } = await ogAssets();
+  const { betaSunset, logoScript, bebasFont } = await ogAssets();
   return new ImageResponse(
     (
       <div
@@ -15,16 +17,17 @@ export async function GET() {
           height: "100%",
           position: "relative",
           background: "#000000",
-          fontFamily: "sans-serif",
         }}
       >
         <img
           src={betaSunset}
+          width={1200}
+          height={630}
           style={{
             position: "absolute",
             inset: 0,
-            width: "100%",
-            height: "100%",
+            width: 1200,
+            height: 630,
             objectFit: "cover",
             objectPosition: "50% 42%",
           }}
@@ -43,7 +46,7 @@ export async function GET() {
             position: "absolute",
             inset: 0,
             background:
-              "linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 55%, rgba(0,0,0,0) 100%)",
+              "linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0) 100%)",
             display: "flex",
           }}
         />
@@ -53,73 +56,52 @@ export async function GET() {
             position: "relative",
             display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
-            gap: 24,
-            padding: "70px 80px",
+            justifyContent: "space-between",
+            padding: "56px 72px",
             width: "100%",
+            height: "100%",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              border: "2px solid #E10600",
-              background: "rgba(225,6,0,0.14)",
-              borderRadius: 999,
-              padding: "8px 20px",
-              width: "fit-content",
-              fontSize: 18,
-              fontWeight: 800,
-              letterSpacing: 6,
-              color: "#ff3a2e",
-              textTransform: "uppercase",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                width: 10,
-                height: 10,
-                background: "#E10600",
-                borderRadius: 999,
-              }}
+          <div style={{ display: "flex" }}>
+            <img
+              src={logoScript}
+              width={220}
+              height={141}
+              style={{ display: "flex", objectFit: "contain" }}
             />
-            Supermoto Performance Parts
           </div>
 
           <div
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: 4,
-              marginTop: 8,
+              gap: 8,
             }}
           >
             <div
               style={{
                 display: "flex",
-                fontSize: 128,
-                lineHeight: 0.95,
-                fontWeight: 900,
+                fontFamily: "Bebas Neue",
+                fontSize: 168,
+                lineHeight: 0.9,
                 color: "#ffffff",
-                letterSpacing: -3,
+                letterSpacing: 2,
               }}
             >
-              RIDE IN
+              RIDE IN STYLE.
             </div>
             <div
               style={{
                 display: "flex",
-                fontSize: 128,
-                lineHeight: 0.95,
-                fontWeight: 900,
+                fontFamily: "Bebas Neue",
+                fontSize: 44,
+                lineHeight: 1.05,
                 color: "#E10600",
-                letterSpacing: -3,
-                fontStyle: "italic",
+                letterSpacing: 4,
+                marginTop: 12,
               }}
             >
-              STYLE.
+              FASTER THAN OTHERS.
             </div>
           </div>
 
@@ -128,32 +110,41 @@ export async function GET() {
               display: "flex",
               alignItems: "center",
               gap: 16,
-              marginTop: 24,
             }}
           >
             <div
               style={{
                 display: "flex",
-                width: 48,
-                height: 5,
+                width: 44,
+                height: 4,
                 background: "#E10600",
               }}
             />
             <div
               style={{
                 display: "flex",
-                fontSize: 28,
+                fontFamily: "Bebas Neue",
+                fontSize: 34,
                 color: "#ffffff",
-                fontWeight: 700,
-                letterSpacing: 1,
+                letterSpacing: 2,
               }}
             >
-              sick-motos.com
+              SICK-MOTOS.COM
             </div>
           </div>
         </div>
       </div>
     ),
-    { ...OG_SIZE }
+    {
+      ...OG_SIZE,
+      fonts: [
+        {
+          name: "Bebas Neue",
+          data: bebasFont,
+          style: "normal",
+          weight: 400,
+        },
+      ],
+    }
   );
 }
