@@ -13,7 +13,7 @@ export const contentType = "image/png";
 // under a dark-to-transparent gradient.
 export default async function OpengraphImage() {
   const [logoBuf, bikeBuf] = await Promise.all([
-    readFile(join(process.cwd(), "public/logo-alt-2.png")),
+    readFile(join(process.cwd(), "public/sickmotos-original.png")),
     readFile(join(process.cwd(), "public/builds/build-fantic-bold-red.jpg")),
   ]);
   const logoSrc = `data:image/png;base64,${logoBuf.toString("base64")}`;
