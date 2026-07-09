@@ -4,23 +4,6 @@ const nextConfig: NextConfig = {
   // Map the old Shopify storefront URLs to the new routes so existing Google
   // rankings and shared links don't 404 after the domain switch. Product URLs
   // (/products/:handle) are identical on both, so they need no redirect.
-  // Emergency proxy: Shopify Markets forces every checkout URL to redirect
-  // to www.sick-motos.com/cart/*, which our Next.js doesn't serve. Rewrites
-  // let Vercel fetch the actual Shopify checkout page and stream it back on
-  // our domain, so the customer never sees a 404 and Shopify's server-side
-  // redirect never fires (the request Host matches sickmotos.myshopify.com).
-  async rewrites() {
-    return [
-      {
-        source: "/cart/c/:path*",
-        destination: "https://sickmotos.myshopify.com/cart/c/:path*",
-      },
-      {
-        source: "/checkouts/:path*",
-        destination: "https://sickmotos.myshopify.com/checkouts/:path*",
-      },
-    ];
-  },
   async redirects() {
     return [
       // Shopify policy pages -> our legal pages
@@ -38,8 +21,13 @@ const nextConfig: NextConfig = {
       { source: "/collections/:handle*", destination: "/shop", permanent: true },
       // Misc Shopify routes with no direct equivalent
       { source: "/cart", destination: "/shop", permanent: true },
+      { source: "/checkout", destination: "/shop", permanent: true },
+      { source: "/checkout/:path*", destination: "/shop", permanent: true },
       { source: "/search", destination: "/shop", permanent: true },
       { source: "/pages/:slug*", destination: "/", permanent: true },
+      { source: "/apps/:slug*", destination: "/shop", permanent: true },
+      { source: "/services/:slug*", destination: "/shop", permanent: true },
+      { source: "/discount/:slug*", destination: "/shop", permanent: false },
     ];
   },
   images: {
