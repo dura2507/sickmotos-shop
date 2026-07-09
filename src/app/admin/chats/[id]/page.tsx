@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { requireAdmin } from "../../auth";
-import { getConversation, markReviewed, saveNote } from "@/lib/adminStore";
 import { revalidatePath } from "next/cache";
+import { getConversation, markReviewed, saveNote } from "@/lib/adminStore";
 
 export const dynamic = "force-dynamic";
 
@@ -11,8 +10,8 @@ async function toggleReviewed(formData: FormData) {
   const id = String(formData.get("id"));
   const reviewed = formData.get("reviewed") === "1";
   await markReviewed(id, reviewed);
-  revalidatePath(`/admin/conversations/${id}`);
-  revalidatePath(`/admin/conversations`);
+  revalidatePath(`/admin/chats/${id}`);
+  revalidatePath(`/admin/chats`);
   revalidatePath(`/admin`);
 }
 
@@ -21,7 +20,7 @@ async function updateNote(formData: FormData) {
   const id = String(formData.get("id"));
   const note = String(formData.get("note") || "");
   await saveNote(id, note);
-  revalidatePath(`/admin/conversations/${id}`);
+  revalidatePath(`/admin/chats/${id}`);
 }
 
 function fmtTime(ts: number): string {
@@ -34,28 +33,31 @@ function fmtTime(ts: number): string {
   });
 }
 
-export default async function ConversationDetail({
+export default async function ChatDetail({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await requireAdmin();
   const { id } = await params;
   const conv = await getConversation(id);
   if (!conv) notFound();
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between gap-3">
+    <div className="mx-auto max-w-4xl px-5 py-8 md:px-8">
+      <div className="mb-6 flex items-center justify-between gap-3">
         <Link
-          href="/admin/conversations"
-          className="text-xs font-bold uppercase tracking-wider text-fg-muted hover:text-fg"
+          href="/admin/chats"
+          className="text-xs font-bold uppercase tracking-[0.15em] text-fg-muted transition-colors hover:text-fg"
         >
           ← Alle Chats
         </Link>
         <form action={toggleReviewed}>
           <input type="hidden" name="id" value={conv.id} />
-          <input type="hidden" name="reviewed" value={conv.reviewed ? "0" : "1"} />
+          <input
+            type="hidden"
+            name="reviewed"
+            value={conv.reviewed ? "0" : "1"}
+          />
           <button
             type="submit"
             className={`rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${
@@ -64,18 +66,20 @@ export default async function ConversationDetail({
                 : "bg-accent text-white hover:bg-accent-hi"
             }`}
           >
-            {conv.reviewed ? "Als ungelesen markieren" : "Als gelesen markieren"}
+            {conv.reviewed
+              ? "Als ungelesen markieren"
+              : "Als gelesen markieren"}
           </button>
         </form>
       </div>
 
-      <div>
-        <h1 className="font-display text-3xl uppercase tracking-tight md:text-4xl">
+      <div className="mb-6">
+        <h1 className="font-display text-3xl uppercase tracking-tight text-fg md:text-4xl">
           {conv.preview || "(kein Betreff)"}
         </h1>
         <p className="mt-1 text-xs text-fg-dim">
-          Erste Nachricht {fmtTime(conv.createdAt)} · zuletzt {fmtTime(conv.updatedAt)} ·{" "}
-          {conv.messages.length} Nachrichten
+          Erste Nachricht {fmtTime(conv.createdAt)} · zuletzt{" "}
+          {fmtTime(conv.updatedAt)} · {conv.messages.length} Nachrichten
         </p>
       </div>
 
@@ -83,13 +87,15 @@ export default async function ConversationDetail({
         {conv.messages.map((m, i) => (
           <li
             key={i}
-            className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
+            className={`flex ${
+              m.role === "user" ? "justify-end" : "justify-start"
+            }`}
           >
             <div
-              className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
+              className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
                 m.role === "user"
                   ? "rounded-br-sm bg-accent text-white"
-                  : "rounded-bl-sm bg-surface text-fg-muted"
+                  : "rounded-bl-sm bg-surface text-fg"
               }`}
             >
               <div className="mb-1 text-[10px] font-bold uppercase tracking-widest opacity-70">
@@ -101,9 +107,12 @@ export default async function ConversationDetail({
         ))}
       </ul>
 
-      <form action={updateNote} className="mt-4 flex flex-col gap-2 rounded-xl border border-border bg-surface/40 p-4">
+      <form
+        action={updateNote}
+        className="mt-6 flex flex-col gap-2 rounded-xl border border-border bg-surface/40 p-4"
+      >
         <input type="hidden" name="id" value={conv.id} />
-        <label className="text-xs font-bold uppercase tracking-widest text-fg-dim">
+        <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-fg-dim">
           Interne Notiz
         </label>
         <textarea
@@ -111,7 +120,7 @@ export default async function ConversationDetail({
           defaultValue={conv.note ?? ""}
           rows={3}
           placeholder='z.B. "Habe Kunden per Mail nachgeholfen" oder "Bot-Antwort ungenau, Wissensbasis anpassen"'
-          className="rounded-lg border border-border bg-bg px-3 py-2 text-sm text-fg outline-none focus:border-accent"
+          className="rounded-lg border border-border bg-bg px-3 py-2 text-sm text-fg outline-none transition-colors focus:border-accent"
         />
         <button
           type="submit"

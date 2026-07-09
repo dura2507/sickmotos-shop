@@ -59,9 +59,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  // Suppress storefront chrome (promo bar, header, footer, chat, cookie
+  // banner) on internal admin routes. The admin panel provides its own
+  // top nav and lives at a bg-bg backdrop, so overlaying the store shell
+  // on top would only add noise and confuse the visitor filter for GA.
+  const { headers } = await import("next/headers");
+  const h = await headers();
+  const pathname = h.get("x-sm-path") || "";
+  const isAdmin = pathname.startsWith("/admin");
+
   return (
     <html lang="en" className={`${sans.variable} ${display.variable}`}>
       <head>
@@ -104,12 +113,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           </noscript>
         )}
         <span aria-hidden className="scroll-progress" />
-        <PromoBar />
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <SupportChat />
-        {GTM_ID && <CookieConsent />}
+        {isAdmin ? (
+          children
+        ) : (
+          <>
+            <PromoBar />
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+            <SupportChat />
+            {GTM_ID && <CookieConsent />}
+          </>
+        )}
         <Analytics />
         <SpeedInsights />
       </body>
