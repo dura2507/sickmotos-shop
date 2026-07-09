@@ -19,10 +19,6 @@ const nextConfig: NextConfig = {
         source: "/checkouts/:path*",
         destination: "https://sickmotos.myshopify.com/checkouts/:path*",
       },
-      {
-        source: "/wpm@:path*",
-        destination: "https://sickmotos.myshopify.com/wpm@:path*",
-      },
     ];
   },
   async redirects() {
