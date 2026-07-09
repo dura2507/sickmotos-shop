@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Inter, Bebas_Neue } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import { PromoBar } from "./_components/PromoBar";
 import { Header } from "./_components/Header";
@@ -108,6 +110,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <Footer />
         <SupportChat />
         {GTM_ID && <CookieConsent />}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
