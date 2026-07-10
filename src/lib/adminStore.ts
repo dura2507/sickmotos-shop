@@ -1,12 +1,6 @@
 import "server-only";
 import { Redis } from "@upstash/redis";
 
-// Persistent store for the admin panel. Uses Upstash Redis when the env vars
-// are set, otherwise falls back to an in-memory Map that lasts as long as the
-// serverless function stays warm. That fallback is only for local dev — in
-// production a customer talking to SickBot without a real KV would lose the
-// log on the next cold start.
-
 let redis: Redis | null = null;
 try {
   if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
@@ -35,18 +29,13 @@ export type StoredConversation = {
   createdAt: number;
   updatedAt: number;
   messages: StoredMessage[];
-  // A short one-liner derived from the first user message, used for the
-  // list view without having to fetch every full conversation.
   preview: string;
-  // Reviewed = Thomas has read this. When true, drops from the "new" filter.
   reviewed: boolean;
-  // Free-form note Thomas types when he wants to remember something about a
-  // conversation (e.g. "answered by hand via email").
   note?: string;
 };
 
 const KEY_CONV = (id: string) => `sm:conv:${id}`;
-const KEY_INDEX = "sm:conv:index"; // sorted list of ids newest-first
+const KEY_INDEX = "sm:conv:index";
 
 function makeId(): string {
   const t = Date.now().toString(36);

@@ -11,15 +11,7 @@ import { SupportChat } from "./_components/SupportChat";
 import { CookieConsent } from "./_components/CookieConsent";
 import { VisitTracker } from "./_components/VisitTracker";
 
-// Plausible.io analytics. GDPR-friendly, no cookies, no banner needed.
-// Set NEXT_PUBLIC_PLAUSIBLE_DOMAIN in Vercel to the domain registered at
-// plausible.io (e.g. 'sick-motos.com'). If unset, the script is omitted.
 const PLAUSIBLE_DOMAIN = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
-
-// Google Tag Manager. Set NEXT_PUBLIC_GTM_ID to e.g. 'GTM-XXXXX'. Inside
-// GTM configure GA4 Config tag + GA4 Event tags for view_item,
-// add_to_cart, begin_checkout, plus Google Ads Conversion tag. Lets
-// Thomas swap pixels (Meta, TikTok, Klaviyo) without code changes.
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID;
 
 const sans = Inter({

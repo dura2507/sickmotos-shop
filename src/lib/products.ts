@@ -3,14 +3,7 @@ import addonsRaw from "@/data/addons.json";
 import fitmentRaw from "@/data/fitment.json";
 import { leadTimeFor } from "@/lib/leadTime";
 
-// Curated add-ons scraped 1:1 from the live sick-motos.com product pages
-// (the ".add-ones" section Thomas set up). Maps a product handle to the
-// handles of its add-on products. Only ~25 products have curated add-ons.
 const ADDON_MAP = addonsRaw as Record<string, string[]>;
-
-// "Fits on" bike fitment scraped 1:1 from the live site's product pages
-// (the "Fits on" section). Maps a handle to the compatible bike/model
-// strings exactly as Thomas wrote them. ~324 products carry fitment.
 const FITMENT_MAP = fitmentRaw as Record<string, string[]>;
 
 export type ShopifyVariant = {
@@ -461,11 +454,9 @@ export function getBikeIndex(): BikeEntry[] {
   return Array.from(map.values()).sort((a, b) => b.count - a.count);
 }
 
-// Pick top selling — Shopify doesn't expose sales count via products.json,
-// so we pick on-sale items with the deepest discounts as a proxy.
-// Manual bestseller curation per Thomas: focus on the 4-stroke Titan
-// Krummer (Beta/Fantic/Yamaha) and the Hexagon LED line — his actual
-// unique products. The list lives in src/data/bestsellers.json; if it's
+// Manual bestseller curation focused on 4-stroke Titan Krummer
+// (Beta/Fantic/Yamaha) and the Hexagon LED line. The list lives in
+// src/data/bestsellers.json; if it's
 // empty or its handles don't match any product, we fall back to the
 // 'biggest discount among in-stock products' proxy.
 import bestsellerHandles from "@/data/bestsellers.json";
@@ -717,8 +708,8 @@ export function toDetailViewModel(p: ShopifyProduct): DetailViewModel {
     .slice(0, 4)
     .map(toCard);
 
-  // Resolve curated add-on handles to product cards, preserving the order
-  // Thomas set on the original site. Skip any that no longer exist.
+  // Resolve curated add-on handles to product cards, preserving the source
+  // order. Skip any that no longer exist.
   const addOns = (ADDON_MAP[p.handle] ?? [])
     .map((h) => allProducts.find((q) => q.handle === h))
     .filter((q): q is ShopifyProduct => Boolean(q))

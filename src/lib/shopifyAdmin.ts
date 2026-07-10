@@ -1,10 +1,5 @@
 import "server-only";
 
-// Shopify Admin GraphQL client. Uses the private Admin API access token —
-// server-side only, never exposed to the browser. Separate from the
-// Storefront client in src/lib/shopify.ts because the two use different
-// endpoints, headers, and read scopes.
-
 const DOMAIN = process.env.SHOPIFY_STORE_DOMAIN ?? "sickmotos.myshopify.com";
 const API_VERSION = process.env.SHOPIFY_API_VERSION ?? "2025-01";
 const TOKEN = process.env.SHOPIFY_ADMIN_API_TOKEN;

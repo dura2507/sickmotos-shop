@@ -80,15 +80,11 @@ export default async function AdminHome() {
       {!persistent && (
         <div className="mb-6 rounded-xl border border-accent/50 bg-accent/[0.06] p-4">
           <p className="font-semibold text-accent">
-            Kein persistenter Speicher aktiv
+            Datenspeicher wird eingerichtet
           </p>
           <p className="mt-1 text-sm text-fg-muted">
-            Bot-Chats gehen beim nächsten Server-Neustart verloren. In Vercel →
-            Storage → Upstash Redis anlegen und die Env-Variablen{" "}
-            <code className="rounded bg-surface-2 px-1">KV_REST_API_URL</code>{" "}
-            +{" "}
-            <code className="rounded bg-surface-2 px-1">KV_REST_API_TOKEN</code>{" "}
-            eintragen.
+            Bot-Chats werden hier dauerhaft archiviert, sobald die Verbindung
+            steht.
           </p>
         </div>
       )}

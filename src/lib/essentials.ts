@@ -1,4 +1,4 @@
-// Helpers for the "converter is a must" logic Thomas asked for.
+// Converter-is-required logic for LED lamps.
 //
 // LED lamps do NOT work without a matching converter. So on lamp product pages
 // we mark the converter add-on as REQUIRED (red), auto-add it to the cart when

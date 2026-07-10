@@ -1,22 +1,12 @@
-// Made-to-order lead times.
-//
-// Lamps, titanium headers and wheels are genuinely handcrafted to order (Thomas's
-// real production flow: build 3-7 days, test around day 10-12, then pack/ship).
-// So we set honest expectations with a real lead time instead of faking stock
-// counters, which is both a dark pattern and unlawful under the German UWG / EU
-// Omnibus rules. Truthful made-to-order messaging creates the same urgency, legally.
-//
-// Standalone module on purpose: no heavy imports, so client components can use it
-// without pulling the full product dataset into the browser bundle.
+// Made-to-order lead times for handcrafted lamps, titanium headers and wheels.
+// Real production flow: build 3-7 days, test around day 10-12, then pack/ship.
+// Standalone module so client components can use it without the full product dataset.
 
 export type LeadTime = {
   badge: string; // short chip label
   short: string; // compact duration, e.g. "approx. 2-3 weeks"
   note: string; // one-line explanation for detail/cart
   long: boolean; // true for the very long lead (wheels)
-  // Step-by-step production timeline Thomas wants shown so customers see the
-  // QA process behind the wait (not just a number). Optional: wheels don't show
-  // a detailed breakdown because the 6+ weeks is dominated by external supply.
   steps?: { day: string; label: string; detail: string }[];
 };
 

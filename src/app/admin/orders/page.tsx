@@ -107,13 +107,10 @@ export default async function AdminOrders() {
       {!configured && (
         <div className="mb-6 rounded-xl border border-accent/50 bg-accent/[0.06] p-4">
           <p className="font-semibold text-accent">
-            Kein Shopify Admin API Token gesetzt
+            Shopify-Verbindung wird eingerichtet
           </p>
           <p className="mt-1 text-sm text-fg-muted">
-            In Vercel → Environment Variables{" "}
-            <code className="rounded bg-surface-2 px-1">SHOPIFY_ADMIN_API_TOKEN</code>{" "}
-            hinterlegen. Token generierst du in Shopify Admin → Settings → Apps
-            → Develop apps → App erstellen → Admin API access → read_orders.
+            Die Bestellungen erscheinen hier live, sobald die Verbindung steht.
           </p>
         </div>
       )}
@@ -200,7 +197,7 @@ export default async function AdminOrders() {
           <div className="p-10 text-center text-sm text-fg-muted">
             {configured
               ? "Keine Bestellungen in den letzten 30 Tagen."
-              : "Setze SHOPIFY_ADMIN_API_TOKEN, dann erscheinen hier die Bestellungen live."}
+              : "Bestellungen erscheinen hier, sobald die Verbindung steht."}
           </div>
         ) : (
           <ul className="divide-y divide-border">
