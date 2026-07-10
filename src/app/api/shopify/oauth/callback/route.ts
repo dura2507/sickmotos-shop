@@ -6,6 +6,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const DOMAIN = process.env.SHOPIFY_STORE_DOMAIN ?? "sickmotos.myshopify.com";
+const DEFAULT_CLIENT_ID = "51a9ceb44494acf6e7b089159c311a21";
 
 export async function GET(req: Request) {
   const cookieStore = await cookies();
@@ -25,11 +26,11 @@ export async function GET(req: Request) {
     return new NextResponse(`Shop mismatch: got ${shop}, expected ${DOMAIN}`, { status: 400 });
   }
 
-  const clientId = process.env.SHOPIFY_APP_CLIENT_ID;
+  const clientId = process.env.SHOPIFY_APP_CLIENT_ID ?? DEFAULT_CLIENT_ID;
   const clientSecret = process.env.SHOPIFY_APP_CLIENT_SECRET;
-  if (!clientId || !clientSecret) {
+  if (!clientSecret) {
     return new NextResponse(
-      "SHOPIFY_APP_CLIENT_ID or SHOPIFY_APP_CLIENT_SECRET missing in env",
+      "SHOPIFY_APP_CLIENT_SECRET missing in env",
       { status: 500 }
     );
   }
