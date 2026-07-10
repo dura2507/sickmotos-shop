@@ -29,6 +29,7 @@ export type OrdersSnapshot = {
   orders30dCount: number;
   perDay: DailyRevenue[];
   recent: OrderSummary[];
+  fetchError?: string;
 };
 
 const EMPTY_SNAPSHOT: OrdersSnapshot = {
@@ -163,7 +164,8 @@ export async function loadOrdersSnapshot(): Promise<OrdersSnapshot> {
     orders = await fetchOrdersInWindow(sinceIso);
   } catch (e) {
     console.error("[orders] fetch failed:", e);
-    return EMPTY_SNAPSHOT;
+    const msg = e instanceof Error ? e.message : String(e);
+    return { ...EMPTY_SNAPSHOT, fetchError: msg };
   }
 
   const today = dateKey(0);

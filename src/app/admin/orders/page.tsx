@@ -114,6 +114,16 @@ export default async function AdminOrders() {
           </p>
         </div>
       )}
+      {configured && data.fetchError && (
+        <div className="mb-6 rounded-xl border border-accent/50 bg-accent/[0.06] p-4">
+          <p className="font-semibold text-accent">
+            Shopify-Verbindung wird eingerichtet
+          </p>
+          <p className="mt-1 text-sm text-fg-muted font-mono">
+            {data.fetchError}
+          </p>
+        </div>
+      )}
 
       <section className="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatCard

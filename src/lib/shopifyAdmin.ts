@@ -1,7 +1,7 @@
 import "server-only";
 
 const DOMAIN = process.env.SHOPIFY_STORE_DOMAIN ?? "sickmotos.myshopify.com";
-const API_VERSION = process.env.SHOPIFY_API_VERSION ?? "2025-01";
+const API_VERSION = process.env.SHOPIFY_API_VERSION ?? "2026-07";
 const TOKEN = process.env.SHOPIFY_ADMIN_API_TOKEN;
 
 export function hasAdminToken(): boolean {
