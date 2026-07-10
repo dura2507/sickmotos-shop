@@ -25,9 +25,11 @@
     "description": "Performance Parts für das Supermoto-Universum — 2- und 4-Takt, 50 bis 700 ccm, für KTM, Husqvarna, Beta, Fantic, Sherco und viele mehr. Titan-Auspuffanlagen, LED-Scheinwerfer, ECU-Tuning und Motor-Hardware, mit Leidenschaft entwickelt und bis zur Perfektion verfeinert."
   },
   "categories": {
-    "title": "Wähle deine Kategorie",
-    "subtitle": "Vom Auspuff bis zur Schraube — alles was dein Bike braucht.",
-    "shopCategory": "Kategorie ansehen"
+    "kicker": "Produkt-Kategorien",
+    "title": "Nach Kategorie shoppen",
+    "subtitle": "Von Bremsen bis Sonderteilen — alles für dein Supermoto.",
+    "shopCategory": "Kategorie ansehen",
+    "productsSuffix": "Produkte"
   },
   "cart": {
     "title": "Warenkorb",
@@ -69,11 +71,39 @@
     "quantity": "Menge",
     "save": "spare"
   },
+  "trustBar": {
+    "verifiedReviews": "Verifizierte Reviews",
+    "worldwideShipping": "Weltweiter Versand",
+    "warrantyIncluded": "Garantie inklusive",
+    "paymentMethodsSuffix": "und 6 Zahlungsmethoden"
+  },
   "faq": {
     "title": "Häufige Fragen",
     "stillNotSure": "Noch nicht sicher?",
     "stillNotSureBody": "Frag den SickBot — unser Assistent beantwortet Versand-, Passform- und Wandlerfragen in Sekunden.",
-    "askSickBot": "SickBot fragen"
+    "askSickBot": "SickBot fragen",
+    "items": [
+      {
+        "q": "Welche Produkte bietet SickMotos an?",
+        "a": "Performance Parts für Supermoto und Enduro: Titan-Auspuffanlagen, LED-Scheinwerfer, ECU-Tuning-Module, Carbon-Teile, Titan-Schrauben, Racing-Bremsscheiben, Supermoto-Felgen, Grafik-Kits und Merchandise."
+      },
+      {
+        "q": "Versendet ihr international?",
+        "a": "Ja. SickMotos verschickt weltweit. Wir liefern in ganz Europa, den Nahen Osten, Nordamerika und Asien. Die meisten Bestellungen kommen innerhalb von 5 bis 10 Werktagen an."
+      },
+      {
+        "q": "Gibt es Garantie auf SickMotos-Produkte?",
+        "a": "Alle Produkte kommen mit einer Herstellergarantie von bis zu 6 Monaten auf Material- oder Verarbeitungsmängel. Optional 1 Jahr Garantieverlängerung für 49 €."
+      },
+      {
+        "q": "Welche Zahlungsmethoden akzeptiert ihr?",
+        "a": "Visa, Mastercard, Maestro, American Express, Apple Pay und Bitcoin. Alle Transaktionen sind verschlüsselt und sicher."
+      },
+      {
+        "q": "Kann ich ein Custom-Setup für mein Bike bekommen?",
+        "a": "Ja. Frag den SickBot (Chat-Button unten rechts) oder nutze das Kontaktformular mit deinen Bike-Details und Zielen, wir stellen dir ein passendes Paket zusammen."
+      }
+    ]
   },
   "footer": {
     "shopCol": "Shop",

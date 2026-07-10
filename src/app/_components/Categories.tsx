@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { countByCategory, CATEGORIES } from "@/lib/products";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
 // Premium category cards in Thomas's design (Telegram 2026-06-01):
 // big image, per-category colour wash, red accent bar, title + description,
@@ -66,7 +68,9 @@ const FALLBACK: CatMeta = {
   desc: "Performance parts for your supermoto",
 };
 
-export function Categories() {
+export async function Categories() {
+  const locale = await getLocale();
+  const dict = await getDictionary(locale);
   const counts = countByCategory();
   const cats = (CATEGORIES as readonly string[])
     .map((name) => ({ name, count: counts[name as keyof typeof counts] ?? 0 }))
@@ -77,13 +81,13 @@ export function Categories() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-10 max-w-2xl">
           <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.28em] text-accent">
-            Product categories
+            {dict.categories.kicker}
           </p>
           <h2 className="font-display text-4xl uppercase leading-none tracking-tight md:text-5xl">
-            Shop by category
+            {dict.categories.title}
           </h2>
           <p className="mt-3 text-sm text-fg-muted md:text-base">
-            From brakes to custom parts — everything for your supermoto.
+            {dict.categories.subtitle}
           </p>
         </div>
 
@@ -138,7 +142,7 @@ export function Categories() {
                     {m.desc}
                   </p>
                   <span className="mt-3 block text-[10px] font-semibold uppercase tracking-[0.22em] text-white/60">
-                    {c.count} products
+                    {c.count} {dict.categories.productsSuffix}
                   </span>
                 </div>
               </Link>

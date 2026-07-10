@@ -1,11 +1,15 @@
-const items = [
-  { value: "★ 4.9", label: "Verified reviews" },
-  { value: "5-10 days", label: "Worldwide shipping" },
-  { value: "6 months", label: "Warranty included" },
-  { value: "Bitcoin", label: "& 6 payment methods" },
-];
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
-export function TrustBar() {
+export async function TrustBar() {
+  const locale = await getLocale();
+  const dict = await getDictionary(locale);
+  const items = [
+    { value: "★ 4.9", label: dict.trustBar.verifiedReviews },
+    { value: dict.product.shipping5to10, label: dict.trustBar.worldwideShipping },
+    { value: dict.product.warranty6m, label: dict.trustBar.warrantyIncluded },
+    { value: "Bitcoin", label: dict.trustBar.paymentMethodsSuffix },
+  ];
   return (
     <section className="border-b border-border">
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-x-6 gap-y-6 px-6 py-6 md:grid-cols-4 md:gap-x-10">

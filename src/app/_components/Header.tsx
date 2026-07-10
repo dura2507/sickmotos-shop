@@ -38,9 +38,7 @@ export async function Header() {
         <HeaderSearch index={searchIndex} />
 
         <div className="ml-auto flex items-center gap-2">
-          <div className="hidden md:block">
-            <LanguageSwitcher current={locale} />
-          </div>
+          <LanguageSwitcher current={locale} />
           <Link
             href="/account"
             aria-label={dict.header.account}

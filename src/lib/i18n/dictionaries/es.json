@@ -25,9 +25,11 @@
     "description": "Repuestos performance para el universo supermoto — 2 y 4 tiempos, de 50 a 700 cc, para KTM, Husqvarna, Beta, Fantic, Sherco y muchas más. Sistemas de escape en titanio, faros LED, mapeados ECU y componentes de motor, desarrollados y refinados con pasión."
   },
   "categories": {
-    "title": "Elige tu categoría",
-    "subtitle": "Del escape a los tornillos — todo lo que tu moto necesita.",
-    "shopCategory": "Ver categoría"
+    "kicker": "Categorías de productos",
+    "title": "Compra por categoría",
+    "subtitle": "De frenos a piezas especiales — todo para tu supermoto.",
+    "shopCategory": "Ver categoría",
+    "productsSuffix": "productos"
   },
   "cart": {
     "title": "Carrito",
@@ -69,11 +71,39 @@
     "quantity": "Cantidad",
     "save": "ahorras"
   },
+  "trustBar": {
+    "verifiedReviews": "Reseñas verificadas",
+    "worldwideShipping": "Envío mundial",
+    "warrantyIncluded": "Garantía incluida",
+    "paymentMethodsSuffix": "y 6 métodos de pago"
+  },
   "faq": {
     "title": "Preguntas frecuentes",
     "stillNotSure": "¿Sigues sin estar seguro?",
     "stillNotSureBody": "Pregunta a SickBot — nuestro asistente responde en segundos sobre envíos, compatibilidad y convertidores.",
-    "askSickBot": "Preguntar a SickBot"
+    "askSickBot": "Preguntar a SickBot",
+    "items": [
+      {
+        "q": "¿Qué tipo de productos ofrece SickMotos?",
+        "a": "Piezas performance para Supermoto y Enduro: escapes de titanio, faros LED, módulos de ECU, componentes de carbono, tornillos de titanio, discos de freno racing, ruedas para supermoto, kits gráficos y merchandise."
+      },
+      {
+        "q": "¿Enviáis internacionalmente?",
+        "a": "Sí. SickMotos envía a todo el mundo. Entregamos en toda Europa, Oriente Medio, Norteamérica y Asia. La mayoría de los pedidos llegan entre 5 y 10 días laborables."
+      },
+      {
+        "q": "¿Los productos SickMotos tienen garantía?",
+        "a": "Todos los productos tienen una garantía del fabricante de hasta 6 meses contra defectos de material o fabricación. Extensión a 1 año opcional por 49 €."
+      },
+      {
+        "q": "¿Qué métodos de pago aceptáis?",
+        "a": "Visa, Mastercard, Maestro, American Express, Apple Pay y Bitcoin. Todas las transacciones están cifradas y son seguras."
+      },
+      {
+        "q": "¿Puedo pedir un setup personalizado para mi moto?",
+        "a": "Sí. Pregunta a SickBot (botón de chat abajo a la derecha) o usa el formulario de contacto con los datos de tu moto y objetivos, te preparamos un paquete a medida."
+      }
+    ]
   },
   "footer": {
     "shopCol": "Tienda",

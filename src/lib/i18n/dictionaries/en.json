@@ -25,9 +25,11 @@
     "description": "Performance parts for the supermoto universe — 2- and 4-stroke, 50 to 700 ccm, for KTM, Husqvarna, Beta, Fantic, Sherco and many more. Titanium exhaust systems, LED headlights, ECU tuning and engine hard parts, developed and refined to perfection."
   },
   "categories": {
-    "title": "Pick your category",
-    "subtitle": "From exhaust to screws — everything your bike needs.",
-    "shopCategory": "Shop category"
+    "kicker": "Product categories",
+    "title": "Shop by category",
+    "subtitle": "From brakes to custom parts — everything for your supermoto.",
+    "shopCategory": "Shop category",
+    "productsSuffix": "products"
   },
   "cart": {
     "title": "Cart",
@@ -69,11 +71,39 @@
     "quantity": "Quantity",
     "save": "save"
   },
+  "trustBar": {
+    "verifiedReviews": "Verified reviews",
+    "worldwideShipping": "Worldwide shipping",
+    "warrantyIncluded": "Warranty included",
+    "paymentMethodsSuffix": "& 6 payment methods"
+  },
   "faq": {
     "title": "Frequently asked",
     "stillNotSure": "Still not sure?",
     "stillNotSureBody": "Ask the SickBot — our assistant answers shipping, fitment and converter questions in seconds.",
-    "askSickBot": "Ask the SickBot"
+    "askSickBot": "Ask the SickBot",
+    "items": [
+      {
+        "q": "What types of products does SickMotos offer?",
+        "a": "Performance parts for Supermoto and Enduro: titanium exhausts, LED headlights, ECU tuning modules, carbon parts, titanium screws, racing brake discs, supermoto rim sets, graphics kits and merchandise."
+      },
+      {
+        "q": "Do you ship internationally?",
+        "a": "Yes. SickMotos ships worldwide. We deliver across Europe, the Middle East, North America and Asia. Most orders arrive within 5 to 10 business days."
+      },
+      {
+        "q": "Do SickMotos products come with a warranty?",
+        "a": "All products carry a manufacturer's warranty of up to 6 months against defects in materials or workmanship. Optional 1-year extended warranty available at €49."
+      },
+      {
+        "q": "Which payment methods do you accept?",
+        "a": "Visa, Mastercard, Maestro, American Express, Apple Pay and Bitcoin. All transactions are encrypted and secure."
+      },
+      {
+        "q": "Can I get a custom performance setup for my motorbike?",
+        "a": "Yes. Ask the SickBot (the chat button, bottom-right) or use the contact form with your bike details and goals, and we'll put together a tailored package."
+      }
+    ]
   },
   "footer": {
     "shopCol": "Shop",
