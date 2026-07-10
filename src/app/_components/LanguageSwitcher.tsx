@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { LOCALES, LOCALE_LABELS, type Locale } from "@/lib/i18n/config";
+import { Flag } from "./Flag";
 
 export function LanguageSwitcher({ current }: { current: Locale }) {
   const [open, setOpen] = useState(false);
@@ -44,7 +45,7 @@ export function LanguageSwitcher({ current }: { current: Locale }) {
         aria-haspopup="listbox"
         aria-expanded={open}
       >
-        <span aria-hidden>{label.flag}</span>
+        <Flag code={label.flag} className="h-3 w-[18px]" />
         <span>{label.short}</span>
         <span aria-hidden className="text-fg-dim">▾</span>
       </button>
@@ -67,7 +68,7 @@ export function LanguageSwitcher({ current }: { current: Locale }) {
                   role="option"
                   aria-selected={isActive}
                 >
-                  <span aria-hidden className="text-base">{l.flag}</span>
+                  <Flag code={l.flag} className="h-3.5 w-[21px]" />
                   <span className="flex-1">{l.name}</span>
                   {isActive && <span className="text-accent">✓</span>}
                 </button>

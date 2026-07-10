@@ -1,9 +1,28 @@
+import type { ReactNode } from "react";
 import {
-  countryLabel,
   isPersistent,
   loadAnalytics,
   type TopRow,
 } from "@/lib/analyticsStore";
+import { Flag, type FlagCode } from "@/app/_components/Flag";
+
+const SUPPORTED_FLAGS: ReadonlySet<FlagCode> = new Set([
+  "DE", "AT", "CH", "RO", "LU", "GB", "IT", "ES",
+  "FR", "PL", "NL", "BE", "HR", "SI", "CZ", "SK",
+  "HU", "PT", "DK", "SE", "NO", "FI", "US",
+]);
+
+function renderCountry(code: string): ReactNode {
+  const upper = code.toUpperCase();
+  if (upper === "??") return "Unbekannt";
+  const known = SUPPORTED_FLAGS.has(upper as FlagCode);
+  return (
+    <span className="inline-flex items-center gap-2">
+      {known && <Flag code={upper as FlagCode} className="h-3 w-[18px]" />}
+      <span>{upper}</span>
+    </span>
+  );
+}
 
 export const dynamic = "force-dynamic";
 
@@ -40,11 +59,13 @@ function TopTable({
   rows,
   empty,
   formatKey,
+  renderKey,
 }: {
   title: string;
   rows: TopRow[];
   empty: string;
   formatKey?: (key: string) => string;
+  renderKey?: (key: string) => ReactNode;
 }) {
   const max = rows.reduce((m, r) => Math.max(m, r.views), 0);
   return (
@@ -67,7 +88,7 @@ function TopTable({
                   aria-hidden
                 />
                 <span className="relative block truncate px-2 py-1 text-fg">
-                  {formatKey ? formatKey(r.key) : r.key}
+                  {renderKey ? renderKey(r.key) : formatKey ? formatKey(r.key) : r.key}
                 </span>
               </div>
               <span className="shrink-0 text-sm font-bold tabular-nums text-fg">
@@ -190,7 +211,7 @@ export default async function AdminVisitors() {
           title="Top Länder (30 T)"
           rows={data.topCountries}
           empty="Noch keine Länderdaten."
-          formatKey={countryLabel}
+          renderKey={renderCountry}
         />
         <TopTable
           title="Top Referrer (30 T)"
