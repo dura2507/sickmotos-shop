@@ -1,3 +1,143 @@
 {
-  "_placeholder": "Dictionary keys arrive in the next commit."
+  "promoBar": {
+    "newHere": "Neu hier? 5% Rabatt auf deine erste Bestellung",
+    "code": "Code",
+    "codeValue": "EXTRA5"
+  },
+  "header": {
+    "shopNow": "Jetzt shoppen",
+    "categories": "Kategorien",
+    "shop": "Shop",
+    "allParts": "Alle Teile",
+    "pickBike": "Bike wählen",
+    "search": "Suche",
+    "searchPlaceholder": "Nach Teilen oder Bike suchen …",
+    "account": "Account",
+    "cart": "Warenkorb",
+    "menu": "Menü",
+    "closeMenu": "Menü schließen",
+    "close": "Schließen"
+  },
+  "hero": {
+    "kicker": "Supermoto Performance Parts",
+    "shopNow": "Jetzt shoppen",
+    "browseCategories": "Kategorien ansehen",
+    "description": "Performance Parts für das Supermoto-Universum — 2- und 4-Takt, 50 bis 700 ccm, für KTM, Husqvarna, Beta, Fantic, Sherco und viele mehr. Titan-Auspuffanlagen, LED-Scheinwerfer, ECU-Tuning und Motor-Hardware, mit Leidenschaft entwickelt und bis zur Perfektion verfeinert."
+  },
+  "categories": {
+    "title": "Wähle deine Kategorie",
+    "subtitle": "Vom Auspuff bis zur Schraube — alles was dein Bike braucht.",
+    "shopCategory": "Kategorie ansehen"
+  },
+  "cart": {
+    "title": "Warenkorb",
+    "empty": "Dein Warenkorb ist leer.",
+    "continueShopping": "Weiter shoppen",
+    "subtotal": "Zwischensumme",
+    "shippingNote": "Versand und Steuern werden im Checkout berechnet.",
+    "checkout": "Zur Kasse",
+    "remove": "Entfernen",
+    "addToOrder": "Zu deiner Bestellung dazu",
+    "loadingCart": "Warenkorb lädt …",
+    "ledWarningTitle": "Deine LED wird nicht funktionieren.",
+    "ledWarningBody": "Du hast einen LED-Scheinwerfer im Warenkorb, aber keinen Wandler. Die Lampe geht ohne Wandler physikalisch nicht an. Bitte füge den passenden Wandler hinzu, bevor du bezahlst.",
+    "beforeCheckoutTitle": "Bevor du fortfährst, bitte prüfen",
+    "checkAddressTitle": "Vollständige Adresse mit Hausnummer",
+    "checkAddressBody": "Fehlende Hausnummer ist unser häufigstes Lieferproblem. Straße, Hausnummer, PLZ, Ort, Land — keins darf leer bleiben.",
+    "checkEmailTitle": "Echte E-Mail-Adresse eintragen",
+    "checkEmailBody": "Ohne E-Mail gibt es keine Sendungsverfolgung und keine Bestell-Updates. Du erfährst nicht wann dein Paket ankommt."
+  },
+  "product": {
+    "addToCart": "In den Warenkorb",
+    "soldOut": "Ausverkauft",
+    "inStock": "Auf Lager",
+    "fitsOn": "Passt auf",
+    "completeSetup": "Ergänze dein Setup",
+    "requiredBadge": "Notwendig",
+    "converterRequired": "Passenden Wandler dazu",
+    "converterHint": "Die LED funktioniert ohne ihn nicht. Fügt {price} zu deiner Bestellung hinzu.",
+    "converterOff": "Achtung: ohne Wandler wird die Lampe nicht laufen.",
+    "madeToOrder": "Auf Bestellung gefertigt",
+    "madeToOrderNormal": "ca. 2-3 Wochen",
+    "madeToOrderLong": "6+ Wochen",
+    "madeToOrderNoteNormal": "Von Hand gefertigt und vor Versand getestet. Rechne mit ca. 2 bis 3 Wochen, in der Reihenfolge des Eingangs.",
+    "madeToOrderNoteLong": "Für dich auf Bestellung gefertigt. Aktuelle Lieferzeit 6 Wochen oder mehr, du bekommst per Mail Updates.",
+    "worldwide": "Weltweit",
+    "shipping5to10": "5-10 Tage",
+    "warranty": "Garantie",
+    "warranty6m": "6 Monate",
+    "quantity": "Menge",
+    "save": "spare"
+  },
+  "faq": {
+    "title": "Häufige Fragen",
+    "stillNotSure": "Noch nicht sicher?",
+    "stillNotSureBody": "Frag den SickBot — unser Assistent beantwortet Versand-, Passform- und Wandlerfragen in Sekunden.",
+    "askSickBot": "SickBot fragen"
+  },
+  "footer": {
+    "shopCol": "Shop",
+    "serviceCol": "Service",
+    "contactCol": "Kontakt",
+    "shippingDelivery": "Versand und Lieferung",
+    "returns": "Retouren",
+    "blog": "Blog",
+    "helpFaq": "Hilfe und FAQ",
+    "engineeredIn": "Performance Parts für Supermoto und Enduro. Handgemacht in Deutschland von Thomas Krawietz.",
+    "hours": "Mo-Sa 9-22, So 10-18"
+  },
+  "consent": {
+    "title": "Cookies und Tracking",
+    "body": "Wir nutzen essenzielle Cookies um den Shop zu betreiben. Mit deiner Zustimmung setzen wir zusätzlich Analyse- und Marketing-Cookies, damit wir die Seite verbessern und die richtigen Fahrer erreichen können.",
+    "onlyEssential": "Nur essenziell",
+    "acceptAll": "Alles akzeptieren"
+  },
+  "bot": {
+    "askSickBot": "SickBot fragen",
+    "ask": "Ask",
+    "sickbot": "SickBot",
+    "greeting": "Hey, ich bin SickBot — dein Ansprechpartner für alles rund um Supermoto: Versand, Passform, Wandler, Zahlung, Retouren oder Teile. Wie kann ich helfen?",
+    "online": "Online",
+    "suggestions": {
+      "shipping": "Wie lange dauert der Versand?",
+      "fitment": "Passt das auf mein Bike?",
+      "payment": "Welche Zahlungsmethoden?",
+      "returns": "Wie funktioniert die Rückgabe?"
+    },
+    "inputPlaceholder": "Frag was …",
+    "sendAria": "Senden",
+    "closeAria": "Chat schließen",
+    "openAria": "Chat öffnen"
+  },
+  "shop": {
+    "title": "Shop Katalog",
+    "filters": "Filter",
+    "clearFilters": "Filter zurücksetzen",
+    "sortLabel": "Sortieren:",
+    "sortPopular": "Beliebtheit",
+    "sortPriceAsc": "Preis: aufsteigend",
+    "sortPriceDesc": "Preis: absteigend",
+    "sortDiscount": "Größter Rabatt",
+    "noMatches": "Keine Teile passen zu diesen Filtern.",
+    "onSale": "Im Angebot",
+    "inStockOnly": "Nur verfügbar",
+    "yourGarage": "Deine Garage",
+    "showWhatFits": "Was passt anzeigen",
+    "showAllAgain": "Wieder alles anzeigen"
+  },
+  "garage": {
+    "title": "Meine Garage",
+    "subtitle": "Speichere deine Bikes. Ab dann kann jede Liste mit einem Tap auf das gefiltert werden, was tatsächlich passt.",
+    "brand": "Marke",
+    "model": "Modell",
+    "year": "Baujahr",
+    "pickBrand": "Marke wählen",
+    "pickModel": "Modell wählen",
+    "pickBrandFirst": "Erst Marke wählen",
+    "addBike": "Bike hinzufügen",
+    "yourGarage": "Deine Garage",
+    "remove": "Entfernen",
+    "shopFits": "Passende Teile shoppen",
+    "noBikes": "Noch keine Bikes hinzugefügt."
+  }
 }

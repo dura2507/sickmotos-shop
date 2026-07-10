@@ -71,9 +71,11 @@ export default async function RootLayout({
   const h = await headers();
   const pathname = h.get("x-sm-path") || "";
   const isAdmin = pathname.startsWith("/admin");
+  const { getLocale } = await import("@/lib/i18n/getLocale");
+  const locale = await getLocale();
 
   return (
-    <html lang="en" className={`${sans.variable} ${display.variable}`}>
+    <html lang={locale} className={`${sans.variable} ${display.variable}`}>
       <head>
         {PLAUSIBLE_DOMAIN && (
           <Script

@@ -1,10 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getBikeIndex } from "@/lib/products";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 import { SearchSuggest } from "./SearchSuggest";
 
-export function Hero() {
+export async function Hero() {
   const bikes = getBikeIndex();
+  const locale = await getLocale();
+  const dict = await getDictionary(locale);
   return (
     <section className="relative isolate overflow-hidden border-b border-border">
       {/* full-bleed bike background (Thomas's hero style) */}
@@ -37,7 +41,7 @@ export function Hero() {
       <div className="mx-auto flex min-h-[82vh] max-w-7xl flex-col justify-center gap-6 px-4 py-16 md:px-6 md:py-24">
         <span className="inline-flex w-fit items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.25em] text-accent backdrop-blur-sm">
           <span className="size-1.5 rounded-full bg-accent pulse-accent" />
-          Supermoto Performance Parts
+          {dict.hero.kicker}
         </span>
 
         {/* SVG slogan headline (Thomas's artwork) */}
@@ -49,10 +53,7 @@ export function Hero() {
         />
 
         <p className="max-w-xl text-balance text-sm leading-relaxed text-zinc-200 md:text-base lg:text-lg">
-          Performance parts for the supermoto universe — 2- and 4-stroke, 50 to
-          700 ccm, for KTM, Husqvarna, Beta, Fantic, Sherco and many more.
-          Titanium exhaust systems, LED headlights, ECU tuning and engine hard
-          parts, carefully developed and improved to perfection.
+          {dict.hero.description}
         </p>
 
         <div className="flex flex-wrap items-center gap-3">
@@ -60,7 +61,7 @@ export function Hero() {
             href="/shop"
             className="inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white transition-colors hover:bg-accent/85"
           >
-            Shop now
+            {dict.hero.shopNow}
             <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={2.2}>
               <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -69,7 +70,7 @@ export function Hero() {
             href="/shop"
             className="inline-flex items-center rounded-full border border-white/30 bg-black/30 px-7 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white backdrop-blur-sm transition-colors hover:border-accent hover:text-accent"
           >
-            Categories
+            {dict.header.categories}
           </Link>
         </div>
 

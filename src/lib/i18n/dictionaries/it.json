@@ -1,3 +1,143 @@
 {
-  "_placeholder": "Dictionary keys arrive in the next commit."
+  "promoBar": {
+    "newHere": "Prima volta? 5% di sconto sul tuo primo ordine",
+    "code": "Codice",
+    "codeValue": "EXTRA5"
+  },
+  "header": {
+    "shopNow": "Acquista ora",
+    "categories": "Categorie",
+    "shop": "Shop",
+    "allParts": "Tutti i pezzi",
+    "pickBike": "Scegli la moto",
+    "search": "Cerca",
+    "searchPlaceholder": "Cerca pezzi o moto …",
+    "account": "Account",
+    "cart": "Carrello",
+    "menu": "Menu",
+    "closeMenu": "Chiudi menu",
+    "close": "Chiudi"
+  },
+  "hero": {
+    "kicker": "Pezzi performance per supermoto",
+    "shopNow": "Acquista ora",
+    "browseCategories": "Sfoglia categorie",
+    "description": "Pezzi performance per l'universo supermoto — 2 e 4 tempi, da 50 a 700 cc, per KTM, Husqvarna, Beta, Fantic, Sherco e molte altre. Impianti di scarico in titanio, fari LED, mappature ECU e componentistica motore, sviluppati e affinati con passione."
+  },
+  "categories": {
+    "title": "Scegli la tua categoria",
+    "subtitle": "Dallo scarico alle viti — tutto ciò che serve alla tua moto.",
+    "shopCategory": "Vedi categoria"
+  },
+  "cart": {
+    "title": "Carrello",
+    "empty": "Il tuo carrello è vuoto.",
+    "continueShopping": "Continua lo shopping",
+    "subtotal": "Subtotale",
+    "shippingNote": "Spedizione e tasse calcolate al checkout.",
+    "checkout": "Checkout",
+    "remove": "Rimuovi",
+    "addToOrder": "Aggiungi al tuo ordine",
+    "loadingCart": "Caricamento carrello …",
+    "ledWarningTitle": "Il tuo LED non funzionerà.",
+    "ledWarningBody": "Hai un faro LED nel carrello ma nessun convertitore. Senza convertitore la lampada non si accende fisicamente. Aggiungi il convertitore adatto prima di procedere al checkout.",
+    "beforeCheckoutTitle": "Prima di continuare, controlla",
+    "checkAddressTitle": "Indirizzo completo con numero civico",
+    "checkAddressBody": "Il numero civico mancante è il problema di consegna numero 1. Via, numero, CAP, città, paese — nessuno può restare vuoto.",
+    "checkEmailTitle": "Inserisci un'email reale",
+    "checkEmailBody": "Senza email non c'è tracciamento della spedizione né aggiornamenti dell'ordine. Non saprai quando arriveranno i pezzi."
+  },
+  "product": {
+    "addToCart": "Aggiungi al carrello",
+    "soldOut": "Esaurito",
+    "inStock": "Disponibile",
+    "fitsOn": "Compatibile con",
+    "completeSetup": "Completa il tuo setup",
+    "requiredBadge": "Necessario",
+    "converterRequired": "Aggiungi il convertitore necessario",
+    "converterHint": "Il LED non funziona senza. Aggiunge {price} al tuo ordine.",
+    "converterOff": "Attenzione: senza convertitore la lampada non funziona.",
+    "madeToOrder": "Su ordinazione",
+    "madeToOrderNormal": "circa 2-3 settimane",
+    "madeToOrderLong": "6+ settimane",
+    "madeToOrderNoteNormal": "Fatto a mano e testato prima della spedizione, aspettati circa 2 o 3 settimane. Costruito nell'ordine di arrivo.",
+    "madeToOrderNoteLong": "Costruito su ordinazione solo per te. Tempo di consegna attuale 6 settimane o più, riceverai aggiornamenti via email.",
+    "worldwide": "In tutto il mondo",
+    "shipping5to10": "5-10 giorni",
+    "warranty": "Garanzia",
+    "warranty6m": "6 mesi",
+    "quantity": "Quantità",
+    "save": "risparmi"
+  },
+  "faq": {
+    "title": "Domande frequenti",
+    "stillNotSure": "Ancora indeciso?",
+    "stillNotSureBody": "Chiedi al SickBot — il nostro assistente risponde in pochi secondi su spedizione, compatibilità e convertitori.",
+    "askSickBot": "Chiedi al SickBot"
+  },
+  "footer": {
+    "shopCol": "Shop",
+    "serviceCol": "Assistenza",
+    "contactCol": "Contatti",
+    "shippingDelivery": "Spedizione e consegna",
+    "returns": "Resi",
+    "blog": "Blog",
+    "helpFaq": "Aiuto e FAQ",
+    "engineeredIn": "Pezzi performance per supermoto ed enduro. Fatti a mano in Germania da Thomas Krawietz.",
+    "hours": "Lun-Sab 9-22, Dom 10-18"
+  },
+  "consent": {
+    "title": "Cookie e tracciamento",
+    "body": "Usiamo cookie essenziali per far funzionare lo shop. Con il tuo consenso usiamo anche cookie di analisi e marketing per migliorare il sito e raggiungere i piloti giusti.",
+    "onlyEssential": "Solo essenziali",
+    "acceptAll": "Accetta tutti"
+  },
+  "bot": {
+    "askSickBot": "Chiedi al SickBot",
+    "ask": "Chiedi",
+    "sickbot": "SickBot",
+    "greeting": "Ciao, sono SickBot — il tuo punto di riferimento per tutto ciò che riguarda il supermoto: spedizioni, compatibilità, convertitori, pagamenti, resi o pezzi. Come posso aiutarti?",
+    "online": "Online",
+    "suggestions": {
+      "shipping": "Quanto dura la spedizione?",
+      "fitment": "È compatibile con la mia moto?",
+      "payment": "Quali metodi di pagamento?",
+      "returns": "Come funziona la politica di reso?"
+    },
+    "inputPlaceholder": "Fai una domanda …",
+    "sendAria": "Invia",
+    "closeAria": "Chiudi chat",
+    "openAria": "Apri chat"
+  },
+  "shop": {
+    "title": "Sfoglia il catalogo",
+    "filters": "Filtri",
+    "clearFilters": "Azzera filtri",
+    "sortLabel": "Ordina:",
+    "sortPopular": "Rilevanza",
+    "sortPriceAsc": "Prezzo: dal più basso",
+    "sortPriceDesc": "Prezzo: dal più alto",
+    "sortDiscount": "Maggior sconto",
+    "noMatches": "Nessun pezzo corrisponde a questi filtri.",
+    "onSale": "In offerta",
+    "inStockOnly": "Solo disponibili",
+    "yourGarage": "Il tuo garage",
+    "showWhatFits": "Mostra ciò che va bene",
+    "showAllAgain": "Mostra tutto di nuovo"
+  },
+  "garage": {
+    "title": "Il mio garage",
+    "subtitle": "Salva le tue moto. Da quel momento ogni lista si filtra con un tap per mostrare solo ciò che è compatibile.",
+    "brand": "Marca",
+    "model": "Modello",
+    "year": "Anno",
+    "pickBrand": "Scegli una marca",
+    "pickModel": "Scegli un modello",
+    "pickBrandFirst": "Scegli prima una marca",
+    "addBike": "Aggiungi moto",
+    "yourGarage": "Il tuo garage",
+    "remove": "Rimuovi",
+    "shopFits": "Vedi i pezzi compatibili",
+    "noBikes": "Nessuna moto aggiunta."
+  }
 }

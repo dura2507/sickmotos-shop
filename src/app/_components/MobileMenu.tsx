@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { readBike, subscribeBike, writeBike, type SavedBike } from "@/lib/bikeStore";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { DEFAULT_LOCALE, LOCALE_COOKIE, isLocale, type Locale } from "@/lib/i18n/config";
 
 const nav = [
   { label: "All Parts", href: "/shop" },
@@ -20,10 +22,17 @@ export function MobileMenu() {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [bike, setBike] = useState<SavedBike>({ brand: null, model: null, year: null });
+  const [locale, setLocale] = useState<Locale>(DEFAULT_LOCALE);
 
   useEffect(() => {
     setMounted(true);
     setBike(readBike());
+    const cookie = document.cookie
+      .split(";")
+      .map((s) => s.trim())
+      .find((c) => c.startsWith(`${LOCALE_COOKIE}=`))
+      ?.split("=")[1];
+    if (isLocale(cookie)) setLocale(cookie);
     return subscribeBike(setBike);
   }, []);
 
@@ -70,16 +79,19 @@ export function MobileMenu() {
               <span className="font-display text-2xl uppercase tracking-tight">
                 Menu
               </span>
-              <button
-                type="button"
-                aria-label="Close menu"
-                onClick={close}
-                className="grid size-9 place-items-center rounded-full border border-border-strong text-fg-muted hover:border-accent hover:text-fg"
-              >
-                <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={2}>
-                  <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
-                </svg>
-              </button>
+              <div className="flex items-center gap-2">
+                <LanguageSwitcher current={locale} />
+                <button
+                  type="button"
+                  aria-label="Close menu"
+                  onClick={close}
+                  className="grid size-9 place-items-center rounded-full border border-border-strong text-fg-muted hover:border-accent hover:text-fg"
+                >
+                  <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={2}>
+                    <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </div>
             </div>
 
             <div className="no-scrollbar flex flex-1 flex-col gap-6 overflow-y-auto p-4">

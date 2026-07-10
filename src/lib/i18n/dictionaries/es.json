@@ -1,3 +1,143 @@
 {
-  "_placeholder": "Dictionary keys arrive in the next commit."
+  "promoBar": {
+    "newHere": "¿Es tu primera vez? 5% de descuento en tu primer pedido",
+    "code": "Código",
+    "codeValue": "EXTRA5"
+  },
+  "header": {
+    "shopNow": "Comprar ahora",
+    "categories": "Categorías",
+    "shop": "Tienda",
+    "allParts": "Todos los repuestos",
+    "pickBike": "Elige tu moto",
+    "search": "Buscar",
+    "searchPlaceholder": "Busca repuestos o moto …",
+    "account": "Cuenta",
+    "cart": "Carrito",
+    "menu": "Menú",
+    "closeMenu": "Cerrar menú",
+    "close": "Cerrar"
+  },
+  "hero": {
+    "kicker": "Repuestos performance para supermoto",
+    "shopNow": "Comprar ahora",
+    "browseCategories": "Ver categorías",
+    "description": "Repuestos performance para el universo supermoto — 2 y 4 tiempos, de 50 a 700 cc, para KTM, Husqvarna, Beta, Fantic, Sherco y muchas más. Sistemas de escape en titanio, faros LED, mapeados ECU y componentes de motor, desarrollados y refinados con pasión."
+  },
+  "categories": {
+    "title": "Elige tu categoría",
+    "subtitle": "Del escape a los tornillos — todo lo que tu moto necesita.",
+    "shopCategory": "Ver categoría"
+  },
+  "cart": {
+    "title": "Carrito",
+    "empty": "Tu carrito está vacío.",
+    "continueShopping": "Seguir comprando",
+    "subtotal": "Subtotal",
+    "shippingNote": "Envío e impuestos calculados en el checkout.",
+    "checkout": "Pagar",
+    "remove": "Quitar",
+    "addToOrder": "Añadir a tu pedido",
+    "loadingCart": "Cargando carrito …",
+    "ledWarningTitle": "Tu LED no funcionará.",
+    "ledWarningBody": "Tienes un faro LED en el carrito pero sin convertidor. La lámpara no se encenderá físicamente sin él. Añade el convertidor adecuado antes de pagar.",
+    "beforeCheckoutTitle": "Antes de continuar, revisa",
+    "checkAddressTitle": "Dirección completa con número",
+    "checkAddressBody": "El número que falta es el problema de entrega número 1. Calle, número, código postal, ciudad, país — nada puede quedar en blanco.",
+    "checkEmailTitle": "Introduce un email real",
+    "checkEmailBody": "Sin email no hay seguimiento del envío ni actualizaciones del pedido. No sabrás cuándo llegan tus repuestos."
+  },
+  "product": {
+    "addToCart": "Añadir al carrito",
+    "soldOut": "Agotado",
+    "inStock": "Disponible",
+    "fitsOn": "Compatible con",
+    "completeSetup": "Completa tu setup",
+    "requiredBadge": "Necesario",
+    "converterRequired": "Añade el convertidor necesario",
+    "converterHint": "El LED no funciona sin él. Añade {price} a tu pedido.",
+    "converterOff": "Atención: sin convertidor la lámpara no funcionará.",
+    "madeToOrder": "Bajo pedido",
+    "madeToOrderNormal": "aprox. 2-3 semanas",
+    "madeToOrderLong": "6+ semanas",
+    "madeToOrderNoteNormal": "Hecho a mano y probado antes del envío, cuenta con unas 2 a 3 semanas. Fabricado por orden de entrada.",
+    "madeToOrderNoteLong": "Fabricado bajo pedido solo para ti. El plazo actual es de 6 semanas o más, recibirás actualizaciones por email.",
+    "worldwide": "En todo el mundo",
+    "shipping5to10": "5-10 días",
+    "warranty": "Garantía",
+    "warranty6m": "6 meses",
+    "quantity": "Cantidad",
+    "save": "ahorras"
+  },
+  "faq": {
+    "title": "Preguntas frecuentes",
+    "stillNotSure": "¿Sigues sin estar seguro?",
+    "stillNotSureBody": "Pregunta a SickBot — nuestro asistente responde en segundos sobre envíos, compatibilidad y convertidores.",
+    "askSickBot": "Preguntar a SickBot"
+  },
+  "footer": {
+    "shopCol": "Tienda",
+    "serviceCol": "Servicio",
+    "contactCol": "Contacto",
+    "shippingDelivery": "Envío y entrega",
+    "returns": "Devoluciones",
+    "blog": "Blog",
+    "helpFaq": "Ayuda y FAQ",
+    "engineeredIn": "Repuestos performance para supermoto y enduro. Hechos a mano en Alemania por Thomas Krawietz.",
+    "hours": "Lun-Sáb 9-22, Dom 10-18"
+  },
+  "consent": {
+    "title": "Cookies y seguimiento",
+    "body": "Usamos cookies esenciales para el funcionamiento de la tienda. Con tu consentimiento también usamos cookies de análisis y marketing para mejorar el sitio y llegar a los pilotos adecuados.",
+    "onlyEssential": "Solo esenciales",
+    "acceptAll": "Aceptar todo"
+  },
+  "bot": {
+    "askSickBot": "Preguntar a SickBot",
+    "ask": "Pregunta",
+    "sickbot": "SickBot",
+    "greeting": "Hola, soy SickBot — tu referencia para todo lo relacionado con supermoto: envíos, compatibilidad, convertidores, pagos, devoluciones o repuestos. ¿En qué te ayudo?",
+    "online": "En línea",
+    "suggestions": {
+      "shipping": "¿Cuánto tarda el envío?",
+      "fitment": "¿Es compatible con mi moto?",
+      "payment": "¿Qué métodos de pago?",
+      "returns": "¿Cómo es la política de devoluciones?"
+    },
+    "inputPlaceholder": "Haz una pregunta …",
+    "sendAria": "Enviar",
+    "closeAria": "Cerrar chat",
+    "openAria": "Abrir chat"
+  },
+  "shop": {
+    "title": "Explora el catálogo",
+    "filters": "Filtros",
+    "clearFilters": "Quitar filtros",
+    "sortLabel": "Ordenar:",
+    "sortPopular": "Relevancia",
+    "sortPriceAsc": "Precio: menor a mayor",
+    "sortPriceDesc": "Precio: mayor a menor",
+    "sortDiscount": "Mayor descuento",
+    "noMatches": "Ningún repuesto coincide con estos filtros.",
+    "onSale": "En oferta",
+    "inStockOnly": "Solo disponibles",
+    "yourGarage": "Tu garaje",
+    "showWhatFits": "Mostrar lo compatible",
+    "showAllAgain": "Mostrar todo de nuevo"
+  },
+  "garage": {
+    "title": "Mi garaje",
+    "subtitle": "Guarda tus motos. A partir de ahí cada lista se filtra con un toque a lo que realmente encaja.",
+    "brand": "Marca",
+    "model": "Modelo",
+    "year": "Año",
+    "pickBrand": "Elige una marca",
+    "pickModel": "Elige un modelo",
+    "pickBrandFirst": "Elige primero una marca",
+    "addBike": "Añadir moto",
+    "yourGarage": "Tu garaje",
+    "remove": "Quitar",
+    "shopFits": "Ver repuestos compatibles",
+    "noBikes": "Aún no has añadido motos."
+  }
 }

@@ -1,9 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getSearchIndex } from "@/lib/products";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 import { CartButton } from "./CartButton";
 import { MobileMenu } from "./MobileMenu";
 import { HeaderSearch } from "./HeaderSearch";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 const nav = [
   { label: "All Parts", href: "/shop" },
@@ -14,8 +17,10 @@ const nav = [
   { label: "Merchandise", href: "/shop?category=Merchandise" },
 ];
 
-export function Header() {
+export async function Header() {
   const searchIndex = getSearchIndex();
+  const locale = await getLocale();
+  const dict = await getDictionary(locale);
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-bg/95 backdrop-blur-md">
       <div className="mx-auto flex h-20 max-w-7xl items-center gap-3 px-4 md:h-24 md:gap-4 md:px-6">
@@ -33,9 +38,12 @@ export function Header() {
         <HeaderSearch index={searchIndex} />
 
         <div className="ml-auto flex items-center gap-2">
+          <div className="hidden md:block">
+            <LanguageSwitcher current={locale} />
+          </div>
           <Link
             href="/account"
-            aria-label="My account"
+            aria-label={dict.header.account}
             className="hidden size-9 place-items-center rounded-full border border-border-strong text-fg-muted transition-colors hover:border-accent hover:text-fg md:grid"
           >
             <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={1.8}>

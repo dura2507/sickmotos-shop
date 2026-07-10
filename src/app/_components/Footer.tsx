@@ -1,39 +1,9 @@
 import Image from "next/image";
 import { AskSickBot } from "./AskSickBot";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
 type FooterLink = { label: string; href: string };
-
-const cols: { title: string; links: FooterLink[] }[] = [
-  {
-    title: "Shop",
-    links: [
-      { label: "Exhaust", href: "/shop?category=Exhaust" },
-      { label: "LED Headlights", href: "/shop?category=LED+Headlights" },
-      { label: "Carbon Parts", href: "/shop?category=Carbon+Parts" },
-      { label: "Graphics", href: "/shop?category=Graphics" },
-      { label: "Merchandise", href: "/shop?category=Merchandise" },
-      { label: "All parts", href: "/shop" },
-    ],
-  },
-  {
-    title: "Service",
-    links: [
-      { label: "Shipping & delivery", href: "/legal/versand" },
-      { label: "Returns", href: "/legal/widerruf" },
-      { label: "Blog", href: "/blog" },
-      { label: "Help & FAQ", href: "/#faq" },
-    ],
-  },
-  {
-    title: "Contact",
-    links: [
-      { label: "sickMotos-styles@freenet.de", href: "mailto:sickMotos-styles@freenet.de" },
-      { label: "Obere Str. 18, 86554 Pöttmes", href: "https://maps.google.com/?q=Obere+Str.+18,+86554+P%C3%B6ttmes" },
-      { label: "Mon-Sat 9-22, Sun 10-18", href: "#" },
-      { label: "@sickmotos_official", href: "https://instagram.com/sickmotos_official" },
-    ],
-  },
-];
 
 const payments = [
   "Visa",
@@ -44,7 +14,40 @@ const payments = [
   "Bitcoin",
 ];
 
-export function Footer() {
+export async function Footer() {
+  const locale = await getLocale();
+  const dict = await getDictionary(locale);
+  const cols: { title: string; links: FooterLink[] }[] = [
+    {
+      title: dict.footer.shopCol,
+      links: [
+        { label: "Exhaust", href: "/shop?category=Exhaust" },
+        { label: "LED Headlights", href: "/shop?category=LED+Headlights" },
+        { label: "Carbon Parts", href: "/shop?category=Carbon+Parts" },
+        { label: "Graphics", href: "/shop?category=Graphics" },
+        { label: "Merchandise", href: "/shop?category=Merchandise" },
+        { label: dict.header.allParts, href: "/shop" },
+      ],
+    },
+    {
+      title: dict.footer.serviceCol,
+      links: [
+        { label: dict.footer.shippingDelivery, href: "/legal/versand" },
+        { label: dict.footer.returns, href: "/legal/widerruf" },
+        { label: dict.footer.blog, href: "/blog" },
+        { label: dict.footer.helpFaq, href: "/#faq" },
+      ],
+    },
+    {
+      title: dict.footer.contactCol,
+      links: [
+        { label: "sickMotos-styles@freenet.de", href: "mailto:sickMotos-styles@freenet.de" },
+        { label: "Obere Str. 18, 86554 Pöttmes", href: "https://maps.google.com/?q=Obere+Str.+18,+86554+P%C3%B6ttmes" },
+        { label: dict.footer.hours, href: "#" },
+        { label: "@sickmotos_official", href: "https://instagram.com/sickmotos_official" },
+      ],
+    },
+  ];
   return (
     <footer className="relative border-t border-accent/40 bg-bg">
       <div
@@ -69,11 +72,10 @@ export function Footer() {
               className="self-start"
             />
             <p className="max-w-xs text-sm text-fg-muted">
-              Performance parts for Supermoto & Enduro. Engineered in Germany
-              by Thomas Krawietz.
+              {dict.footer.engineeredIn}
             </p>
             <div className="flex items-center gap-3 pt-2">
-              <AskSickBot variant="icon" label="Ask the SickBot" />
+              <AskSickBot variant="icon" label={dict.bot.askSickBot} />
               <a
                 href="https://instagram.com/sickmotos_official"
                 target="_blank"

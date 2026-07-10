@@ -1,3 +1,143 @@
 {
-  "_placeholder": "Dictionary keys arrive in the next commit."
+  "promoBar": {
+    "newHere": "New here? 5% off your first order",
+    "code": "Code",
+    "codeValue": "EXTRA5"
+  },
+  "header": {
+    "shopNow": "Shop now",
+    "categories": "Categories",
+    "shop": "Shop",
+    "allParts": "All parts",
+    "pickBike": "Pick your bike",
+    "search": "Search",
+    "searchPlaceholder": "Search parts or bike …",
+    "account": "Account",
+    "cart": "Cart",
+    "menu": "Menu",
+    "closeMenu": "Close menu",
+    "close": "Close"
+  },
+  "hero": {
+    "kicker": "Supermoto performance parts",
+    "shopNow": "Shop now",
+    "browseCategories": "Browse categories",
+    "description": "Performance parts for the supermoto universe — 2- and 4-stroke, 50 to 700 ccm, for KTM, Husqvarna, Beta, Fantic, Sherco and many more. Titanium exhaust systems, LED headlights, ECU tuning and engine hard parts, developed and refined to perfection."
+  },
+  "categories": {
+    "title": "Pick your category",
+    "subtitle": "From exhaust to screws — everything your bike needs.",
+    "shopCategory": "Shop category"
+  },
+  "cart": {
+    "title": "Cart",
+    "empty": "Your cart is empty.",
+    "continueShopping": "Keep shopping",
+    "subtotal": "Subtotal",
+    "shippingNote": "Shipping and taxes calculated at checkout.",
+    "checkout": "Checkout",
+    "remove": "Remove",
+    "addToOrder": "Add to your order",
+    "loadingCart": "Loading cart …",
+    "ledWarningTitle": "Your LED will not work.",
+    "ledWarningBody": "You have an LED headlight in your cart but no converter. The lamp physically will not turn on without one. Please add the matching converter before checkout.",
+    "beforeCheckoutTitle": "Before you continue, please check",
+    "checkAddressTitle": "Full address, including house number",
+    "checkAddressBody": "Missing house number is our #1 delivery problem. Street, house number, postcode, city, country — nothing may be blank.",
+    "checkEmailTitle": "Enter a real email address",
+    "checkEmailBody": "Without one there is no shipping tracking and no order updates. You will not know when your parts arrive."
+  },
+  "product": {
+    "addToCart": "Add to cart",
+    "soldOut": "Sold out",
+    "inStock": "In stock",
+    "fitsOn": "Fits on",
+    "completeSetup": "Complete your setup",
+    "requiredBadge": "Required",
+    "converterRequired": "Add the required converter",
+    "converterHint": "The LED does not work without it. Adds {price} to your order.",
+    "converterOff": "Heads up: without the converter the lamp will not work.",
+    "madeToOrder": "Made to order",
+    "madeToOrderNormal": "approx. 2-3 weeks",
+    "madeToOrderLong": "6+ weeks",
+    "madeToOrderNoteNormal": "Handcrafted and tested before it ships, so expect about 2 to 3 weeks. Built in the order things come in.",
+    "madeToOrderNoteLong": "Built to order just for you. Current lead time is 6 weeks or more, and you get email updates along the way.",
+    "worldwide": "Worldwide",
+    "shipping5to10": "5-10 days",
+    "warranty": "Warranty",
+    "warranty6m": "6 months",
+    "quantity": "Quantity",
+    "save": "save"
+  },
+  "faq": {
+    "title": "Frequently asked",
+    "stillNotSure": "Still not sure?",
+    "stillNotSureBody": "Ask the SickBot — our assistant answers shipping, fitment and converter questions in seconds.",
+    "askSickBot": "Ask the SickBot"
+  },
+  "footer": {
+    "shopCol": "Shop",
+    "serviceCol": "Service",
+    "contactCol": "Contact",
+    "shippingDelivery": "Shipping & delivery",
+    "returns": "Returns",
+    "blog": "Blog",
+    "helpFaq": "Help & FAQ",
+    "engineeredIn": "Performance parts for supermoto & enduro. Handmade in Germany by Thomas Krawietz.",
+    "hours": "Mon-Sat 9-22, Sun 10-18"
+  },
+  "consent": {
+    "title": "Cookies & tracking",
+    "body": "We use essential cookies to run the shop. With your consent we also use analytics and marketing cookies so we can improve the site and reach the right riders.",
+    "onlyEssential": "Only essential",
+    "acceptAll": "Accept all"
+  },
+  "bot": {
+    "askSickBot": "Ask SickBot",
+    "ask": "Ask",
+    "sickbot": "SickBot",
+    "greeting": "Hey, I'm SickBot — your go-to for anything supermoto: shipping, fitment, converters, payments, returns or parts. How can I help?",
+    "online": "Online",
+    "suggestions": {
+      "shipping": "How long does shipping take?",
+      "fitment": "Does it fit my bike?",
+      "payment": "Which payment methods?",
+      "returns": "What's your return policy?"
+    },
+    "inputPlaceholder": "Ask a question …",
+    "sendAria": "Send",
+    "closeAria": "Close chat",
+    "openAria": "Open chat"
+  },
+  "shop": {
+    "title": "Shop the catalog",
+    "filters": "Filters",
+    "clearFilters": "Clear filters",
+    "sortLabel": "Sort:",
+    "sortPopular": "Relevance",
+    "sortPriceAsc": "Price: low to high",
+    "sortPriceDesc": "Price: high to low",
+    "sortDiscount": "Biggest discount",
+    "noMatches": "No parts match these filters.",
+    "onSale": "On sale",
+    "inStockOnly": "In stock only",
+    "yourGarage": "Your garage",
+    "showWhatFits": "Show what fits",
+    "showAllAgain": "Show all again"
+  },
+  "garage": {
+    "title": "My garage",
+    "subtitle": "Save your bikes. Every list can then filter down with one tap to what actually fits.",
+    "brand": "Brand",
+    "model": "Model",
+    "year": "Year",
+    "pickBrand": "Pick a brand",
+    "pickModel": "Pick a model",
+    "pickBrandFirst": "Pick a brand first",
+    "addBike": "Add bike",
+    "yourGarage": "Your garage",
+    "remove": "Remove",
+    "shopFits": "Shop parts that fit",
+    "noBikes": "No bikes added yet."
+  }
 }
