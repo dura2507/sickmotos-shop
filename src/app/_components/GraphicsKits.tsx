@@ -10,28 +10,28 @@ const kits = [
     price: "€89,00",
     comparePrice: "€450,00",
     image:
-      "https://www.sick-motos.com/cdn/shop/files/F8BE1D7E-3071-4A38-901E-2A49F647F1F0_1024x1024.png?v=1761119461",
+      "https://cdn.shopify.com/s/files/1/0534/7380/4477/files/F8BE1D7E-3071-4A38-901E-2A49F647F1F0_1024x1024.png?v=1761119461",
   },
   {
     title: "Razor Gold Edition",
     bike: "Husqvarna 701 SM",
     price: "€89,00",
     image:
-      "https://www.sick-motos.com/cdn/shop/files/IMG-5295_1024x1024.png?v=1750939150",
+      "https://cdn.shopify.com/s/files/1/0534/7380/4477/files/IMG-5295_1024x1024.png?v=1750939150",
   },
   {
     title: "Grand Theft Moto",
     bike: "Husqvarna 701 SM",
     price: "€229,00",
     image:
-      "https://www.sick-motos.com/cdn/shop/files/109_1024x1024.png?v=1750939319",
+      "https://cdn.shopify.com/s/files/1/0534/7380/4477/files/109_1024x1024.png?v=1750939319",
   },
   {
     title: "Broken Head InYourFace",
     bike: "KTM SMCR 690",
     price: "€229,00",
     image:
-      "https://www.sick-motos.com/cdn/shop/products/image_2c7d4f6e-9c30-428f-87f5-4f4e57629756_1024x1024.jpg?v=1750939488",
+      "https://cdn.shopify.com/s/files/1/0534/7380/4477/products/image_2c7d4f6e-9c30-428f-87f5-4f4e57629756_1024x1024.jpg?v=1750939488",
   },
 ];
 
@@ -46,7 +46,7 @@ export async function GraphicsKits() {
           title={dict.graphicsKits.title}
           subtitle={dict.graphicsKits.subtitle}
           viewAllHref="#"
-          backdropImage="https://www.sick-motos.com/cdn/shop/files/109_1024x1024.png?v=1750939319"
+          backdropImage="https://cdn.shopify.com/s/files/1/0534/7380/4477/files/109_1024x1024.png?v=1750939319"
         />
         <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
           {kits.map((k) => (
