@@ -55,7 +55,7 @@ export async function Header() {
             </svg>
           </Link>
           <CartButton />
-          <MobileMenu />
+          <MobileMenu current={locale} />
         </div>
       </div>
 

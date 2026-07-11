@@ -6,7 +6,7 @@ import { createPortal } from "react-dom";
 import { readBike, subscribeBike, writeBike, type SavedBike } from "@/lib/bikeStore";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useDictionary } from "./LocaleProvider";
-import { DEFAULT_LOCALE, LOCALE_COOKIE, isLocale, type Locale } from "@/lib/i18n/config";
+import { LOCALE_COOKIE, isLocale, type Locale } from "@/lib/i18n/config";
 
 const nav = [
   { cat: null, href: "/shop" },
@@ -19,7 +19,7 @@ const nav = [
 
 const brands = ["Beta", "Husqvarna", "KTM", "Aprilia", "Fantic", "Yamaha"];
 
-export function MobileMenu() {
+export function MobileMenu({ current }: { current: Locale }) {
   const dict = useDictionary();
   const catCards = dict.categoryCards as Record<string, { name: string }>;
   const navItems = nav.map((n) => ({
@@ -29,7 +29,7 @@ export function MobileMenu() {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [bike, setBike] = useState<SavedBike>({ brand: null, model: null, year: null });
-  const [locale, setLocale] = useState<Locale>(DEFAULT_LOCALE);
+  const [locale, setLocale] = useState<Locale>(current);
 
   useEffect(() => {
     setMounted(true);

@@ -19,10 +19,17 @@ export function isLocale(value: string | undefined | null): value is Locale {
   return typeof value === "string" && (LOCALES as readonly string[]).includes(value);
 }
 
+// Fallback when the visitor's browser language is not one we support
+// (de/en/it/es). English is the friendliest international default, so an
+// unmatched visitor (e.g. Thai, French) gets English rather than German.
+// German is only served when the browser explicitly asks for it.
+export const FALLBACK_LOCALE: Locale = "en";
+
 // Best-effort match of an Accept-Language header against our supported set.
-// Ignores region tags (en-US → en, de-AT → de). Falls back to the default.
+// Ignores region tags (en-US → en, de-AT → de, es-MX → es). Anything we do
+// not support, or a missing header, falls back to English.
 export function pickLocale(acceptLanguage: string | null): Locale {
-  if (!acceptLanguage) return DEFAULT_LOCALE;
+  if (!acceptLanguage) return FALLBACK_LOCALE;
   const parsed = acceptLanguage
     .split(",")
     .map((p) => {
@@ -33,7 +40,7 @@ export function pickLocale(acceptLanguage: string | null): Locale {
   for (const p of parsed) {
     if (isLocale(p.tag)) return p.tag;
   }
-  return DEFAULT_LOCALE;
+  return FALLBACK_LOCALE;
 }
 
 export const LOCALE_COOKIE = "sm_lang";
