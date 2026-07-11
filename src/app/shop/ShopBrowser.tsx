@@ -458,7 +458,7 @@ export function ShopBrowser({
                             <path d="M12 8v4l3 2" strokeLinecap="round" strokeLinejoin="round" />
                             <circle cx="12" cy="12" r="9" />
                           </svg>
-                          {lead.badge}
+                          {dict.product.madeToOrder}
                         </span>
                       ) : null;
                     })()}

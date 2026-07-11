@@ -1,7 +1,7 @@
 import { LegalLayout } from "../_layout";
 
 export const metadata = {
-  title: "Impressum — SickMotos",
+  title: "Impressum | SickMotos",
   robots: { index: true, follow: true },
 };
 

@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { LegalLayout, LegalText } from "../_layout";
 
 export const metadata = {
-  title: "Versand — SickMotos",
+  title: "Versand | SickMotos",
   robots: { index: true, follow: true },
 };
 

@@ -32,9 +32,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { handle } = await params;
   const p = getProductByHandle(handle);
-  if (!p) return { title: "Product not found — SickMotos" };
+  if (!p) return { title: "Product not found | SickMotos" };
   const { price } = getPrice(p);
-  const title = `${cleanTitle(p.title)} — SickMotos`;
+  const title = `${cleanTitle(p.title)} | SickMotos`;
   const desc = htmlToBlocks(p.body_html)[0]?.slice(0, 160) ??
     `Performance part for ${p.vendor || "SickMotos"}.`;
   const image = p.images[0]?.src;

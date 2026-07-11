@@ -300,7 +300,7 @@ export function CartDrawer({ open, onClose }: Props) {
                             <path d="M12 8v4l3 2" strokeLinecap="round" strokeLinejoin="round" />
                             <circle cx="12" cy="12" r="9" />
                           </svg>
-                          {lead.badge}, {lead.short}
+                          {dict.product.madeToOrder}, {lead.long ? dict.product.madeToOrderLong : dict.product.madeToOrderNormal}
                         </span>
                       )}
                       <div className="mt-1 flex items-center justify-between gap-3">

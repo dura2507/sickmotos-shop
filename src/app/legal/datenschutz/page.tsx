@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { LegalLayout, LegalText } from "../_layout";
 
 export const metadata = {
-  title: "Datenschutz — SickMotos",
+  title: "Datenschutz | SickMotos",
   robots: { index: true, follow: true },
 };
 

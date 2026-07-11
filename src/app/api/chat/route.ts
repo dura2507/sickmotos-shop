@@ -71,7 +71,7 @@ export async function POST(req: Request) {
 
     const finalReply =
       reply ||
-      "Sorry, I couldn't generate a reply just now — please try rephrasing your question.";
+      "Sorry, I couldn't generate a reply just now. Please try rephrasing your question.";
 
     let conversationId = body.conversationId ?? null;
     try {

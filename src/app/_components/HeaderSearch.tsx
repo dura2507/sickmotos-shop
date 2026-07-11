@@ -51,7 +51,7 @@ export function HeaderSearch({ index }: { index: SearchEntry[] }) {
           href="/shop"
           className="shrink-0 rounded-full border border-border-strong px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-fg-muted transition-colors hover:border-accent hover:text-accent"
         >
-          Pick your bike
+          {dict.header.pickBike}
         </Link>
       )}
       <SearchSuggest
