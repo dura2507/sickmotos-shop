@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { buildSystemPrompt } from "@/lib/botKnowledge";
-import { appendConversation } from "@/lib/adminStore";
+import { appendConversation, getBotKnowledge } from "@/lib/adminStore";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -49,17 +49,30 @@ export async function POST(req: Request) {
 
   const client = new Anthropic({ apiKey });
 
+  // Owner corrections override the base knowledge. Kept in a separate,
+  // uncached block so a fresh correction takes effect on the very next answer.
+  const corrections = await getBotKnowledge().catch(() => "");
+  const system: Anthropic.MessageCreateParams["system"] = [
+    {
+      type: "text",
+      text: buildSystemPrompt(),
+      cache_control: { type: "ephemeral" },
+    },
+  ];
+  if (corrections && corrections.trim()) {
+    system.push({
+      type: "text",
+      text:
+        "The following are corrections from the shop owner. They have the HIGHEST priority and OVERRIDE anything above if they conflict. Follow them exactly.\n\n" +
+        corrections,
+    });
+  }
+
   try {
     const response = await client.messages.create({
       model: MODEL,
       max_tokens: 600,
-      system: [
-        {
-          type: "text",
-          text: buildSystemPrompt(),
-          cache_control: { type: "ephemeral" },
-        },
-      ],
+      system,
       messages,
     });
 

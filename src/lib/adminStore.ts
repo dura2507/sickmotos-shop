@@ -16,6 +16,8 @@ try {
 const memory = {
   conversations: new Map<string, StoredConversation>(),
   order: [] as string[],
+  corrections: [] as BotCorrection[],
+  knowledge: "",
 };
 
 export type StoredMessage = {
@@ -34,8 +36,22 @@ export type StoredConversation = {
   note?: string;
 };
 
+// A single correction Thomas made on a bot answer. The raw list is the audit
+// trail shown in the admin; the merged, structured knowledge doc is what the
+// bot actually reads (see botCorrections.ts).
+export type BotCorrection = {
+  id: string;
+  at: number;
+  chatId?: string;
+  question: string;
+  wrongAnswer?: string;
+  correction: string;
+};
+
 const KEY_CONV = (id: string) => `sm:conv:${id}`;
 const KEY_INDEX = "sm:conv:index";
+const KEY_CORR = "sm:bot:corrections";
+const KEY_KNOW = "sm:bot:knowledge";
 
 function makeId(): string {
   const t = Date.now().toString(36);
@@ -147,4 +163,66 @@ export async function saveNote(id: string, note: string): Promise<void> {
 
 export function isPersistent(): boolean {
   return !!redis;
+}
+
+// ---- Bot corrections + merged knowledge doc ----
+
+export async function addCorrection(
+  input: Omit<BotCorrection, "id" | "at">
+): Promise<BotCorrection> {
+  const entry: BotCorrection = { ...input, id: makeId(), at: Date.now() };
+  if (redis) {
+    await redis.lpush(KEY_CORR, JSON.stringify(entry));
+    await redis.ltrim(KEY_CORR, 0, 499);
+  } else {
+    memory.corrections.unshift(entry);
+    if (memory.corrections.length > 500) memory.corrections.length = 500;
+  }
+  return entry;
+}
+
+export async function listCorrections(limit = 300): Promise<BotCorrection[]> {
+  if (redis) {
+    const rows = (await redis.lrange<string>(KEY_CORR, 0, limit - 1)) ?? [];
+    return rows
+      .map((r) => {
+        try {
+          return typeof r === "string" ? (JSON.parse(r) as BotCorrection) : (r as BotCorrection);
+        } catch {
+          return null;
+        }
+      })
+      .filter((c): c is BotCorrection => !!c);
+  }
+  return memory.corrections.slice(0, limit);
+}
+
+export async function deleteCorrection(id: string): Promise<void> {
+  if (redis) {
+    const all = await listCorrections(500);
+    const kept = all.filter((c) => c.id !== id);
+    await redis.del(KEY_CORR);
+    if (kept.length) {
+      // preserve newest-first order (rpush oldest→newest of the reversed list)
+      await redis.rpush(KEY_CORR, ...kept.map((c) => JSON.stringify(c)));
+    }
+  } else {
+    memory.corrections = memory.corrections.filter((c) => c.id !== id);
+  }
+}
+
+export async function getBotKnowledge(): Promise<string> {
+  if (redis) {
+    const doc = await redis.get<string>(KEY_KNOW);
+    return doc ?? "";
+  }
+  return memory.knowledge;
+}
+
+export async function setBotKnowledge(doc: string): Promise<void> {
+  if (redis) {
+    await redis.set(KEY_KNOW, doc);
+  } else {
+    memory.knowledge = doc;
+  }
 }
