@@ -110,12 +110,13 @@ export async function Categories() {
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                {/* per-category colour wash + dark base for legibility */}
+                {/* dark base under the text for legibility, category colour as a
+                    mid glow above it so the text always sits over dark, not colour */}
                 <div
                   aria-hidden
                   className="absolute inset-0"
                   style={{
-                    background: `linear-gradient(to top, ${m.color}f2 0%, ${m.color}59 34%, rgba(0,0,0,0.55) 70%, rgba(0,0,0,0.25) 100%)`,
+                    background: `linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 22%, ${m.color}66 55%, ${m.color}26 80%, transparent 100%)`,
                   }}
                 />
 
