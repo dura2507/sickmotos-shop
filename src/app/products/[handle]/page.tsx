@@ -63,7 +63,7 @@ export default async function ProductPage({
   const shopify = getProductByHandle(handle);
   if (!shopify) notFound();
   const product = toDetailViewModel(shopify);
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sickmotos.com";
+  const base = "https://sickmotos.com";
   const dict = await getDictionary(await getLocale());
 
   // Schema.org Product structured data for Google rich results.

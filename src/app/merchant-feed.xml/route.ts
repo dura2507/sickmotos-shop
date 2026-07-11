@@ -14,7 +14,7 @@
 import { NextResponse } from "next/server";
 import { allProducts, categorize, cleanTitle, getPrice, htmlToBlocks } from "@/lib/products";
 
-const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sickmotos.com";
+const BASE = "https://sickmotos.com";
 
 // Refresh once an hour at the edge; matches the cadence we expect
 // Shopify webhook -> Vercel rebuild to push fresh data anyway.
