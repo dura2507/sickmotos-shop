@@ -87,7 +87,7 @@
     "addToOrder": "Aggiungi al tuo ordine",
     "loadingCart": "Caricamento carrello …",
     "ledWarningTitle": "Senza convertitore il tuo LED si rompe.",
-    "ledWarningBody": "Hai un faro LED nel carrello ma nessun convertitore. Sei sicuro di averne già uno? Senza il convertitore giusto la sovratensione distrugge la lampada. Aggiungilo prima di pagare.",
+    "ledWarningBody": "Hai un faro LED nel carrello ma nessun convertitore. Sei sicuro di averne già uno? Senza il convertitore giusto la sovratensione distrugge la lampada. Aggiungilo prima di andare alla cassa.",
     "beforeCheckoutTitle": "Prima di continuare, controlla",
     "checkAddressTitle": "Indirizzo completo con numero civico",
     "checkAddressBody": "Il numero civico mancante è il problema di consegna numero 1. Via, numero, CAP, città, paese, nessuno può restare vuoto.",

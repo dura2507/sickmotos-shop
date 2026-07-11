@@ -73,13 +73,32 @@ export function CartDrawer({ open, onClose }: Props) {
       .catch(() => setCrossSell([]));
   }, [open, cart]);
 
-  // Lock background scroll while open. The drawer has its own scroll.
+  // Lock background scroll while open. Body position:fixed is the only lock
+  // iOS Safari respects; overscroll-contain on the drawer (below) stops the
+  // inner scroll from chaining to the page on desktop.
   useEffect(() => {
     if (!open) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    const body = document.body;
+    const scrollY = window.scrollY;
+    const prev = {
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      overflow: body.style.overflow,
+    };
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = prev;
+      body.style.position = prev.position;
+      body.style.top = prev.top;
+      body.style.left = prev.left;
+      body.style.right = prev.right;
+      body.style.overflow = prev.overflow;
+      window.scrollTo(0, scrollY);
     };
   }, [open]);
 
@@ -138,7 +157,7 @@ export function CartDrawer({ open, onClose }: Props) {
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[100] flex flex-col bg-bg/80 backdrop-blur-sm md:items-stretch md:justify-end"
+      className="fixed inset-0 z-[100] flex flex-col overscroll-contain bg-bg/80 backdrop-blur-sm md:items-stretch md:justify-end"
       role="dialog"
       aria-modal="true"
       aria-label={dict.cart.dialogAria}
@@ -179,7 +198,7 @@ export function CartDrawer({ open, onClose }: Props) {
         </div>
 
         {/* Body */}
-        <div className="no-scrollbar flex flex-1 flex-col overflow-y-auto">
+        <div className="no-scrollbar flex flex-1 flex-col overflow-y-auto overscroll-contain">
           {loading && !cart && (
             <div className="flex flex-1 items-center justify-center text-sm text-fg-muted">
               {dict.cart.loading}

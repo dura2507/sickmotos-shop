@@ -110,25 +110,27 @@ export function SearchSuggest({
     openScrollY.current = window.scrollY;
     openAt.current = Date.now();
 
-    // Follow the input while the dropdown is open. Mobile browsers scroll the
-    // focused input into view a few frames after focus; if we froze the
-    // dropdown's coords once, it would end up covering the input's new
-    // position. Re-measuring on every scroll and viewport change keeps it
-    // pinned right under the input.
+    // Re-measure on resize / keyboard so the panel stays right under the input,
+    // but do NOT follow the page scroll (that jitters and leaves the panel
+    // floating over unrelated content). Instead, close on a real page scroll.
+    // A grace window absorbs the mobile browser's auto scroll-to-focus that
+    // fires a few frames after the input gets focused.
     const remeasure = () => {
       const nc = measure();
       if (nc) setCoords(nc);
     };
+    const onScroll = () => {
+      if (Date.now() - openAt.current < 500) return;
+      if (Math.abs(window.scrollY - openScrollY.current) > 30) setOpen(false);
+    };
     window.addEventListener("resize", remeasure);
-    window.addEventListener("scroll", remeasure, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
     const vv = window.visualViewport;
     vv?.addEventListener("resize", remeasure);
-    vv?.addEventListener("scroll", remeasure);
     return () => {
       window.removeEventListener("resize", remeasure);
-      window.removeEventListener("scroll", remeasure);
+      window.removeEventListener("scroll", onScroll);
       vv?.removeEventListener("resize", remeasure);
-      vv?.removeEventListener("scroll", remeasure);
     };
   }, [open, measure]);
 

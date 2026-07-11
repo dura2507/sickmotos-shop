@@ -87,7 +87,7 @@
     "addToOrder": "Add to your order",
     "loadingCart": "Loading cart …",
     "ledWarningTitle": "Without a converter your LED will break.",
-    "ledWarningBody": "You have an LED headlight in your cart but no converter. Are you sure you already have one? Without the right converter the overvoltage destroys the lamp. Please add it before you pay.",
+    "ledWarningBody": "You have an LED headlight in your cart but no converter. Are you sure you already have one? Without the right converter the overvoltage destroys the lamp. Please add it before you go to checkout.",
     "beforeCheckoutTitle": "Before you continue, please check",
     "checkAddressTitle": "Full address, including house number",
     "checkAddressBody": "Missing house number is our #1 delivery problem. Street, house number, postcode, city, country, nothing may be blank.",

@@ -87,7 +87,7 @@
     "addToOrder": "Zu deiner Bestellung dazu",
     "loadingCart": "Warenkorb lädt …",
     "ledWarningTitle": "Ohne Wandler geht deine LED kaputt.",
-    "ledWarningBody": "Du hast einen LED-Scheinwerfer im Warenkorb, aber keinen Wandler. Bist du sicher, dass du schon einen hast? Ohne den passenden Wandler zerstört die Überspannung die Lampe. Bitte vor dem Bezahlen hinzufügen.",
+    "ledWarningBody": "Du hast einen LED-Scheinwerfer im Warenkorb, aber keinen Wandler. Bist du sicher, dass du schon einen hast? Ohne den passenden Wandler zerstört die Überspannung die Lampe. Bitte hinzufügen, bevor du zur Kasse gehst.",
     "beforeCheckoutTitle": "Bevor du fortfährst, bitte prüfen",
     "checkAddressTitle": "Vollständige Adresse mit Hausnummer",
     "checkAddressBody": "Fehlende Hausnummer ist unser häufigstes Lieferproblem. Straße, Hausnummer, PLZ, Ort, Land, keins darf leer bleiben.",
