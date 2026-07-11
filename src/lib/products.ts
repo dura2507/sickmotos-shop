@@ -636,7 +636,7 @@ export type DetailViewModel = {
   // The selected user options resolve to one of these via key matching.
   variants: DetailVariantFull[];
   description: string;
-  specs: { label: string; value: string }[];
+  specs: { key: string; label: string; value: string }[];
   related: CardProduct[];
   // Curated add-ons from the original site (e.g. LED -> converter + warranty).
   // Empty for most products; the AddOns panel hides itself when empty.
@@ -645,27 +645,29 @@ export type DetailViewModel = {
   fitsOn: string[];
 };
 
-const SPEC_PATTERNS: { label: string; rx: RegExp }[] = [
-  { label: "Weight", rx: /Gewicht[:\s]+([^\n]+?)(?:\n|$)/i },
-  { label: "Material", rx: /Material[:\s]+([^\n]+?)(?:\n|$)/i },
-  { label: "Origin", rx: /(Made in [A-Za-zäöüÄÖÜß ]+)/ },
+const SPEC_PATTERNS: { key: string; label: string; rx: RegExp }[] = [
+  { key: "weight", label: "Weight", rx: /Gewicht[:\s]+([^\n]+?)(?:\n|$)/i },
+  { key: "material", label: "Material", rx: /Material[:\s]+([^\n]+?)(?:\n|$)/i },
+  { key: "origin", label: "Origin", rx: /(Made in [A-Za-zäöüÄÖÜß ]+)/ },
 ];
 
 function extractSpecsFromHtml(html: string, p: ShopifyProduct) {
   const text = htmlToBlocks(html).join("\n");
-  const specs: { label: string; value: string }[] = [];
-  for (const { label, rx } of SPEC_PATTERNS) {
+  const specs: { key: string; label: string; value: string }[] = [];
+  for (const { key, label, rx } of SPEC_PATTERNS) {
     const m = text.match(rx);
-    if (m) specs.push({ label, value: m[1].trim() });
+    if (m) specs.push({ key, label, value: m[1].trim() });
   }
-  if (p.vendor) specs.push({ label: "Brand", value: p.vendor });
-  if (p.product_type) specs.push({ label: "Category", value: p.product_type });
+  if (p.vendor) specs.push({ key: "brand", label: "Brand", value: p.vendor });
+  if (p.product_type) specs.push({ key: "category", label: "Category", value: p.product_type });
   const lead = leadTimeFor(categorize(p));
   specs.push({
+    key: lead ? (lead.long ? "delivery-mto-long" : "delivery-mto") : "delivery-standard",
     label: "Delivery",
     value: lead ? `Made to order, ${lead.short}` : "4-8 business days",
   });
   specs.push({
+    key: "warranty",
     label: "Warranty",
     value: "6 months on material and workmanship",
   });

@@ -81,7 +81,45 @@
     "warranty": "Garantía",
     "warranty6m": "6 meses",
     "quantity": "Cantidad",
-    "save": "ahorras"
+    "save": "ahorras",
+    "inclVat": "IVA incl.",
+    "currentlySoldOut": "Agotado actualmente",
+    "adding": "Añadiendo …",
+    "selectVariant": "Selecciona primero una variante.",
+    "decreaseQty": "Reducir cantidad",
+    "increaseQty": "Aumentar cantidad",
+    "howOrderBuilt": "Cómo se fabrica tu pedido",
+    "buildSteps": [
+      { "day": "Día 1-7", "label": "Producción", "detail": "Fabricado a mano en nuestro taller." },
+      { "day": "Día 10-12", "label": "Pruebas", "detail": "Cada unidad se prueba antes de salir." },
+      { "day": "Día 13-15", "label": "Embalaje y envío", "detail": "Embalado con cuidado y entregado al transportista." }
+    ],
+    "breadcrumbHome": "Inicio",
+    "addOnsSubtitle": "Accesorios que combinan bien con esta pieza.",
+    "converterAutoIncluded": "Incluido automáticamente con tu lámpara. Quítalo bajo tu propio riesgo, la lámpara no funciona sin él.",
+    "converterNeeded": "La lámpara no funciona sin este convertidor.",
+    "details": "Detalles",
+    "addShort": "Añadir"
+  },
+  "infoTabs": {
+    "description": "Descripción",
+    "specifications": "Especificaciones",
+    "noDescription": "No hay descripción disponible."
+  },
+  "specs": {
+    "weight": "Peso",
+    "material": "Material",
+    "origin": "Origen",
+    "brand": "Marca",
+    "category": "Categoría",
+    "delivery": "Entrega",
+    "warranty": "Garantía",
+    "deliveryStandard": "4-8 días laborables",
+    "warrantyValue": "6 meses en material y fabricación"
+  },
+  "related": {
+    "title": "Otros pilotos también compraron",
+    "viewAll": "Ver todo"
   },
   "trustBar": {
     "verifiedReviews": "Reseñas verificadas",
@@ -149,7 +187,9 @@
     "inputPlaceholder": "Haz una pregunta …",
     "sendAria": "Enviar",
     "closeAria": "Cerrar chat",
-    "openAria": "Abrir chat"
+    "openAria": "Abrir chat",
+    "errorGeneric": "Algo salió mal, inténtalo de nuevo en un momento.",
+    "errorConnection": "Problema de conexión, inténtalo de nuevo en un momento."
   },
   "shop": {
     "title": "Explora el catálogo",

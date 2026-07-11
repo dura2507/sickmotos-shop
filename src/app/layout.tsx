@@ -10,6 +10,8 @@ import { Footer } from "./_components/Footer";
 import { SupportChat } from "./_components/SupportChat";
 import { CookieConsent } from "./_components/CookieConsent";
 import { VisitTracker } from "./_components/VisitTracker";
+import { LocaleProvider } from "./_components/LocaleProvider";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
 const PLAUSIBLE_DOMAIN = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID;
@@ -65,6 +67,7 @@ export default async function RootLayout({
   const isAdmin = pathname.startsWith("/admin");
   const { getLocale } = await import("@/lib/i18n/getLocale");
   const locale = await getLocale();
+  const dict = await getDictionary(locale);
 
   return (
     <html lang={locale} className={`${sans.variable} ${display.variable}`}>
@@ -108,19 +111,21 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           </noscript>
         )}
         <span aria-hidden className="scroll-progress" />
-        {isAdmin ? (
-          children
-        ) : (
-          <>
-            <PromoBar />
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-            <SupportChat />
-            {GTM_ID && <CookieConsent />}
-            <VisitTracker />
-          </>
-        )}
+        <LocaleProvider dict={dict} locale={locale}>
+          {isAdmin ? (
+            children
+          ) : (
+            <>
+              <PromoBar />
+              <Header />
+              <main className="flex-1">{children}</main>
+              <Footer />
+              <SupportChat />
+              {GTM_ID && <CookieConsent />}
+              <VisitTracker />
+            </>
+          )}
+        </LocaleProvider>
         <Analytics />
         <SpeedInsights />
       </body>

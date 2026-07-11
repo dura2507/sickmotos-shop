@@ -2,17 +2,34 @@
 
 import { useState } from "react";
 import type { DetailViewModel } from "@/lib/products";
+import { useDictionary } from "@/app/_components/LocaleProvider";
 
 type TabKey = "description" | "specs";
 
-const tabs: { key: TabKey; label: string }[] = [
-  { key: "description", label: "Description" },
-  { key: "specs", label: "Specifications" },
-];
-
 export function InfoTabs({ product: p }: { product: DetailViewModel }) {
+  const dict = useDictionary();
   const [active, setActive] = useState<TabKey>("description");
   const blocks = p.description.split(/\n+/).filter(Boolean);
+
+  const tabs: { key: TabKey; label: string }[] = [
+    { key: "description", label: dict.infoTabs.description },
+    { key: "specs", label: dict.infoTabs.specifications },
+  ];
+
+  const specMap = dict.specs as Record<string, string>;
+  function specLabel(key: string, fallback: string): string {
+    if (key.startsWith("delivery")) return specMap.delivery;
+    return specMap[key] ?? fallback;
+  }
+  const catCards = dict.categoryCards as Record<string, { name: string }>;
+  function specValue(key: string, fallback: string): string {
+    if (key === "delivery-standard") return specMap.deliveryStandard;
+    if (key === "delivery-mto") return `${dict.product.madeToOrder}, ${dict.product.madeToOrderNormal}`;
+    if (key === "delivery-mto-long") return `${dict.product.madeToOrder}, ${dict.product.madeToOrderLong}`;
+    if (key === "warranty") return specMap.warrantyValue;
+    if (key === "category") return catCards[fallback]?.name ?? fallback;
+    return fallback;
+  }
 
   return (
     <section className="relative isolate border-y border-border py-16 md:py-20" style={{ overflowX: "clip" }}>
@@ -84,7 +101,7 @@ export function InfoTabs({ product: p }: { product: DetailViewModel }) {
                   </p>
                 ))
               ) : (
-                <p>No description available.</p>
+                <p>{dict.infoTabs.noDescription}</p>
               )}
             </div>
           )}
@@ -93,13 +110,13 @@ export function InfoTabs({ product: p }: { product: DetailViewModel }) {
             <dl className="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-border bg-border md:grid-cols-2">
               {p.specs.map((s) => (
                 <div
-                  key={s.label}
+                  key={s.key}
                   className="flex flex-col gap-1 bg-bg p-4"
                 >
                   <dt className="text-[10px] font-bold uppercase tracking-wider text-fg-dim">
-                    {s.label}
+                    {specLabel(s.key, s.label)}
                   </dt>
-                  <dd className="text-sm text-fg">{s.value}</dd>
+                  <dd className="text-sm text-fg">{specValue(s.key, s.value)}</dd>
                 </div>
               ))}
             </dl>

@@ -16,6 +16,8 @@ import {
   htmlToBlocks,
   toDetailViewModel,
 } from "@/lib/products";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
 export const dynamicParams = true;
 
@@ -62,6 +64,7 @@ export default async function ProductPage({
   if (!shopify) notFound();
   const product = toDetailViewModel(shopify);
   const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.sick-motos.com";
+  const dict = await getDictionary(await getLocale());
 
   // Schema.org Product structured data for Google rich results.
   const jsonLd = {
@@ -126,14 +129,14 @@ export default async function ProductPage({
       <div className="border-b border-border bg-bg">
         <nav className="mx-auto flex max-w-7xl items-center gap-2 px-4 py-4 text-xs text-fg-muted md:px-6">
           <Link href="/" className="hover:text-fg">
-            Home
+            {dict.product.breadcrumbHome}
           </Link>
           <span className="text-fg-dim">/</span>
           <Link
             href={`/shop?category=${encodeURIComponent(product.category)}`}
             className="hover:text-fg"
           >
-            {product.category}
+            {(dict.categoryCards as Record<string, { name: string }>)[product.category]?.name ?? product.category}
           </Link>
           <span className="text-fg-dim">/</span>
           <span className="line-clamp-1 text-fg">{product.title}</span>

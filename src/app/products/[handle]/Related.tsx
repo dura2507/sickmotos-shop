@@ -2,9 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import type { CardProduct } from "@/lib/products";
 import { fmtEUR } from "@/lib/products";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
-export function Related({ items }: { items: CardProduct[] }) {
+export async function Related({ items }: { items: CardProduct[] }) {
   if (items.length === 0) return null;
+  const dict = await getDictionary(await getLocale());
   return (
     <section className="relative isolate border-b border-border py-16 md:py-20" style={{ overflowX: "clip" }}>
       <div
@@ -18,13 +21,13 @@ export function Related({ items }: { items: CardProduct[] }) {
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-8 flex items-end justify-between gap-4">
           <h2 className="font-display text-3xl uppercase tracking-tight md:text-4xl">
-            Riders also bought
+            {dict.related.title}
           </h2>
           <Link
             href="/shop"
             className="text-sm font-semibold text-fg-muted underline-offset-4 hover:text-accent hover:underline"
           >
-            View all
+            {dict.related.viewAll}
           </Link>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

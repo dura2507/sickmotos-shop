@@ -7,11 +7,14 @@ import { isConverter, isLamp } from "@/lib/essentials";
 import { leadTimeFor } from "@/lib/leadTime";
 import type { DetailViewModel } from "@/lib/products";
 import { useVariantImage } from "./VariantImageContext";
+import { useDictionary } from "@/app/_components/LocaleProvider";
 
 const fmt = (n: number) =>
   n.toLocaleString("de-DE", { style: "currency", currency: "EUR" });
 
 export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
+  const dict = useDictionary();
+  const t = dict.product;
   const [variantSel, setVariantSel] = useState<Record<string, string>>(() => {
     const init: Record<string, string> = {};
     p.variantGroups.forEach((g) => {
@@ -73,6 +76,8 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
       ? Math.round((1 - unitPrice / compareAt) * 100)
       : null;
   const lead = leadTimeFor(p.category);
+  const leadShort = lead ? (lead.long ? t.madeToOrderLong : t.madeToOrderNormal) : null;
+  const leadNote = lead ? (lead.long ? t.madeToOrderNoteLong : t.madeToOrderNoteNormal) : null;
   const productIsLamp = isLamp(p.handle, p.title, p.category);
   const converterAddon = productIsLamp
     ? p.addOns.find((a) => isConverter(a.handle, a.title) && a.defaultVariantGid)
@@ -81,7 +86,7 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
 
   async function handleAddToCart() {
     if (!activeVariant) {
-      setError("Select a variant first.");
+      setError(t.selectVariant);
       return;
     }
     setBusy(true);
@@ -115,7 +120,7 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
         <div className="flex flex-wrap items-center gap-2 text-xs">
           {discountPct && (
             <span className="rounded-full bg-accent/15 px-2.5 py-1 text-[11px] font-bold uppercase text-accent">
-              Save {discountPct}%
+              {t.save} {discountPct}%
             </span>
           )}
         </div>
@@ -131,10 +136,10 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
               {fmt(compareAt)}
             </span>
           )}
-          <span className="text-[11px] text-fg-dim">incl. VAT</span>
+          <span className="text-[11px] text-fg-dim">{t.inclVat}</span>
         </div>
         {!inStock && (
-          <div className="mt-1 text-xs text-accent">Currently sold out</div>
+          <div className="mt-1 text-xs text-accent">{t.currentlySoldOut}</div>
         )}
       </div>
 
@@ -153,23 +158,23 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
             </svg>
             <div className="flex flex-col gap-0.5">
               <span className="text-xs font-bold uppercase tracking-wider text-fg">
-                {lead.badge} · {lead.short}
+                {t.madeToOrder} · {leadShort}
               </span>
               <span className="text-xs leading-relaxed text-fg-muted">
-                {lead.note}
+                {leadNote}
               </span>
             </div>
           </div>
-          {lead.steps && (
+          {!lead.long && (
             <details className="group border-t border-border pt-3">
               <summary className="flex cursor-pointer items-center justify-between gap-2 text-[11px] font-bold uppercase tracking-[0.15em] text-fg-dim transition-colors hover:text-fg [&::-webkit-details-marker]:hidden">
-                <span>How your order is built</span>
+                <span>{t.howOrderBuilt}</span>
                 <svg viewBox="0 0 24 24" className="size-3.5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" strokeWidth={2.4}>
                   <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </summary>
               <ol className="mt-3 flex flex-col gap-2.5">
-                {lead.steps.map((s, i) => (
+                {t.buildSteps.map((s, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <span className="grid size-6 shrink-0 place-items-center rounded-full bg-accent/15 text-[10px] font-bold text-accent">
                       {i + 1}
@@ -196,7 +201,7 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
             <svg viewBox="0 0 24 24" className="size-3.5 text-accent" fill="none" stroke="currentColor" strokeWidth={2}>
               <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            Fits on
+            {t.fitsOn}
           </span>
           <div className="flex flex-wrap gap-1.5">
             {p.fitsOn.map((m) => (
@@ -257,16 +262,16 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
           />
           <div className="flex flex-col gap-0.5">
             <span className="flex items-center gap-2 text-sm font-semibold text-fg">
-              Add the required converter
+              {t.converterRequired}
               <span className="rounded bg-accent/25 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-accent">
-                Required
+                {t.requiredBadge}
               </span>
             </span>
             <span className="text-xs text-fg-muted">
-              The LED does not work without it. Adds {fmt(converterAddon.price)} to your order.
+              {t.converterHint.replace("{price}", fmt(converterAddon.price))}
               {!bundleConverter && (
                 <span className="mt-1 block font-semibold text-accent">
-                  Heads up: without the converter the lamp will not work.
+                  {t.converterOff}
                 </span>
               )}
             </span>
@@ -278,7 +283,7 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
         <div className="flex items-center rounded-full border border-border-strong">
           <button
             type="button"
-            aria-label="Decrease quantity"
+            aria-label={t.decreaseQty}
             onClick={() => setQty((q) => Math.max(1, q - 1))}
             className="grid size-11 place-items-center text-fg-muted hover:text-accent"
           >
@@ -291,7 +296,7 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
           </span>
           <button
             type="button"
-            aria-label="Increase quantity"
+            aria-label={t.increaseQty}
             onClick={() => setQty((q) => q + 1)}
             className="grid size-11 place-items-center text-fg-muted hover:text-accent"
           >
@@ -306,7 +311,7 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
           onClick={handleAddToCart}
           className="group flex flex-1 items-center justify-between gap-2 rounded-full bg-accent px-5 py-3 text-xs font-bold uppercase tracking-wider text-fg transition-colors hover:bg-accent-hi disabled:cursor-not-allowed disabled:bg-surface-2 disabled:text-fg-dim md:text-sm"
         >
-          <span>{busy ? "Adding..." : inStock ? "Add to cart" : "Sold out"}</span>
+          <span>{busy ? t.adding : inStock ? t.addToCart : t.soldOut}</span>
           {inStock && !busy && (
             <span className="font-display text-sm md:text-base">
               {fmt(total)}
@@ -323,12 +328,12 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
 
       <div className="grid grid-cols-2 gap-2 text-[11px] text-fg-muted">
         <span className="flex flex-col items-center gap-1 rounded-lg border border-border bg-surface/40 p-2.5 text-center">
-          <span className="text-fg">{lead ? "Made to order" : "Worldwide"}</span>
-          <span className="text-fg-dim">{lead ? lead.short : "5-10 days"}</span>
+          <span className="text-fg">{lead ? t.madeToOrder : t.worldwide}</span>
+          <span className="text-fg-dim">{lead ? leadShort : t.shipping5to10}</span>
         </span>
         <span className="flex flex-col items-center gap-1 rounded-lg border border-border bg-surface/40 p-2.5 text-center">
-          <span className="text-fg">6 months</span>
-          <span className="text-fg-dim">warranty</span>
+          <span className="text-fg">{t.warranty6m}</span>
+          <span className="text-fg-dim">{t.warranty}</span>
         </span>
       </div>
     </div>

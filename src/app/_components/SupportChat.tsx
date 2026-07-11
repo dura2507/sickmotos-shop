@@ -1,18 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useDictionary } from "./LocaleProvider";
 
 type Msg = { role: "user" | "assistant"; content: string };
-
-const GREETING =
-  "Hey, I'm SickBot, your go-to for anything supermoto: shipping, fitment, converters, payments, returns or parts. How can I help?";
-
-const SUGGESTIONS = [
-  "How long does shipping take?",
-  "Does it fit my bike?",
-  "Which payment methods?",
-  "What's your return policy?",
-];
 
 // Light markdown rendering for the bot's replies: **bold**, "- " bullets and
 // line breaks — so structured answers look clean instead of showing raw **.
@@ -59,9 +50,17 @@ function renderRich(text: string): ReactNode {
 }
 
 export function SupportChat() {
+  const dict = useDictionary();
+  const bot = dict.bot;
+  const SUGGESTIONS = [
+    bot.suggestions.shipping,
+    bot.suggestions.fitment,
+    bot.suggestions.payment,
+    bot.suggestions.returns,
+  ];
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([
-    { role: "assistant", content: GREETING },
+    { role: "assistant", content: bot.greeting },
   ]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -102,10 +101,7 @@ export function SupportChat() {
         ...m,
         {
           role: "assistant",
-          content:
-            data.reply ||
-            data.error ||
-            "Something went wrong — please try again in a moment.",
+          content: data.reply || data.error || bot.errorGeneric,
         },
       ]);
     } catch {
@@ -113,7 +109,7 @@ export function SupportChat() {
         ...m,
         {
           role: "assistant",
-          content: "Connection issue — please try again in a moment.",
+          content: bot.errorConnection,
         },
       ]);
     } finally {
@@ -129,7 +125,7 @@ export function SupportChat() {
         <button
           type="button"
           onClick={() => setOpen(false)}
-          aria-label="Close chat"
+          aria-label={bot.closeAria}
           className="fixed bottom-4 right-4 z-30 grid size-12 place-items-center rounded-full bg-accent text-fg shadow-lg transition-transform hover:scale-105 active:scale-95 md:bottom-6 md:right-6 md:size-14"
         >
           <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth={2.4}>
@@ -143,12 +139,12 @@ export function SupportChat() {
             onClick={() => setOpen(true)}
             className="float-y pop-in rounded-full border border-accent/40 bg-bg/90 px-3.5 py-2 text-xs font-bold uppercase tracking-wider text-fg shadow-lg backdrop-blur-sm transition-colors hover:border-accent hover:text-accent"
           >
-            Ask <span className="text-accent">SickBot</span>
+            {bot.ask} <span className="text-accent">{bot.sickbot}</span>
           </button>
           <button
             type="button"
             onClick={() => setOpen(true)}
-            aria-label="Open chat"
+            aria-label={bot.openAria}
             className="pulse-accent grid size-12 shrink-0 place-items-center rounded-full bg-accent text-fg shadow-lg transition-transform hover:scale-110 active:scale-95 md:size-14"
           >
             <svg viewBox="0 0 24 24" className="size-6 md:size-7" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -169,14 +165,14 @@ export function SupportChat() {
             </span>
             <div className="min-w-0">
               <div className="text-base font-bold leading-tight tracking-tight text-white">
-                SickBot
+                {bot.sickbot}
               </div>
               <div className="flex items-center gap-1.5 text-xs text-white/85">
                 <span className="relative flex size-2">
                   <span className="absolute inline-flex size-full animate-ping rounded-full bg-white opacity-70" />
                   <span className="relative inline-flex size-2 rounded-full bg-white" />
                 </span>
-                Online
+                {bot.online}
               </div>
             </div>
           </div>
@@ -241,13 +237,13 @@ export function SupportChat() {
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask a question…"
+              placeholder={bot.inputPlaceholder}
               className="min-w-0 flex-1 rounded-full border border-border bg-bg px-4 py-2.5 text-sm text-fg outline-none placeholder:text-fg-dim focus:border-accent"
             />
             <button
               type="submit"
               disabled={busy || !input.trim()}
-              aria-label="Send"
+              aria-label={bot.sendAria}
               className="grid size-10 shrink-0 place-items-center rounded-full bg-accent text-fg transition-colors hover:bg-accent-hi disabled:cursor-not-allowed disabled:bg-surface-2 disabled:text-fg-dim"
             >
               <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={2.2}>

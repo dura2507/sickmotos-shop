@@ -3,20 +3,23 @@ import Link from "next/link";
 import { isConverter } from "@/lib/essentials";
 import type { CardProduct } from "@/lib/products";
 import { fmtEUR } from "@/lib/products";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
-// "Add-on Einblendung" Thomas asked for: complementary parts shown right under
-// the buy panel so riders can add them to the build.
-export function AddOns({ items, lampAutoBundled = false }: { items: CardProduct[]; lampAutoBundled?: boolean }) {
+// Complementary parts shown right under the buy panel so riders can add them.
+export async function AddOns({ items, lampAutoBundled = false }: { items: CardProduct[]; lampAutoBundled?: boolean }) {
   const list = items.slice(0, 5);
   if (list.length === 0) return null;
+  const dict = await getDictionary(await getLocale());
+  const t = dict.product;
 
   return (
     <div className="mt-6 rounded-2xl border border-border bg-surface/60 p-5">
       <p className="mb-1 flex items-center gap-2 font-display text-lg uppercase tracking-tight text-fg">
         <span className="h-1 w-6 rounded-full bg-accent" />
-        Complete your setup
+        {t.completeSetup}
       </p>
-      <p className="mb-4 text-xs text-fg-muted">Add-ons that go well with this part.</p>
+      <p className="mb-4 text-xs text-fg-muted">{t.addOnsSubtitle}</p>
 
       <div className="flex flex-col divide-y divide-border">
         {list.map((p) => {
@@ -51,7 +54,7 @@ export function AddOns({ items, lampAutoBundled = false }: { items: CardProduct[
                       <path d="M12 9v4M12 17h.01" strokeLinecap="round" />
                       <circle cx="12" cy="12" r="9" />
                     </svg>
-                    Required
+                    {t.requiredBadge}
                   </span>
                 )}
                 <p className="line-clamp-2 text-sm font-medium leading-snug text-fg transition-colors group-hover:text-accent">
@@ -60,9 +63,7 @@ export function AddOns({ items, lampAutoBundled = false }: { items: CardProduct[
                 <span className="text-sm font-semibold text-fg">{fmtEUR(p.price)}</span>
                 {required && (
                   <span className="mt-0.5 block text-[11px] text-fg-muted">
-                    {lampAutoBundled
-                      ? "Included automatically with your lamp. Remove it at your own risk, the lamp won't work without it."
-                      : "The lamp won't work without this converter."}
+                    {lampAutoBundled ? t.converterAutoIncluded : t.converterNeeded}
                   </span>
                 )}
               </div>
@@ -76,7 +77,7 @@ export function AddOns({ items, lampAutoBundled = false }: { items: CardProduct[
                 <svg viewBox="0 0 24 24" className="size-3.5" fill="none" stroke="currentColor" strokeWidth={2.4}>
                   <path d="M12 5v14M5 12h14" strokeLinecap="round" />
                 </svg>
-                {required && lampAutoBundled ? "Details" : "Add"}
+                {required && lampAutoBundled ? t.details : t.addShort}
               </span>
             </Link>
           );

@@ -81,7 +81,45 @@
     "warranty": "Garantie",
     "warranty6m": "6 Monate",
     "quantity": "Menge",
-    "save": "spare"
+    "save": "spare",
+    "inclVat": "inkl. MwSt.",
+    "currentlySoldOut": "Derzeit ausverkauft",
+    "adding": "Wird hinzugefügt …",
+    "selectVariant": "Bitte zuerst eine Variante wählen.",
+    "decreaseQty": "Menge verringern",
+    "increaseQty": "Menge erhöhen",
+    "howOrderBuilt": "So entsteht deine Bestellung",
+    "buildSteps": [
+      { "day": "Tag 1-7", "label": "Produktion", "detail": "Von Hand in unserer Werkstatt gefertigt." },
+      { "day": "Tag 10-12", "label": "Test", "detail": "Jedes Teil wird vor dem Versand getestet." },
+      { "day": "Tag 13-15", "label": "Verpackung & Versand", "detail": "Sorgfältig verpackt und an den Versand übergeben." }
+    ],
+    "breadcrumbHome": "Start",
+    "addOnsSubtitle": "Add-ons die gut zu diesem Teil passen.",
+    "converterAutoIncluded": "Automatisch mit deiner Lampe enthalten. Entfernen auf eigenes Risiko, die Lampe funktioniert ohne ihn nicht.",
+    "converterNeeded": "Die Lampe funktioniert ohne diesen Wandler nicht.",
+    "details": "Details",
+    "addShort": "Hinzufügen"
+  },
+  "infoTabs": {
+    "description": "Beschreibung",
+    "specifications": "Spezifikationen",
+    "noDescription": "Keine Beschreibung verfügbar."
+  },
+  "specs": {
+    "weight": "Gewicht",
+    "material": "Material",
+    "origin": "Herkunft",
+    "brand": "Marke",
+    "category": "Kategorie",
+    "delivery": "Lieferung",
+    "warranty": "Garantie",
+    "deliveryStandard": "4-8 Werktage",
+    "warrantyValue": "6 Monate auf Material und Verarbeitung"
+  },
+  "related": {
+    "title": "Andere kauften auch",
+    "viewAll": "Alle ansehen"
   },
   "trustBar": {
     "verifiedReviews": "Verifizierte Reviews",
@@ -136,9 +174,9 @@
   },
   "bot": {
     "askSickBot": "SickBot fragen",
-    "ask": "Ask",
+    "ask": "Frag",
     "sickbot": "SickBot",
-    "greeting": "Hey, ich bin SickBot — dein Ansprechpartner für alles rund um Supermoto: Versand, Passform, Wandler, Zahlung, Retouren oder Teile. Wie kann ich helfen?",
+    "greeting": "Hey, ich bin SickBot, dein Ansprechpartner für alles rund um Supermoto: Versand, Passform, Wandler, Zahlung, Retouren oder Teile. Wie kann ich helfen?",
     "online": "Online",
     "suggestions": {
       "shipping": "Wie lange dauert der Versand?",
@@ -149,7 +187,9 @@
     "inputPlaceholder": "Frag was …",
     "sendAria": "Senden",
     "closeAria": "Chat schließen",
-    "openAria": "Chat öffnen"
+    "openAria": "Chat öffnen",
+    "errorGeneric": "Da ist etwas schiefgelaufen, bitte gleich nochmal versuchen.",
+    "errorConnection": "Verbindungsproblem, bitte gleich nochmal versuchen."
   },
   "shop": {
     "title": "Shop Katalog",

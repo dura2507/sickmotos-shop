@@ -81,7 +81,45 @@
     "warranty": "Garanzia",
     "warranty6m": "6 mesi",
     "quantity": "Quantità",
-    "save": "risparmi"
+    "save": "risparmi",
+    "inclVat": "IVA incl.",
+    "currentlySoldOut": "Attualmente esaurito",
+    "adding": "Aggiunta in corso …",
+    "selectVariant": "Seleziona prima una variante.",
+    "decreaseQty": "Riduci quantità",
+    "increaseQty": "Aumenta quantità",
+    "howOrderBuilt": "Come nasce il tuo ordine",
+    "buildSteps": [
+      { "day": "Giorno 1-7", "label": "Produzione", "detail": "Costruito a mano nella nostra officina." },
+      { "day": "Giorno 10-12", "label": "Collaudo", "detail": "Ogni pezzo viene testato prima della spedizione." },
+      { "day": "Giorno 13-15", "label": "Imballo e spedizione", "detail": "Imballato con cura e affidato al corriere." }
+    ],
+    "breadcrumbHome": "Home",
+    "addOnsSubtitle": "Accessori che si abbinano bene a questo pezzo.",
+    "converterAutoIncluded": "Incluso automaticamente con la tua lampada. Rimuovilo a tuo rischio, la lampada non funziona senza.",
+    "converterNeeded": "La lampada non funziona senza questo convertitore.",
+    "details": "Dettagli",
+    "addShort": "Aggiungi"
+  },
+  "infoTabs": {
+    "description": "Descrizione",
+    "specifications": "Specifiche",
+    "noDescription": "Nessuna descrizione disponibile."
+  },
+  "specs": {
+    "weight": "Peso",
+    "material": "Materiale",
+    "origin": "Origine",
+    "brand": "Marca",
+    "category": "Categoria",
+    "delivery": "Consegna",
+    "warranty": "Garanzia",
+    "deliveryStandard": "4-8 giorni lavorativi",
+    "warrantyValue": "6 mesi su materiale e lavorazione"
+  },
+  "related": {
+    "title": "Chi ha comprato questo ha preso anche",
+    "viewAll": "Vedi tutti"
   },
   "trustBar": {
     "verifiedReviews": "Recensioni verificate",
@@ -149,7 +187,9 @@
     "inputPlaceholder": "Fai una domanda …",
     "sendAria": "Invia",
     "closeAria": "Chiudi chat",
-    "openAria": "Apri chat"
+    "openAria": "Apri chat",
+    "errorGeneric": "Qualcosa è andato storto, riprova tra poco.",
+    "errorConnection": "Problema di connessione, riprova tra poco."
   },
   "shop": {
     "title": "Sfoglia il catalogo",
