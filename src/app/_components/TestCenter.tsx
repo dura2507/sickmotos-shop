@@ -21,12 +21,13 @@ export async function TestCenter() {
             sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover object-[50%_45%]"
           />
+          <div aria-hidden className="absolute inset-0 bg-black/20" />
           <div
             aria-hidden
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(180deg, transparent 50%, rgba(10,10,10,0.7) 100%)",
+                "linear-gradient(180deg, transparent 45%, rgba(10,10,10,0.8) 100%)",
             }}
           />
           <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.2em] text-fg/90">

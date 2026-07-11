@@ -79,12 +79,13 @@ export async function FeaturedBuilds() {
                   sizes="(max-width: 768px) 100vw, 33vw"
                   className={`${b.focal} object-cover transition-transform duration-500 group-hover:scale-[1.04]`}
                 />
+                <div aria-hidden className="absolute inset-0 bg-black/30" />
                 <div
                   aria-hidden
                   className="absolute inset-0"
                   style={{
                     background:
-                      "linear-gradient(180deg, transparent 45%, rgba(10,10,10,0.85) 100%)",
+                      "linear-gradient(180deg, rgba(10,10,10,0.2) 0%, transparent 35%, rgba(10,10,10,0.92) 100%)",
                   }}
                 />
                 <div className="absolute inset-x-0 bottom-0 flex flex-col gap-2 p-5">
