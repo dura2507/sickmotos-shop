@@ -29,8 +29,12 @@ export async function GET(req: Request) {
   const clientId = process.env.SHOPIFY_APP_CLIENT_ID ?? DEFAULT_CLIENT_ID;
   const clientSecret = process.env.SHOPIFY_APP_CLIENT_SECRET;
   if (!clientSecret) {
+    const present = Object.keys(process.env)
+      .filter((k) => k.startsWith("SHOPIFY"))
+      .sort()
+      .join(", ");
     return new NextResponse(
-      "SHOPIFY_APP_CLIENT_SECRET missing in env",
+      `SHOPIFY_APP_CLIENT_SECRET missing in env. Present SHOPIFY_* vars the app sees: ${present || "(none)"}`,
       { status: 500 }
     );
   }
