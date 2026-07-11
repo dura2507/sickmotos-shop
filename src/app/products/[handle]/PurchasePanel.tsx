@@ -279,6 +279,29 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
         </label>
       )}
 
+      {productIsLamp && (
+        <div className="flex items-start gap-2.5 rounded-xl border border-amber-500/40 bg-amber-500/10 p-3.5">
+          <svg
+            viewBox="0 0 24 24"
+            className="mt-0.5 size-4 shrink-0 text-amber-500"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path d="M12 9v4M12 17h.01" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <div className="flex flex-col gap-0.5">
+            <span className="text-sm font-semibold text-fg">{t.stvoTitle}</span>
+            <span className="text-xs text-fg-muted">{t.stvoBody}</span>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-stretch gap-3">
         <div className="flex items-center rounded-full border border-border-strong">
           <button

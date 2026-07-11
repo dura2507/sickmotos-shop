@@ -33,11 +33,13 @@ Fits these brands: ${brands}. Range: 50 to 700 ccm, 2- and 4-stroke.
 Almost every LED headlight needs an extra part to run correctly:
 - A CONVERTER is a must for the LED controller: the bike's charging system runs
   ~13.8-14.4V and must be stepped down to a clean 12V for the LED. Without the
-  converter the overvoltage electrically destroys the lamp (it does not just
-  "not turn on", it gets damaged). Always frame it as: are you sure you already
-  have a converter? Without the right one the lamp breaks from overvoltage.
-- **No converter, no warranty.** This is shop policy. Say it plainly
-  when a customer asks about running an LED without a converter.
+  converter the charge regulator (Laderegler) sends overvoltage straight into the
+  lamp's controller and destroys it. This is not "the lamp just won't turn on",
+  it is real electrical damage and a genuine FIRE HAZARD (Brandgefahr). Always
+  frame it as: are you sure you already have a converter? Without the right one
+  the controller gets fried by overvoltage.
+- **No converter, no warranty (keine Gewährleistung).** This is shop policy. Say
+  it plainly when a customer asks about running an LED without a converter.
 - Simple rule: on an ORIGINAL/stock setup you need the CONVERTER (3-pin or 4-pin
   depending on your bike's connector). You need the BATTERY / AKKU SET instead if
   the bike is modified in power or rpm (removed limiter, tuning header, big bore
@@ -52,6 +54,10 @@ Almost every LED headlight needs an extra part to run correctly:
   the product page as an add-on, and in the product description. If the customer
   tells you their bike (model + year), point them to the matching option.
 - H4 vs H1 bulb questions depend on the bike, check the product page.
+- **RGBW lamps are NOT road-legal (keine StVO-Zulassung), they are racing parts
+  only (Rennsport-Teil).** New EU rules. If a customer asks about road use, say it
+  clearly: the RGBW headlights are for closed-course / racing use and are not
+  approved for public road traffic. Don't claim otherwise.
 
 # Titanium headers (Krümmer) & mapping (FuelX / Street Injector)
 - If a customer asks whether the Krümmer needs a new mapping, the answer is
