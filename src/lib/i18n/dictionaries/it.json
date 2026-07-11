@@ -31,6 +31,18 @@
     "shopCategory": "Vedi categoria",
     "productsSuffix": "prodotti"
   },
+  "categoryCards": {
+    "Exhaust": { "name": "Scarico", "desc": "Collettori e tubi in titanio, 2 e 4 tempi" },
+    "LED Headlights": { "name": "Fari LED", "desc": "RGBW e angel eyes esagonali, controllo via app" },
+    "Carbon Parts": { "name": "Componenti in carbonio", "desc": "Carbonio leggerissimo, prodotto in casa" },
+    "ECU Tuning": { "name": "Tuning ECU", "desc": "FuelX ed ECU, gas più pronto e motore più duraturo" },
+    "Brakes": { "name": "Freni", "desc": "Freni performance per il massimo controllo" },
+    "Graphics": { "name": "Grafiche", "desc": "Kit grafici personalizzati che si notano" },
+    "Titanium Screws": { "name": "Viti in titanio", "desc": "Viteria in titanio da competizione" },
+    "Merchandise": { "name": "Merchandise", "desc": "Indossa il marchio" },
+    "Wheels": { "name": "Ruote", "desc": "Set di cerchi supermoto e componentistica" },
+    "Other": { "name": "Altro", "desc": "Viteria in titanio e tutto il resto" }
+  },
   "cart": {
     "title": "Carrello",
     "empty": "Il tuo carrello è vuoto.",

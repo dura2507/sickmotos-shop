@@ -31,6 +31,18 @@
     "shopCategory": "Ver categoría",
     "productsSuffix": "productos"
   },
+  "categoryCards": {
+    "Exhaust": { "name": "Escape", "desc": "Colectores y tubos de titanio, 2 y 4 tiempos" },
+    "LED Headlights": { "name": "Faros LED", "desc": "RGBW y angel eyes hexagonales, control por app" },
+    "Carbon Parts": { "name": "Piezas de carbono", "desc": "Carbono ultraligero, fabricado en casa" },
+    "ECU Tuning": { "name": "Tuning ECU", "desc": "FuelX y ECU, acelerador más vivo y motor más duradero" },
+    "Brakes": { "name": "Frenos", "desc": "Frenos de altas prestaciones para máximo control" },
+    "Graphics": { "name": "Gráficas", "desc": "Kits gráficos personalizados que destacan" },
+    "Titanium Screws": { "name": "Tornillos de titanio", "desc": "Tornillería de titanio de competición" },
+    "Merchandise": { "name": "Merchandise", "desc": "Lleva la marca" },
+    "Wheels": { "name": "Ruedas", "desc": "Juegos de llantas supermoto y rodaje" },
+    "Other": { "name": "Otros", "desc": "Tornillería de titanio y todo lo demás" }
+  },
   "cart": {
     "title": "Carrito",
     "empty": "Tu carrito está vacío.",

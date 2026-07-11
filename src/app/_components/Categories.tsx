@@ -94,6 +94,9 @@ export async function Categories() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {cats.map((c) => {
             const m = META[c.name] ?? FALLBACK;
+            const card = (dict.categoryCards as Record<string, { name: string; desc: string }>)[c.name];
+            const title = card?.name ?? c.name;
+            const desc = card?.desc ?? m.desc;
             return (
               <Link
                 key={c.name}
@@ -102,7 +105,7 @@ export async function Categories() {
               >
                 <Image
                   src={m.image}
-                  alt={c.name}
+                  alt={title}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -136,10 +139,10 @@ export async function Categories() {
                 <div className="relative p-6">
                   <span className="mb-3 block h-1 w-9 rounded-full bg-accent" />
                   <h3 className="font-display text-3xl uppercase leading-none tracking-tight text-white">
-                    {c.name}
+                    {title}
                   </h3>
                   <p className="mt-2 max-w-[22rem] text-sm leading-snug text-white/80">
-                    {m.desc}
+                    {desc}
                   </p>
                   <span className="mt-3 block text-[10px] font-semibold uppercase tracking-[0.22em] text-white/60">
                     {c.count} {dict.categories.productsSuffix}

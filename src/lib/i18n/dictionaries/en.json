@@ -31,6 +31,18 @@
     "shopCategory": "Shop category",
     "productsSuffix": "products"
   },
+  "categoryCards": {
+    "Exhaust": { "name": "Exhaust", "desc": "2- and 4-stroke titanium headers and pipes" },
+    "LED Headlights": { "name": "LED Headlights", "desc": "RGBW and hexagon angel eyes, app-controlled" },
+    "Carbon Parts": { "name": "Carbon Parts", "desc": "Featherweight carbon, built in-house" },
+    "ECU Tuning": { "name": "ECU Tuning", "desc": "FuelX and ECU, crisper throttle, longer engine life" },
+    "Brakes": { "name": "Brakes", "desc": "Performance braking for maximum control" },
+    "Graphics": { "name": "Graphics", "desc": "Custom graphics kits that stand out" },
+    "Titanium Screws": { "name": "Titanium Screws", "desc": "Race-grade titanium hardware" },
+    "Merchandise": { "name": "Merchandise", "desc": "Wear the brand" },
+    "Wheels": { "name": "Wheels", "desc": "Supermoto rim sets and rolling hardware" },
+    "Other": { "name": "Other", "desc": "Titanium hardware and everything else" }
+  },
   "cart": {
     "title": "Cart",
     "empty": "Your cart is empty.",

@@ -31,6 +31,18 @@
     "shopCategory": "Kategorie ansehen",
     "productsSuffix": "Produkte"
   },
+  "categoryCards": {
+    "Exhaust": { "name": "Auspuff", "desc": "2- und 4-Takt Titan-Krümmer und Endrohre" },
+    "LED Headlights": { "name": "LED-Scheinwerfer", "desc": "RGBW und Hexagon Angel Eyes, per App steuerbar" },
+    "Carbon Parts": { "name": "Carbon-Teile", "desc": "Federleichtes Carbon, im eigenen Haus gefertigt" },
+    "ECU Tuning": { "name": "ECU-Tuning", "desc": "FuelX und ECU, knackigeres Gas und längeres Motorleben" },
+    "Brakes": { "name": "Bremsen", "desc": "Performance-Bremsen für maximale Kontrolle" },
+    "Graphics": { "name": "Dekor-Kits", "desc": "Individuelle Dekor-Kits die auffallen" },
+    "Titanium Screws": { "name": "Titan-Schrauben", "desc": "Titan-Hardware in Rennqualität" },
+    "Merchandise": { "name": "Merchandise", "desc": "Trag die Marke" },
+    "Wheels": { "name": "Räder", "desc": "Supermoto-Felgensätze und Rolling Hardware" },
+    "Other": { "name": "Sonstiges", "desc": "Titan-Hardware und alles Weitere" }
+  },
   "cart": {
     "title": "Warenkorb",
     "empty": "Dein Warenkorb ist leer.",
