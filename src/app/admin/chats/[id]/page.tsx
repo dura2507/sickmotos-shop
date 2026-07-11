@@ -168,13 +168,25 @@ export default async function ChatDetail({
       >
         <input type="hidden" name="id" value={conv.id} />
         <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-fg-dim">
-          Interne Notiz (nur für dich, geht nicht an den Bot)
+          Interne Notiz (nur für dich)
         </label>
+        <div className="flex items-start gap-2 rounded-lg border border-border-strong bg-bg/60 px-3 py-2 text-xs text-fg-muted">
+          <svg viewBox="0 0 24 24" className="mt-0.5 size-4 shrink-0 text-fg-dim" fill="none" stroke="currentColor" strokeWidth={2}>
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 8h.01M11 12h1v4h1" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <span>
+            Dieses Feld ist nur für dich, der <strong className="text-fg">Bot liest es nicht</strong>.
+            Willst du dem Bot etwas beibringen, nutze das rote{" "}
+            <strong className="text-accent">Korrektur-Feld</strong> direkt unter
+            der jeweiligen Bot-Antwort oben.
+          </span>
+        </div>
         <textarea
           name="note"
           defaultValue={conv.note ?? ""}
           rows={3}
-          placeholder='z.B. "Habe Kunden per Mail nachgeholfen". Fürs Bot-Lernen die Korrektur direkt unter der Bot-Antwort nutzen.'
+          placeholder='z.B. "Habe Kunden per Mail nachgeholfen"'
           className="rounded-lg border border-border bg-bg px-3 py-2 text-sm text-fg outline-none transition-colors focus:border-accent"
         />
         <button
