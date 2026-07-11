@@ -155,17 +155,22 @@ export default async function ProductPage({
               "radial-gradient(closest-side, rgba(225,6,0,0.10), transparent 70%)",
           }}
         />
+        {/* soft cool glow bottom-left for depth */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 -z-10 opacity-[0.07]"
+          className="pointer-events-none absolute -left-40 bottom-0 -z-10 size-[460px] rounded-full"
           style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.7) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.7) 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
-            maskImage:
-              "radial-gradient(ellipse at center, black 30%, transparent 75%)",
-            WebkitMaskImage:
-              "radial-gradient(ellipse at center, black 30%, transparent 75%)",
+            background:
+              "radial-gradient(closest-side, rgba(80,110,160,0.07), transparent 70%)",
+          }}
+        />
+        {/* subtle diagonal light sweep instead of the boxy grid */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-10"
+          style={{
+            background:
+              "linear-gradient(118deg, transparent 33%, rgba(255,255,255,0.035) 49%, rgba(225,6,0,0.06) 53%, transparent 70%)",
           }}
         />
         <div

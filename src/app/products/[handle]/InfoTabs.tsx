@@ -43,15 +43,10 @@ export function InfoTabs({ product: p }: { product: DetailViewModel }) {
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 opacity-[0.06]"
+        className="pointer-events-none absolute inset-0 -z-10"
         style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
-          backgroundSize: "44px 44px",
-          maskImage:
-            "linear-gradient(180deg, transparent 0%, black 30%, black 70%, transparent 100%)",
-          WebkitMaskImage:
-            "linear-gradient(180deg, transparent 0%, black 30%, black 70%, transparent 100%)",
+          background:
+            "linear-gradient(118deg, transparent 34%, rgba(255,255,255,0.03) 49%, rgba(225,6,0,0.05) 53%, transparent 70%)",
         }}
       />
       <div
