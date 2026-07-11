@@ -9,18 +9,23 @@ import { HeaderSearch } from "./HeaderSearch";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
 const nav = [
-  { label: "All Parts", href: "/shop" },
-  { label: "Exhaust", href: "/shop?category=Exhaust" },
-  { label: "LED Headlights", href: "/shop?category=LED+Headlights" },
-  { label: "Carbon Parts", href: "/shop?category=Carbon+Parts" },
-  { label: "Graphics", href: "/shop?category=Graphics" },
-  { label: "Merchandise", href: "/shop?category=Merchandise" },
+  { cat: null, href: "/shop" },
+  { cat: "Exhaust", href: "/shop?category=Exhaust" },
+  { cat: "LED Headlights", href: "/shop?category=LED+Headlights" },
+  { cat: "Carbon Parts", href: "/shop?category=Carbon+Parts" },
+  { cat: "Graphics", href: "/shop?category=Graphics" },
+  { cat: "Merchandise", href: "/shop?category=Merchandise" },
 ];
 
 export async function Header() {
   const searchIndex = getSearchIndex();
   const locale = await getLocale();
   const dict = await getDictionary(locale);
+  const catCards = dict.categoryCards as Record<string, { name: string }>;
+  const navItems = nav.map((n) => ({
+    href: n.href,
+    label: n.cat ? catCards[n.cat]?.name ?? n.cat : dict.header.allParts,
+  }));
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-bg/95 backdrop-blur-md">
       <div className="mx-auto flex h-20 max-w-7xl items-center gap-3 px-4 md:h-24 md:gap-4 md:px-6">
@@ -56,8 +61,8 @@ export async function Header() {
 
       <nav className="hidden md:block">
         <ul className="flex w-full items-center justify-center gap-7 px-6 pb-3">
-          {nav.map((item) => (
-            <li key={item.label}>
+          {navItems.map((item) => (
+            <li key={item.href}>
               <Link
                 href={item.href}
                 className="text-[10px] font-medium uppercase tracking-[0.18em] text-fg-muted transition-colors hover:text-accent"

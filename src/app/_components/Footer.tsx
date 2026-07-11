@@ -17,15 +17,17 @@ const payments = [
 export async function Footer() {
   const locale = await getLocale();
   const dict = await getDictionary(locale);
+  const catCards = dict.categoryCards as Record<string, { name: string }>;
+  const cn = (c: string) => catCards[c]?.name ?? c;
   const cols: { title: string; links: FooterLink[] }[] = [
     {
       title: dict.footer.shopCol,
       links: [
-        { label: "Exhaust", href: "/shop?category=Exhaust" },
-        { label: "LED Headlights", href: "/shop?category=LED+Headlights" },
-        { label: "Carbon Parts", href: "/shop?category=Carbon+Parts" },
-        { label: "Graphics", href: "/shop?category=Graphics" },
-        { label: "Merchandise", href: "/shop?category=Merchandise" },
+        { label: cn("Exhaust"), href: "/shop?category=Exhaust" },
+        { label: cn("LED Headlights"), href: "/shop?category=LED+Headlights" },
+        { label: cn("Carbon Parts"), href: "/shop?category=Carbon+Parts" },
+        { label: cn("Graphics"), href: "/shop?category=Graphics" },
+        { label: cn("Merchandise"), href: "/shop?category=Merchandise" },
         { label: dict.header.allParts, href: "/shop" },
       ],
     },
