@@ -14,6 +14,7 @@
 // essential"), no dark patterns, no pre-checked boxes.
 
 import { useEffect, useState } from "react";
+import { useDictionary } from "./LocaleProvider";
 
 type Choice = "granted" | "denied";
 const KEY = "sickmotos:consent:v1";
@@ -67,6 +68,7 @@ const REJECT: Consent = {
 };
 
 export function CookieConsent() {
+  const dict = useDictionary();
   const [shown, setShown] = useState(false);
 
   useEffect(() => {
@@ -93,14 +95,12 @@ export function CookieConsent() {
   return (
     <div
       role="dialog"
-      aria-label="Cookie preferences"
+      aria-label={dict.consent.dialogAria}
       className="fixed inset-x-3 bottom-3 z-[90] rounded-2xl border border-accent/40 bg-bg/95 p-4 shadow-2xl shadow-accent/10 ring-1 ring-accent/20 backdrop-blur-md md:inset-x-auto md:right-6 md:bottom-6 md:max-w-md md:p-5"
     >
-      <p className="text-sm font-semibold text-fg">Cookies & tracking</p>
+      <p className="text-sm font-semibold text-fg">{dict.consent.title}</p>
       <p className="mt-1 text-xs leading-relaxed text-fg-muted">
-        We use essential cookies to run the shop. With your consent we also use
-        analytics and marketing cookies so we can improve the site and reach the
-        right riders. You can change this any time in{" "}
+        {dict.consent.body} You can change this any time in{" "}
         <a href="/legal/datenschutz" className="underline hover:text-fg">
           Datenschutz
         </a>
@@ -112,14 +112,14 @@ export function CookieConsent() {
           onClick={reject}
           className="flex-1 rounded-full border border-border-strong bg-transparent px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-fg-muted transition-colors hover:border-fg hover:text-fg"
         >
-          Only essential
+          {dict.consent.onlyEssential}
         </button>
         <button
           type="button"
           onClick={accept}
           className="flex-1 rounded-full bg-accent px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-fg transition-colors hover:bg-accent-hi"
         >
-          Accept all
+          {dict.consent.acceptAll}
         </button>
       </div>
     </div>

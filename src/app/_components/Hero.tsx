@@ -39,8 +39,7 @@ export async function Hero() {
       />
 
       <div className="mx-auto flex min-h-[82vh] max-w-7xl flex-col justify-center gap-6 px-4 py-16 md:px-6 md:py-24">
-        <span className="inline-flex w-fit items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.25em] text-accent backdrop-blur-sm">
-          <span className="size-1.5 rounded-full bg-accent pulse-accent" />
+        <span className="w-fit text-xs font-semibold uppercase tracking-[0.2em] text-accent">
           {dict.hero.kicker}
         </span>
 
@@ -78,7 +77,7 @@ export async function Hero() {
           <SearchSuggest
             bikes={bikes}
             mode="bikes"
-            placeholder="Search your bike: KTM EXC, Beta RR 125..."
+            placeholder={dict.hero.searchPlaceholder}
             variant="hero"
           />
         </div>
@@ -95,9 +94,9 @@ export async function Hero() {
             <span className="font-bold text-white">4.9</span>
           </div>
           <span aria-hidden className="size-1 rounded-full bg-accent" />
-          <span>Worldwide shipping</span>
+          <span>{dict.hero.worldwide}</span>
           <span aria-hidden className="size-1 rounded-full bg-accent" />
-          <span>Bitcoin accepted</span>
+          <span>{dict.hero.bitcoin}</span>
         </div>
       </div>
     </section>

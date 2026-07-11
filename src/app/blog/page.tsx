@@ -1,28 +1,32 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getAllPosts } from "@/lib/blog";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
-export const metadata = {
-  title: "Blog — SickMotos",
-  description:
-    "Tech-Insights, Tuning-Guides und Build-Stories rund um Beta, Fantic, KTM und mehr.",
-};
+export async function generateMetadata() {
+  const dict = await getDictionary(await getLocale());
+  return {
+    title: dict.blogIndex.metaTitle,
+    description: dict.blogIndex.metaDescription,
+  };
+}
 
-export default function BlogIndexPage() {
+export default async function BlogIndexPage() {
+  const dict = await getDictionary(await getLocale());
   const posts = getAllPosts();
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-16 md:py-24">
       <header className="mb-12 border-b border-border pb-8">
         <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-accent">
-          The garage
+          {dict.blogIndex.kicker}
         </span>
         <h1 className="mt-2 font-display text-4xl uppercase tracking-tight md:text-5xl">
-          Blog
+          {dict.blogIndex.title}
         </h1>
         <p className="mt-3 max-w-xl text-sm text-fg-muted">
-          Tuning-Guides, Material-Vergleiche und Build-Insights von Thomas und
-          dem SickMotos-Team.
+          {dict.blogIndex.subtitle}
         </p>
       </header>
 
@@ -57,7 +61,7 @@ export default function BlogIndexPage() {
                   {p.excerpt}
                 </p>
                 <span className="mt-auto inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-accent transition-colors group-hover:text-accent-hi">
-                  Read more
+                  {dict.blogIndex.readMore}
                   <svg viewBox="0 0 24 24" className="size-3" fill="none" stroke="currentColor" strokeWidth={2.5}>
                     <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>

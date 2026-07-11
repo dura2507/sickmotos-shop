@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { BIKE_BRANDS, countByBrand } from "@/lib/products";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
-// "Shop by Model" — pick your bike, land in the right parts. Brand-coloured
+// "Shop by Model", pick your bike, land in the right parts. Brand-coloured
 // dark tiles (no repeated photo, no wrong-bike-under-brand, no third-party
 // logos): each brand gets its own accent glow over a subtle tech grid.
 const BRAND_COLOR: Record<string, string> = {
@@ -19,7 +21,8 @@ const BRAND_COLOR: Record<string, string> = {
   SWM: "#ef4444",
 };
 
-export function ShopByModel() {
+export async function ShopByModel() {
+  const dict = await getDictionary(await getLocale());
   const counts = countByBrand();
   const brands = (BIKE_BRANDS as readonly string[])
     .map((name) => ({ name, count: counts[name] ?? 0 }))
@@ -32,13 +35,13 @@ export function ShopByModel() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-8 max-w-2xl">
           <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.28em] text-accent">
-            Shop by model
+            {dict.shopByModel.kicker}
           </p>
           <h2 className="font-display text-4xl uppercase leading-none tracking-tight md:text-5xl">
-            Pick your bike
+            {dict.shopByModel.title}
           </h2>
           <p className="mt-3 text-sm text-fg-muted md:text-base">
-            Choose your bike, see only parts that fit.
+            {dict.shopByModel.subtitle}
           </p>
         </div>
 
@@ -85,7 +88,7 @@ export function ShopByModel() {
                     {b.name}
                   </span>
                   <span className="mt-1.5 block text-[10px] font-semibold uppercase tracking-[0.2em] text-white/60">
-                    {b.count} parts
+                    {b.count} {dict.shopByModel.partsSuffix}
                   </span>
                 </div>
               </Link>

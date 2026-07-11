@@ -1,6 +1,9 @@
 import Image from "next/image";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
-export function ActionBanner() {
+export async function ActionBanner() {
+  const dict = await getDictionary(await getLocale());
   return (
     <section className="relative isolate overflow-hidden border-b border-border">
       <div
@@ -35,22 +38,21 @@ export function ActionBanner() {
 
       <div className="mx-auto flex max-w-7xl flex-col items-start gap-6 px-6 py-24 md:py-32">
         <span className="rounded-full border border-accent/40 bg-accent/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-accent backdrop-blur-sm">
-          Tested where it counts
+          {dict.actionBanner.kicker}
         </span>
         <h2 className="font-display text-balance text-5xl uppercase leading-[0.95] tracking-tight text-fg md:text-7xl">
-          Built for the
+          {dict.actionBanner.titleLine1}
           <br />
-          <span className="text-accent">trail.</span>
+          <span className="text-accent">{dict.actionBanner.titleLine2}</span>
         </h2>
         <p className="max-w-xl text-balance text-base text-fg-muted md:text-lg">
-          Every part is ridden, abused, and validated by Thomas before it
-          ships. No lab specs. Real conditions.
+          {dict.actionBanner.body}
         </p>
         <a
           href="#bestseller"
           className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-bold uppercase tracking-wider text-fg transition-colors hover:bg-accent-hi"
         >
-          Shop the catalog
+          {dict.actionBanner.cta}
           <svg
             viewBox="0 0 24 24"
             className="size-4"

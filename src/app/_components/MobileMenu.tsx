@@ -5,20 +5,27 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { readBike, subscribeBike, writeBike, type SavedBike } from "@/lib/bikeStore";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useDictionary } from "./LocaleProvider";
 import { DEFAULT_LOCALE, LOCALE_COOKIE, isLocale, type Locale } from "@/lib/i18n/config";
 
 const nav = [
-  { label: "All Parts", href: "/shop" },
-  { label: "Exhaust", href: "/shop?category=Exhaust" },
-  { label: "LED Headlights", href: "/shop?category=LED+Headlights" },
-  { label: "Carbon Parts", href: "/shop?category=Carbon+Parts" },
-  { label: "Graphics", href: "/shop?category=Graphics" },
-  { label: "Merchandise", href: "/shop?category=Merchandise" },
+  { cat: null, href: "/shop" },
+  { cat: "Exhaust", href: "/shop?category=Exhaust" },
+  { cat: "LED Headlights", href: "/shop?category=LED+Headlights" },
+  { cat: "Carbon Parts", href: "/shop?category=Carbon+Parts" },
+  { cat: "Graphics", href: "/shop?category=Graphics" },
+  { cat: "Merchandise", href: "/shop?category=Merchandise" },
 ];
 
 const brands = ["Beta", "Husqvarna", "KTM", "Aprilia", "Fantic", "Yamaha"];
 
 export function MobileMenu() {
+  const dict = useDictionary();
+  const catCards = dict.categoryCards as Record<string, { name: string }>;
+  const navItems = nav.map((n) => ({
+    href: n.href,
+    label: n.cat ? catCards[n.cat]?.name ?? n.cat : dict.header.allParts,
+  }));
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [bike, setBike] = useState<SavedBike>({ brand: null, model: null, year: null });
@@ -55,7 +62,7 @@ export function MobileMenu() {
     <>
       <button
         type="button"
-        aria-label={open ? "Close menu" : "Open menu"}
+        aria-label={open ? dict.header.closeMenu : dict.mobileMenu.openMenuAria}
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
         className="grid size-9 place-items-center rounded-full border border-border-strong text-fg-muted hover:border-accent hover:text-fg md:hidden"
@@ -77,13 +84,13 @@ export function MobileMenu() {
           >
             <div className="flex items-center justify-between border-b border-border px-4 py-4">
               <span className="font-display text-2xl uppercase tracking-tight">
-                Menu
+                {dict.header.menu}
               </span>
               <div className="flex items-center gap-2">
                 <LanguageSwitcher current={locale} />
                 <button
                   type="button"
-                  aria-label="Close menu"
+                  aria-label={dict.header.closeMenu}
                   onClick={close}
                   className="grid size-9 place-items-center rounded-full border border-border-strong text-fg-muted hover:border-accent hover:text-fg"
                 >
@@ -99,7 +106,7 @@ export function MobileMenu() {
                 <div className="flex items-center justify-between gap-3 rounded-2xl border border-accent/40 bg-accent/10 p-3">
                   <div className="flex min-w-0 flex-col">
                     <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-accent/80">
-                      Your bike
+                      {dict.mobileMenu.yourBike}
                     </span>
                     <span className="truncate font-display text-lg uppercase tracking-tight text-fg">
                       {chipLabel}
@@ -110,7 +117,7 @@ export function MobileMenu() {
                     onClick={() => writeBike({ brand: null, model: null, year: null })}
                     className="shrink-0 rounded-full border border-border-strong px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-fg-muted hover:border-accent hover:text-accent"
                   >
-                    Clear
+                    {dict.mobileMenu.clear}
                   </button>
                 </div>
               ) : (
@@ -120,7 +127,7 @@ export function MobileMenu() {
                   className="flex items-center justify-between gap-3 rounded-2xl border border-border-strong bg-surface/40 p-3 text-sm text-fg-muted hover:border-accent hover:text-accent"
                 >
                   <span className="font-display text-base uppercase tracking-tight text-fg">
-                    Pick your bike
+                    {dict.header.pickBike}
                   </span>
                   <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={1.8}>
                     <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
@@ -142,7 +149,7 @@ export function MobileMenu() {
                 <input
                   type="search"
                   name="q"
-                  placeholder={hasBike ? `Parts that fit ${chipLabel}...` : "Search your bike or part..."}
+                  placeholder={hasBike ? dict.mobileMenu.searchFitPlaceholder.replace("{bike}", chipLabel) : dict.mobileMenu.searchPlaceholder}
                   className="flex-1 bg-transparent py-2 text-base text-fg placeholder:text-fg-dim focus:outline-none"
                 />
                 {bike.brand && <input type="hidden" name="brand" value={bike.brand} />}
@@ -151,8 +158,8 @@ export function MobileMenu() {
 
               <nav>
                 <ul className="flex flex-col">
-                  {nav.map((item) => (
-                    <li key={item.label}>
+                  {navItems.map((item) => (
+                    <li key={item.href}>
                       <Link
                         href={item.href}
                         onClick={close}
@@ -170,7 +177,7 @@ export function MobileMenu() {
 
               <div className="flex flex-col gap-3">
                 <span className="text-xs font-bold uppercase tracking-[0.2em] text-fg-dim">
-                  Shop by bike
+                  {dict.mobileMenu.shopByBike}
                 </span>
                 <div className="flex flex-wrap gap-2">
                   {brands.map((b) => (
@@ -195,7 +202,7 @@ export function MobileMenu() {
                   <circle cx="12" cy="8" r="4" />
                   <path d="M4 21c2-4 6-6 8-6s6 2 8 6" strokeLinecap="round" />
                 </svg>
-                My account / orders
+                {dict.mobileMenu.accountOrders}
               </Link>
               <button
                 type="button"
@@ -208,7 +215,7 @@ export function MobileMenu() {
                 <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth={2}>
                   <path d="M21 11.5a8.5 8.5 0 01-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1121 11.5z" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                Ask the SickBot
+                {dict.faq.askSickBot}
               </button>
             </div>
           </div>,

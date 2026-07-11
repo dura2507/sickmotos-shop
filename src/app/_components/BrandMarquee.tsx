@@ -1,3 +1,6 @@
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
+
 type Brand = { name: string; color: string };
 
 const brands: Brand[] = [
@@ -15,13 +18,14 @@ const brands: Brand[] = [
   { name: "Malaguti", color: "#e2231a" },
 ];
 
-export function BrandMarquee() {
+export async function BrandMarquee() {
+  const dict = await getDictionary(await getLocale());
   const loop = [...brands, ...brands];
   return (
     <section className="relative overflow-hidden border-b border-border bg-bg py-10">
       <div className="mx-auto mb-6 max-w-7xl px-6">
         <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-fg-dim">
-          Parts for
+          {dict.brandMarquee.label}
         </span>
       </div>
       <div className="relative">

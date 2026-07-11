@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 import { SectionHeader } from "./SectionHeader";
 
 const kits = [
@@ -33,15 +35,16 @@ const kits = [
   },
 ];
 
-export function GraphicsKits() {
+export async function GraphicsKits() {
+  const dict = await getDictionary(await getLocale());
   return (
     <section className="border-b border-border py-16 md:py-20">
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader
           index="03"
-          kicker="Make your bike yours"
-          title="Graphics kits"
-          subtitle="Limited-run designs for Husqvarna, KTM and more."
+          kicker={dict.graphicsKits.kicker}
+          title={dict.graphicsKits.title}
+          subtitle={dict.graphicsKits.subtitle}
           viewAllHref="#"
           backdropImage="https://www.sick-motos.com/cdn/shop/files/109_1024x1024.png?v=1750939319"
         />

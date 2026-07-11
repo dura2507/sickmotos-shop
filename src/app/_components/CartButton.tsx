@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import { fetchCart, subscribeCart } from "@/lib/cartStore";
 import { CartDrawer } from "./CartDrawer";
+import { useDictionary } from "./LocaleProvider";
 
 export function CartButton() {
+  const dict = useDictionary();
   const [count, setCount] = useState(0);
   const [open, setOpen] = useState(false);
 
@@ -29,7 +31,7 @@ export function CartButton() {
     <>
       <button
         type="button"
-        aria-label={count > 0 ? `Cart, ${count} items` : "Cart"}
+        aria-label={count > 0 ? dict.cart.buttonAriaWithCount.replace("{count}", String(count)) : dict.cart.buttonAria}
         onClick={() => setOpen(true)}
         className="relative grid size-9 place-items-center rounded-full border border-border-strong text-fg-muted transition-colors hover:border-accent hover:text-fg"
       >

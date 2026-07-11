@@ -1,10 +1,14 @@
-export function WhatsAppFloat() {
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
+
+export async function WhatsAppFloat() {
+  const dict = await getDictionary(await getLocale());
   return (
     <a
       href="https://wa.me/4917634658003"
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Chat on WhatsApp"
+      aria-label={dict.whatsAppFloat.ariaLabel}
       className="float-y fixed bottom-4 right-4 z-30 grid size-12 place-items-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-105 active:scale-95 md:bottom-6 md:right-6 md:size-14"
     >
       <svg viewBox="0 0 24 24" className="size-6 md:size-7" fill="currentColor" aria-hidden>

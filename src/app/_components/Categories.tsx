@@ -28,7 +28,7 @@ const META: Record<string, CatMeta> = {
   "ECU Tuning": {
     image: "/builds/macro-beta-blue-headlight.jpg",
     color: "#6d28d9",
-    desc: "FuelX and ECU — crisper throttle, longer engine life",
+    desc: "FuelX and ECU, crisper throttle, longer engine life",
   },
   "Carbon Parts": {
     image: "https://cdn.shopify.com/s/files/1/0534/7380/4477/files/IMG-2005.jpg?v=1762291117",

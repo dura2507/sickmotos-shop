@@ -6,6 +6,7 @@ import { createPortal } from "react-dom";
 import { trackBeginCheckout } from "@/lib/analytics";
 import { isConverter, isLamp } from "@/lib/essentials";
 import { leadTimeForTitle } from "@/lib/leadTime";
+import { useDictionary } from "./LocaleProvider";
 import {
   fetchCart,
   removeFromCart,
@@ -34,6 +35,7 @@ type CrossSellItem = {
 };
 
 export function CartDrawer({ open, onClose }: Props) {
+  const dict = useDictionary();
   const [cart, setCart] = useState<Cart | null>(null);
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -139,11 +141,11 @@ export function CartDrawer({ open, onClose }: Props) {
       className="fixed inset-0 z-[100] flex flex-col bg-bg/80 backdrop-blur-sm md:items-stretch md:justify-end"
       role="dialog"
       aria-modal="true"
-      aria-label="Cart"
+      aria-label={dict.cart.dialogAria}
     >
       <button
         type="button"
-        aria-label="Close cart"
+        aria-label={dict.cart.closeAria}
         onClick={onClose}
         className="absolute inset-0 cursor-default"
       />
@@ -156,17 +158,17 @@ export function CartDrawer({ open, onClose }: Props) {
         <div className="flex items-center justify-between border-b border-border px-5 py-4">
           <div className="flex items-baseline gap-3">
             <span className="font-display text-xl uppercase tracking-tight">
-              Cart
+              {dict.cart.title}
             </span>
             {cart && cart.totalQuantity > 0 && (
               <span className="text-xs font-bold uppercase tracking-wider text-fg-muted">
-                {cart.totalQuantity} {cart.totalQuantity === 1 ? "item" : "items"}
+                {cart.totalQuantity} {cart.totalQuantity === 1 ? dict.cart.itemSingular : dict.cart.itemPlural}
               </span>
             )}
           </div>
           <button
             type="button"
-            aria-label="Close cart"
+            aria-label={dict.cart.closeAria}
             onClick={onClose}
             className="grid size-10 place-items-center rounded-full border border-border-strong text-fg-muted transition-colors hover:border-accent hover:text-accent"
           >
@@ -180,7 +182,7 @@ export function CartDrawer({ open, onClose }: Props) {
         <div className="no-scrollbar flex flex-1 flex-col overflow-y-auto">
           {loading && !cart && (
             <div className="flex flex-1 items-center justify-center text-sm text-fg-muted">
-              Loading...
+              {dict.cart.loading}
             </div>
           )}
 
@@ -194,17 +196,17 @@ export function CartDrawer({ open, onClose }: Props) {
                 </svg>
               </div>
               <p className="font-display text-lg uppercase tracking-tight">
-                Your cart is empty
+                {dict.cart.empty}
               </p>
               <p className="max-w-xs text-sm text-fg-muted">
-                Add parts from the shop and they will show up here.
+                {dict.cart.emptyBody}
               </p>
               <button
                 type="button"
                 onClick={onClose}
                 className="mt-2 rounded-full bg-accent px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-fg transition-colors hover:bg-accent-hi"
               >
-                Continue browsing
+                {dict.cart.continueShopping}
               </button>
             </div>
           )}
@@ -212,7 +214,7 @@ export function CartDrawer({ open, onClose }: Props) {
           {!isEmpty && crossSell.length > 0 && (
             <div className="border-t border-border bg-surface/30 px-4 pt-4 pb-2">
               <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-fg-dim">
-                Add to your order
+                {dict.cart.addToOrder}
               </span>
               <ul className="mt-3 flex flex-col gap-2">
                 {crossSell.map((cs) => (
@@ -305,7 +307,7 @@ export function CartDrawer({ open, onClose }: Props) {
                         <div className="flex items-center gap-1 rounded-full border border-border-strong">
                           <button
                             type="button"
-                            aria-label="Decrease quantity"
+                            aria-label={dict.cart.decreaseQty}
                             disabled={isBusy}
                             onClick={() => changeQty(line, line.quantity - 1)}
                             className="grid size-9 place-items-center rounded-full text-fg-muted transition-colors hover:text-accent disabled:opacity-50"
@@ -319,7 +321,7 @@ export function CartDrawer({ open, onClose }: Props) {
                           </span>
                           <button
                             type="button"
-                            aria-label="Increase quantity"
+                            aria-label={dict.cart.increaseQty}
                             disabled={isBusy}
                             onClick={() => changeQty(line, line.quantity + 1)}
                             className="grid size-9 place-items-center rounded-full text-fg-muted transition-colors hover:text-accent disabled:opacity-50"
@@ -339,7 +341,7 @@ export function CartDrawer({ open, onClose }: Props) {
                         onClick={() => removeLine(line)}
                         className="self-start text-[11px] uppercase tracking-wider text-fg-dim transition-colors hover:text-accent disabled:opacity-50"
                       >
-                        Remove
+                        {dict.cart.remove}
                       </button>
                     </div>
                   </li>
@@ -359,9 +361,9 @@ export function CartDrawer({ open, onClose }: Props) {
                   <path d="M10.3 3.9L2.5 17a2 2 0 001.7 3h15.6a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z" strokeLinejoin="round" />
                 </svg>
                 <div>
-                  <p className="font-bold text-accent">Your LED will not work.</p>
+                  <p className="font-bold text-accent">{dict.cart.ledWarningTitle}</p>
                   <p className="mt-0.5 text-fg-muted">
-                    You have a LED headlight in your cart but no converter. The lamp physically will not turn on without one. Please add the matching converter before checkout.
+                    {dict.cart.ledWarningBody}
                   </p>
                 </div>
               </div>
@@ -372,37 +374,37 @@ export function CartDrawer({ open, onClose }: Props) {
                   <path d="M12 9v4M12 17h.01" strokeLinecap="round" />
                   <circle cx="12" cy="12" r="9" />
                 </svg>
-                Before you continue, please check
+                {dict.cart.beforeCheckoutTitle}
               </p>
               <div className="flex items-start gap-2.5">
                 <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-accent text-[10px] font-bold text-fg">1</span>
                 <p className="leading-snug">
-                  <span className="font-bold text-fg">Full address, including house number.</span>{" "}
+                  <span className="font-bold text-fg">{dict.cart.checkAddressTitle}</span>{" "}
                   <span className="text-fg-muted">
-                    Missing house number is our #1 delivery problem. Street, house number, postcode, city, country — nothing may be blank.
+                    {dict.cart.checkAddressBody}
                   </span>
                 </p>
               </div>
               <div className="flex items-start gap-2.5">
                 <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-accent text-[10px] font-bold text-fg">2</span>
                 <p className="leading-snug">
-                  <span className="font-bold text-fg">Enter a real email address.</span>{" "}
+                  <span className="font-bold text-fg">{dict.cart.checkEmailTitle}</span>{" "}
                   <span className="text-fg-muted">
-                    Without one there is <span className="font-bold text-accent">no shipping tracking</span> and no order updates. You will not know when your parts arrive.
+                    {dict.cart.checkEmailBodyBefore}<span className="font-bold text-accent">{dict.cart.checkEmailBodyHighlight}</span>{dict.cart.checkEmailBodyAfter}
                   </span>
                 </p>
               </div>
             </div>
             <div className="mb-3 flex items-baseline justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-fg-muted">
-                Subtotal
+                {dict.cart.subtotal}
               </span>
               <span className="font-display text-2xl text-fg">
                 {fmt(cart!.cost.subtotalAmount.amount, cart!.cost.subtotalAmount.currencyCode)}
               </span>
             </div>
             <p className="mb-4 text-[11px] text-fg-dim">
-              Shipping and taxes calculated at checkout.
+              {dict.cart.shippingNote}
             </p>
             <a
               href={cart!.checkoutUrl}
@@ -414,7 +416,7 @@ export function CartDrawer({ open, onClose }: Props) {
               }
               className="flex h-12 items-center justify-center gap-2 rounded-full bg-accent text-sm font-bold uppercase tracking-wider text-fg transition-colors hover:bg-accent-hi"
             >
-              Checkout
+              {dict.cart.checkout}
               <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={2.5}>
                 <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>

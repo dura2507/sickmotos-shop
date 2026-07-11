@@ -1,4 +1,6 @@
 import { Flag, type FlagCode } from "./Flag";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
 const reviews: { name: string; country: string; code: FlagCode; text: string }[] = [
   {
@@ -27,13 +29,14 @@ const reviews: { name: string; country: string; code: FlagCode; text: string }[]
   },
 ];
 
-export function Reviews() {
+export async function Reviews() {
+  const dict = await getDictionary(await getLocale());
   return (
     <section className="border-b border-border bg-surface/30 py-16 md:py-20">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
           <h2 className="font-display text-4xl uppercase tracking-tight md:text-5xl">
-            What riders say
+            {dict.reviews.title}
           </h2>
           <div className="flex items-center gap-4 rounded-lg border border-border bg-bg px-5 py-3">
             <div className="flex gap-0.5 text-accent">
@@ -48,8 +51,8 @@ export function Reviews() {
               ))}
             </div>
             <div className="text-sm">
-              <div className="font-bold text-fg">4.9 out of 5</div>
-              <div className="text-xs text-fg-muted">Verified customer reviews</div>
+              <div className="font-bold text-fg">{dict.reviews.ratingValue}</div>
+              <div className="text-xs text-fg-muted">{dict.reviews.verifiedLabel}</div>
             </div>
           </div>
         </div>

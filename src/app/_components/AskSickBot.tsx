@@ -5,6 +5,8 @@
 // listens for. Use it wherever a customer might be unsure and would
 // otherwise have to message a human.
 
+import { useDictionary } from "./LocaleProvider";
+
 function openChat() {
   window.dispatchEvent(new CustomEvent("sickmotos:open-chat"));
 }
@@ -33,7 +35,7 @@ const STYLES: Record<Variant, string> = {
 };
 
 export function AskSickBot({
-  label = "Ask the SickBot",
+  label,
   variant = "solid",
   className = "",
 }: {
@@ -41,12 +43,14 @@ export function AskSickBot({
   variant?: Variant;
   className?: string;
 }) {
+  const dict = useDictionary();
+  const resolvedLabel = label ?? dict.askSickBot.defaultLabel;
   if (variant === "icon") {
     return (
       <button
         type="button"
         onClick={openChat}
-        aria-label={label}
+        aria-label={resolvedLabel}
         className={`${STYLES.icon} ${className}`}
       >
         <ChatIcon className="size-5" />
@@ -56,7 +60,7 @@ export function AskSickBot({
   return (
     <button type="button" onClick={openChat} className={`${STYLES[variant]} ${className}`}>
       <ChatIcon className="size-4" />
-      {label}
+      {resolvedLabel}
       {variant === "link" && (
         <svg viewBox="0 0 24 24" className="size-3.5" fill="none" stroke="currentColor" strokeWidth={2.4}>
           <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />

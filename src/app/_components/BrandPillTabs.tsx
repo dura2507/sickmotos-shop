@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useDictionary } from "./LocaleProvider";
 
 const brands = ["All", "Beta", "Husqvarna", "KTM", "Aprilia", "Fantic", "Yamaha", "GasGas"];
 
 export function BrandPillTabs() {
+  const dict = useDictionary();
   const [active, setActive] = useState("All");
   return (
     <div className="mb-6 -mx-2 flex gap-2 overflow-x-auto px-2 pb-1">
@@ -19,7 +21,7 @@ export function BrandPillTabs() {
               : "border-border-strong bg-surface text-fg-muted hover:border-accent hover:text-fg"
           }`}
         >
-          {b}
+          {b === "All" ? dict.brandPillTabs.all : b}
         </button>
       ))}
     </div>

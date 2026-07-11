@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
 export type ProductCardData = {
   title: string;
@@ -16,7 +18,8 @@ function parsePrice(price: string): number {
   return m ? parseFloat(m[0]) : 0;
 }
 
-export function ProductCard({ p }: { p: ProductCardData }) {
+export async function ProductCard({ p }: { p: ProductCardData }) {
+  const dict = await getDictionary(await getLocale());
   const discount =
     p.comparePrice && parsePrice(p.comparePrice) > parsePrice(p.price)
       ? Math.round(
@@ -58,7 +61,7 @@ export function ProductCard({ p }: { p: ProductCardData }) {
         {p.fits && p.fits.length > 0 && (
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="text-[10px] font-bold uppercase tracking-wider text-fg-dim">
-              Fits
+              {dict.productCard.fits}
             </span>
             {p.fits.map((f) => (
               <span
@@ -73,7 +76,7 @@ export function ProductCard({ p }: { p: ProductCardData }) {
         {typeof p.stockLeft === "number" && p.stockLeft <= 3 && (
           <div className="mt-auto flex items-center gap-2 text-xs text-accent">
             <span className="size-1.5 animate-pulse rounded-full bg-accent" />
-            Only {p.stockLeft} left in stock
+            {dict.productCard.stockLeft.replace("{count}", String(p.stockLeft))}
           </div>
         )}
       </div>

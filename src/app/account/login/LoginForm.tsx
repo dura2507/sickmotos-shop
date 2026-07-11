@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
+import { useDictionary } from "@/app/_components/LocaleProvider";
 import {
   loginAction,
   recoverAction,
@@ -18,6 +19,7 @@ const inputCls =
   "w-full rounded-xl border border-border-strong bg-bg px-4 py-3 text-sm text-fg placeholder:text-fg-dim outline-none transition-colors focus:border-accent";
 
 function SubmitButton({ label }: { label: string }) {
+  const dict = useDictionary();
   const { pending } = useFormStatus();
   return (
     <button
@@ -25,7 +27,7 @@ function SubmitButton({ label }: { label: string }) {
       disabled={pending}
       className="mt-1 w-full rounded-full bg-accent px-5 py-3 text-xs font-bold uppercase tracking-wider text-fg transition-colors hover:bg-accent-hi disabled:cursor-not-allowed disabled:opacity-60"
     >
-      {pending ? "Please wait..." : label}
+      {pending ? dict.login.pleaseWait : label}
     </button>
   );
 }
@@ -49,6 +51,7 @@ function Feedback({ state }: { state: AuthState }) {
 }
 
 export function LoginForm({ returnTo }: { returnTo: string }) {
+  const dict = useDictionary();
   const [mode, setMode] = useState<Mode>("login");
   const [login, loginFormAction] = useActionState(loginAction, initial);
   const [register, registerFormAction] = useActionState(
@@ -75,21 +78,21 @@ export function LoginForm({ returnTo }: { returnTo: string }) {
     <div className="w-full max-w-md">
       <div className="mb-8 text-center">
         <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-accent">
-          SickMotos account
+          {dict.login.kicker}
         </span>
         <h1 className="mt-2 font-display text-4xl uppercase tracking-tight md:text-5xl">
           {mode === "login"
-            ? "Sign in"
+            ? dict.login.signIn
             : mode === "register"
-              ? "Create account"
-              : "Reset password"}
+              ? dict.login.createAccount
+              : dict.login.resetPassword}
         </h1>
       </div>
 
       {mode !== "recover" && (
         <div className="mb-6 flex items-center gap-1 rounded-full border border-border bg-surface/40 p-1">
-          {tab("login", "Sign in")}
-          {tab("register", "Create account")}
+          {tab("login", dict.login.signIn)}
+          {tab("register", dict.login.createAccount)}
         </div>
       )}
 
@@ -102,7 +105,7 @@ export function LoginForm({ returnTo }: { returnTo: string }) {
             type="email"
             name="email"
             autoComplete="email"
-            placeholder="Email"
+            placeholder={dict.login.emailPlaceholder}
             required
           />
           <input
@@ -110,16 +113,16 @@ export function LoginForm({ returnTo }: { returnTo: string }) {
             type="password"
             name="password"
             autoComplete="current-password"
-            placeholder="Password"
+            placeholder={dict.login.passwordPlaceholder}
             required
           />
-          <SubmitButton label="Sign in" />
+          <SubmitButton label={dict.login.signIn} />
           <button
             type="button"
             onClick={() => setMode("recover")}
             className="mt-1 text-center text-[11px] font-semibold uppercase tracking-wider text-fg-muted hover:text-accent"
           >
-            Forgot your password?
+            {dict.login.forgotPassword}
           </button>
         </form>
       )}
@@ -134,14 +137,14 @@ export function LoginForm({ returnTo }: { returnTo: string }) {
               type="text"
               name="firstName"
               autoComplete="given-name"
-              placeholder="First name"
+              placeholder={dict.login.firstNamePlaceholder}
             />
             <input
               className={inputCls}
               type="text"
               name="lastName"
               autoComplete="family-name"
-              placeholder="Last name"
+              placeholder={dict.login.lastNamePlaceholder}
             />
           </div>
           <input
@@ -149,7 +152,7 @@ export function LoginForm({ returnTo }: { returnTo: string }) {
             type="email"
             name="email"
             autoComplete="email"
-            placeholder="Email"
+            placeholder={dict.login.emailPlaceholder}
             required
           />
           <input
@@ -157,11 +160,11 @@ export function LoginForm({ returnTo }: { returnTo: string }) {
             type="password"
             name="password"
             autoComplete="new-password"
-            placeholder="Password (min. 5 characters)"
+            placeholder={dict.login.passwordRegisterPlaceholder}
             minLength={5}
             required
           />
-          <SubmitButton label="Create account" />
+          <SubmitButton label={dict.login.createAccount} />
         </form>
       )}
 
@@ -169,30 +172,29 @@ export function LoginForm({ returnTo }: { returnTo: string }) {
         <form action={recoverFormAction} className="flex flex-col gap-3">
           <Feedback state={recover} />
           <p className="text-center text-xs text-fg-muted">
-            Enter your email and we will send you a link to reset your password.
+            {dict.login.recoverBody}
           </p>
           <input
             className={inputCls}
             type="email"
             name="email"
             autoComplete="email"
-            placeholder="Email"
+            placeholder={dict.login.emailPlaceholder}
             required
           />
-          <SubmitButton label="Send reset link" />
+          <SubmitButton label={dict.login.sendResetLink} />
           <button
             type="button"
             onClick={() => setMode("login")}
             className="mt-1 text-center text-[11px] font-semibold uppercase tracking-wider text-fg-muted hover:text-accent"
           >
-            Back to sign in
+            {dict.login.backToSignIn}
           </button>
         </form>
       )}
 
       <p className="mt-8 text-center text-[11px] leading-relaxed text-fg-dim">
-        Checkout is handled securely by Shopify. Your account here lets you
-        track orders and speed up future checkouts.
+        {dict.login.checkoutNote}
       </p>
     </div>
   );

@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { BIKE_BRANDS, countByBrand } from "@/lib/products";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
-export function BikeBrandStrip() {
+export async function BikeBrandStrip() {
+  const dict = await getDictionary(await getLocale());
   const counts = countByBrand();
   const brands = (BIKE_BRANDS as readonly string[])
     .map((name) => ({ name, count: counts[name] ?? 0 }))
@@ -15,10 +18,10 @@ export function BikeBrandStrip() {
         <div className="mb-5 flex items-center justify-between gap-4">
           <div>
             <h2 className="font-display text-2xl uppercase tracking-tight md:text-3xl">
-              Find parts for your bike
+              {dict.bikeBrandStrip.title}
             </h2>
             <p className="mt-1 text-sm text-fg-muted">
-              Pick your brand. See only what fits.
+              {dict.bikeBrandStrip.subtitle}
             </p>
           </div>
         </div>
@@ -34,7 +37,7 @@ export function BikeBrandStrip() {
                 {b.name}
               </span>
               <span className="text-[10px] uppercase tracking-wider text-fg-dim">
-                {b.count} parts
+                {b.count} {dict.bikeBrandStrip.partsSuffix}
               </span>
             </Link>
           ))}

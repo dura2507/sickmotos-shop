@@ -2,14 +2,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCustomer, getCustomerToken } from "@/lib/customerStorefront";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-export const metadata = {
-  title: "Orders — My account — SickMotos",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata() {
+  const dict = await getDictionary(await getLocale());
+  return {
+    title: dict.orders.metaTitle,
+    robots: { index: false, follow: false },
+  };
+}
 
 const fmt = (amount: string, currency: string) =>
   new Intl.NumberFormat("de-DE", { style: "currency", currency }).format(
@@ -24,6 +29,8 @@ const fmtDate = (iso: string) =>
   });
 
 export default async function OrdersPage() {
+  const dict = await getDictionary(await getLocale());
+
   if (!(await getCustomerToken())) {
     redirect("/account/login?returnTo=/account/orders");
   }
@@ -40,16 +47,16 @@ export default async function OrdersPage() {
         <svg viewBox="0 0 24 24" className="size-3" fill="none" stroke="currentColor" strokeWidth={2.5}>
           <path d="M19 12H5M11 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-        Account
+        {dict.orders.backToAccount}
       </Link>
 
       <h1 className="font-display text-4xl uppercase tracking-tight md:text-5xl">
-        All orders
+        {dict.orders.heading}
       </h1>
 
       {orders.length === 0 ? (
         <div className="mt-10 rounded-2xl border border-border bg-surface/40 p-10 text-center">
-          <p className="text-sm text-fg-muted">No orders yet.</p>
+          <p className="text-sm text-fg-muted">{dict.orders.noOrders}</p>
         </div>
       ) : (
         <ul className="mt-10 flex flex-col divide-y divide-border overflow-hidden rounded-2xl border border-border bg-surface/40">

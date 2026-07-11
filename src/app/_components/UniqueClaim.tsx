@@ -3,24 +3,16 @@
 // Fantic und Yamaha." Lift that as a small but loud claim block right
 // after the Hero, before the Featured Builds and Bestsellers.
 
-// Card copy from Thomas (Telegram 2026-06-01), placed on the feature-card
-// section he referenced. NOTE: no LED legality / E-marking wording (his rule).
-const points = [
-  {
-    label: "Exhaust systems",
-    text: "2- and 4-stroke titanium exhaust headers and pipes, built and TIG-welded in-house for Beta, Fantic and Yamaha. Available nowhere else.",
-  },
-  {
-    label: "Hexagon Angel Eye",
-    text: "RGBW colour ring or hexagon via app control. All-white daytime low beam, all-white night-ride high beam, plus a stealth mode to hide it via the app. E-marking.",
-  },
-  {
-    label: "FuelX & ECU tuning",
-    text: "Crispy throttle response and maximum engine lifetime with a perfect mixture of air and fuel. Give your engine what it deserves, above regulation and the dangerous lean OEM E5 and E5+ regulations.",
-  },
-];
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
-export function UniqueClaim() {
+export async function UniqueClaim() {
+  const dict = await getDictionary(await getLocale());
+  const points = [
+    dict.uniqueClaim.exhaust,
+    dict.uniqueClaim.angelEye,
+    dict.uniqueClaim.fuelX,
+  ];
   return (
     <section className="relative overflow-hidden border-b border-border bg-bg py-14 md:py-20">
       <div
@@ -34,14 +26,13 @@ export function UniqueClaim() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-10 flex flex-col gap-3 md:max-w-2xl">
           <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-accent">
-            Built only by SickMotos
+            {dict.uniqueClaim.kicker}
           </span>
           <h2 className="font-display text-balance text-3xl uppercase leading-[1.05] tracking-tight md:text-5xl">
-            Parts you cannot buy anywhere else.
+            {dict.uniqueClaim.title}
           </h2>
           <p className="text-sm text-fg-muted md:text-base">
-            Most of what we sell is engineered in-house and produced in
-            small batches. Nothing is rebranded, nothing is generic.
+            {dict.uniqueClaim.subtitle}
           </p>
         </div>
         <ul className="grid gap-5 md:grid-cols-3">

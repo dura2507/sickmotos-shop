@@ -5,8 +5,10 @@ import { useEffect, useState } from "react";
 import { readBike, subscribeBike, writeBike, type SavedBike } from "@/lib/bikeStore";
 import type { SearchEntry } from "@/lib/products";
 import { SearchSuggest } from "./SearchSuggest";
+import { useDictionary } from "./LocaleProvider";
 
 export function HeaderSearch({ index }: { index: SearchEntry[] }) {
+  const dict = useDictionary();
   const [bike, setBike] = useState<SavedBike>({ brand: null, model: null, year: null });
   const [mounted, setMounted] = useState(false);
 
@@ -25,8 +27,8 @@ export function HeaderSearch({ index }: { index: SearchEntry[] }) {
     : bike.brand ?? "";
 
   const placeholder = hasBike
-    ? `Parts that fit ${chipLabel}...`
-    : "Search exhausts, LEDs, carbon...";
+    ? dict.headerSearch.placeholderWithBike.replace("{bike}", chipLabel)
+    : dict.headerSearch.placeholderDefault;
 
   return (
     <div className="hidden flex-1 items-center gap-2 md:flex">
@@ -35,7 +37,7 @@ export function HeaderSearch({ index }: { index: SearchEntry[] }) {
           <span>{chipLabel}</span>
           <button
             type="button"
-            aria-label="Clear bike"
+            aria-label={dict.headerSearch.clearBike}
             onClick={() => writeBike({ brand: null, model: null, year: null })}
             className="grid size-6 place-items-center rounded-full text-accent/80 transition-colors hover:bg-accent/20 hover:text-accent"
           >

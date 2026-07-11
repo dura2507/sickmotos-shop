@@ -1,9 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { fmtEUR, getLatestArrivals } from "@/lib/products";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 import { SectionHeader } from "./SectionHeader";
 
-export function LatestArrivals() {
+export async function LatestArrivals() {
+  const dict = await getDictionary(await getLocale());
   const products = getLatestArrivals(4);
   const backdrop = products[0]?.image;
 
@@ -12,9 +15,9 @@ export function LatestArrivals() {
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader
           index="02"
-          kicker="New in"
-          title="Latest arrivals"
-          subtitle="Just listed in Thomas's workshop."
+          kicker={dict.latestArrivals.kicker}
+          title={dict.latestArrivals.title}
+          subtitle={dict.latestArrivals.subtitle}
           viewAllHref="/shop"
           backdropImage={backdrop}
         />

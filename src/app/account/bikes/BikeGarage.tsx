@@ -9,6 +9,7 @@ import {
   type Bike,
 } from "@/lib/myBikes";
 import { CustomSelect } from "../../_components/CustomSelect";
+import { useDictionary } from "@/app/_components/LocaleProvider";
 
 type Props = {
   brands: string[];
@@ -17,6 +18,7 @@ type Props = {
 };
 
 export function BikeGarage({ brands, modelsByBrand, years }: Props) {
+  const dict = useDictionary();
   const [bikes, setBikes] = useState<Bike[]>([]);
   const [brand, setBrand] = useState("");
   const [model, setModel] = useState("");
@@ -40,8 +42,7 @@ export function BikeGarage({ brands, modelsByBrand, years }: Props) {
   return (
     <div className="flex flex-col gap-8">
       <p className="max-w-2xl text-sm leading-relaxed text-fg-muted">
-        Add the bikes you ride. From then on, every parts list can filter down
-        to what actually fits your bikes with one tap.
+        {dict.bikes.intro}
       </p>
 
       <form
@@ -50,7 +51,7 @@ export function BikeGarage({ brands, modelsByBrand, years }: Props) {
       >
         <div className="flex flex-col gap-1.5">
           <span className="text-[10px] font-bold uppercase tracking-wider text-fg-dim">
-            Brand
+            {dict.bikes.brand}
           </span>
           <CustomSelect
             value={brand}
@@ -59,33 +60,33 @@ export function BikeGarage({ brands, modelsByBrand, years }: Props) {
               setModel("");
             }}
             options={[
-              { value: "", label: "Pick a brand" },
+              { value: "", label: dict.bikes.pickBrand },
               ...brands.map((b) => ({ value: b, label: b })),
             ]}
           />
         </div>
         <div className="flex flex-col gap-1.5">
           <span className="text-[10px] font-bold uppercase tracking-wider text-fg-dim">
-            Model
+            {dict.bikes.model}
           </span>
           <CustomSelect
             value={model}
             onChange={setModel}
             options={[
-              { value: "", label: brand ? "Pick a model" : "Pick a brand first" },
+              { value: "", label: brand ? dict.bikes.pickModel : dict.bikes.pickBrandFirst },
               ...models.map((m) => ({ value: m, label: m })),
             ]}
           />
         </div>
         <div className="flex flex-col gap-1.5">
           <span className="text-[10px] font-bold uppercase tracking-wider text-fg-dim">
-            Year
+            {dict.bikes.year}
           </span>
           <CustomSelect
             value={year === "" ? "" : String(year)}
             onChange={(v) => setYear(v ? Number(v) : "")}
             options={[
-              { value: "", label: "Year" },
+              { value: "", label: dict.bikes.year },
               ...years.map((y) => ({ value: String(y), label: String(y) })),
             ]}
           />
@@ -96,18 +97,18 @@ export function BikeGarage({ brands, modelsByBrand, years }: Props) {
             disabled={!brand || !model || !year}
             className="h-11 w-full rounded-full bg-accent px-5 text-xs font-bold uppercase tracking-wider text-fg transition-colors hover:bg-accent-hi disabled:cursor-not-allowed disabled:bg-surface-2 disabled:text-fg-dim md:w-auto"
           >
-            Add bike
+            {dict.bikes.addBike}
           </button>
         </div>
       </form>
 
       <div>
         <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-fg-dim">
-          Your garage · {bikes.length}
+          {dict.bikes.yourGarageCount.replace("{bikes.length}", String(bikes.length))}
         </p>
         {bikes.length === 0 ? (
           <div className="rounded-xl border border-dashed border-border bg-surface/30 p-8 text-center text-sm text-fg-muted">
-            No bikes added yet.
+            {dict.bikes.noBikes}
           </div>
         ) : (
           <ul className="flex flex-col gap-2">
@@ -136,7 +137,7 @@ export function BikeGarage({ brands, modelsByBrand, years }: Props) {
                   onClick={() => removeBike(b.id)}
                   className="text-[11px] font-semibold uppercase tracking-wider text-fg-dim transition-colors hover:text-accent"
                 >
-                  Remove
+                  {dict.bikes.remove}
                 </button>
               </li>
             ))}
@@ -149,7 +150,7 @@ export function BikeGarage({ brands, modelsByBrand, years }: Props) {
           href="/shop"
           className="inline-flex w-fit items-center gap-2 rounded-full bg-accent px-6 py-3 text-xs font-bold uppercase tracking-wider text-fg transition-colors hover:bg-accent-hi"
         >
-          Shop parts that fit
+          {dict.bikes.shopFits}
           <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={2.4}>
             <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
           </svg>

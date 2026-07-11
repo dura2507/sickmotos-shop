@@ -1,14 +1,19 @@
 import { redirect } from "next/navigation";
 import { getCustomerToken } from "@/lib/customerStorefront";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 import { LoginForm } from "./LoginForm";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-export const metadata = {
-  title: "Sign in — SickMotos",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata() {
+  const dict = await getDictionary(await getLocale());
+  return {
+    title: dict.login.metaTitle,
+    robots: { index: false, follow: false },
+  };
+}
 
 export default async function LoginPage({
   searchParams,

@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getAllPosts, getPostBySlug } from "@/lib/blog";
 import { LegalText } from "../../legal/_layout";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
 export function generateStaticParams() {
   return getAllPosts().map((p) => ({ slug: p.slug }));
@@ -16,9 +18,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const p = getPostBySlug(slug);
-  if (!p) return { title: "Post not found — SickMotos" };
+  if (!p) {
+    const dict = await getDictionary(await getLocale());
+    return { title: dict.blogPost.notFoundMetaTitle };
+  }
   return {
-    title: `${p.title} — SickMotos`,
+    title: `${p.title}, SickMotos`,
     description: p.excerpt,
     openGraph: {
       title: p.title,
@@ -35,6 +40,7 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const dict = await getDictionary(await getLocale());
   const post = getPostBySlug(slug);
   if (!post) notFound();
 
@@ -47,7 +53,7 @@ export default async function BlogPostPage({
         <svg viewBox="0 0 24 24" className="size-3" fill="none" stroke="currentColor" strokeWidth={2.5}>
           <path d="M19 12H5M11 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-        All posts
+        {dict.blogPost.allPosts}
       </Link>
 
       <header className="mb-10">

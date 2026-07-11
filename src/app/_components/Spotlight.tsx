@@ -1,6 +1,9 @@
 import Image from "next/image";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
-export function Spotlight() {
+export async function Spotlight() {
+  const dict = await getDictionary(await getLocale());
   return (
     <section className="relative isolate overflow-hidden border-b border-border bg-bg py-20 md:py-28">
       <div
@@ -24,7 +27,7 @@ export function Spotlight() {
         <div className="relative aspect-square w-full max-w-[560px] justify-self-center md:order-2">
           <Image
             src="/products/led-v7-rage.png"
-            alt="SICKMOTOS LED RGBW V7 Rage Edition"
+            alt={dict.spotlight.imageAlt}
             fill
             sizes="(max-width: 768px) 100vw, 560px"
             className="reveal-soft float-y object-contain"
@@ -39,44 +42,40 @@ export function Spotlight() {
             className="float-y absolute -left-4 top-12 hidden rounded-full border border-accent/40 bg-bg/80 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-accent backdrop-blur-sm md:block"
             style={{ animationDelay: "0.4s" }}
           >
-            12 light modes
+            {dict.spotlight.badgeLightModes}
           </div>
           <div
             aria-hidden
             className="float-y absolute -right-2 top-1/3 hidden rounded-full border border-accent/40 bg-bg/80 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-accent backdrop-blur-sm md:block"
             style={{ animationDelay: "1.2s" }}
           >
-            App control
+            {dict.spotlight.badgeAppControl}
           </div>
           <div
             aria-hidden
             className="float-y absolute bottom-12 left-6 hidden rounded-full border border-accent/40 bg-bg/80 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-accent backdrop-blur-sm md:block"
             style={{ animationDelay: "2s" }}
           >
-            Plug & Play
+            {dict.spotlight.badgePlugPlay}
           </div>
         </div>
 
         <div className="flex flex-col gap-5 md:order-1">
           <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-accent">
-            Featured
+            {dict.spotlight.kicker}
           </span>
           <h2 className="font-display text-balance text-5xl uppercase leading-[0.95] tracking-tight md:text-6xl">
-            Engineered
-            <br />
-            for the <span className="italic text-accent/85">dark.</span>
+            {dict.spotlight.headline}
           </h2>
           <p className="max-w-md text-base leading-relaxed text-fg-muted">
-            Hexagon RGBW V7. App-controlled, twelve light modes, direct fit
-            for Husqvarna FE and TE 2024. Cuts through fog, dust and forest
-            without compromise.
+            {dict.spotlight.description}
           </p>
           <div className="flex items-center gap-3 pt-2">
             <a
               href="#"
               className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 text-xs font-bold uppercase tracking-wider text-fg transition-colors hover:bg-accent-hi"
             >
-              Shop now
+              {dict.spotlight.shopNow}
               <svg
                 viewBox="0 0 24 24"
                 className="size-4"
@@ -87,7 +86,7 @@ export function Spotlight() {
                 <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </a>
-            <span className="text-xs text-fg-dim">€129 · was €229</span>
+            <span className="text-xs text-fg-dim">€129 · {dict.spotlight.wasPrefix}</span>
           </div>
         </div>
       </div>

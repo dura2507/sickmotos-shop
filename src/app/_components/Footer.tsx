@@ -82,7 +82,7 @@ export async function Footer() {
                 href="https://instagram.com/sickmotos_official"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Instagram"
+                aria-label={dict.footer.instagramAria}
                 className="grid size-10 place-items-center rounded-full border border-border-strong text-fg-muted transition-all hover:border-accent hover:text-accent hover:-translate-y-0.5"
               >
                 <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={1.8}>
@@ -93,7 +93,7 @@ export async function Footer() {
               </a>
               <a
                 href="mailto:sickMotos-styles@freenet.de"
-                aria-label="Email"
+                aria-label={dict.footer.emailAria}
                 className="grid size-10 place-items-center rounded-full border border-border-strong text-fg-muted transition-all hover:border-accent hover:text-accent hover:-translate-y-0.5"
               >
                 <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={1.8}>

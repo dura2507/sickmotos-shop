@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { readBike, writeBike } from "@/lib/bikeStore";
+import { useDictionary } from "@/app/_components/LocaleProvider";
 
 function StepDot({ done }: { done: boolean }) {
   return (
@@ -48,6 +49,7 @@ export function BikeFinder({
   onChange,
 }: Props) {
   const [open, setOpen] = useState(true);
+  const dict = useDictionary();
 
   useEffect(() => {
     writeBike({
@@ -97,7 +99,7 @@ export function BikeFinder({
     selectedModel ? selectedModel.replace(new RegExp(`^${selectedBrand}\\s+`, "i"), "") : null,
     selectedYear?.toString(),
   ].filter(Boolean);
-  const summary = summaryParts.length > 0 ? summaryParts.join(" · ") : "Build your fit";
+  const summary = summaryParts.length > 0 ? summaryParts.join(" · ") : dict.bikeFinder.buildYourFit;
 
   return (
     <section className="relative isolate mb-10 overflow-hidden rounded-2xl border border-border bg-surface/40">
@@ -126,14 +128,14 @@ export function BikeFinder({
         <div className="flex items-center gap-4">
           <div className="flex flex-col">
             <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-accent">
-              Bike finder
+              {dict.bikeFinder.kicker}
             </span>
             <span className="font-display text-xl uppercase tracking-tight text-fg md:text-2xl">
               {summary}
             </span>
             {(selectedBrand || selectedYear || selectedModel) && (
               <span className="text-xs text-fg-muted">
-                Showing only parts that fit your bike.
+                {dict.bikeFinder.showingFitOnly}
               </span>
             )}
           </div>
@@ -156,7 +158,7 @@ export function BikeFinder({
               }}
               className="cursor-pointer rounded-full border border-border-strong px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-fg-muted transition-colors hover:border-accent hover:text-accent"
             >
-              Reset
+              {dict.bikeFinder.reset}
             </span>
           )}
           <svg
@@ -183,7 +185,7 @@ export function BikeFinder({
             <div className="flex flex-col gap-2">
               <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-fg-dim">
                 <StepDot done={!!selectedBrand} />
-                Brand
+                {dict.bikeFinder.brand}
               </span>
               <div className="flex flex-wrap gap-2">
                 {brands.map((b) => {
@@ -223,9 +225,11 @@ export function BikeFinder({
               <div className="flex flex-col gap-2">
                 <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-fg-dim">
                   <StepDot done={!!selectedModel} />
-                  Model
+                  {dict.bikeFinder.model}
                   <span className="text-fg-dim/70">
-                    ({models.length} for {selectedBrand})
+                    {dict.bikeFinder.modelCountForBrand
+                      .replace("{count}", String(models.length))
+                      .replace("{brand}", selectedBrand)}
                   </span>
                 </span>
                 <div className="flex flex-wrap gap-2">
@@ -270,15 +274,15 @@ export function BikeFinder({
             <div className="flex flex-col gap-2">
               <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-fg-dim">
                 <StepDot done={!!selectedYear} />
-                Year
+                {dict.bikeFinder.year}
               </span>
               {!selectedBrand ? (
                 <p className="text-xs text-fg-dim">
-                  Pick a brand first to see compatible years.
+                  {dict.bikeFinder.pickBrandFirst}
                 </p>
               ) : availableYears.length === 0 ? (
                 <p className="text-xs text-fg-dim">
-                  No years available for this selection.
+                  {dict.bikeFinder.noYears}
                 </p>
               ) : (
                 <div

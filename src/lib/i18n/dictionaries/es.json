@@ -22,26 +22,59 @@
     "kicker": "Repuestos performance para supermoto",
     "shopNow": "Comprar ahora",
     "browseCategories": "Ver categorías",
-    "description": "Repuestos performance para el universo supermoto — 2 y 4 tiempos, de 50 a 700 cc, para KTM, Husqvarna, Beta, Fantic, Sherco y muchas más. Sistemas de escape en titanio, faros LED, mapeados ECU y componentes de motor, desarrollados y refinados con pasión."
+    "description": "Repuestos performance para el universo supermoto, 2 y 4 tiempos, de 50 a 700 cc, para KTM, Husqvarna, Beta, Fantic, Sherco y muchas más. Sistemas de escape en titanio, faros LED, mapeados ECU y componentes de motor, desarrollados y refinados con pasión.",
+    "searchPlaceholder": "Busca tu moto: KTM EXC, Beta RR 125 ...",
+    "worldwide": "Envío mundial",
+    "bitcoin": "Bitcoin aceptado"
   },
   "categories": {
     "kicker": "Categorías de productos",
     "title": "Compra por categoría",
-    "subtitle": "De frenos a piezas especiales — todo para tu supermoto.",
+    "subtitle": "De frenos a piezas especiales, todo para tu supermoto.",
     "shopCategory": "Ver categoría",
     "productsSuffix": "productos"
   },
   "categoryCards": {
-    "Exhaust": { "name": "Escape", "desc": "Colectores y tubos de titanio, 2 y 4 tiempos" },
-    "LED Headlights": { "name": "Faros LED", "desc": "RGBW y angel eyes hexagonales, control por app" },
-    "Carbon Parts": { "name": "Piezas de carbono", "desc": "Carbono ultraligero, fabricado en casa" },
-    "ECU Tuning": { "name": "Tuning ECU", "desc": "FuelX y ECU, acelerador más vivo y motor más duradero" },
-    "Brakes": { "name": "Frenos", "desc": "Frenos de altas prestaciones para máximo control" },
-    "Graphics": { "name": "Gráficas", "desc": "Kits gráficos personalizados que destacan" },
-    "Titanium Screws": { "name": "Tornillos de titanio", "desc": "Tornillería de titanio de competición" },
-    "Merchandise": { "name": "Merchandise", "desc": "Lleva la marca" },
-    "Wheels": { "name": "Ruedas", "desc": "Juegos de llantas supermoto y rodaje" },
-    "Other": { "name": "Otros", "desc": "Tornillería de titanio y todo lo demás" }
+    "Exhaust": {
+      "name": "Escape",
+      "desc": "Colectores y tubos de titanio, 2 y 4 tiempos"
+    },
+    "LED Headlights": {
+      "name": "Faros LED",
+      "desc": "RGBW y angel eyes hexagonales, control por app"
+    },
+    "Carbon Parts": {
+      "name": "Piezas de carbono",
+      "desc": "Carbono ultraligero, fabricado en casa"
+    },
+    "ECU Tuning": {
+      "name": "Tuning ECU",
+      "desc": "FuelX y ECU, acelerador más vivo y motor más duradero"
+    },
+    "Brakes": {
+      "name": "Frenos",
+      "desc": "Frenos de altas prestaciones para máximo control"
+    },
+    "Graphics": {
+      "name": "Gráficas",
+      "desc": "Kits gráficos personalizados que destacan"
+    },
+    "Titanium Screws": {
+      "name": "Tornillos de titanio",
+      "desc": "Tornillería de titanio de competición"
+    },
+    "Merchandise": {
+      "name": "Merchandise",
+      "desc": "Lleva la marca"
+    },
+    "Wheels": {
+      "name": "Ruedas",
+      "desc": "Juegos de llantas supermoto y rodaje"
+    },
+    "Other": {
+      "name": "Otros",
+      "desc": "Tornillería de titanio y todo lo demás"
+    }
   },
   "cart": {
     "title": "Carrito",
@@ -57,9 +90,22 @@
     "ledWarningBody": "Tienes un faro LED en el carrito pero sin convertidor. La lámpara no se encenderá físicamente sin él. Añade el convertidor adecuado antes de pagar.",
     "beforeCheckoutTitle": "Antes de continuar, revisa",
     "checkAddressTitle": "Dirección completa con número",
-    "checkAddressBody": "El número que falta es el problema de entrega número 1. Calle, número, código postal, ciudad, país — nada puede quedar en blanco.",
+    "checkAddressBody": "El número que falta es el problema de entrega número 1. Calle, número, código postal, ciudad, país, nada puede quedar en blanco.",
     "checkEmailTitle": "Introduce un email real",
-    "checkEmailBody": "Sin email no hay seguimiento del envío ni actualizaciones del pedido. No sabrás cuándo llegan tus repuestos."
+    "checkEmailBody": "Sin email no hay seguimiento del envío ni actualizaciones del pedido. No sabrás cuándo llegan tus repuestos.",
+    "dialogAria": "Carrito",
+    "closeAria": "Cerrar carrito",
+    "itemSingular": "artículo",
+    "itemPlural": "artículos",
+    "loading": "Cargando ...",
+    "emptyBody": "Añade piezas de la tienda y aparecerán aquí.",
+    "decreaseQty": "Reducir cantidad",
+    "increaseQty": "Aumentar cantidad",
+    "checkEmailBodyBefore": "Sin él no habrá ",
+    "checkEmailBodyHighlight": "ningún seguimiento del envío",
+    "checkEmailBodyAfter": " y ninguna actualización del pedido. No sabrás cuándo llegan tus piezas.",
+    "buttonAriaWithCount": "Carrito, {count} artículos",
+    "buttonAria": "Carrito"
   },
   "product": {
     "addToCart": "Añadir al carrito",
@@ -90,9 +136,21 @@
     "increaseQty": "Aumentar cantidad",
     "howOrderBuilt": "Cómo se fabrica tu pedido",
     "buildSteps": [
-      { "day": "Día 1-7", "label": "Producción", "detail": "Fabricado a mano en nuestro taller." },
-      { "day": "Día 10-12", "label": "Pruebas", "detail": "Cada unidad se prueba antes de salir." },
-      { "day": "Día 13-15", "label": "Embalaje y envío", "detail": "Embalado con cuidado y entregado al transportista." }
+      {
+        "day": "Día 1-7",
+        "label": "Producción",
+        "detail": "Fabricado a mano en nuestro taller."
+      },
+      {
+        "day": "Día 10-12",
+        "label": "Pruebas",
+        "detail": "Cada unidad se prueba antes de salir."
+      },
+      {
+        "day": "Día 13-15",
+        "label": "Embalaje y envío",
+        "detail": "Embalado con cuidado y entregado al transportista."
+      }
     ],
     "breadcrumbHome": "Inicio",
     "addOnsSubtitle": "Accesorios que combinan bien con esta pieza.",
@@ -130,7 +188,7 @@
   "faq": {
     "title": "Preguntas frecuentes",
     "stillNotSure": "¿Sigues sin estar seguro?",
-    "stillNotSureBody": "Pregunta a SickBot — nuestro asistente responde en segundos sobre envíos, compatibilidad y convertidores.",
+    "stillNotSureBody": "Pregunta a SickBot, nuestro asistente responde en segundos sobre envíos, compatibilidad y convertidores.",
     "askSickBot": "Preguntar a SickBot",
     "items": [
       {
@@ -164,19 +222,22 @@
     "blog": "Blog",
     "helpFaq": "Ayuda y FAQ",
     "engineeredIn": "Repuestos performance para supermoto y enduro. Hechos a mano en Alemania por Thomas Krawietz.",
-    "hours": "Lun-Sáb 9-22, Dom 10-18"
+    "hours": "Lun-Sáb 9-22, Dom 10-18",
+    "instagramAria": "Instagram",
+    "emailAria": "Correo electrónico"
   },
   "consent": {
     "title": "Cookies y seguimiento",
     "body": "Usamos cookies esenciales para el funcionamiento de la tienda. Con tu consentimiento también usamos cookies de análisis y marketing para mejorar el sitio y llegar a los pilotos adecuados.",
     "onlyEssential": "Solo esenciales",
-    "acceptAll": "Aceptar todo"
+    "acceptAll": "Aceptar todo",
+    "dialogAria": "Preferencias de cookies"
   },
   "bot": {
     "askSickBot": "Preguntar a SickBot",
     "ask": "Pregunta",
     "sickbot": "SickBot",
-    "greeting": "Hola, soy SickBot — tu referencia para todo lo relacionado con supermoto: envíos, compatibilidad, convertidores, pagos, devoluciones o repuestos. ¿En qué te ayudo?",
+    "greeting": "Hola, soy SickBot, tu referencia para todo lo relacionado con supermoto: envíos, compatibilidad, convertidores, pagos, devoluciones o repuestos. ¿En qué te ayudo?",
     "online": "En línea",
     "suggestions": {
       "shipping": "¿Cuánto tarda el envío?",
@@ -221,5 +282,314 @@
     "remove": "Quitar",
     "shopFits": "Ver repuestos compatibles",
     "noBikes": "Aún no has añadido motos."
+  },
+  "mobileMenu": {
+    "openMenuAria": "Abrir menú",
+    "yourBike": "Tu moto",
+    "clear": "Quitar",
+    "searchFitPlaceholder": "Piezas compatibles con {bike} ...",
+    "searchPlaceholder": "Busca tu moto o pieza ...",
+    "shopByBike": "Compra por moto",
+    "accountOrders": "Mi cuenta / pedidos"
+  },
+  "shopByModel": {
+    "kicker": "Compra por modelo",
+    "title": "Elige tu moto",
+    "subtitle": "Elige tu moto y ve solo las piezas compatibles.",
+    "partsSuffix": "piezas"
+  },
+  "bikeBrandStrip": {
+    "title": "Encuentra piezas para tu moto",
+    "subtitle": "Elige tu marca. Ve solo lo que encaja.",
+    "partsSuffix": "piezas"
+  },
+  "brandMarquee": {
+    "label": "Piezas para"
+  },
+  "brandPillTabs": {
+    "all": "Todas"
+  },
+  "sectionHeader": {
+    "viewAll": "Ver todo"
+  },
+  "bestsellers": {
+    "kicker": "Más vendidos",
+    "title": "Lo más vendido",
+    "subtitle": "Las piezas que más piden los riders, directo de nuestros datos de venta.",
+    "fits": "Compatible con"
+  },
+  "latestArrivals": {
+    "kicker": "Novedades",
+    "title": "Últimas novedades",
+    "subtitle": "Recién llegados del taller de Thomas."
+  },
+  "signatureParts": {
+    "kicker": "Signature parts",
+    "title": "Tres piezas que forjaron el nombre de SickMotos.",
+    "subtitle": "Sin fichas de marketing. Justo el hardware que montamos cada día en las Beta y Fantic 125 4 tiempos y que rodamos nosotros mismos.",
+    "items": {
+      "signatureLed": {
+        "label": "Signature LED",
+        "pitch": "Faros plug-and-play, homologados E, con anillo de luz diurna y modos RGB. Sin empalmar el cableado OEM.",
+        "alt": "Faro LED Hexagon Angel Eye rojo montado en la moto"
+      },
+      "raceHardware": {
+        "label": "Hardware race",
+        "title": "Colector de titanio, hecho a mano",
+        "pitch": "Doblado a mano, soldado TIG, pavonado al calor. Ganancia de par audible en la Beta y Fantic 125 4 tiempos.",
+        "alt": "Colector de escape de titanio hecho a mano con colores de pavonado arcoíris"
+      },
+      "fuelEcu": {
+        "label": "Fuel & ECU",
+        "title": "FuelX & tuning de ECU",
+        "pitch": "Corrección de mezcla en tiempo real sin perder el mapa OEM. Ajustada al colector para una respuesta de gas más afilada.",
+        "alt": "Módulo FuelX Autotune para la corrección de mezcla en tiempo real"
+      }
+    },
+    "shopCategory": "Ver la categoría"
+  },
+  "featuredBuilds": {
+    "kicker": "Builds destacadas",
+    "title": "Motos reales, rodadas por clientes reales.",
+    "subtitle": "Cada pieza de esta página está montada en una moto que de verdad se rueda. Elige una build, mira la spec exacta y pulsa Shop para las piezas.",
+    "builds": {
+      "betaRr125": {
+        "tagline": "Cyan dusk runner",
+        "alt": "Build Beta RR 125 en azul frente a un quitamiedos rural"
+      },
+      "fanticXef125": {
+        "tagline": "Backpack Wheelie Boyz spec",
+        "alt": "Build Fantic XEF 125 en rojo con escape de titanio"
+      },
+      "fanticXmf125": {
+        "tagline": "Wheelie spec",
+        "alt": "Fantic XMF 125 en rojo con gráfica Wheelie"
+      }
+    },
+    "shopSpec": "Ver la spec"
+  },
+  "graphicsKits": {
+    "kicker": "Haz tuya tu moto",
+    "title": "Kits de adhesivos",
+    "subtitle": "Diseños de edición limitada para Husqvarna, KTM y más."
+  },
+  "merchandise": {
+    "title": "Merchandising",
+    "subtitle": "Ruédalo. Vístelo. Repite.",
+    "shopMerch": "Ver merch"
+  },
+  "spotlight": {
+    "imageAlt": "SICKMOTOS LED RGBW V7 Rage Edition",
+    "badgeLightModes": "12 modos de luz",
+    "badgeAppControl": "Control por app",
+    "badgePlugPlay": "Plug & Play",
+    "kicker": "Destacado",
+    "headline": "Diseñado para la oscuridad.",
+    "description": "Hexagon RGBW V7. Controlado por app, doce modos de luz, montaje directo para Husqvarna FE y TE 2024. Atraviesa niebla, polvo y bosque sin concesiones.",
+    "shopNow": "Comprar ahora",
+    "wasPrefix": "antes 229 €"
+  },
+  "testCenter": {
+    "imageAlt": "Beta RR 125 preparada por SickMotos en la costa croata",
+    "imageCaption": "SickMotos · Centro de pruebas",
+    "liveBadge": "En directo en Zadar",
+    "kicker": "Centro de pruebas · Zadar, Croacia",
+    "title": "Prueba la moto antes de comprar las piezas.",
+    "body": "¿De vacaciones cerca de Zadar? Nuestro alquiler de motos es también un centro de pruebas para toda la spec SickMotos. Súbete a una Beta o Fantic 125 preparada, siente el colector y el hexágono LED en la auténtica costa croata, y luego pide exactamente la configuración que acabas de rodar. El mismo equipo que fabrica las piezas mantiene la flota.",
+    "featureByDayOrWeek": "Por día o por semana",
+    "featureOneClickOrder": "Pide con un clic la spec que probaste",
+    "bookRide": "Reserva una prueba",
+    "askSickBot": "¿Dudas? Pregunta al SickBot"
+  },
+  "reviews": {
+    "title": "Lo que dicen los riders",
+    "ratingValue": "4,9 de 5",
+    "verifiedLabel": "Reseñas de clientes verificadas"
+  },
+  "founder": {
+    "kicker": "El fundador",
+    "quote": "“Desde los 15 años me apasionan las motos, dentro y fuera del asfalto.”",
+    "bio": "Con varios títulos de offroad y un título de Maestro en Mecatrónica, combino experiencia técnica con competición real y trabajo práctico.",
+    "role": "Fundador, SickMotos"
+  },
+  "dna": {
+    "kicker": "Made in Germany",
+    "title": "Cada producto SickMotos lleva el ADN de décadas de pasión y perfeccionamiento constante.",
+    "subtitle": "Diseñado para inspirar. Hecho para durar. Probado donde importa.",
+    "tagline": "Piezas SickMotos, hechas para destacar."
+  },
+  "uniqueClaim": {
+    "exhaust": {
+      "label": "Sistemas de escape",
+      "text": "Colectores y tubos de escape de titanio para 2 y 4 tiempos, fabricados y soldados TIG en casa para Beta, Fantic y Yamaha. No los encuentras en ningún otro sitio."
+    },
+    "angelEye": {
+      "label": "Hexagon Angel Eye",
+      "text": "Anillo de color RGBW o hexagon con control por app. Luz de cruce diurna totalmente blanca, luz larga nocturna totalmente blanca, más un modo stealth para ocultarlo desde la app. Homologación E."
+    },
+    "fuelX": {
+      "label": "FuelX y ECU tuning",
+      "text": "Respuesta al acelerador más viva y máxima vida del motor gracias a la mezcla perfecta de aire y combustible. Dale a tu motor lo que merece, más allá de la norma y de los peligrosos reglajes pobres OEM E5 y E5+."
+    },
+    "kicker": "Fabricado solo por SickMotos",
+    "title": "Piezas que no puedes comprar en ningún otro sitio.",
+    "subtitle": "Casi todo lo que vendemos se diseña en casa y se produce en series pequeñas. Nada es remarcado, nada es genérico."
+  },
+  "actionBanner": {
+    "kicker": "Probado donde importa",
+    "titleLine1": "Hecho para el",
+    "titleLine2": "trail.",
+    "body": "Cada pieza la rueda, la exige y la valida Thomas antes de enviarla. Nada de datos de laboratorio. Condiciones reales.",
+    "cta": "Ver el catálogo"
+  },
+  "askSickBot": {
+    "defaultLabel": "Pregúntale al SickBot"
+  },
+  "whatsAppFloat": {
+    "ariaLabel": "Chatea por WhatsApp"
+  },
+  "productCard": {
+    "fits": "Compatible",
+    "stockLeft": "Solo quedan {count} en stock"
+  },
+  "headerSearch": {
+    "placeholderWithBike": "Piezas compatibles con {bike} ...",
+    "placeholderDefault": "Busca escapes, LEDs, carbono ...",
+    "clearBike": "Quitar moto"
+  },
+  "searchSuggest": {
+    "placeholderDefault": "Busca tu moto o una pieza ...",
+    "find": "Buscar",
+    "searchAria": "Buscar",
+    "popularBikes": "Motos populares",
+    "partSingular": "pieza",
+    "partPlural": "piezas",
+    "fitsPrefix": "Compatible con {models}",
+    "noProducts": "Ningún producto coincide con “{query}”.",
+    "browseCatalog": "Explora el catálogo completo →",
+    "seeAllResults": "Ver todos los resultados de “{query}” →"
+  },
+  "shopPage": {
+    "metaTitle": "Tienda, piezas de rendimiento SickMotos"
+  },
+  "shopBrowser": {
+    "filterCategory": "Categoría",
+    "filterAvailability": "Disponibilidad",
+    "inStockOnly": "Solo en stock",
+    "onSaleOnly": "Solo en oferta",
+    "clearAllFilters": "Borrar todos los filtros",
+    "title": "Explora el catálogo",
+    "subtitle": "{count} productos. Elige tu moto o filtra por categoría.",
+    "yourGarage": "Tu garaje",
+    "bikesSaved": "{count} motos guardadas",
+    "showWhatFits": "Mostrar lo que encaja",
+    "showAllAgain": "Mostrar todo de nuevo",
+    "searchPlaceholder": "Busca por pieza o moto ...",
+    "sortLabel": "Ordenar:",
+    "sortAria": "Ordenar productos",
+    "sortRelevance": "Relevancia",
+    "sortPriceAsc": "Precio: de menor a mayor",
+    "sortPriceDesc": "Precio: de mayor a menor",
+    "sortDiscount": "Mayor descuento",
+    "filters": "Filtros",
+    "showingCount": "Mostrando {shown} de {total} productos",
+    "onSaleChip": "En oferta",
+    "soldOut": "Agotado",
+    "noMatches": "Ningún producto coincide con estos filtros.",
+    "closeFiltersAria": "Cerrar filtros",
+    "showNProducts": "Mostrar {count} productos"
+  },
+  "bikeFinder": {
+    "buildYourFit": "Encuentra tus piezas",
+    "kicker": "Buscador de moto",
+    "showingFitOnly": "Mostramos solo las piezas que encajan en tu moto.",
+    "reset": "Restablecer",
+    "brand": "Marca",
+    "model": "Modelo",
+    "modelCountForBrand": "({count} para {brand})",
+    "year": "Año",
+    "pickBrandFirst": "Elige primero una marca para ver los años compatibles.",
+    "noYears": "No hay años disponibles para esta selección."
+  },
+  "account": {
+    "metaTitle": "Mi cuenta, SickMotos",
+    "heading": "Mi cuenta",
+    "sessionExpired": "Tu sesión ha caducado. Inicia sesión de nuevo.",
+    "signOut": "Cerrar sesión",
+    "welcomeBack": "Bienvenido de nuevo",
+    "greeting": "Hola, {greeting}.",
+    "garageCardTitle": "Mi garaje",
+    "garageCardSubtitle": "Guarda tus motos para que cada lista muestre solo lo que encaja.",
+    "recentOrders": "Pedidos recientes",
+    "allOrdersLink": "Todos los pedidos →",
+    "noOrders": "Aún no hay pedidos.",
+    "shopCatalog": "Ver el catálogo",
+    "defaultAddress": "Dirección predeterminada",
+    "noAddress": "Aún no hay ninguna dirección guardada.",
+    "needHelp": "¿Necesitas ayuda?",
+    "needHelpBody": "¿Tienes una pregunta sobre un pedido o una pieza? El SickBot responde al instante.",
+    "askSickBot": "Pregunta al SickBot"
+  },
+  "login": {
+    "metaTitle": "Iniciar sesión, SickMotos",
+    "pleaseWait": "Espera ...",
+    "kicker": "Cuenta SickMotos",
+    "signIn": "Iniciar sesión",
+    "createAccount": "Crear cuenta",
+    "resetPassword": "Restablecer contraseña",
+    "emailPlaceholder": "Correo electrónico",
+    "passwordPlaceholder": "Contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "firstNamePlaceholder": "Nombre",
+    "lastNamePlaceholder": "Apellidos",
+    "passwordRegisterPlaceholder": "Contraseña (mín. 5 caracteres)",
+    "recoverBody": "Introduce tu correo y te enviaremos un enlace para restablecer tu contraseña.",
+    "sendResetLink": "Enviar enlace",
+    "backToSignIn": "Volver al inicio de sesión",
+    "checkoutNote": "El pago se gestiona de forma segura con Shopify. Tu cuenta te permite seguir pedidos y agilizar futuras compras."
+  },
+  "orders": {
+    "metaTitle": "Pedidos, Mi cuenta, SickMotos",
+    "backToAccount": "Cuenta",
+    "heading": "Todos los pedidos",
+    "noOrders": "Aún no hay pedidos."
+  },
+  "bikes": {
+    "metaTitle": "Mi garaje, SickMotos",
+    "metaDescription": "Guarda tus motos y compra solo lo que encaja.",
+    "breadcrumbAccount": "Cuenta",
+    "breadcrumbGarage": "Mi garaje",
+    "heading": "Mi garaje",
+    "intro": "Añade las motos que conduces. A partir de ahí, cada lista de piezas filtra con un toque lo que realmente encaja en tus motos.",
+    "brand": "Marca",
+    "pickBrand": "Elige una marca",
+    "model": "Modelo",
+    "pickModel": "Elige un modelo",
+    "pickBrandFirst": "Elige primero una marca",
+    "year": "Año",
+    "addBike": "Añadir moto",
+    "yourGarageCount": "Tu garaje · {bikes.length}",
+    "noBikes": "Aún no has añadido ninguna moto.",
+    "remove": "Eliminar",
+    "shopFits": "Comprar piezas compatibles"
+  },
+  "blogIndex": {
+    "kicker": "El garaje",
+    "title": "Blog",
+    "subtitle": "Guías de tuning, comparativas de materiales e insights de builds de Thomas y del equipo SickMotos.",
+    "readMore": "Leer más",
+    "metaTitle": "Blog, SickMotos",
+    "metaDescription": "Insights técnicos, guías de tuning e historias de builds sobre Beta, Fantic, KTM y más."
+  },
+  "blogPost": {
+    "notFoundMetaTitle": "Artículo no encontrado, SickMotos",
+    "allPosts": "Todos los artículos"
+  },
+  "notFound": {
+    "metaTitle": "404, SickMotos",
+    "title": "Fuera de pista",
+    "body": "Esta página ya no existe. Quizá te equivocaste al escribir, o la pieza está descatalogada.",
+    "home": "Inicio",
+    "shopCatalog": "Ver el catálogo"
   }
 }

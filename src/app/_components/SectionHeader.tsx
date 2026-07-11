@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
 type Props = {
   kicker?: string;
@@ -9,7 +11,7 @@ type Props = {
   index?: string;
 };
 
-export function SectionHeader({
+export async function SectionHeader({
   kicker,
   title,
   subtitle,
@@ -17,6 +19,7 @@ export function SectionHeader({
   backdropImage,
   index,
 }: Props) {
+  const dict = await getDictionary(await getLocale());
   return (
     <div className="reveal relative isolate mb-10 overflow-hidden rounded-lg border border-border bg-surface/50">
       {backdropImage && (
@@ -68,7 +71,7 @@ export function SectionHeader({
             href={viewAllHref}
             className="group inline-flex items-center gap-2 text-sm font-semibold text-fg-muted underline-offset-4 hover:text-accent hover:underline"
           >
-            View all
+            {dict.sectionHeader.viewAll}
             <svg
               viewBox="0 0 24 24"
               className="size-4 transition-transform group-hover:translate-x-1"

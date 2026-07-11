@@ -13,6 +13,7 @@ import {
   type KeyboardEvent,
 } from "react";
 import type { BikeEntry, SearchEntry } from "@/lib/products";
+import { useDictionary } from "./LocaleProvider";
 
 const fmt = (n: number) =>
   n.toLocaleString("de-DE", { style: "currency", currency: "EUR" });
@@ -37,13 +38,15 @@ export function SearchSuggest({
   index = [],
   bikes = [],
   mode = "products",
-  placeholder = "Search your bike or part...",
+  placeholder,
   variant = "hero",
   brand,
   filterBrand,
   filterModel,
 }: Props) {
+  const dict = useDictionary();
   const router = useRouter();
+  const placeholderText = placeholder ?? dict.searchSuggest.placeholderDefault;
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
@@ -300,7 +303,7 @@ export function SearchSuggest({
           }}
           onFocus={() => setOpen(true)}
           onKeyDown={onKey}
-          placeholder={placeholder}
+          placeholder={placeholderText}
           autoComplete="off"
           className={inputClass}
         />
@@ -309,12 +312,12 @@ export function SearchSuggest({
             type="submit"
             className="shrink-0 pr-4 text-[11px] font-semibold uppercase tracking-wider text-accent transition-colors hover:text-accent-hi"
           >
-            Find
+            {dict.searchSuggest.find}
           </button>
         ) : (
           <button
             type="submit"
-            aria-label="Search"
+            aria-label={dict.searchSuggest.searchAria}
             className="grid size-9 place-items-center rounded-full text-fg-muted transition-colors hover:bg-accent/15 hover:text-accent"
           >
             <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -343,7 +346,7 @@ export function SearchSuggest({
               <>
                 {q.trim().length < 1 && (
                   <li className="px-3 pb-1 pt-1 text-[10px] font-bold uppercase tracking-[0.2em] text-fg-dim">
-                    Popular bikes
+                    {dict.searchSuggest.popularBikes}
                   </li>
                 )}
                 {bikeSuggestions.map((b, i) => (
@@ -365,7 +368,7 @@ export function SearchSuggest({
                         </span>
                       </div>
                       <span className="shrink-0 text-xs text-fg-dim">
-                        {b.count} {b.count === 1 ? "part" : "parts"}
+                        {b.count} {b.count === 1 ? dict.searchSuggest.partSingular : dict.searchSuggest.partPlural}
                       </span>
                     </button>
                   </li>
@@ -398,7 +401,7 @@ export function SearchSuggest({
                     <span className="truncate text-sm text-fg">{s.t}</span>
                     {s.f.length > 0 && (
                       <span className="truncate text-[10px] text-fg-dim">
-                        Fits {s.f.join(", ")}
+                        {dict.searchSuggest.fitsPrefix.replace("{models}", s.f.join(", "))}
                       </span>
                     )}
                   </div>
@@ -411,7 +414,7 @@ export function SearchSuggest({
 
             {mode === "products" && q.trim().length >= 2 && productSuggestions.length === 0 && (
               <li className="px-3 py-4 text-center text-xs text-fg-muted">
-                No products match &ldquo;{q}&rdquo;.
+                {dict.searchSuggest.noProducts.replace("{query}", q)}
               </li>
             )}
           </ul>
@@ -422,10 +425,10 @@ export function SearchSuggest({
               className="block w-full rounded-xl p-2 text-left text-xs font-semibold uppercase tracking-wider text-fg-muted hover:bg-surface hover:text-accent"
             >
               {mode === "bikes"
-                ? "Browse the full catalog →"
+                ? dict.searchSuggest.browseCatalog
                 : q.trim()
-                ? `See all results for "${q}" →`
-                : "Browse the full catalog →"}
+                ? dict.searchSuggest.seeAllResults.replace("{query}", q)
+                : dict.searchSuggest.browseCatalog}
             </button>
           </div>
         </div>,

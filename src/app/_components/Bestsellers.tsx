@@ -1,10 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { fmtEUR, getTopSelling } from "@/lib/products";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 import { SectionHeader } from "./SectionHeader";
 import { BrandPillTabs } from "./BrandPillTabs";
 
-export function Bestsellers() {
+export async function Bestsellers() {
+  const dict = await getDictionary(await getLocale());
   const products = getTopSelling(5);
   const backdrop = products[0]?.image;
 
@@ -13,9 +16,9 @@ export function Bestsellers() {
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader
           index="01"
-          kicker="Bestsellers"
-          title="Top selling"
-          subtitle="The parts riders order most, straight from our sales data."
+          kicker={dict.bestsellers.kicker}
+          title={dict.bestsellers.title}
+          subtitle={dict.bestsellers.subtitle}
           viewAllHref="/shop"
           backdropImage={backdrop}
         />
@@ -60,7 +63,7 @@ export function Bestsellers() {
                 {p.fits.length > 0 && (
                   <div className="flex flex-wrap items-center gap-1.5">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-fg-dim">
-                      Fits
+                      {dict.bestsellers.fits}
                     </span>
                     {p.fits.slice(0, 3).map((f) => (
                       <span

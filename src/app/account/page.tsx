@@ -3,14 +3,19 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCustomer, getCustomerToken } from "@/lib/customerStorefront";
 import { AskSickBot } from "@/app/_components/AskSickBot";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-export const metadata = {
-  title: "My account — SickMotos",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata() {
+  const dict = await getDictionary(await getLocale());
+  return {
+    title: dict.account.metaTitle,
+    robots: { index: false, follow: false },
+  };
+}
 
 const fmt = (amount: string, currency: string) =>
   new Intl.NumberFormat("de-DE", { style: "currency", currency }).format(
@@ -25,6 +30,8 @@ const fmtDate = (iso: string) =>
   });
 
 export default async function AccountPage() {
+  const dict = await getDictionary(await getLocale());
+
   if (!(await getCustomerToken())) redirect("/account/login");
 
   const customer = await getCustomer();
@@ -33,16 +40,16 @@ export default async function AccountPage() {
     return (
       <div className="mx-auto max-w-3xl px-6 py-16 md:py-24">
         <h1 className="font-display text-4xl uppercase tracking-tight">
-          My account
+          {dict.account.heading}
         </h1>
         <p className="mt-4 text-sm text-fg-muted">
-          Your session has expired. Please sign in again.
+          {dict.account.sessionExpired}
         </p>
         <Link
           href="/account/logout"
           className="mt-6 inline-block rounded-full border border-border-strong px-4 py-2 text-xs font-bold uppercase tracking-wider text-fg-muted hover:border-accent hover:text-accent"
         >
-          Sign out
+          {dict.account.signOut}
         </Link>
       </div>
     );
@@ -50,7 +57,7 @@ export default async function AccountPage() {
 
   const c = customer;
   const fullName = [c.firstName, c.lastName].filter(Boolean).join(" ").trim();
-  const greeting = fullName || c.email || "Welcome back";
+  const greeting = fullName || c.email || dict.account.welcomeBack;
   const recent = c.orders.nodes;
 
   return (
@@ -58,10 +65,10 @@ export default async function AccountPage() {
       <header className="mb-10 flex flex-col gap-3 border-b border-border pb-8 md:flex-row md:items-end md:justify-between">
         <div>
           <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-accent">
-            My account
+            {dict.account.heading}
           </span>
           <h1 className="mt-2 font-display text-4xl uppercase tracking-tight md:text-5xl">
-            Hi, {greeting}.
+            {dict.account.greeting.replace("{greeting}", greeting)}
           </h1>
           {c.email && (
             <p className="mt-2 text-sm text-fg-muted">{c.email}</p>
@@ -71,7 +78,7 @@ export default async function AccountPage() {
           href="/account/logout"
           className="self-start rounded-full border border-border-strong px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-fg-muted transition-colors hover:border-accent hover:text-accent"
         >
-          Sign out
+          {dict.account.signOut}
         </Link>
       </header>
 
@@ -89,10 +96,10 @@ export default async function AccountPage() {
           </span>
           <div className="flex-1">
             <p className="font-display text-lg uppercase tracking-tight text-fg">
-              My garage
+              {dict.account.garageCardTitle}
             </p>
             <p className="text-xs text-fg-muted">
-              Save your bikes so every list can show only what fits.
+              {dict.account.garageCardSubtitle}
             </p>
           </div>
           <svg viewBox="0 0 24 24" className="size-5 text-fg-muted transition-colors group-hover:text-accent" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -101,26 +108,26 @@ export default async function AccountPage() {
         </Link>
         <div className="mb-4 flex items-baseline justify-between">
           <h2 className="font-display text-2xl uppercase tracking-tight md:text-3xl">
-            Recent orders
+            {dict.account.recentOrders}
           </h2>
           {recent.length > 0 && (
             <Link
               href="/account/orders"
               className="text-[11px] font-bold uppercase tracking-wider text-accent hover:text-accent-hi"
             >
-              All orders →
+              {dict.account.allOrdersLink}
             </Link>
           )}
         </div>
 
         {recent.length === 0 ? (
           <div className="rounded-2xl border border-border bg-surface/40 p-10 text-center">
-            <p className="text-sm text-fg-muted">No orders yet.</p>
+            <p className="text-sm text-fg-muted">{dict.account.noOrders}</p>
             <Link
               href="/shop"
               className="mt-4 inline-block rounded-full bg-accent px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-fg hover:bg-accent-hi"
             >
-              Shop the catalog
+              {dict.account.shopCatalog}
             </Link>
           </div>
         ) : (
@@ -178,7 +185,7 @@ export default async function AccountPage() {
       <section className="grid gap-4 md:grid-cols-2">
         <div className="rounded-2xl border border-border bg-surface/40 p-5">
           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-fg-dim">
-            Default address
+            {dict.account.defaultAddress}
           </span>
           {c.defaultAddress ? (
             <p className="mt-2 text-sm text-fg-muted">
@@ -190,18 +197,21 @@ export default async function AccountPage() {
                 : null}
             </p>
           ) : (
-            <p className="mt-2 text-sm text-fg-dim">No address saved yet.</p>
+            <p className="mt-2 text-sm text-fg-dim">{dict.account.noAddress}</p>
           )}
         </div>
         <div className="rounded-2xl border border-border bg-surface/40 p-5">
           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-fg-dim">
-            Need help?
+            {dict.account.needHelp}
           </span>
           <p className="mt-2 text-sm text-fg-muted">
-            Got a question about an order or a part? The SickBot answers
-            instantly.
+            {dict.account.needHelpBody}
           </p>
-          <AskSickBot variant="ghost" label="Ask the SickBot" className="mt-3" />
+          <AskSickBot
+            variant="ghost"
+            label={dict.account.askSickBot}
+            className="mt-3"
+          />
         </div>
       </section>
     </div>

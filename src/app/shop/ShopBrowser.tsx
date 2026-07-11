@@ -13,6 +13,7 @@ import {
 } from "@/lib/products";
 import { leadTimeFor } from "@/lib/leadTime";
 import { readBikes, subscribeBikes, type Bike } from "@/lib/myBikes";
+import { useDictionary } from "@/app/_components/LocaleProvider";
 import { CustomSelect } from "../_components/CustomSelect";
 import { BikeFinder } from "./BikeFinder";
 
@@ -36,6 +37,7 @@ export function ShopBrowser({
   modelsByBrand,
   yearsByFit,
 }: Props) {
+  const dict = useDictionary();
   // Seed initial state from URL so the first paint already reflects the link
   // the user clicked. Subsequent navigations are picked up by the effect.
   const sp = useSearchParams();
@@ -166,7 +168,7 @@ export function ShopBrowser({
 
   const Filters = (
     <div className="flex flex-col gap-7">
-      <FilterGroup title="Category">
+      <FilterGroup title={dict.shopBrowser.filterCategory}>
         {(CATEGORIES as readonly Category[]).map((c) => {
           const count = categoryCounts[c] ?? 0;
           if (count === 0) return null;
@@ -191,14 +193,14 @@ export function ShopBrowser({
         })}
       </FilterGroup>
 
-      <FilterGroup title="Availability">
+      <FilterGroup title={dict.shopBrowser.filterAvailability}>
         <Toggle
-          label="In stock only"
+          label={dict.shopBrowser.inStockOnly}
           checked={inStockOnly}
           onChange={setInStockOnly}
         />
         <Toggle
-          label="On sale only"
+          label={dict.shopBrowser.onSaleOnly}
           checked={onSaleOnly}
           onChange={setOnSaleOnly}
         />
@@ -217,7 +219,7 @@ export function ShopBrowser({
           }}
           className="rounded-full border border-border-strong px-3 py-2 text-xs font-semibold uppercase tracking-wider text-fg-muted hover:border-accent hover:text-accent"
         >
-          Clear all filters
+          {dict.shopBrowser.clearAllFilters}
         </button>
       )}
     </div>
@@ -227,10 +229,10 @@ export function ShopBrowser({
     <div className="mx-auto max-w-7xl px-4 py-10 md:px-6 md:py-14">
       <div className="mb-8 flex flex-col gap-4">
         <h1 className="font-display text-4xl uppercase tracking-tight md:text-5xl">
-          Shop the catalog
+          {dict.shopBrowser.title}
         </h1>
         <p className="text-sm text-fg-muted">
-          {products.length} products. Pick your bike or filter by category.
+          {dict.shopBrowser.subtitle.replace("{count}", String(products.length))}
         </p>
       </div>
 
@@ -242,9 +244,9 @@ export function ShopBrowser({
               <circle cx="18" cy="17" r="4" />
               <path d="M6 17l4-7h5l3 7" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            <span className="text-sm font-semibold text-fg">Your garage</span>
+            <span className="text-sm font-semibold text-fg">{dict.shopBrowser.yourGarage}</span>
             <span className="text-xs text-fg-muted">
-              {savedBikes.length} bike{savedBikes.length === 1 ? "" : "s"} saved
+              {dict.shopBrowser.bikesSaved.replace("{count}", String(savedBikes.length))}
             </span>
           </div>
           {garageFilter.length === 0 ? (
@@ -258,7 +260,7 @@ export function ShopBrowser({
               }}
               className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-fg transition-colors hover:bg-accent-hi"
             >
-              Show what fits
+              {dict.shopBrowser.showWhatFits}
               <svg viewBox="0 0 24 24" className="size-3.5" fill="none" stroke="currentColor" strokeWidth={2.4}>
                 <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
@@ -269,7 +271,7 @@ export function ShopBrowser({
               onClick={() => setGarageFilter([])}
               className="inline-flex items-center gap-2 rounded-full border border-accent/60 bg-transparent px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-accent transition-colors hover:bg-accent/10"
             >
-              Show all again
+              {dict.shopBrowser.showAllAgain}
             </button>
           )}
         </div>
@@ -300,7 +302,7 @@ export function ShopBrowser({
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by part or bike..."
+            placeholder={dict.shopBrowser.searchPlaceholder}
             className="min-w-0 flex-1 bg-transparent py-2.5 text-sm text-fg placeholder:text-fg-dim focus:outline-none"
           />
         </div>
@@ -309,14 +311,14 @@ export function ShopBrowser({
           <CustomSelect
             value={sort}
             onChange={(v) => setSort(v as SortKey)}
-            label="Sort:"
-            ariaLabel="Sort products"
+            label={dict.shopBrowser.sortLabel}
+            ariaLabel={dict.shopBrowser.sortAria}
             className="flex-1 md:flex-none md:min-w-[220px]"
             options={[
-              { value: "popular", label: "Relevance" },
-              { value: "price-asc", label: "Price: low to high" },
-              { value: "price-desc", label: "Price: high to low" },
-              { value: "discount", label: "Biggest discount" },
+              { value: "popular", label: dict.shopBrowser.sortRelevance },
+              { value: "price-asc", label: dict.shopBrowser.sortPriceAsc },
+              { value: "price-desc", label: dict.shopBrowser.sortPriceDesc },
+              { value: "discount", label: dict.shopBrowser.sortDiscount },
             ]}
           />
 
@@ -328,7 +330,7 @@ export function ShopBrowser({
             <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={2}>
               <path d="M4 6h16M7 12h10M10 18h4" strokeLinecap="round" />
             </svg>
-            Filters
+            {dict.shopBrowser.filters}
             {activeFilterCount > 0 && (
               <span className="grid size-5 place-items-center rounded-full bg-accent text-[10px] font-bold text-fg">
                 {activeFilterCount}
@@ -348,7 +350,9 @@ export function ShopBrowser({
         <div>
           <div className="mb-4 flex flex-wrap items-center gap-2">
             <p className="text-xs text-fg-dim">
-              Showing {filtered.length} of {products.length} products
+              {dict.shopBrowser.showingCount
+                .replace("{shown}", String(filtered.length))
+                .replace("{total}", String(products.length))}
             </p>
             {activeFilterCount > 0 && (
               <span className="text-xs text-fg-dim">·</span>
@@ -400,7 +404,7 @@ export function ShopBrowser({
               />
             )}
             {onSaleOnly && (
-              <FilterChip label="On sale" onRemove={() => setOnSaleOnly(false)} />
+              <FilterChip label={dict.shopBrowser.onSaleChip} onRemove={() => setOnSaleOnly(false)} />
             )}
             {search.trim() && (
               <FilterChip
@@ -411,7 +415,7 @@ export function ShopBrowser({
           </div>
           {filtered.length === 0 ? (
             <div className="rounded-lg border border-border bg-surface p-10 text-center text-sm text-fg-muted">
-              No products match these filters.
+              {dict.shopBrowser.noMatches}
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
@@ -438,7 +442,7 @@ export function ShopBrowser({
                     )}
                     {!p.inStock && (
                       <span className="absolute right-2 top-2 rounded bg-bg/80 px-2 py-1 text-[10px] font-bold uppercase text-fg-dim">
-                        Sold out
+                        {dict.shopBrowser.soldOut}
                       </span>
                     )}
                   </div>
@@ -483,11 +487,11 @@ export function ShopBrowser({
         >
           <div className="flex items-center justify-between border-b border-border px-4 py-4">
             <span className="font-display text-2xl uppercase tracking-tight">
-              Filters
+              {dict.shopBrowser.filters}
             </span>
             <button
               type="button"
-              aria-label="Close filters"
+              aria-label={dict.shopBrowser.closeFiltersAria}
               onClick={() => setDrawerOpen(false)}
               className="grid size-9 place-items-center rounded-full border border-border-strong text-fg-muted hover:border-accent hover:text-fg"
             >
@@ -505,7 +509,7 @@ export function ShopBrowser({
               onClick={() => setDrawerOpen(false)}
               className="w-full rounded-full bg-accent py-3 text-sm font-bold uppercase tracking-wider text-fg"
             >
-              Show {filtered.length} products
+              {dict.shopBrowser.showNProducts.replace("{count}", String(filtered.length))}
             </button>
           </div>
         </div>

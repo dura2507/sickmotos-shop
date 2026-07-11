@@ -1,8 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { allProducts, categorize, fmtEUR, getPrice, cleanTitle } from "@/lib/products";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
-export function Merchandise() {
+export async function Merchandise() {
+  const dict = await getDictionary(await getLocale());
   const items = allProducts
     .filter((p) => categorize(p) === "Merchandise")
     .slice(0, 4);
@@ -15,17 +18,17 @@ export function Merchandise() {
         <div className="mb-10 flex items-end justify-between gap-4">
           <div>
             <h2 className="font-display text-4xl uppercase tracking-tight md:text-5xl">
-              Merchandise
+              {dict.merchandise.title}
             </h2>
             <p className="mt-2 max-w-md text-sm text-fg-muted">
-              Ride it. Wear it. Repeat.
+              {dict.merchandise.subtitle}
             </p>
           </div>
           <Link
             href="/shop?category=Merchandise"
             className="text-sm font-semibold text-fg-muted underline-offset-4 hover:text-accent hover:underline"
           >
-            Shop merch
+            {dict.merchandise.shopMerch}
           </Link>
         </div>
 

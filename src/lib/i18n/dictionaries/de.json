@@ -22,26 +22,59 @@
     "kicker": "Supermoto Performance Parts",
     "shopNow": "Jetzt shoppen",
     "browseCategories": "Kategorien ansehen",
-    "description": "Performance Parts für das Supermoto-Universum — 2- und 4-Takt, 50 bis 700 ccm, für KTM, Husqvarna, Beta, Fantic, Sherco und viele mehr. Titan-Auspuffanlagen, LED-Scheinwerfer, ECU-Tuning und Motor-Hardware, mit Leidenschaft entwickelt und bis zur Perfektion verfeinert."
+    "description": "Performance Parts für das Supermoto-Universum, 2- und 4-Takt, 50 bis 700 ccm, für KTM, Husqvarna, Beta, Fantic, Sherco und viele mehr. Titan-Auspuffanlagen, LED-Scheinwerfer, ECU-Tuning und Motor-Hardware, mit Leidenschaft entwickelt und bis zur Perfektion verfeinert.",
+    "searchPlaceholder": "Bike suchen: KTM EXC, Beta RR 125 ...",
+    "worldwide": "Weltweiter Versand",
+    "bitcoin": "Bitcoin akzeptiert"
   },
   "categories": {
     "kicker": "Produkt-Kategorien",
     "title": "Nach Kategorie shoppen",
-    "subtitle": "Von Bremsen bis Sonderteilen — alles für dein Supermoto.",
+    "subtitle": "Von Bremsen bis Sonderteilen, alles für dein Supermoto.",
     "shopCategory": "Kategorie ansehen",
     "productsSuffix": "Produkte"
   },
   "categoryCards": {
-    "Exhaust": { "name": "Auspuff", "desc": "2- und 4-Takt Titan-Krümmer und Endrohre" },
-    "LED Headlights": { "name": "LED-Scheinwerfer", "desc": "RGBW und Hexagon Angel Eyes, per App steuerbar" },
-    "Carbon Parts": { "name": "Carbon-Teile", "desc": "Federleichtes Carbon, im eigenen Haus gefertigt" },
-    "ECU Tuning": { "name": "ECU-Tuning", "desc": "FuelX und ECU, knackigeres Gas und längeres Motorleben" },
-    "Brakes": { "name": "Bremsen", "desc": "Performance-Bremsen für maximale Kontrolle" },
-    "Graphics": { "name": "Dekor-Kits", "desc": "Individuelle Dekor-Kits die auffallen" },
-    "Titanium Screws": { "name": "Titan-Schrauben", "desc": "Titan-Hardware in Rennqualität" },
-    "Merchandise": { "name": "Merchandise", "desc": "Trag die Marke" },
-    "Wheels": { "name": "Räder", "desc": "Supermoto-Felgensätze und Rolling Hardware" },
-    "Other": { "name": "Sonstiges", "desc": "Titan-Hardware und alles Weitere" }
+    "Exhaust": {
+      "name": "Auspuff",
+      "desc": "2- und 4-Takt Titan-Krümmer und Endrohre"
+    },
+    "LED Headlights": {
+      "name": "LED-Scheinwerfer",
+      "desc": "RGBW und Hexagon Angel Eyes, per App steuerbar"
+    },
+    "Carbon Parts": {
+      "name": "Carbon-Teile",
+      "desc": "Federleichtes Carbon, im eigenen Haus gefertigt"
+    },
+    "ECU Tuning": {
+      "name": "ECU-Tuning",
+      "desc": "FuelX und ECU, knackigeres Gas und längeres Motorleben"
+    },
+    "Brakes": {
+      "name": "Bremsen",
+      "desc": "Performance-Bremsen für maximale Kontrolle"
+    },
+    "Graphics": {
+      "name": "Dekor-Kits",
+      "desc": "Individuelle Dekor-Kits die auffallen"
+    },
+    "Titanium Screws": {
+      "name": "Titan-Schrauben",
+      "desc": "Titan-Hardware in Rennqualität"
+    },
+    "Merchandise": {
+      "name": "Merchandise",
+      "desc": "Trag die Marke"
+    },
+    "Wheels": {
+      "name": "Räder",
+      "desc": "Supermoto-Felgensätze und Rolling Hardware"
+    },
+    "Other": {
+      "name": "Sonstiges",
+      "desc": "Titan-Hardware und alles Weitere"
+    }
   },
   "cart": {
     "title": "Warenkorb",
@@ -57,9 +90,22 @@
     "ledWarningBody": "Du hast einen LED-Scheinwerfer im Warenkorb, aber keinen Wandler. Die Lampe geht ohne Wandler physikalisch nicht an. Bitte füge den passenden Wandler hinzu, bevor du bezahlst.",
     "beforeCheckoutTitle": "Bevor du fortfährst, bitte prüfen",
     "checkAddressTitle": "Vollständige Adresse mit Hausnummer",
-    "checkAddressBody": "Fehlende Hausnummer ist unser häufigstes Lieferproblem. Straße, Hausnummer, PLZ, Ort, Land — keins darf leer bleiben.",
+    "checkAddressBody": "Fehlende Hausnummer ist unser häufigstes Lieferproblem. Straße, Hausnummer, PLZ, Ort, Land, keins darf leer bleiben.",
     "checkEmailTitle": "Echte E-Mail-Adresse eintragen",
-    "checkEmailBody": "Ohne E-Mail gibt es keine Sendungsverfolgung und keine Bestell-Updates. Du erfährst nicht wann dein Paket ankommt."
+    "checkEmailBody": "Ohne E-Mail gibt es keine Sendungsverfolgung und keine Bestell-Updates. Du erfährst nicht wann dein Paket ankommt.",
+    "dialogAria": "Warenkorb",
+    "closeAria": "Warenkorb schließen",
+    "itemSingular": "Artikel",
+    "itemPlural": "Artikel",
+    "loading": "Wird geladen ...",
+    "emptyBody": "Füge Teile aus dem Shop hinzu, dann erscheinen sie hier.",
+    "decreaseQty": "Menge verringern",
+    "increaseQty": "Menge erhöhen",
+    "checkEmailBodyBefore": "Ohne sie gibt es ",
+    "checkEmailBodyHighlight": "keine Sendungsverfolgung",
+    "checkEmailBodyAfter": " und keine Bestell-Updates. Du erfährst nicht, wann deine Teile ankommen.",
+    "buttonAriaWithCount": "Warenkorb, {count} Artikel",
+    "buttonAria": "Warenkorb"
   },
   "product": {
     "addToCart": "In den Warenkorb",
@@ -90,9 +136,21 @@
     "increaseQty": "Menge erhöhen",
     "howOrderBuilt": "So entsteht deine Bestellung",
     "buildSteps": [
-      { "day": "Tag 1-7", "label": "Produktion", "detail": "Von Hand in unserer Werkstatt gefertigt." },
-      { "day": "Tag 10-12", "label": "Test", "detail": "Jedes Teil wird vor dem Versand getestet." },
-      { "day": "Tag 13-15", "label": "Verpackung & Versand", "detail": "Sorgfältig verpackt und an den Versand übergeben." }
+      {
+        "day": "Tag 1-7",
+        "label": "Produktion",
+        "detail": "Von Hand in unserer Werkstatt gefertigt."
+      },
+      {
+        "day": "Tag 10-12",
+        "label": "Test",
+        "detail": "Jedes Teil wird vor dem Versand getestet."
+      },
+      {
+        "day": "Tag 13-15",
+        "label": "Verpackung & Versand",
+        "detail": "Sorgfältig verpackt und an den Versand übergeben."
+      }
     ],
     "breadcrumbHome": "Start",
     "addOnsSubtitle": "Add-ons die gut zu diesem Teil passen.",
@@ -130,7 +188,7 @@
   "faq": {
     "title": "Häufige Fragen",
     "stillNotSure": "Noch nicht sicher?",
-    "stillNotSureBody": "Frag den SickBot — unser Assistent beantwortet Versand-, Passform- und Wandlerfragen in Sekunden.",
+    "stillNotSureBody": "Frag den SickBot, unser Assistent beantwortet Versand-, Passform- und Wandlerfragen in Sekunden.",
     "askSickBot": "SickBot fragen",
     "items": [
       {
@@ -164,13 +222,16 @@
     "blog": "Blog",
     "helpFaq": "Hilfe und FAQ",
     "engineeredIn": "Performance Parts für Supermoto und Enduro. Handgemacht in Deutschland von Thomas Krawietz.",
-    "hours": "Mo-Sa 9-22, So 10-18"
+    "hours": "Mo-Sa 9-22, So 10-18",
+    "instagramAria": "Instagram",
+    "emailAria": "E-Mail"
   },
   "consent": {
     "title": "Cookies und Tracking",
     "body": "Wir nutzen essenzielle Cookies um den Shop zu betreiben. Mit deiner Zustimmung setzen wir zusätzlich Analyse- und Marketing-Cookies, damit wir die Seite verbessern und die richtigen Fahrer erreichen können.",
     "onlyEssential": "Nur essenziell",
-    "acceptAll": "Alles akzeptieren"
+    "acceptAll": "Alles akzeptieren",
+    "dialogAria": "Cookie-Einstellungen"
   },
   "bot": {
     "askSickBot": "SickBot fragen",
@@ -221,5 +282,314 @@
     "remove": "Entfernen",
     "shopFits": "Passende Teile shoppen",
     "noBikes": "Noch keine Bikes hinzugefügt."
+  },
+  "mobileMenu": {
+    "openMenuAria": "Menü öffnen",
+    "yourBike": "Dein Bike",
+    "clear": "Entfernen",
+    "searchFitPlaceholder": "Passende Teile für {bike} ...",
+    "searchPlaceholder": "Bike oder Teil suchen ...",
+    "shopByBike": "Nach Bike shoppen",
+    "accountOrders": "Mein Konto / Bestellungen"
+  },
+  "shopByModel": {
+    "kicker": "Nach Modell shoppen",
+    "title": "Wähl dein Bike",
+    "subtitle": "Wähl dein Bike und sieh nur passende Teile.",
+    "partsSuffix": "Teile"
+  },
+  "bikeBrandStrip": {
+    "title": "Finde Teile für dein Bike",
+    "subtitle": "Wähl deine Marke. Sieh nur, was passt.",
+    "partsSuffix": "Teile"
+  },
+  "brandMarquee": {
+    "label": "Teile für"
+  },
+  "brandPillTabs": {
+    "all": "Alle"
+  },
+  "sectionHeader": {
+    "viewAll": "Alle ansehen"
+  },
+  "bestsellers": {
+    "kicker": "Bestseller",
+    "title": "Meistverkauft",
+    "subtitle": "Die Teile, die Rider am häufigsten bestellen, direkt aus unseren Verkaufsdaten.",
+    "fits": "Passt auf"
+  },
+  "latestArrivals": {
+    "kicker": "Neu",
+    "title": "Neuheiten",
+    "subtitle": "Frisch aus Thomas' Werkstatt eingetroffen."
+  },
+  "signatureParts": {
+    "kicker": "Signature Parts",
+    "title": "Drei Teile, die den Namen SickMotos gemacht haben.",
+    "subtitle": "Keine Marketing-Specs. Genau die Hardware, die wir jeden Tag an Beta und Fantic 125 4-Takter schrauben und selbst fahren.",
+    "items": {
+      "signatureLed": {
+        "label": "Signature LED",
+        "pitch": "Plug-and-play, E-geprüfte Scheinwerfer mit Tagfahrlicht-Ring und RGB-Modi. Kein Anzapfen des OEM-Kabelbaums.",
+        "alt": "Roter Hexagon Angel Eye LED-Scheinwerfer am Bike montiert"
+      },
+      "raceHardware": {
+        "label": "Race-Hardware",
+        "title": "Titan-Krümmer, handgefertigt",
+        "pitch": "Von Hand gebogen, WIG-geschweißt, anlassblau. Hörbar mehr Drehmoment auf der Beta und Fantic 125 4-Takt.",
+        "alt": "Handgefertigter Titan-Auspuffkrümmer mit Regenbogen-Anlassfarben"
+      },
+      "fuelEcu": {
+        "label": "Fuel & ECU",
+        "title": "FuelX & ECU-Tuning",
+        "pitch": "Live-Gemischkorrektur, ohne das OEM-Kennfeld zu verlieren. Abgestimmt auf den Krümmer für knackigere Gasannahme.",
+        "alt": "FuelX Autotune-Modul für die Live-Gemischkorrektur"
+      }
+    },
+    "shopCategory": "Kategorie shoppen"
+  },
+  "featuredBuilds": {
+    "kicker": "Featured Builds",
+    "title": "Echte Bikes, gefahren von echten Kunden.",
+    "subtitle": "Jedes Teil auf dieser Seite ist an einem Bike verbaut, das wirklich gefahren wird. Wähl einen Build, sieh dir die genaue Spec an und geh mit Shop zu den Teilen.",
+    "builds": {
+      "betaRr125": {
+        "tagline": "Cyan Dusk Runner",
+        "alt": "Beta RR 125 Build in Blau vor einer Leitplanke auf dem Land"
+      },
+      "fanticXef125": {
+        "tagline": "Backpack Wheelie Boyz Spec",
+        "alt": "Fantic XEF 125 Build in Rot mit Titan-Auspuff"
+      },
+      "fanticXmf125": {
+        "tagline": "Wheelie Spec",
+        "alt": "Fantic XMF 125 in Rot mit Wheelie-Grafik"
+      }
+    },
+    "shopSpec": "Spec shoppen"
+  },
+  "graphicsKits": {
+    "kicker": "Mach dein Bike zu deinem",
+    "title": "Dekor-Kits",
+    "subtitle": "Designs in limitierter Auflage für Husqvarna, KTM und mehr."
+  },
+  "merchandise": {
+    "title": "Merchandise",
+    "subtitle": "Fahren. Tragen. Wiederholen.",
+    "shopMerch": "Merch shoppen"
+  },
+  "spotlight": {
+    "imageAlt": "SICKMOTOS LED RGBW V7 Rage Edition",
+    "badgeLightModes": "12 Lichtmodi",
+    "badgeAppControl": "App-Steuerung",
+    "badgePlugPlay": "Plug & Play",
+    "kicker": "Highlight",
+    "headline": "Gebaut für die Dunkelheit.",
+    "description": "Hexagon RGBW V7. App-gesteuert, zwölf Lichtmodi, Direkteinbau für Husqvarna FE und TE 2024. Schneidet durch Nebel, Staub und Wald, ohne Kompromisse.",
+    "shopNow": "Jetzt shoppen",
+    "wasPrefix": "statt 229 €"
+  },
+  "testCenter": {
+    "imageAlt": "SickMotos-getunte Beta RR 125 an der kroatischen Küste",
+    "imageCaption": "SickMotos · Testfahrt-Center",
+    "liveBadge": "Live in Zadar",
+    "kicker": "Testfahrt-Center · Zadar, Kroatien",
+    "title": "Fahr das Bike, bevor du die Teile kaufst.",
+    "body": "Urlaub in der Nähe von Zadar? Unser Motorradverleih ist zugleich ein Test-Center für die komplette SickMotos-Spec. Schwing dich auf eine getunte Beta oder Fantic 125, spür den Krümmer und das LED-Hexagon auf echter kroatischer Küste und bestell danach genau die Konfiguration, die du gerade gefahren bist. Dieselbe Crew, die die Teile baut, pflegt auch die Flotte.",
+    "featureByDayOrWeek": "Tage- oder wochenweise",
+    "featureOneClickOrder": "Gefahrene Spec mit einem Klick bestellen",
+    "bookRide": "Testfahrt buchen",
+    "askSickBot": "Fragen? Frag den SickBot"
+  },
+  "reviews": {
+    "title": "Das sagen Fahrer",
+    "ratingValue": "4,9 von 5",
+    "verifiedLabel": "Verifizierte Kundenbewertungen"
+  },
+  "founder": {
+    "kicker": "Der Gründer",
+    "quote": "„Schon mit 15 war ich leidenschaftlich fasziniert von Motorrädern, auf und abseits der Straße.“",
+    "bio": "Mit mehreren Offroad-Titeln und einem Abschluss als Mechatronik-Meister verbinde ich technisches Know-how mit echter Renn- und Praxiserfahrung.",
+    "role": "Gründer, SickMotos"
+  },
+  "dna": {
+    "kicker": "Made in Germany",
+    "title": "Jedes SickMotos Produkt trägt die DNA von Jahrzehnten Leidenschaft und kompromissloser Weiterentwicklung.",
+    "subtitle": "Entwickelt, um zu begeistern. Gebaut, um zu halten. Getestet, wo es zählt.",
+    "tagline": "SickMotos Teile, gemacht, um aufzufallen."
+  },
+  "uniqueClaim": {
+    "exhaust": {
+      "label": "Auspuffanlagen",
+      "text": "Titan-Krümmer und -Rohre für 2- und 4-Takt, im Haus gefertigt und WIG-geschweißt für Beta, Fantic und Yamaha. Sonst nirgends erhältlich."
+    },
+    "angelEye": {
+      "label": "Hexagon Angel Eye",
+      "text": "RGBW-Farbring oder Hexagon per App-Steuerung. Rein weißes Tagfahr-Abblendlicht, rein weißes Nachtfahr-Fernlicht, plus Stealth-Modus zum Ausblenden per App. E-Kennzeichnung."
+    },
+    "fuelX": {
+      "label": "FuelX & ECU-Tuning",
+      "text": "Knackiges Gasannahmeverhalten und maximale Motorlebensdauer durch das perfekte Luft-Kraftstoff-Gemisch. Gib deinem Motor, was er verdient, jenseits der Norm und der gefährlich mageren OEM-Vorgaben E5 und E5+."
+    },
+    "kicker": "Nur von SickMotos gebaut",
+    "title": "Teile, die du nirgendwo sonst bekommst.",
+    "subtitle": "Das meiste, was wir verkaufen, entwickeln wir im Haus und fertigen es in kleinen Serien. Nichts ist umgelabelt, nichts ist Massenware."
+  },
+  "actionBanner": {
+    "kicker": "Getestet, wo es zählt",
+    "titleLine1": "Gebaut für den",
+    "titleLine2": "Trail.",
+    "body": "Jedes Teil wird von Thomas gefahren, rangenommen und validiert, bevor es rausgeht. Keine Laborwerte. Echte Bedingungen.",
+    "cta": "Zum Katalog"
+  },
+  "askSickBot": {
+    "defaultLabel": "Frag den SickBot"
+  },
+  "whatsAppFloat": {
+    "ariaLabel": "Auf WhatsApp chatten"
+  },
+  "productCard": {
+    "fits": "Passt auf",
+    "stockLeft": "Nur noch {count} auf Lager"
+  },
+  "headerSearch": {
+    "placeholderWithBike": "Teile, die auf {bike} passen ...",
+    "placeholderDefault": "Auspuff, LEDs, Carbon suchen ...",
+    "clearBike": "Bike entfernen"
+  },
+  "searchSuggest": {
+    "placeholderDefault": "Bike oder Teil suchen ...",
+    "find": "Suchen",
+    "searchAria": "Suchen",
+    "popularBikes": "Beliebte Bikes",
+    "partSingular": "Teil",
+    "partPlural": "Teile",
+    "fitsPrefix": "Passt auf {models}",
+    "noProducts": "Keine Produkte passen zu „{query}“.",
+    "browseCatalog": "Gesamten Katalog ansehen →",
+    "seeAllResults": "Alle Ergebnisse für „{query}“ ansehen →"
+  },
+  "shopPage": {
+    "metaTitle": "Shop, SickMotos Performance-Teile"
+  },
+  "shopBrowser": {
+    "filterCategory": "Kategorie",
+    "filterAvailability": "Verfügbarkeit",
+    "inStockOnly": "Nur auf Lager",
+    "onSaleOnly": "Nur im Angebot",
+    "clearAllFilters": "Alle Filter zurücksetzen",
+    "title": "Katalog durchstöbern",
+    "subtitle": "{count} Produkte. Wähl dein Bike oder filtere nach Kategorie.",
+    "yourGarage": "Deine Garage",
+    "bikesSaved": "{count} Bike(s) gespeichert",
+    "showWhatFits": "Passende Teile zeigen",
+    "showAllAgain": "Wieder alle zeigen",
+    "searchPlaceholder": "Nach Teil oder Bike suchen ...",
+    "sortLabel": "Sortieren:",
+    "sortAria": "Produkte sortieren",
+    "sortRelevance": "Relevanz",
+    "sortPriceAsc": "Preis: aufsteigend",
+    "sortPriceDesc": "Preis: absteigend",
+    "sortDiscount": "Größter Rabatt",
+    "filters": "Filter",
+    "showingCount": "{shown} von {total} Produkten",
+    "onSaleChip": "Im Angebot",
+    "soldOut": "Ausverkauft",
+    "noMatches": "Keine Produkte passen zu diesen Filtern.",
+    "closeFiltersAria": "Filter schließen",
+    "showNProducts": "{count} Produkte zeigen"
+  },
+  "bikeFinder": {
+    "buildYourFit": "Finde deine Teile",
+    "kicker": "Bike-Finder",
+    "showingFitOnly": "Es werden nur Teile gezeigt, die zu deinem Bike passen.",
+    "reset": "Zurücksetzen",
+    "brand": "Marke",
+    "model": "Modell",
+    "modelCountForBrand": "({count} für {brand})",
+    "year": "Baujahr",
+    "pickBrandFirst": "Wähl zuerst eine Marke, um passende Baujahre zu sehen.",
+    "noYears": "Keine Baujahre für diese Auswahl verfügbar."
+  },
+  "account": {
+    "metaTitle": "Mein Konto, SickMotos",
+    "heading": "Mein Konto",
+    "sessionExpired": "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an.",
+    "signOut": "Abmelden",
+    "welcomeBack": "Willkommen zurück",
+    "greeting": "Hi, {greeting}.",
+    "garageCardTitle": "Meine Garage",
+    "garageCardSubtitle": "Speichere deine Bikes, damit jede Liste nur das anzeigt, was passt.",
+    "recentOrders": "Letzte Bestellungen",
+    "allOrdersLink": "Alle Bestellungen →",
+    "noOrders": "Noch keine Bestellungen.",
+    "shopCatalog": "Zum Katalog",
+    "defaultAddress": "Standardadresse",
+    "noAddress": "Noch keine Adresse gespeichert.",
+    "needHelp": "Brauchst du Hilfe?",
+    "needHelpBody": "Fragen zu einer Bestellung oder einem Teil? Der SickBot antwortet sofort.",
+    "askSickBot": "Frag den SickBot"
+  },
+  "login": {
+    "metaTitle": "Anmelden, SickMotos",
+    "pleaseWait": "Bitte warten ...",
+    "kicker": "SickMotos Konto",
+    "signIn": "Anmelden",
+    "createAccount": "Konto erstellen",
+    "resetPassword": "Passwort zurücksetzen",
+    "emailPlaceholder": "E-Mail",
+    "passwordPlaceholder": "Passwort",
+    "forgotPassword": "Passwort vergessen?",
+    "firstNamePlaceholder": "Vorname",
+    "lastNamePlaceholder": "Nachname",
+    "passwordRegisterPlaceholder": "Passwort (mind. 5 Zeichen)",
+    "recoverBody": "Gib deine E-Mail ein und wir schicken dir einen Link zum Zurücksetzen deines Passworts.",
+    "sendResetLink": "Link senden",
+    "backToSignIn": "Zurück zur Anmeldung",
+    "checkoutNote": "Der Checkout läuft sicher über Shopify. Mit deinem Konto verfolgst du Bestellungen und bezahlst künftig schneller."
+  },
+  "orders": {
+    "metaTitle": "Bestellungen, Mein Konto, SickMotos",
+    "backToAccount": "Konto",
+    "heading": "Alle Bestellungen",
+    "noOrders": "Noch keine Bestellungen."
+  },
+  "bikes": {
+    "metaTitle": "Meine Garage, SickMotos",
+    "metaDescription": "Speichere deine Bikes und kaufe nur, was passt.",
+    "breadcrumbAccount": "Konto",
+    "breadcrumbGarage": "Meine Garage",
+    "heading": "Meine Garage",
+    "intro": "Füge die Bikes hinzu, die du fährst. Danach filtert jede Teileliste mit einem Tipp auf das, was wirklich zu deinen Bikes passt.",
+    "brand": "Marke",
+    "pickBrand": "Marke wählen",
+    "model": "Modell",
+    "pickModel": "Modell wählen",
+    "pickBrandFirst": "Erst Marke wählen",
+    "year": "Jahr",
+    "addBike": "Bike hinzufügen",
+    "yourGarageCount": "Deine Garage · {bikes.length}",
+    "noBikes": "Noch keine Bikes hinzugefügt.",
+    "remove": "Entfernen",
+    "shopFits": "Passende Teile shoppen"
+  },
+  "blogIndex": {
+    "kicker": "Die Garage",
+    "title": "Blog",
+    "subtitle": "Tuning-Guides, Material-Vergleiche und Build-Insights von Thomas und dem SickMotos-Team.",
+    "readMore": "Weiterlesen",
+    "metaTitle": "Blog, SickMotos",
+    "metaDescription": "Tech-Insights, Tuning-Guides und Build-Stories rund um Beta, Fantic, KTM und mehr."
+  },
+  "blogPost": {
+    "notFoundMetaTitle": "Beitrag nicht gefunden, SickMotos",
+    "allPosts": "Alle Beiträge"
+  },
+  "notFound": {
+    "metaTitle": "404, SickMotos",
+    "title": "Von der Strecke abgekommen",
+    "body": "Diese Seite gibt es nicht (mehr). Vielleicht hast du dich vertippt, oder das Teil ist gerade ausgelistet.",
+    "home": "Startseite",
+    "shopCatalog": "Zum Katalog"
   }
 }

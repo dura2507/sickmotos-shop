@@ -1,6 +1,9 @@
 import Image from "next/image";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
-export function DNA() {
+export async function DNA() {
+  const dict = await getDictionary(await getLocale());
   return (
     <section className="relative overflow-hidden border-b border-border bg-bg">
       <div
@@ -32,17 +35,16 @@ export function DNA() {
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-20 md:grid-cols-2 md:py-28">
         <div className="flex flex-col gap-5">
           <span className="text-xs font-bold uppercase tracking-[0.2em] text-accent">
-            Made in Germany
+            {dict.dna.kicker}
           </span>
           <h2 className="font-display text-balance text-4xl uppercase leading-[1.05] tracking-tight md:text-5xl">
-            Every SickMotos product carries the DNA of decades of passion and
-            relentless refinement.
+            {dict.dna.title}
           </h2>
           <p className="max-w-md text-base leading-relaxed text-fg-muted">
-            Designed to inspire. Built to last. Tested where it counts.
+            {dict.dna.subtitle}
           </p>
           <p className="font-display text-sm uppercase tracking-[0.18em] text-fg-muted">
-            SickMotos parts — made to stand out.
+            {dict.dna.tagline}
           </p>
         </div>
         <div className="md:hidden">
