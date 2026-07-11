@@ -113,12 +113,12 @@ export async function Categories() {
                 {/* overall dark tint so the whole image reads darker, then a
                     stronger scrim under the text and the category colour as a
                     subtle mid glow so white text always sits over dark */}
-                <div aria-hidden className="absolute inset-0 bg-black/35" />
+                <div aria-hidden className="absolute inset-0 bg-black/20" />
                 <div
                   aria-hidden
                   className="absolute inset-0"
                   style={{
-                    background: `linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.62) 26%, ${m.color}59 56%, ${m.color}1f 82%, rgba(0,0,0,0.2) 100%)`,
+                    background: `linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.55) 24%, ${m.color}99 52%, ${m.color}40 78%, rgba(0,0,0,0.12) 100%)`,
                   }}
                 />
 
