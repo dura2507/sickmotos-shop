@@ -38,6 +38,8 @@ export function ShopBrowser({
   yearsByFit,
 }: Props) {
   const dict = useDictionary();
+  const catCards = dict.categoryCards as Record<string, { name: string }>;
+  const catLabel = (c: string) => catCards[c]?.name ?? c;
   // Seed initial state from URL so the first paint already reflects the link
   // the user clicked. Subsequent navigations are picked up by the effect.
   const sp = useSearchParams();
@@ -186,7 +188,7 @@ export function ShopBrowser({
                   : "text-fg-muted hover:bg-surface hover:text-fg"
               }`}
             >
-              <span>{c}</span>
+              <span>{catLabel(c)}</span>
               <span className="text-[10px] text-fg-dim">{count}</span>
             </button>
           );
@@ -369,7 +371,7 @@ export function ShopBrowser({
             {Array.from(activeCategories).map((c) => (
               <FilterChip
                 key={`cat-${c}`}
-                label={c}
+                label={catLabel(c)}
                 onRemove={() =>
                   setActiveCategories((prev) => {
                     const next = new Set(prev);
