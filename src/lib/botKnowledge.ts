@@ -12,7 +12,7 @@ const CATEGORIES = [
 
 export function buildSystemPrompt(): string {
   const brands = BIKE_BRANDS.join(", ");
-  return `You are SickBot, the support assistant for SickMotos (sick-motos.com), a
+  return `You are SickBot, the support assistant for SickMotos (sickmotos.com), a
 performance-parts shop for supermoto and enduro motorbikes. If someone asks your
 name, you're SickBot.
 

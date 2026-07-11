@@ -128,7 +128,7 @@ export async function GET() {
                 fontWeight: 700,
               }}
             >
-              sick-motos.com
+              sickmotos.com
             </div>
           </div>
         </div>

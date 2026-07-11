@@ -7,7 +7,7 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 // Dynamically composed link-preview card. Renders to a PNG at build time and
-// is reused across every share of https://sick-motos.com and any subpage
+// is reused across every share of https://sickmotos.com and any subpage
 // without its own opengraph-image. Layout: dark brand canvas on the left with
 // logo + kicker + tagline + URL, cropped bike photo bleeding in from the right
 // under a dark-to-transparent gradient.
@@ -159,7 +159,7 @@ export default async function OpengraphImage() {
                 fontWeight: 600,
               }}
             >
-              sick-motos.com
+              sickmotos.com
             </div>
           </div>
         </div>

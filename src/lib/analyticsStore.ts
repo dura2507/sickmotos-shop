@@ -52,6 +52,10 @@ function sessionHash(ip: string, ua: string): string {
 // The hosts we consider "internal" — anything from them counts as direct
 // navigation, not a referrer.
 const INTERNAL_HOSTS = new Set([
+  "sickmotos.com",
+  "www.sickmotos.com",
+  "sickmotos.de",
+  "www.sickmotos.de",
   "sick-motos.com",
   "www.sick-motos.com",
   "sickmotos-shop.vercel.app",

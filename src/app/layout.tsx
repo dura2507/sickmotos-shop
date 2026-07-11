@@ -30,7 +30,7 @@ const display = Bebas_Neue({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://sick-motos.com"),
+  metadataBase: new URL("https://sickmotos.com"),
   title: "SickMotos. Performance Parts Built by a Mechatronics Master",
   description:
     "Premium performance parts for supermoto & enduro: titanium exhausts, LED headlights, ECU tuning, carbon. Engineered in Germany by Thomas Krawietz.",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     title: "SickMotos. Ride in style, faster than others.",
     description:
       "Premium performance parts for supermoto & enduro: titanium exhausts, LED headlights, ECU tuning, carbon. Engineered in Germany.",
-    url: "https://sick-motos.com",
+    url: "https://sickmotos.com",
     locale: "en_US",
   },
   twitter: {

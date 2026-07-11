@@ -1,6 +1,6 @@
 // Google Merchant Center product feed.
 //
-// Submit URL: https://www.sick-motos.com/merchant-feed.xml
+// Submit URL: https://sickmotos.com/merchant-feed.xml
 // at merchants.google.com -> Products -> Feeds -> Add primary feed.
 //
 // One entry per product (parent). For products with multiple variants
@@ -14,7 +14,7 @@
 import { NextResponse } from "next/server";
 import { allProducts, categorize, cleanTitle, getPrice, htmlToBlocks } from "@/lib/products";
 
-const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.sick-motos.com";
+const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sickmotos.com";
 
 // Refresh once an hour at the edge; matches the cadence we expect
 // Shopify webhook -> Vercel rebuild to push fresh data anyway.
