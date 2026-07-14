@@ -129,11 +129,11 @@ export default async function AdminOrders() {
         <StatCard
           label="Umsatz heute"
           value={formatEUR(data.todayRevenueEUR)}
-          sub={
+          sub={`${
             data.todayOrderCount === 1
               ? "1 Bestellung"
               : `${data.todayOrderCount} Bestellungen`
-          }
+          }${orderTrend && orderTrend !== "+" ? ` · ${orderTrend}` : ""}`}
         />
         <StatCard
           label="Umsatz 7 Tage"
@@ -152,7 +152,7 @@ export default async function AdminOrders() {
               ? formatEUR(data.revenue30dEUR / data.orders30dCount)
               : formatEUR(0)
           }
-          sub={orderTrend}
+          sub="pro Bestellung"
         />
       </section>
 

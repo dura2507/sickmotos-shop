@@ -332,7 +332,7 @@
     "items": {
       "signatureLed": {
         "label": "Signature LED",
-        "pitch": "Faros plug-and-play, homologados E, con anillo de luz diurna y modos RGB. Sin empalmar el cableado OEM.",
+        "pitch": "Faros plug-and-play con luz de cruce y de carretera blanca y modos RGBW. Conector original, sin empalmar el cableado OEM.",
         "alt": "Faro LED Hexagon Angel Eye rojo montado en la moto"
       },
       "raceHardware": {
@@ -382,12 +382,12 @@
   },
   "spotlight": {
     "imageAlt": "SICKMOTOS LED RGBW V7 Rage Edition",
-    "badgeLightModes": "12 modos de luz",
+    "badgeLightModes": "220 modos de luz",
     "badgeAppControl": "Control por app",
     "badgePlugPlay": "Plug & Play",
     "kicker": "Destacado",
     "headline": "Diseñado para la oscuridad.",
-    "description": "Hexagon RGBW V7. Controlado por app, doce modos de luz, montaje directo para Husqvarna FE y TE 2024. Atraviesa niebla, polvo y bosque sin concesiones.",
+    "description": "Hexagon RGBW V7. Potente luz de cruce y de carretera blanca para night rides, 220 modos de luz y 16,7 millones de colores por app. Atraviesa niebla, polvo y bosque. Montaje directo con conector original, pieza solo para competición.",
     "shopNow": "Comprar ahora",
     "wasPrefix": "antes 229 €"
   },
@@ -427,7 +427,7 @@
     },
     "angelEye": {
       "label": "Hexagon Angel Eye",
-      "text": "Anillo de color RGBW o hexagon con control por app. Luz de cruce diurna totalmente blanca, luz larga nocturna totalmente blanca, más un modo stealth para ocultarlo desde la app. Homologación E."
+      "text": "Anillo de color RGBW o hexagon con control por app. Luz de cruce blanca, luz larga blanca, más un modo stealth para ocultarlo desde la app. Pieza solo para competición, sin homologación para la vía pública."
     },
     "fuelX": {
       "label": "FuelX y ECU tuning",

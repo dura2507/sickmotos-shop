@@ -332,7 +332,7 @@
     "items": {
       "signatureLed": {
         "label": "Signature LED",
-        "pitch": "Plug-and-play, E-approved headlights with daytime running ring and RGB modes. No splicing the OEM loom.",
+        "pitch": "Plug-and-play headlights with all-white low and high beam plus RGBW modes. Original plug, no splicing the OEM loom.",
         "alt": "Red hexagon angel eye LED headlight installed on bike"
       },
       "raceHardware": {
@@ -382,12 +382,12 @@
   },
   "spotlight": {
     "imageAlt": "SICKMOTOS LED RGBW V7 Rage Edition",
-    "badgeLightModes": "12 light modes",
+    "badgeLightModes": "220 light modes",
     "badgeAppControl": "App control",
     "badgePlugPlay": "Plug & Play",
     "kicker": "Featured",
     "headline": "Engineered for the dark.",
-    "description": "Hexagon RGBW V7. App-controlled, twelve light modes, direct fit for Husqvarna FE and TE 2024. Cuts through fog, dust and forest without compromise.",
+    "description": "Hexagon RGBW V7. Strong all-white low and high beam for night rides, 220 light modes and 16.7 million colours via app. Cuts through fog, dust and forest. Direct fit with the original plug, racing part only.",
     "shopNow": "Shop now",
     "wasPrefix": "was €229"
   },
@@ -427,7 +427,7 @@
     },
     "angelEye": {
       "label": "Hexagon Angel Eye",
-      "text": "RGBW colour ring or hexagon via app control. All-white daytime low beam, all-white night-ride high beam, plus a stealth mode to hide it via the app. E-marking."
+      "text": "RGBW colour ring or hexagon via app control. All-white low beam, all-white high beam, plus a stealth mode to hide it via the app. Racing part only, no road approval."
     },
     "fuelX": {
       "label": "FuelX & ECU tuning",

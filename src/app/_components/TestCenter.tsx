@@ -50,7 +50,7 @@ export async function TestCenter() {
           </p>
           <ul className="grid gap-2 text-sm text-fg-muted sm:grid-cols-2">
             {[
-              "Beta RR 1XX LC SickMotos Build",
+              "Beta RR 125 LC SickMotos Build",
               "KTM Duke 125 / 390 SickMotos Mapping and Exhaust System",
               dict.testCenter.featureByDayOrWeek,
               dict.testCenter.featureOneClickOrder,

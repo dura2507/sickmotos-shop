@@ -86,7 +86,6 @@ export async function Spotlight() {
                 <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </a>
-            <span className="text-xs text-fg-dim">€129 · {dict.spotlight.wasPrefix}</span>
           </div>
         </div>
       </div>

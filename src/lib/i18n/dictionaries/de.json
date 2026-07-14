@@ -37,11 +37,11 @@
   "categoryCards": {
     "Exhaust": {
       "name": "Auspuff",
-      "desc": "2- und 4-Takt Titan-Krümmer und Endrohre"
+      "desc": "Titan-Krümmer und Endrohre, am Bike entwickelt, blaue Anlauffarbe, kerniger Sound"
     },
     "LED Headlights": {
       "name": "LED-Scheinwerfer",
-      "desc": "RGBW und Hexagon Angel Eyes, per App steuerbar"
+      "desc": "RGBW und Hexagon Angel Eyes, 220 Lichtmodi per App, Rennsport-Teil"
     },
     "Carbon Parts": {
       "name": "Carbon-Teile",
@@ -49,7 +49,7 @@
     },
     "ECU Tuning": {
       "name": "ECU-Tuning",
-      "desc": "FuelX und ECU, knackigeres Gas und längeres Motorleben"
+      "desc": "FuelX und ECU-Reflash, knackige Gasannahme, mehr Performance, maximale Motorlebensdauer"
     },
     "Brakes": {
       "name": "Bremsen",
@@ -332,7 +332,7 @@
     "items": {
       "signatureLed": {
         "label": "Signature LED",
-        "pitch": "Plug-and-play, E-geprüfte Scheinwerfer mit Tagfahrlicht-Ring und RGB-Modi. Kein Anzapfen des OEM-Kabelbaums.",
+        "pitch": "Plug-and-play Scheinwerfer mit weißem Abblend- und Fernlicht plus RGBW-Modi. Original-Stecker, kein Anzapfen des OEM-Kabelbaums.",
         "alt": "Roter Hexagon Angel Eye LED-Scheinwerfer am Bike montiert"
       },
       "raceHardware": {
@@ -382,12 +382,12 @@
   },
   "spotlight": {
     "imageAlt": "SICKMOTOS LED RGBW V7 Rage Edition",
-    "badgeLightModes": "12 Lichtmodi",
+    "badgeLightModes": "220 Lichtmodi",
     "badgeAppControl": "App-Steuerung",
     "badgePlugPlay": "Plug & Play",
     "kicker": "Highlight",
     "headline": "Gebaut für die Dunkelheit.",
-    "description": "Hexagon RGBW V7. App-gesteuert, zwölf Lichtmodi, Direkteinbau für Husqvarna FE und TE 2024. Schneidet durch Nebel, Staub und Wald, ohne Kompromisse.",
+    "description": "Hexagon RGBW V7. Starkes weißes Abblend- und Fernlicht für Night Rides, 220 Lichtmodi und 16,7 Millionen Farben per App. Schneidet durch Nebel, Staub und Wald. Direkteinbau mit Original-Stecker, reines Rennsport-Teil.",
     "shopNow": "Jetzt shoppen",
     "wasPrefix": "statt 229 €"
   },
@@ -427,7 +427,7 @@
     },
     "angelEye": {
       "label": "Hexagon Angel Eye",
-      "text": "RGBW-Farbring oder Hexagon per App-Steuerung. Rein weißes Tagfahr-Abblendlicht, rein weißes Nachtfahr-Fernlicht, plus Stealth-Modus zum Ausblenden per App. E-Kennzeichnung."
+      "text": "RGBW-Farbring oder Hexagon per App-Steuerung. Weißes Abblendlicht, weißes Fernlicht, plus Stealth-Modus zum Ausblenden per App. Reines Rennsport-Teil, keine StVO-Zulassung."
     },
     "fuelX": {
       "label": "FuelX & ECU-Tuning",

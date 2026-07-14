@@ -332,7 +332,7 @@
     "items": {
       "signatureLed": {
         "label": "Signature LED",
-        "pitch": "Fari plug-and-play, omologati E, con anello di luce diurna e modalità RGB. Nessuna manomissione del cablaggio OEM.",
+        "pitch": "Fari plug-and-play con luce anabbagliante e abbagliante bianca e modalità RGBW. Connettore originale, nessuna manomissione del cablaggio OEM.",
         "alt": "Faro LED Hexagon Angel Eye rosso montato sulla moto"
       },
       "raceHardware": {
@@ -382,12 +382,12 @@
   },
   "spotlight": {
     "imageAlt": "SICKMOTOS LED RGBW V7 Rage Edition",
-    "badgeLightModes": "12 modalità di luce",
+    "badgeLightModes": "220 modalità di luce",
     "badgeAppControl": "Controllo da app",
     "badgePlugPlay": "Plug & Play",
     "kicker": "In evidenza",
     "headline": "Progettato per il buio.",
-    "description": "Hexagon RGBW V7. Controllato da app, dodici modalità di luce, montaggio diretto per Husqvarna FE e TE 2024. Taglia nebbia, polvere e bosco senza compromessi.",
+    "description": "Hexagon RGBW V7. Forte luce anabbagliante e abbagliante bianca per i night rides, 220 modalità di luce e 16,7 milioni di colori via app. Taglia nebbia, polvere e bosco. Montaggio diretto con connettore originale, solo per uso in pista.",
     "shopNow": "Acquista ora",
     "wasPrefix": "prima 229 €"
   },
@@ -427,7 +427,7 @@
     },
     "angelEye": {
       "label": "Hexagon Angel Eye",
-      "text": "Anello colore RGBW o hexagon con controllo via app. Anabbagliante diurno tutto bianco, abbagliante notturno tutto bianco, più una modalità stealth per nasconderlo dall'app. Omologazione E."
+      "text": "Anello colore RGBW o hexagon con controllo via app. Anabbagliante bianco, abbagliante bianco, più una modalità stealth per nasconderlo dall'app. Solo per uso in pista, non omologato per la strada."
     },
     "fuelX": {
       "label": "FuelX & ECU tuning",
