@@ -72,6 +72,15 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   `src/app/api/shopify/oauth/callback/route.ts` (client_id dort als Fallback hardcoded).
 
 ### Offen / TODO
+- **Scene-Voice Copy-Rewrite (Thomas' Kern-Wunsch):** Die Seiten-Texte fühlen sich
+  für Thomas noch „unecht" an, zu weit weg von der deutschen 125er-Supermoto/Enduro-
+  Szene. Ziel: Seite mit den gängigen Szene-Schlagworten füllen für Wiedererkennung.
+  Referenz von Thomas: Marke „Princip" (Link soll er schicken). Plan: (1) Szene-
+  Vokabular aus seinen WhatsApp-Shop-Chats minen (liegt in Drive SHOP_BOTFUTTER als
+  `sickmotos_shop_chats.json`, 6343 Chats), (2) Princip-Referenz-Ton, (3) Seite Sektion
+  für Sektion in dem Ton umschreiben, Thomas segnet ab, EN/IT/ES nachziehen. Thomas
+  liefert die Stimme (Keywords + Referenz + Freigabe), nicht komplett selbst schreiben.
+  Einzel-Bild-Text-Paare laufen laufend über den privaten Bot.
 - **Google (extern, Thomas/User):** Search Console neue Property für sickmotos.com +
   Sitemap `https://sickmotos.com/sitemap.xml` einreichen; Merchant Center Feed-URL auf
   sickmotos.com; Google Ads auf sickmotos.com. (User schickt noch Details.)
