@@ -397,7 +397,7 @@
     "liveBadge": "Live in Zadar",
     "kicker": "Test ride center · Zadar, Croatia",
     "title": "Ride the build before you buy the parts.",
-    "body": "On holiday near Zadar? Our motorcycle rental doubles as a live test center for the full SickMotos spec. Throw a leg over a tuned Beta or Fantic 125, feel the header and the LED hexagon on real Croatian coastline, then order the exact configuration you just rode. The same crew that builds the parts maintains the fleet.",
+    "body": "Jump on a tuned Beta RR 125 LC or Duke 125/390 and test LED headlights, titanium headers and our ECU tunings. Our bike rental in Zadar is also your test centre: feel the parts on the real Croatian coast, then order the exact setup you just rode. The same crew that builds the parts looks after the fleet.",
     "featureByDayOrWeek": "By the day or by the week",
     "featureOneClickOrder": "One-click ordering of the ridden spec",
     "bookRide": "Book a test ride",
@@ -427,11 +427,11 @@
     },
     "angelEye": {
       "label": "Hexagon Angel Eye",
-      "text": "RGBW colour ring or hexagon via app control. All-white low beam, all-white high beam, plus a stealth mode to hide it via the app. Racing part only, no road approval."
+      "text": "RGBW colour ring or hexagon via app control. Low and high beam, plus hiding the RGBW function via the app. Racing part only, no road approval."
     },
     "fuelX": {
       "label": "FuelX & ECU tuning",
-      "text": "Crispy throttle response and maximum engine lifetime with a perfect mixture of air and fuel. Give your engine what it deserves, above regulation and the dangerous lean OEM E5 and E5+ regulations."
+      "text": "Crisp throttle response, more performance and maximum engine life."
     },
     "kicker": "Built only by SickMotos",
     "title": "Parts you cannot buy anywhere else.",

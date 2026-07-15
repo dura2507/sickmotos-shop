@@ -397,7 +397,7 @@
     "liveBadge": "Attivo a Zadar",
     "kicker": "Centro test ride · Zadar, Croazia",
     "title": "Prova la moto prima di comprare i pezzi.",
-    "body": "In vacanza vicino a Zadar? Il nostro noleggio moto è anche un centro test per l'intera spec SickMotos. Sali su una Beta o Fantic 125 elaborata, senti il collettore e l'esagono LED sulla vera costa croata, poi ordina esattamente la configurazione che hai appena guidato. La stessa squadra che costruisce i pezzi cura la flotta.",
+    "body": "Sali su una Beta RR 125 LC o Duke 125/390 tunata e prova fari LED, collettori in titanio e i nostri ECU tuning. Il nostro noleggio a Zadar è anche il tuo test center: senti i pezzi sulla vera costa croata e poi ordina esattamente la configurazione che hai appena guidato. La stessa crew che costruisce i pezzi cura la flotta.",
     "featureByDayOrWeek": "A giornata o a settimana",
     "featureOneClickOrder": "Ordina con un clic la spec provata",
     "bookRide": "Prenota un test ride",
@@ -427,11 +427,11 @@
     },
     "angelEye": {
       "label": "Hexagon Angel Eye",
-      "text": "Anello colore RGBW o hexagon con controllo via app. Anabbagliante bianco, abbagliante bianco, più una modalità stealth per nasconderlo dall'app. Solo per uso in pista, non omologato per la strada."
+      "text": "Anello colore RGBW o hexagon con controllo via app. Luce anabbagliante e abbagliante, più lo spegnimento della funzione RGBW via app. Solo per uso in pista, non omologato per la strada."
     },
     "fuelX": {
       "label": "FuelX & ECU tuning",
-      "text": "Risposta al gas più pronta e massima durata del motore grazie alla miscela perfetta di aria e carburante. Dai al tuo motore ciò che merita, oltre la norma e le pericolose regolazioni magre OEM E5 ed E5+."
+      "text": "Risposta al gas pronta, più prestazioni e massima durata del motore."
     },
     "kicker": "Costruito solo da SickMotos",
     "title": "Componenti che non trovi da nessun'altra parte.",

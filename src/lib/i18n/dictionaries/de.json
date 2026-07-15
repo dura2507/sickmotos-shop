@@ -397,7 +397,7 @@
     "liveBadge": "Live in Zadar",
     "kicker": "Testfahrt-Center · Zadar, Kroatien",
     "title": "Fahr das Bike, bevor du die Teile kaufst.",
-    "body": "Urlaub in der Nähe von Zadar? Unser Motorradverleih ist zugleich ein Test-Center für die komplette SickMotos-Spec. Schwing dich auf eine getunte Beta oder Fantic 125, spür den Krümmer und das LED-Hexagon auf echter kroatischer Küste und bestell danach genau die Konfiguration, die du gerade gefahren bist. Dieselbe Crew, die die Teile baut, pflegt auch die Flotte.",
+    "body": "Schwing dich auf eine getunte Beta RR 125 LC oder Duke 125/390 und teste LED-Scheinwerfer, Titan-Krümmer und unsere ECU-Tunings. Unser Motorradverleih in Zadar ist zugleich dein Test-Center: spür die Teile auf echter kroatischer Küste und bestell danach genau die Konfiguration, die du gerade gefahren bist. Dieselbe Crew, die die Teile baut, pflegt auch die Flotte.",
     "featureByDayOrWeek": "Tage- oder wochenweise",
     "featureOneClickOrder": "Gefahrene Spec mit einem Klick bestellen",
     "bookRide": "Testfahrt buchen",
@@ -427,11 +427,11 @@
     },
     "angelEye": {
       "label": "Hexagon Angel Eye",
-      "text": "RGBW-Farbring oder Hexagon per App-Steuerung. Weißes Abblendlicht, weißes Fernlicht, plus Stealth-Modus zum Ausblenden per App. Reines Rennsport-Teil, keine StVO-Zulassung."
+      "text": "RGBW-Farbring oder Hexagon per App-Steuerung. Abblendlicht und Fernlicht, plus Ausblenden der RGBW-Funktion per App. Reines Rennsport-Teil, keine StVO-Zulassung."
     },
     "fuelX": {
       "label": "FuelX & ECU-Tuning",
-      "text": "Knackiges Gasannahmeverhalten und maximale Motorlebensdauer durch das perfekte Luft-Kraftstoff-Gemisch. Gib deinem Motor, was er verdient, jenseits der Norm und der gefährlich mageren OEM-Vorgaben E5 und E5+."
+      "text": "Knackige Gasannahme, mehr Performance und maximale Motorlebensdauer."
     },
     "kicker": "Nur von SickMotos gebaut",
     "title": "Teile, die du nirgendwo sonst bekommst.",

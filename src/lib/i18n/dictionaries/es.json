@@ -397,7 +397,7 @@
     "liveBadge": "En directo en Zadar",
     "kicker": "Centro de pruebas · Zadar, Croacia",
     "title": "Prueba la moto antes de comprar las piezas.",
-    "body": "¿De vacaciones cerca de Zadar? Nuestro alquiler de motos es también un centro de pruebas para toda la spec SickMotos. Súbete a una Beta o Fantic 125 preparada, siente el colector y el hexágono LED en la auténtica costa croata, y luego pide exactamente la configuración que acabas de rodar. El mismo equipo que fabrica las piezas mantiene la flota.",
+    "body": "Súbete a una Beta RR 125 LC o Duke 125/390 tuneada y prueba faros LED, colectores de titanio y nuestros tuning de ECU. Nuestro alquiler de motos en Zadar es también tu centro de pruebas: siente las piezas en la auténtica costa croata y luego pide exactamente la configuración que acabas de rodar. El mismo equipo que fabrica las piezas cuida la flota.",
     "featureByDayOrWeek": "Por día o por semana",
     "featureOneClickOrder": "Pide con un clic la spec que probaste",
     "bookRide": "Reserva una prueba",
@@ -427,11 +427,11 @@
     },
     "angelEye": {
       "label": "Hexagon Angel Eye",
-      "text": "Anillo de color RGBW o hexagon con control por app. Luz de cruce blanca, luz larga blanca, más un modo stealth para ocultarlo desde la app. Pieza solo para competición, sin homologación para la vía pública."
+      "text": "Anillo de color RGBW o hexagon con control por app. Luz de cruce y de carretera, más la desactivación de la función RGBW por app. Pieza solo para competición, sin homologación para la vía pública."
     },
     "fuelX": {
       "label": "FuelX y ECU tuning",
-      "text": "Respuesta al acelerador más viva y máxima vida del motor gracias a la mezcla perfecta de aire y combustible. Dale a tu motor lo que merece, más allá de la norma y de los peligrosos reglajes pobres OEM E5 y E5+."
+      "text": "Respuesta del acelerador viva, más prestaciones y máxima vida del motor."
     },
     "kicker": "Fabricado solo por SickMotos",
     "title": "Piezas que no puedes comprar en ningún otro sitio.",
