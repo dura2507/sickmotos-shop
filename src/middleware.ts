@@ -1,8 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE_NAME, isValidSession } from "@/lib/adminSession";
 
+const SUPPORTED_LANGS = ["de", "en", "it", "es"];
+
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+
+  // Old Shopify storefront used locale-prefixed URLs (/de, /de/products/...,
+  // /en-de/collections/...). The new site is cookie-based with no URL locale
+  // prefix, so those paths 404. Strip the leading locale segment and redirect
+  // to the de-localised path (the next.config rules then map /collections etc.
+  // onward). This rescues old Google-indexed links and Google Ads final URLs.
+  const firstSeg = pathname.split("/")[1]?.toLowerCase() ?? "";
+  if (/^[a-z]{2}(-[a-z]{2})?$/.test(firstSeg)) {
+    const url = req.nextUrl.clone();
+    url.pathname = pathname.slice(firstSeg.length + 1) || "/";
+    const res = NextResponse.redirect(url, 301);
+    const lang = firstSeg.slice(0, 2);
+    if (SUPPORTED_LANGS.includes(lang)) {
+      res.cookies.set("sm_lang", lang, {
+        path: "/",
+        maxAge: 60 * 60 * 24 * 365,
+      });
+    }
+    return res;
+  }
 
   // Set a request header the root layout can read to decide whether to
   // suppress the storefront chrome. Server components can't call useRouter,
