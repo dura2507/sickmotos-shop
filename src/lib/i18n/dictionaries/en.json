@@ -387,7 +387,7 @@
     "badgePlugPlay": "Plug & Play",
     "kicker": "Featured",
     "headline": "Engineered for the dark.",
-    "description": "The Angel Eye V7 in various versions. Strong white low and high beam for night rides, 220 light modes for the RGBW functions with 16.7 million colours. Eye-catching photos and videos that take your content to a new level.",
+    "description": "The Angel Eye V7 in various versions. Strong low and high beam for night rides, 220 light modes for the RGBW functions with 16.7 million colours. Eye-catching photos and videos that take your content to a new level.",
     "shopNow": "Shop now",
     "wasPrefix": "was €229"
   },
@@ -439,9 +439,9 @@
   },
   "actionBanner": {
     "kicker": "Tested where it counts",
-    "titleLine1": "Built for the",
-    "titleLine2": "trail.",
-    "body": "Developed for your bike. Put through its paces before it makes your bike faster and better looking.",
+    "titleLine1": "Developed for",
+    "titleLine2": "your bike.",
+    "body": "Put through its paces before it makes your bike faster and better looking.",
     "cta": "Shop the catalog"
   },
   "askSickBot": {
