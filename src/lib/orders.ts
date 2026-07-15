@@ -69,7 +69,7 @@ const ORDERS_QUERY = `
           createdAt
           displayFinancialStatus
           displayFulfillmentStatus
-          totalPriceSet { presentmentMoney { amount currencyCode } }
+          totalPriceSet { shopMoney { amount currencyCode } }
           customer { firstName lastName email }
           lineItems(first: 1) { edges { node { id } } }
         }
@@ -89,7 +89,7 @@ const ORDERS_PAGE_QUERY = `
           createdAt
           displayFinancialStatus
           displayFulfillmentStatus
-          totalPriceSet { presentmentMoney { amount currencyCode } }
+          totalPriceSet { shopMoney { amount currencyCode } }
           customer { firstName lastName email }
           lineItems(first: 1) { edges { node { id } } }
         }
@@ -105,7 +105,7 @@ type EdgeNode = {
   createdAt: string;
   displayFinancialStatus: string | null;
   displayFulfillmentStatus: string | null;
-  totalPriceSet: { presentmentMoney: { amount: string; currencyCode: string } };
+  totalPriceSet: { shopMoney: { amount: string; currencyCode: string } };
   customer: {
     firstName: string | null;
     lastName: string | null;
@@ -122,8 +122,8 @@ function normalize(edge: EdgeNode): OrderSummary {
     displayFinancialStatus: edge.displayFinancialStatus,
     displayFulfillmentStatus: edge.displayFulfillmentStatus,
     totalPrice: {
-      amount: edge.totalPriceSet.presentmentMoney.amount,
-      currencyCode: edge.totalPriceSet.presentmentMoney.currencyCode,
+      amount: edge.totalPriceSet.shopMoney.amount,
+      currencyCode: edge.totalPriceSet.shopMoney.currencyCode,
     },
     customer: edge.customer,
     lineItemsCount: edge.lineItems.edges.length,
@@ -131,7 +131,7 @@ function normalize(edge: EdgeNode): OrderSummary {
 }
 
 async function fetchOrdersInWindow(sinceIso: string): Promise<OrderSummary[]> {
-  const q = `created_at:>=${sinceIso}`;
+  const q = `created_at:>=${sinceIso} financial_status:paid -status:cancelled`;
   const all: OrderSummary[] = [];
   let after: string | null = null;
   for (let i = 0; i < 5; i++) {
