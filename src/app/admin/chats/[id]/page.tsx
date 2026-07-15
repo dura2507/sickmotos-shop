@@ -6,6 +6,19 @@ import { applyCorrection } from "@/lib/botCorrections";
 
 export const dynamic = "force-dynamic";
 
+// Render **bold** markdown as real bold instead of literal asterisks.
+function renderInline(text: string) {
+  return text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
+    part.startsWith("**") && part.endsWith("**") ? (
+      <strong key={i} className="font-semibold">
+        {part.slice(2, -2)}
+      </strong>
+    ) : (
+      part
+    ),
+  );
+}
+
 async function toggleReviewed(formData: FormData) {
   "use server";
   const id = String(formData.get("id"));
@@ -123,7 +136,7 @@ export default async function ChatDetail({
                 <div className="mb-1 text-[10px] font-bold uppercase tracking-widest opacity-70">
                   {m.role === "user" ? "Kunde" : "SickBot"} · {fmtTime(m.at)}
                 </div>
-                <div>{m.content}</div>
+                <div>{renderInline(m.content)}</div>
               </div>
 
               {m.role === "assistant" && (
