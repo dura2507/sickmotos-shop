@@ -332,19 +332,19 @@
     "items": {
       "signatureLed": {
         "label": "Signature LED",
-        "pitch": "Faros plug-and-play con luz de cruce y de carretera blanca y modos RGBW. Conector original, sin empalmar el cableado OEM.",
+        "pitch": "Faro plug-and-play con modo RGBW Instagram. Luz de cruce y de carretera blanca, conector original incluido para un montaje fácil.",
         "alt": "Faro LED Hexagon Angel Eye rojo montado en la moto"
       },
       "raceHardware": {
         "label": "Hardware race",
         "title": "Colector de titanio, hecho a mano",
-        "pitch": "Doblado a mano, soldado TIG, pavonado al calor. Ganancia de par audible en la Beta y Fantic 125 4 tiempos.",
+        "pitch": "Desarrollado en la moto para un ajuste perfecto. Titanio que destaca, con tono azul de recocido y un sonido claramente más contundente.",
         "alt": "Colector de escape de titanio hecho a mano con colores de pavonado arcoíris"
       },
       "fuelEcu": {
         "label": "Fuel & ECU",
         "title": "FuelX & tuning de ECU",
-        "pitch": "Corrección de mezcla en tiempo real sin perder el mapa OEM. Ajustada al colector para una respuesta de gas más afilada.",
+        "pitch": "Ajustado a nuestros colectores de titanio y silenciadores Flame para mejor respuesta del acelerador y más potencia.",
         "alt": "Módulo FuelX Autotune para la corrección de mezcla en tiempo real"
       }
     },
@@ -387,7 +387,7 @@
     "badgePlugPlay": "Plug & Play",
     "kicker": "Destacado",
     "headline": "Diseñado para la oscuridad.",
-    "description": "Hexagon RGBW V7. Potente luz de cruce y de carretera blanca para night rides, 220 modos de luz y 16,7 millones de colores por app. Atraviesa niebla, polvo y bosque. Montaje directo con conector original, pieza solo para competición.",
+    "description": "El Angel Eye V7 en varias versiones. Potente luz de cruce y de carretera blanca para night rides, 220 modos de luz para las funciones RGBW con 16,7 millones de colores. Fotos y vídeos llamativos que llevan tu contenido a otro nivel.",
     "shopNow": "Comprar ahora",
     "wasPrefix": "antes 229 €"
   },
@@ -441,7 +441,7 @@
     "kicker": "Probado donde importa",
     "titleLine1": "Hecho para el",
     "titleLine2": "trail.",
-    "body": "Cada pieza la rueda, la exige y la valida Thomas antes de enviarla. Nada de datos de laboratorio. Condiciones reales.",
+    "body": "Desarrollado para tu moto. Probado a fondo antes de hacer tu moto más rápida y más bonita.",
     "cta": "Ver el catálogo"
   },
   "askSickBot": {

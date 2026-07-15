@@ -332,19 +332,19 @@
     "items": {
       "signatureLed": {
         "label": "Signature LED",
-        "pitch": "Fari plug-and-play con luce anabbagliante e abbagliante bianca e modalità RGBW. Connettore originale, nessuna manomissione del cablaggio OEM.",
+        "pitch": "Faro plug-and-play con modalità RGBW Instagram. Luce anabbagliante e abbagliante bianca, connettore originale incluso per un montaggio semplice.",
         "alt": "Faro LED Hexagon Angel Eye rosso montato sulla moto"
       },
       "raceHardware": {
         "label": "Componenti race",
         "title": "Collettore in titanio, fatto a mano",
-        "pitch": "Piegato a mano, saldato TIG, brunito a caldo. Guadagno di coppia percepibile sulla Beta e Fantic 125 4 tempi.",
+        "pitch": "Sviluppato sulla moto per una vestibilità perfetta. Titanio che si nota, con brunitura blu e un sound decisamente più corposo.",
         "alt": "Collettore di scarico in titanio fatto a mano con colori di brunitura arcobaleno"
       },
       "fuelEcu": {
         "label": "Fuel & ECU",
         "title": "FuelX & tuning ECU",
-        "pitch": "Correzione aria-carburante in tempo reale senza perdere la mappa OEM. Tarata sul collettore per una risposta al gas più pronta.",
+        "pitch": "Tarato sui nostri collettori in titanio e silenziatori Flame per una risposta al gas migliore e più potenza.",
         "alt": "Modulo FuelX Autotune per la correzione aria-carburante in tempo reale"
       }
     },
@@ -387,7 +387,7 @@
     "badgePlugPlay": "Plug & Play",
     "kicker": "In evidenza",
     "headline": "Progettato per il buio.",
-    "description": "Hexagon RGBW V7. Forte luce anabbagliante e abbagliante bianca per i night rides, 220 modalità di luce e 16,7 milioni di colori via app. Taglia nebbia, polvere e bosco. Montaggio diretto con connettore originale, solo per uso in pista.",
+    "description": "L'Angel Eye V7 in diverse versioni. Forte luce anabbagliante e abbagliante bianca per i night rides, 220 modalità di luce per le funzioni RGBW con 16,7 milioni di colori. Foto e video che portano i tuoi contenuti a un nuovo livello.",
     "shopNow": "Acquista ora",
     "wasPrefix": "prima 229 €"
   },
@@ -441,7 +441,7 @@
     "kicker": "Testato dove conta",
     "titleLine1": "Fatto per il",
     "titleLine2": "trail.",
-    "body": "Ogni componente viene guidato, messo alla prova e validato da Thomas prima della spedizione. Niente dati da laboratorio. Condizioni reali.",
+    "body": "Sviluppato per la tua moto. Messo alla prova a fondo prima di rendere la tua moto più veloce e più bella.",
     "cta": "Vai al catalogo"
   },
   "askSickBot": {

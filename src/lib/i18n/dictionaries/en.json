@@ -332,19 +332,19 @@
     "items": {
       "signatureLed": {
         "label": "Signature LED",
-        "pitch": "Plug-and-play headlights with all-white low and high beam plus RGBW modes. Original plug, no splicing the OEM loom.",
+        "pitch": "Plug-and-play headlight with RGBW Instagram mode. White low and high beam, original plug included for easy fitting.",
         "alt": "Red hexagon angel eye LED headlight installed on bike"
       },
       "raceHardware": {
         "label": "Race hardware",
         "title": "Titanium manifold, handmade",
-        "pitch": "Bent by hand, TIG-welded, heat-blued. Audible torque gain on the Beta and Fantic 125 4-stroke.",
+        "pitch": "Developed on the bike for a perfect fit. Striking titanium with blue heat-tint and a noticeably meatier sound.",
         "alt": "Handmade titanium exhaust manifold with rainbow heat colors"
       },
       "fuelEcu": {
         "label": "Fuel & ECU",
         "title": "FuelX & ECU tuning",
-        "pitch": "Live air-fuel correction without losing the OEM map. Dialed in to match the Krümmer for crisper throttle.",
+        "pitch": "Dialed in to our titanium headers and Flame silencers for better throttle response and more power.",
         "alt": "FuelX Autotune module for live air-fuel correction"
       }
     },
@@ -387,7 +387,7 @@
     "badgePlugPlay": "Plug & Play",
     "kicker": "Featured",
     "headline": "Engineered for the dark.",
-    "description": "Hexagon RGBW V7. Strong all-white low and high beam for night rides, 220 light modes and 16.7 million colours via app. Cuts through fog, dust and forest. Direct fit with the original plug, racing part only.",
+    "description": "The Angel Eye V7 in various versions. Strong white low and high beam for night rides, 220 light modes for the RGBW functions with 16.7 million colours. Eye-catching photos and videos that take your content to a new level.",
     "shopNow": "Shop now",
     "wasPrefix": "was €229"
   },
@@ -441,7 +441,7 @@
     "kicker": "Tested where it counts",
     "titleLine1": "Built for the",
     "titleLine2": "trail.",
-    "body": "Every part is ridden, abused, and validated by Thomas before it ships. No lab specs. Real conditions.",
+    "body": "Developed for your bike. Put through its paces before it makes your bike faster and better looking.",
     "cta": "Shop the catalog"
   },
   "askSickBot": {
