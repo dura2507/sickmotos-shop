@@ -1,4 +1,4 @@
-import { BIKE_BRANDS } from "@/lib/products";
+import { BIKE_BRANDS, allProducts, isInStock, cleanTitle } from "@/lib/products";
 
 const CATEGORIES = [
   "Exhausts (titanium headers, mid-pipes, end cans, 2- and 4-stroke)",
@@ -255,4 +255,35 @@ A: "Ja, das ECU Reflash bieten wir mittlerweile direkt selbst an, du schickst un
 deine ECU zu. Zusammen mit dem Titan Krümmer und einem guten Luftfilter gibt das
 einen deutlich spürbaren Leistungszuwachs. Ablauf und Preis findest du auf der
 Produktseite."`;
+}
+
+// Live stock block injected into the chat system prompt so SickBot knows which
+// products are currently sold out and can tell the customer they are coming back
+// soon instead of just saying "not available". Reflects the product data at the
+// last build (products.json is regenerated on every deploy).
+export function buildStockPrompt(): string {
+  const soldOut = allProducts
+    .filter((p) => !isInStock(p))
+    .map((p) => cleanTitle(p.title));
+
+  if (soldOut.length === 0) {
+    return `# Live stock
+Right now EVERY product in the shop is IN STOCK. If a customer asks whether
+something is available, you can confidently say yes it is in stock (still made to
+order / handcrafted where the product page says so).`;
+  }
+
+  return `# Live stock (currently sold out)
+These specific products are CURRENTLY SOLD OUT (not in stock right now):
+${soldOut.map((t) => "- " + t).join("\n")}
+Everything else in the shop is IN STOCK.
+
+When a customer asks about a product that matches this sold-out list, do NOT just
+say "not available". Tell them it is temporarily sold out and coming back soon:
+it is handmade and gets reproduced, so it will be available again shortly (kommt
+in Kürze wieder). Reassure them, offer to note their bike (model and year) so the
+team can ping them when it is back, and if there is a close in-stock alternative
+(for example the hexagonal version instead of a sold-out ring version) suggest it.
+Do NOT invent stock status for products that are not on this list, assume those
+are in stock.`;
 }

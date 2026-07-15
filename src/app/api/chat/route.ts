@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
-import { buildSystemPrompt } from "@/lib/botKnowledge";
+import { buildSystemPrompt, buildStockPrompt } from "@/lib/botKnowledge";
 import { appendConversation, getBotKnowledge } from "@/lib/adminStore";
 
 export const runtime = "nodejs";
@@ -57,6 +57,11 @@ export async function POST(req: Request) {
       type: "text",
       text: buildSystemPrompt(),
       cache_control: { type: "ephemeral" },
+    },
+    // Current stock. Uncached so it always reflects the latest deploy's data.
+    {
+      type: "text",
+      text: buildStockPrompt(),
     },
   ];
   if (corrections && corrections.trim()) {
