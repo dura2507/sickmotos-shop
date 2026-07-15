@@ -332,19 +332,19 @@
     "items": {
       "signatureLed": {
         "label": "Signature LED",
-        "pitch": "Plug-and-play Scheinwerfer mit weißem Abblend- und Fernlicht plus RGBW-Modi. Original-Stecker, kein Anzapfen des OEM-Kabelbaums.",
+        "pitch": "Plug-and-play Scheinwerfer mit RGBW Instagram Mode. Weißes Abblendlicht und Fernlicht, Original-Stecker im Lieferumfang für die einfache Montage.",
         "alt": "Roter Hexagon Angel Eye LED-Scheinwerfer am Bike montiert"
       },
       "raceHardware": {
         "label": "Race-Hardware",
         "title": "Titan-Krümmer, handgefertigt",
-        "pitch": "Von Hand gebogen, WIG-geschweißt, anlassblau. Hörbar mehr Drehmoment auf der Beta und Fantic 125 4-Takt.",
+        "pitch": "Am Motorrad entwickelt für optimale Passform. Auffallend in Titan mit blauer Anlauffarbe und deutlich kernigerem Sound-Bild.",
         "alt": "Handgefertigter Titan-Auspuffkrümmer mit Regenbogen-Anlassfarben"
       },
       "fuelEcu": {
         "label": "Fuel & ECU",
         "title": "FuelX & ECU-Tuning",
-        "pitch": "Live-Gemischkorrektur, ohne das OEM-Kennfeld zu verlieren. Abgestimmt auf den Krümmer für knackigere Gasannahme.",
+        "pitch": "Abgestimmt auf unsere Titan-Krümmer und Flame-Schalldämpfer für bessere Gasannahme und mehr Leistung.",
         "alt": "FuelX Autotune-Modul für die Live-Gemischkorrektur"
       }
     },
