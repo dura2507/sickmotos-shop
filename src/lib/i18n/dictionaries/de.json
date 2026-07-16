@@ -30,7 +30,7 @@
   "categories": {
     "kicker": "Produkt-Kategorien",
     "title": "Nach Kategorie shoppen",
-    "subtitle": "Von Bremsen bis Sonderteilen, alles für dein Supermoto.",
+    "subtitle": "Titan-Krümmer, LED-Scheinwerfer und Tuning für Supermoto und Enduro, von der 50er bis zur 125er.",
     "shopCategory": "Kategorie ansehen",
     "productsSuffix": "Produkte"
   },
@@ -45,7 +45,7 @@
     },
     "Carbon Parts": {
       "name": "Carbon-Teile",
-      "desc": "Federleichtes Carbon, im eigenen Haus gefertigt"
+      "desc": "Federleichtes Carbon fürs Supermoto, im eigenen Haus gefertigt."
     },
     "ECU Tuning": {
       "name": "ECU-Tuning",
@@ -53,7 +53,7 @@
     },
     "Brakes": {
       "name": "Bremsen",
-      "desc": "Performance-Bremsen für maximale Kontrolle"
+      "desc": "Bremsen für Supermoto und Enduro, volle Kontrolle auf Asphalt und im Gelände."
     },
     "Graphics": {
       "name": "Dekor-Kits",
@@ -418,7 +418,7 @@
     "kicker": "Made in Germany",
     "title": "Jedes SickMotos Produkt trägt die DNA von Jahrzehnten Leidenschaft und kompromissloser Weiterentwicklung.",
     "subtitle": "Entwickelt, um zu begeistern. Gebaut, um zu halten. Getestet, wo es zählt.",
-    "tagline": "SickMotos Teile, gemacht, um aufzufallen."
+    "tagline": "Gebaut fürs Supermoto und Enduro, gemacht, um aufzufallen."
   },
   "uniqueClaim": {
     "exhaust": {

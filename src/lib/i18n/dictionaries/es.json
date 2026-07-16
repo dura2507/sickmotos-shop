@@ -30,7 +30,7 @@
   "categories": {
     "kicker": "Categorías de productos",
     "title": "Compra por categoría",
-    "subtitle": "De frenos a piezas especiales, todo para tu supermoto.",
+    "subtitle": "Colectores de titanio, faros LED y tuning para supermoto y enduro, de la 50 a la 125.",
     "shopCategory": "Ver categoría",
     "productsSuffix": "productos"
   },
@@ -45,7 +45,7 @@
     },
     "Carbon Parts": {
       "name": "Piezas de carbono",
-      "desc": "Carbono ultraligero, fabricado en casa"
+      "desc": "Carbono ultraligero para tu supermoto, fabricado en casa."
     },
     "ECU Tuning": {
       "name": "Tuning ECU",
@@ -53,7 +53,7 @@
     },
     "Brakes": {
       "name": "Frenos",
-      "desc": "Frenos de altas prestaciones para máximo control"
+      "desc": "Frenos para supermoto y enduro, control total en asfalto y fuera de él."
     },
     "Graphics": {
       "name": "Gráficas",
@@ -418,7 +418,7 @@
     "kicker": "Made in Germany",
     "title": "Cada producto SickMotos lleva el ADN de décadas de pasión y perfeccionamiento constante.",
     "subtitle": "Diseñado para inspirar. Hecho para durar. Probado donde importa.",
-    "tagline": "Piezas SickMotos, hechas para destacar."
+    "tagline": "Hecho para supermoto y enduro, para llamar la atención."
   },
   "uniqueClaim": {
     "exhaust": {

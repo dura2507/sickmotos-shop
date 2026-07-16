@@ -30,7 +30,7 @@
   "categories": {
     "kicker": "Product categories",
     "title": "Shop by category",
-    "subtitle": "From brakes to custom parts, everything for your supermoto.",
+    "subtitle": "Titanium headers, LED headlights and tuning for supermoto and enduro, from the 50cc to the 125.",
     "shopCategory": "Shop category",
     "productsSuffix": "products"
   },
@@ -45,7 +45,7 @@
     },
     "Carbon Parts": {
       "name": "Carbon Parts",
-      "desc": "Featherweight carbon, built in-house"
+      "desc": "Feather-light carbon for your supermoto, made in-house."
     },
     "ECU Tuning": {
       "name": "ECU Tuning",
@@ -53,7 +53,7 @@
     },
     "Brakes": {
       "name": "Brakes",
-      "desc": "Performance braking for maximum control"
+      "desc": "Brakes for supermoto and enduro, full control on tarmac and off-road."
     },
     "Graphics": {
       "name": "Graphics",
@@ -418,7 +418,7 @@
     "kicker": "Made in Germany",
     "title": "Every SickMotos product carries the DNA of decades of passion and relentless refinement.",
     "subtitle": "Designed to inspire. Built to last. Tested where it counts.",
-    "tagline": "SickMotos parts, made to stand out."
+    "tagline": "Built for supermoto and enduro, made to stand out."
   },
   "uniqueClaim": {
     "exhaust": {
