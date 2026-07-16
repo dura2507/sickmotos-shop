@@ -73,6 +73,15 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
 - **Full-Site-Audit** (2026-07-16): alle 499 Sitemap-Seiten HTTP 200, i18n DE/EN/IT/ES,
   Checkout-Host `sickmotos.myshopify.com` (fixCheckoutHost greift), Warenkorb/Cross-Sell,
   SickBot-Widget, Mobile 375px, `/api/chat`, EUR-Preise, alles grün.
+- **LED-Converter/Akku-Logik** (2026-07-16, Thomas' Regel): JEDE LED-Lampe braucht immer
+  den **Wandler/Converter** (auto-gebundelt via `src/lib/essentials.ts`). Das **Akku Set**
+  kommt ZUSÄTZLICH (nie statt) bei 2-Takt ohne Starterbatterie / getunten Bikes und bei
+  **ALLEN 50ern**. Pin-Regel: **Beta 50 → 3-Pin Akku Pack**, **Sherco/Fantic/Aprilia/Rieju
+  50 → 4-Pin Akku Pack** (nur 2 Akku-Produkte im Katalog). Umgesetzt: alle 14 50er-Lampen
+  haben in `src/data/addons.json` das passende Pack. Lampen erkannt via `product_type`
+  „Angel EYES" + `\b50\b` im Titel + Marke, NICHT über Tags (die matchen sonst Tuning-Teile
+  wie Nockenwellen/FuelX). Bot (`src/lib/botKnowledge.ts`) kennt die Differenzierung inkl.
+  Pin-Mapping, live getestet (Beta 50 → 3-Pin, Sherco 50 → 4-Pin).
 
 ### In Arbeit / muss verifiziert werden
 - **Shopify Admin Orders** (`/admin/orders` = echte Bestellungen): OAuth-Offline-Token-
@@ -100,7 +109,15 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   reaktiviert sie (Budget/Spend, bewusst nicht unser Job). Search Console: sickmotos.com-
   Property noch anzulegen + Sitemap `https://sickmotos.com/sitemap.xml` einreichen.
   Kleinkram: Merchant „Customer service contact" zeigt noch alte Domain `www.sick-motos.com`;
-  Startseite hat kein `canonical`-Tag.
+  Startseite hat kein `canonical`-Tag. Im Shopify-Google-Channel stehen 2 Punkte rot
+  („紧急": **Shopify Channel App** + **Shopify: Sickmotos-Styles**) → Shopify-App-seitig,
+  Freelancer-Job, nicht unser Code; werden evtl. nach dem Website-Claim-Sync grün. Merchant
+  Center selbst ist grün.
+- **Akku-Set Restpunkte:** (a) 2× Husqvarna „Rage Replica"-Lampen nennen Batterie-Bedarf,
+  aber KEIN Akku-Pack listet Husqvarna (Husqvarna hat auch kein 50er) → Thomas fragen, ob
+  das 4-Pin-Pack passt. (b) Bei 4-Takt-Lampen (125+) ist das Akku Set nur Tuning-Option,
+  nur dort angeboten wo die Beschreibung es nennt. (c) Bot-Kosmetik: Haiku erfindet vereinzelt
+  „Akku hält 3-5h" (erfundene Zahl) + nutzt Gedankenstriche → optionaler Prompt-Härtungs-Pass.
 - **Besucheranzeige/Dashboard für Thomas:** Shopify-App-ähnliches Panel
   (Sessions/Umsatz/Orders, Tag/Woche/Monat-Vergleich + Charts). User schickt noch Specs.
 - **Plausible `data-domain`** noch `sick-motos.com` (Env `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`) —
