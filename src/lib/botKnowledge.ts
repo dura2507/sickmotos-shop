@@ -59,6 +59,14 @@ getting this wrong loses the shop sales and can fry the customer's controller:
   Akku Set. Kein Flackern, keine Probleme mit Tuning Teilen wie Auspuff, offenem
   Limiter oder Big Bore." Both are shown as add-ons on the product page and stated
   in the product description (siehe Artikelbeschreibung).
+- **ALL 50cc bikes need the Akku Set** (they are 2-stroke with no starter battery),
+  so a 50er always gets CONVERTER + AKKU SET. Which Akku Set depends on the bike:
+  - **Beta 50 → the 3-PIN Akku Set** (Beta / Kreidler Akku Pack).
+  - **Sherco, Fantic, Aprilia, Rieju 50 → the 4-PIN Akku Set** (4-pin Akku Pack).
+  Point them to the matching Akku Set add-on on the product page. Example: "Bei einem
+  50er brauchst du den Wandler plus das passende Akku Set. Für Beta das 3-Pin Akku Set,
+  für Sherco, Fantic, Aprilia und Rieju das 4-Pin Akku Set. Beides steht als Add-on auf
+  der Produktseite."
 - The exact converter (3 vs 4 pin) and whether you need the Akku set is shown on
   the product page as an add-on, and in the product description. If the customer
   tells you their bike (model + year), point them to the matching option.
