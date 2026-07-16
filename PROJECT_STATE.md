@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-07-14.
+> Stand: 2026-07-16.
 
 ---
 
@@ -61,6 +61,18 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   + Pflicht-Hinweis „Keine Zulassung nach StVO / Rennsport-Teil" auf allen RGBW-Lampen-
   Produktseiten (amber Box, greift automatisch via `isLamp()`). Alle 4 Sprachen + Bot.
 - Legal-Pages existieren (`src/app/legal/` + `src/data/legal/`).
+- **Google-Anbindung repariert** (2026-07-16): (1) Merchant-Center-Website-Inhaberschaft
+  war nie bestätigt (dadurch Approved 0 / fast alles Limited/Not-approved) → per HTML-Tag
+  verifiziert (zwei `google-site-verification`-Tokens in `src/app/layout.tsx` via
+  `metadata.verification.google`), Merchant zeigt jetzt **Verified + Claimed**. (2) **GTM
+  war tot:** Vercel-Env `NEXT_PUBLIC_GTM_ID` stand 52 Tage auf dem wörtlichen Platzhalter
+  statt der Container-ID → auf `GTM-NN3V8K3D` gesetzt (Production), GA4 (`G-CJ8F4XV6F9`) +
+  Google-Ads-Conversion (`AW-395813654`) feuern wieder, im Browser live verifiziert. Die
+  „731 Produktseite nicht erreichbar" waren veraltet (Seiten liefern 200), klären beim
+  Re-Crawl. Preview-Env bewusst ohne GTM (Test-Deploys sollen echte Analytics nicht verfälschen).
+- **Full-Site-Audit** (2026-07-16): alle 499 Sitemap-Seiten HTTP 200, i18n DE/EN/IT/ES,
+  Checkout-Host `sickmotos.myshopify.com` (fixCheckoutHost greift), Warenkorb/Cross-Sell,
+  SickBot-Widget, Mobile 375px, `/api/chat`, EUR-Preise, alles grün.
 
 ### In Arbeit / muss verifiziert werden
 - **Shopify Admin Orders** (`/admin/orders` = echte Bestellungen): OAuth-Offline-Token-
@@ -81,9 +93,14 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   für Sektion in dem Ton umschreiben, Thomas segnet ab, EN/IT/ES nachziehen. Thomas
   liefert die Stimme (Keywords + Referenz + Freigabe), nicht komplett selbst schreiben.
   Einzel-Bild-Text-Paare laufen laufend über den privaten Bot.
-- **Google (extern, Thomas/User):** Search Console neue Property für sickmotos.com +
-  Sitemap `https://sickmotos.com/sitemap.xml` einreichen; Merchant Center Feed-URL auf
-  sickmotos.com; Google Ads auf sickmotos.com. (User schickt noch Details.)
+- **Google (extern, Freelancer/Thomas):** Merchant-Website ist verifiziert + beansprucht.
+  Nächste Schritte liegen beim Freelancer/Thomas (nicht unser Code): Feed neu abrufen lassen,
+  dann drehen Produkte von Limited/Not-approved auf „approved". **Google-Ads-Kampagnen sind
+  aktuell PAUSIERT** ("Anzeigen werden derzeit nicht geschaltet") → Freelancer/Thomas
+  reaktiviert sie (Budget/Spend, bewusst nicht unser Job). Search Console: sickmotos.com-
+  Property noch anzulegen + Sitemap `https://sickmotos.com/sitemap.xml` einreichen.
+  Kleinkram: Merchant „Customer service contact" zeigt noch alte Domain `www.sick-motos.com`;
+  Startseite hat kein `canonical`-Tag.
 - **Besucheranzeige/Dashboard für Thomas:** Shopify-App-ähnliches Panel
   (Sessions/Umsatz/Orders, Tag/Woche/Monat-Vergleich + Charts). User schickt noch Specs.
 - **Plausible `data-domain`** noch `sick-motos.com` (Env `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`) —
@@ -116,3 +133,7 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
 5. **Auto-commit + push nach jeder Änderung** (triggert Vercel-Deploy).
 6. **Nie User-Passwörter/Kreditkarten eingeben; Secrets nie ins Repo.**
 7. **Mac sauber halten** (alles Installierte muss deinstallierbar bleiben).
+8. **Externe Systeme nie „läuft/durch" nennen, wenn nur der Code gefixt ist.** Bei Ads,
+   Merchant, GTM, Analytics, Shopify, Checkout, Tracking den echten End-Zustand im Konto
+   oder Funnel prüfen (reingehen und schauen) oder klar sagen „nur Code-Seite gefixt, Konto
+   nicht geprüft". Immer sagen WIE geprüft und WAS nicht.
