@@ -131,10 +131,11 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   (Sessions/Umsatz/Orders, Tag/Woche/Monat-Vergleich + Charts). User schickt noch Specs.
 - **Plausible `data-domain`** noch `sick-motos.com` (Env `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`) —
   nur Analytics-Label, kein SEO/User-Problem. Thomas' Entscheidung.
-- **Returns-Widerspruch:** `src/data/legal/widerruf.md` + Shopify-Policy sagen ALLE
-  Elektronik nicht retournierbar, Thomas sagt nur GEBRAUCHTE Elektronik. Text angleichen.
-  Außerdem: Shopify-Policy-Retourenadresse evtl. noch Pöttmes → muss die Zadar/HR-Adresse
-  sein (korrekte Adresse steht in `widerruf.md` und im Bot; hier bewusst nicht wiederholt).
+- **Returns (geklärt 2026-07-17):** Thomas bestätigt: **ALLE Elektronik** vom Umtausch
+  ausgeschlossen (nicht nur gebrauchte), **Rücksendeadresse = Zadar**. `widerruf.md` sagt das
+  schon korrekt (Zeile 17: alle Elektronik ausgeschlossen), keine Pöttmes-Adresse im Code,
+  Adresse wird per Mail pro Retoure vergeben. Code-seitig nichts zu tun. Nur noch prüfen:
+  Shopify-Admin-Retourenpolicy zeigt evtl. noch Pöttmes → dort auf Zadar (Shopify-seitig, Thomas).
 - **Phase-2-Sprachen** PL/CZ/SL/HR; Legal-Pages-Übersetzung (braucht Anwalt).
 - **End-to-end Test-Kauf** (100%-Rabattcode, NICHT Shopify-Testmodus) vor „voll live".
 
