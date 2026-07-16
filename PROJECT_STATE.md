@@ -122,11 +122,11 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   („紧急": **Shopify Channel App** + **Shopify: Sickmotos-Styles**) → Shopify-App-seitig,
   Freelancer-Job, nicht unser Code; werden evtl. nach dem Website-Claim-Sync grün. Merchant
   Center selbst ist grün.
-- **Akku-Set Restpunkte:** (a) 2× Husqvarna „Rage Replica"-Lampen nennen Batterie-Bedarf,
-  aber KEIN Akku-Pack listet Husqvarna (Husqvarna hat auch kein 50er) → Thomas fragen, ob
-  das 4-Pin-Pack passt. (b) Bei 4-Takt-Lampen (125+) ist das Akku Set nur Tuning-Option,
-  nur dort angeboten wo die Beschreibung es nennt. (c) Bot-Kosmetik: Haiku erfindet vereinzelt
+- **Akku-Set Restpunkte:** (a) Bei 4-Takt-Lampen (125+) ist das Akku Set nur Tuning-Option,
+  nur dort angeboten wo die Beschreibung es nennt. (b) Bot-Kosmetik: Haiku erfindet vereinzelt
   „Akku hält 3-5h" (erfundene Zahl) + nutzt Gedankenstriche → optionaler Prompt-Härtungs-Pass.
+  (Husqvarna-Frage gestrichen: kein Husqvarna-50er, kein passendes Pack, Beschreibung verweist
+  eh auf Support → kein Handlungsbedarf.)
 - **Besucheranzeige/Dashboard für Thomas:** Shopify-App-ähnliches Panel
   (Sessions/Umsatz/Orders, Tag/Woche/Monat-Vergleich + Charts). User schickt noch Specs.
 - **Plausible `data-domain`** noch `sick-motos.com` (Env `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`) —
