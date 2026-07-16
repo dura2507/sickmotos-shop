@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-07-16.
+> Stand: 2026-07-17.
 
 ---
 
@@ -94,14 +94,23 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
 
 ### Offen / TODO
 - **Scene-Voice Copy-Rewrite (Thomas' Kern-Wunsch):** Die Seiten-Texte fühlen sich
-  für Thomas noch „unecht" an, zu weit weg von der deutschen 125er-Supermoto/Enduro-
-  Szene. Ziel: Seite mit den gängigen Szene-Schlagworten füllen für Wiedererkennung.
-  Referenz von Thomas: Marke „Princip" (Link soll er schicken). Plan: (1) Szene-
-  Vokabular aus seinen WhatsApp-Shop-Chats minen (liegt in Drive SHOP_BOTFUTTER als
-  `sickmotos_shop_chats.json`, 6343 Chats), (2) Princip-Referenz-Ton, (3) Seite Sektion
-  für Sektion in dem Ton umschreiben, Thomas segnet ab, EN/IT/ES nachziehen. Thomas
-  liefert die Stimme (Keywords + Referenz + Freigabe), nicht komplett selbst schreiben.
-  Einzel-Bild-Text-Paare laufen laufend über den privaten Bot.
+  für Thomas noch „unecht" an, zu weit weg von der deutschen 125er-Supermoto/Enduro-Szene.
+  **Erledigt (2026-07-16): Keyword-Pass.** Thomas' Schlagwörter (LED-Scheinwerfer,
+  Titan-Krümmer, Supermoto, Enduro, 50er, 125er) in die generische Marketing-Copy gewoben:
+  `categories.subtitle`, `categoryCards` Bremsen + Carbon, `dna.tagline`, DE/EN/IT/ES, live.
+  Funktions-Strings (Fehler/Leer-Zustände) bewusst clean gelassen (kein Keyword-Brei).
+  **Offen: tieferer Ton-Rewrite.** (1) **„Princip"-Referenz** von Thomas per US-Websuche/
+  DuckDuckGo/Google NICHT auffindbar (Nische, evtl. deutsche/Balkan-Szene-Marke, IG-basiert,
+  „Princip" = slaw. „Prinzip", passt zu Zadar/HR) → **Link/IG-Handle von Thomas nötig.**
+  (2) Bessere Referenz ohne Princip: **Thomas' EIGENE Stimme aus `sickmotos_shop_chats.json`
+  minen** (Drive SHOP_BOTFUTTER, 6343 Chats, PII → nicht ins Repo), dann Seite Sektion für
+  Sektion in SEINEM Ton umschreiben, Thomas segnet ab, EN/IT/ES nachziehen. Einzel-Bild-Text-
+  Paare laufen laufend über den privaten Bot.
+- **Lieferzeiten (erledigt 2026-07-16, offen: Felgen):** made-to-order (LED, Auspuff) von
+  „2-3 Wochen" auf **„7-14 Tage" + „vieles ab Lager"** (DE/EN/IT/ES + Bot, live, `leadTime.ts`
+  wählt normal vs. lang, Text kommt aus `product.madeToOrder*`). **Offen:** Felgen stehen noch
+  auf „6+ Wochen" (`madeToOrderLong`) → Thomas fragen, ob auch 7-14 (7-14 auf echten 6-Wochen-
+  Felgen = Rückerstattungs-Risiko, deshalb bewusst nicht mitgeändert).
 - **Google (extern, Freelancer/Thomas):** Merchant-Website ist verifiziert + beansprucht.
   Nächste Schritte liegen beim Freelancer/Thomas (nicht unser Code): Feed neu abrufen lassen,
   dann drehen Produkte von Limited/Not-approved auf „approved". **Google-Ads-Kampagnen sind
