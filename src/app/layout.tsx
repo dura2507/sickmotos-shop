@@ -34,10 +34,15 @@ export const metadata: Metadata = {
   title: "SickMotos. Performance Parts Built by a Mechatronics Master",
   description:
     "Premium performance parts for supermoto & enduro: titanium exhausts, LED headlights, ECU tuning, carbon. Engineered in Germany by Thomas Krawietz.",
-  // Google Search Console / Merchant Center domain ownership (Thomas, 16.07).
-  // Renders <meta name="google-site-verification" ...> into <head>. Do not remove.
+  // Google Merchant Center / Search Console domain ownership. Two tokens so
+  // both the account that Thomas verifies under and the account the shop's
+  // Merchant Center runs under can claim the site. Renders two
+  // <meta name="google-site-verification" ...> tags into <head>. Do not remove.
   verification: {
-    google: "mnvYZnsK5ifTHQwO0t6Gk_32fUnTF91X9uPh0a3kz2I",
+    google: [
+      "mnvYZnsK5ifTHQwO0t6Gk_32fUnTF91X9uPh0a3kz2I",
+      "vnFQ4LQ6ztyZ6G-WoWkFpz1Myb3G3HjSa5_9or6FLkE",
+    ],
   },
   icons: {
     icon: "/sickmotos-favicon.svg",
