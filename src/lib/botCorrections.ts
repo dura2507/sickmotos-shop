@@ -38,11 +38,15 @@ Rewrite and return the FULL updated document following these rules:
 - Keep it a concise Markdown document grouped by topic with "## Topic" sections and short bullet rules or Q/A lines.
 - If the new correction concerns a topic already present, REPLACE the outdated information with the corrected version. Do not keep the old wrong statement.
 - If it is a new topic, add a new bullet or section in the right place.
-- Never duplicate a rule. Merge near-duplicates into one clear statement.
-- Never contradict yourself. The newest correction always wins.
+- CRITICAL, NEVER LOSE INFORMATION: every distinct rule, fact, price, discount code,
+  part name, link, or model-specific detail already in the current document MUST remain
+  in your output. Do NOT drop, shorten away, or summarize out any existing content to
+  save space. The only things you may remove are EXACT duplicates and information the
+  new correction explicitly overrides as outdated.
+- Merge exact duplicates into one clear statement, but keep every unique detail.
+- Never contradict yourself. The newest correction always wins on the same specific point.
 - Write the rules as direct instructions/answers the bot should follow, in the language the owner used.
-- Do not include meta commentary, the customer question, or the word "correction". Output ONLY the document, starting with the line "${HEADING}".
-- Keep it tight. Remove redundancy so the document does not grow unbounded.`;
+- Do not include meta commentary, the customer question, or the word "correction". Output ONLY the document, starting with the line "${HEADING}".`;
 }
 
 // Merge a single correction into the stored knowledge doc. Best-effort: if the
@@ -74,7 +78,9 @@ export async function applyCorrection(input: {
     const client = new Anthropic({ apiKey });
     const res = await client.messages.create({
       model: MERGE_MODEL,
-      max_tokens: 1500,
+      // High enough that the merged doc never has to drop existing corrections to
+      // fit. The doc stays small in practice, this is just headroom so nothing is lost.
+      max_tokens: 4000,
       messages: [{ role: "user", content: mergePrompt(current, input) }],
     });
     const text = res.content
