@@ -13,9 +13,8 @@ async function runQL(q: string): Promise<unknown> {
   if (!TOKEN) return { error: "SHOPIFY_ADMIN_API_TOKEN not set" };
   const query = `query($q:String!){
     shopifyqlQuery(query:$q){
-      __typename
-      ... on TableResponse { tableData { columns { name displayName dataType } rowData } }
-      parseErrors { code message }
+      tableData { columns { name displayName dataType } rows }
+      parseErrors
     }
   }`;
   try {
