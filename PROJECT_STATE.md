@@ -50,6 +50,14 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
 - **Bot-Learning-Loop** live: pro Bot-Antwort ein Korrekturfeld in `/admin/chats/[id]`,
   merged sich in EIN Knowledge-Doc (`sm:bot:knowledge` in Redis), sofort im nächsten
   Prompt aktiv. Übersicht/Editor unter `/admin/bot`.
+- **Bot-Korrektur-Verlust gefixt** (2026-07-17): das Merge-Modell warf ältere Korrekturen
+  weg (Deckel `max_tokens: 1500` + „remove redundancy"-Prompt) → 5 von Thomas' Korrekturen
+  fehlten im aktiven Doc. Wurzel in `src/lib/botCorrections.ts` gefixt („never lose
+  information"-Regel + `max_tokens` 4000). Verlorene via `/admin/bot`-Editor wiederhergestellt
+  (H4-Adapter, Felgen Beta 50/125, ECU MSE 6.0/8.0, Rabattcode EXTRA5, Beschimpfungs-Konter
+  — letzterer auf Thomas' ausdrücklichen Wunsch + Verantwortung). Aktives Doc jetzt ~5256
+  Zeichen, live verifiziert (Bot nutzt H4/EXTRA5). Merke: das aktive Doc ist bereits gededupt,
+  Doppler sieht man nur im Audit-Verlauf (geht NICHT in den Bot).
 - **Storefront-i18n** DE/EN/IT/ES ~komplett (~450 Keys/Sprache). AI-Slop entfernt
   (keine Em-Dashes, kein „AI-Pill"-Look). Englisch-Fallback aktiv.
 - **Domain-Migration** (2026-07-11): `sickmotos.com` ist primär; `sick-motos.com`,
