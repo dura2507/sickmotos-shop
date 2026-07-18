@@ -5,6 +5,10 @@ import { getConversation, markReviewed, saveNote } from "@/lib/adminStore";
 import { applyCorrection } from "@/lib/botCorrections";
 
 export const dynamic = "force-dynamic";
+// Submitting a correction runs a synchronous Haiku merge of the whole knowledge
+// doc, which can take 10-20s. Give the server action room so it doesn't hit the
+// default ~10s function timeout and hang (Thomas: "kann keine Infos senden").
+export const maxDuration = 60;
 
 // Render **bold** markdown as real bold instead of literal asterisks.
 function renderInline(text: string) {
