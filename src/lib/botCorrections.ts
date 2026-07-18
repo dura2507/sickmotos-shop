@@ -43,6 +43,12 @@ Rewrite and return the FULL updated document following these rules:
   in your output. Do NOT drop, shorten away, or summarize out any existing content to
   save space. The only things you may remove are EXACT duplicates and information the
   new correction explicitly overrides as outdated.
+- CHANGE AS LITTLE AS POSSIBLE. Copy every existing line through UNCHANGED, word for
+  word. Do NOT rephrase, expand, elaborate, add explanations, or "improve" lines that
+  are already there. Your ONLY job is to fold in the new correction (as a short bullet,
+  deduped) and, if it overrides an old line, replace just that line. The document must
+  grow by roughly the size of the new correction, not more. If your output is noticeably
+  longer than the current document plus the new correction, you are over-writing, stop.
 - Merge exact duplicates into one clear statement, but keep every unique detail.
 - Never contradict yourself. The newest correction always wins on the same specific point.
 - Write the rules as direct instructions/answers the bot should follow, in the language the owner used.
