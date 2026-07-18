@@ -128,6 +128,24 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     der den echten headless-Traffic sieht, den Shopify seit dem Umzug NICHT mehr zählt
     (Shopify-Sessions ~0, weil Storefront auf Vercel läuft). Kein Shopify-Backfill für die
     Vergangenheit möglich → Session-Historie beginnt ab Zähler-Start; Order-Historie ist voll da.
+  - **Live gegen Shopify gegengecheckt (2 Fenster, 2026-07-18/19):** Jul 9-15 = 8.700,31 EUR
+    (Shopify) vs. Recompute ~8.708 (0,1%); Jul 12-18 = 9.342,01 EUR (Shopify) vs. Dashboard
+    9.350,41 (0,09%), **Orders 59=59 exakt, Steuern 1.386,39 = 1.386,39 exakt**. Mein Wert liegt
+    systematisch ~0,09% höher (Brutto-inklusive Order-Totals), kein Zufallsfehler.
+  - **Coverage ehrlich:** Umsatz/Orders kommen aus der Orders-API = rückwirkend voll da
+    (nicht ans Deploy-Datum gebunden), aber die UI zeigt nur 1/7/30 Tage rollierend (kein
+    freier Datumsbereich, kein „Alt-Shop vs. Neu-Shop"-Stichtag, nur Periode vs. Vorperiode).
+    **Sitzungen erst ab 2026-07-10** (Zähler-Deploy), kein Backfill möglich.
+  - **Tracking-Audit-Fixes (2026-07-19, commit nach Multi-Agent-Audit):** (1) Pagination-Cap
+    in `salesReport.ts` von 12 auf 200 Seiten (kein stiller Undercount mehr bei grossen
+    Fenstern, laut geloggt bei Überlauf). (2) Besucher-Zähler bucketet jetzt **Berlin-Zeit**
+    (war UTC → ~2h/Tag im falschen Bucket, jetzt deckungsgleich mit Umsatz). (3) **Bot-/Crawler-
+    User-Agents zählen nicht mehr** als Sitzungen. (4) **`prevComplete`-Flag:** Sitzungs-Vergleich
+    zeigt „—" statt irreführendem +XXX%, wenn die Vorperiode vor dem Zähler-Start liegt (live
+    verifiziert: 7-Tage-Sessions zeigt jetzt „—" statt +278%). (5) leere Vorperiode → „—" statt
+    grünes 0%. Offene niedrige Punkte: /api/track ist offener POST ohne Rate-Limit (per curl
+    aufblasbar), Refund-Attribution nach Order-Datum, 90-Tage-Redis-TTL begrenzt Session-
+    Vergleiche >90 Tage.
   - Temp-Verifikationsseite `/admin/analytics-test` (Jul-9-15-Abgleich) kann weg, sobald
     Thomas das Dashboard abgesegnet hat.
 
