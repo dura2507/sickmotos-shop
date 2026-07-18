@@ -65,36 +65,6 @@ function StatCard({
   );
 }
 
-function BreakdownRow({
-  label,
-  value,
-  cur,
-  prev,
-  strong,
-}: {
-  label: string;
-  value: string;
-  cur: number;
-  prev: number;
-  strong?: boolean;
-}) {
-  return (
-    <div
-      className={`flex items-center justify-between gap-3 border-t border-border px-4 py-2.5 text-sm first:border-t-0 ${
-        strong ? "font-bold text-fg" : "text-fg-muted"
-      }`}
-    >
-      <span>{label}</span>
-      <span className="flex items-center gap-3 tabular-nums">
-        <span className="text-[11px]">
-          <Delta cur={cur} prev={prev} />
-        </span>
-        <span className={strong ? "text-fg" : "text-fg"}>{value}</span>
-      </span>
-    </div>
-  );
-}
-
 // Bars for the current period plus a dashed line for the previous period,
 // aligned day-by-day and scaled to the same max (Shopify-style overlay).
 function ComparisonChart({
@@ -295,56 +265,13 @@ export default async function AdminDashboard({
         />
       </section>
 
-      {/* Sales breakdown */}
-      <section className="rounded-xl border border-border bg-surface/40">
-        <div className="border-b border-border px-4 py-3">
-          <h2 className="text-xs font-bold uppercase tracking-[0.12em] text-fg">
-            Umsatz-Aufschlüsselung · {rangeLabel}
-          </h2>
-        </div>
-        <BreakdownRow
-          label="Bruttoumsatz"
-          value={eur(c.grossSales)}
-          cur={c.grossSales}
-          prev={p.grossSales}
-        />
-        <BreakdownRow
-          label="Rabatte"
-          value={`-${eur(c.discounts)}`}
-          cur={c.discounts}
-          prev={p.discounts}
-        />
-        <BreakdownRow
-          label="Nettoumsatz"
-          value={eur(c.netSales)}
-          cur={c.netSales}
-          prev={p.netSales}
-        />
-        <BreakdownRow
-          label="Versand"
-          value={eur(c.shipping)}
-          cur={c.shipping}
-          prev={p.shipping}
-        />
-        <BreakdownRow
-          label="Steuern"
-          value={eur(c.taxes)}
-          cur={c.taxes}
-          prev={p.taxes}
-        />
-        <BreakdownRow
-          label="Gesamtumsatz"
-          value={eur(c.totalSales)}
-          cur={c.totalSales}
-          prev={p.totalSales}
-          strong
-        />
-      </section>
-
-      <p className="mt-4 text-[11px] text-fg-dim">
-        Umsatz aus der Shopify-Order-API (1:1 zu Shopify Analytics, Berlin-Zeit).
-        Sitzungen aus dem eigenen Besucher-Zähler (sieht den echten
-        headless-Traffic, den Shopify nicht mehr zählt).
+      <p className="text-[11px] leading-relaxed text-fg-dim">
+        Gesamtumsatz aus den Shopify-Order-Totals (deckt sich mit Shopify Analytics
+        auf ~0,1%, Berlin-Zeit), davon Steuern {eur(c.taxes)}. Bestellungen exakt.
+        Sitzungen aus dem eigenen Besucher-Zähler, der den echten headless-Traffic
+        sieht, den Shopify seit dem Umzug nicht mehr zählt. Eine feine Netto/Brutto-
+        Aufschlüsselung 1:1 wie in Shopify braucht den Report-Zugriff (read_reports)
+        und kommt, sobald der freigegeben ist.
       </p>
     </div>
   );

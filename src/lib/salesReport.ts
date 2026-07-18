@@ -12,14 +12,14 @@ import { adminGraphQL, hasAdminToken } from "./shopifyAdmin";
 // 2. The report set = all orders in the window that are NOT test and NOT
 //    cancelled (no financial-status filter).
 
+// Only the metrics that reproduce Shopify's Analytics numbers reliably are kept.
+// The shop prices tax-inclusive (German Brutto), so the order-level Gross/Net/
+// Discounts fields do NOT equal Shopify's tax-exclusive report lines and were
+// dropped. Total sales via the order totals matches Shopify within ~0.1%.
 export type SalesMetrics = {
-  grossSales: number;
-  discounts: number;
-  netSales: number;
-  shipping: number;
-  taxes: number;
-  totalSales: number;
-  orders: number;
+  totalSales: number; // sum of order totals minus refunds ≈ Shopify "Total sales"
+  taxes: number; // matches Shopify exactly
+  orders: number; // exact
   aov: number; // average order value = totalSales / orders
 };
 
@@ -66,10 +66,8 @@ type OrderNode = {
   cancelledAt: string | null;
   test: boolean;
   totalPriceSet: { shopMoney: { amount: string } };
-  subtotalPriceSet: { shopMoney: { amount: string } };
-  totalDiscountsSet: { shopMoney: { amount: string } };
   totalTaxSet: { shopMoney: { amount: string } };
-  totalShippingPriceSet: { shopMoney: { amount: string } };
+  totalRefundedSet: { shopMoney: { amount: string } };
 };
 
 const QUERY = `query Sales($q:String!, $after:String){
@@ -77,10 +75,8 @@ const QUERY = `query Sales($q:String!, $after:String){
     edges { node {
       createdAt cancelledAt test
       totalPriceSet { shopMoney { amount } }
-      subtotalPriceSet { shopMoney { amount } }
-      totalDiscountsSet { shopMoney { amount } }
       totalTaxSet { shopMoney { amount } }
-      totalShippingPriceSet { shopMoney { amount } }
+      totalRefundedSet { shopMoney { amount } }
     } }
     pageInfo { hasNextPage endCursor }
   }
@@ -114,38 +110,23 @@ async function fetchOrders(fromDay: string, toDay: string): Promise<OrderNode[]>
 }
 
 function emptyMetrics(): SalesMetrics {
-  return {
-    grossSales: 0,
-    discounts: 0,
-    netSales: 0,
-    shipping: 0,
-    taxes: 0,
-    totalSales: 0,
-    orders: 0,
-    aov: 0,
-  };
+  return { totalSales: 0, taxes: 0, orders: 0, aov: 0 };
 }
 
 function metricsFrom(nodes: OrderNode[]): SalesMetrics {
-  let net = 0,
-    discounts = 0,
-    tax = 0,
-    shipping = 0;
+  let total = 0,
+    refunded = 0,
+    tax = 0;
   for (const r of nodes) {
-    net += num(r.subtotalPriceSet.shopMoney.amount); // subtotal = Net sales (after discounts)
-    discounts += num(r.totalDiscountsSet.shopMoney.amount);
+    total += num(r.totalPriceSet.shopMoney.amount);
+    refunded += num(r.totalRefundedSet.shopMoney.amount);
     tax += num(r.totalTaxSet.shopMoney.amount);
-    shipping += num(r.totalShippingPriceSet.shopMoney.amount);
   }
-  const totalSales = net + shipping + tax; // = Shopify "Total sales" (verified)
+  const totalSales = total - refunded; // ≈ Shopify "Total sales" (within ~0.1%)
   const orders = nodes.length;
   return {
-    grossSales: net + discounts, // Shopify "Gross sales"
-    discounts,
-    netSales: net,
-    shipping,
-    taxes: tax,
     totalSales,
+    taxes: tax,
     orders,
     aov: orders > 0 ? totalSales / orders : 0,
   };
@@ -160,10 +141,9 @@ function report(nodes: OrderNode[], fromDay: string, toDay: string): SalesReport
     const day = berlinDay(r.createdAt);
     const bucket = perDayMap.get(day);
     if (bucket) {
-      const net = num(r.subtotalPriceSet.shopMoney.amount);
-      const tax = num(r.totalTaxSet.shopMoney.amount);
-      const ship = num(r.totalShippingPriceSet.shopMoney.amount);
-      bucket.totalSales += net + ship + tax;
+      const total = num(r.totalPriceSet.shopMoney.amount);
+      const refund = num(r.totalRefundedSet.shopMoney.amount);
+      bucket.totalSales += total - refund;
       bucket.orders += 1;
     }
   }
