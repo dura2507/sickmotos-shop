@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-07-17.
+> Stand: 2026-07-18.
 
 ---
 
@@ -58,6 +58,19 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   — letzterer auf Thomas' ausdrücklichen Wunsch + Verantwortung). Aktives Doc jetzt ~5256
   Zeichen, live verifiziert (Bot nutzt H4/EXTRA5). Merke: das aktive Doc ist bereits gededupt,
   Doppler sieht man nur im Audit-Verlauf (geht NICHT in den Bot).
+- **Bot 2.0 — Merge kompakt + Hang-Fix** (2026-07-18): (1) **Hang gefixt** (Thomas: „kann keine
+  Infos senden / nicht als gelesen markieren"): der synchrone Haiku-Merge beim Korrektur-Absenden
+  überschritt Vercels ~10s-Default-Timeout → `export const maxDuration = 60` in
+  `src/app/admin/chats/[id]/page.tsx`. (2) **Merge bläht nicht mehr auf:** `max_tokens 4000`
+  ließ Haiku bei jeder Korrektur das ganze Doc neu ausformulieren (eine Test-Korrektur wuchs
+  das Doc um +2270 Zeichen). Prompt-Regel „CHANGE AS LITTLE AS POSSIBLE, copy every line
+  unchanged" in `botCorrections.ts` → live verifiziert: eine neue Korrektur (Rieju in die H4-Zeile)
+  wuchs das Doc nur um **+7 Zeichen**, alle Alt-Korrekturen intakt (Test danach wieder entfernt).
+  (3) **Merge-Prompt verbietet jetzt Em-/En-Dashes** (Haiku streute „–" in den Wissens-Doc,
+  verletzt Rule 1). Achtung: bestehende En-Dashes in Alt-Korrekturen (u.a. in der Akku-Laufzeit-
+  Zeile) sind noch drin, nicht still gelöscht (könnten Thomas-Content sein) → bei Gelegenheit
+  mit Thomas klären. Dieselbe Zeile hat auch eine erfundene Zahl (Akku-Laufzeit) = separater
+  Prüfpunkt, steht schon unter „Akku-Set Restpunkte".
 - **Storefront-i18n** DE/EN/IT/ES ~komplett (~450 Keys/Sprache). AI-Slop entfernt
   (keine Em-Dashes, kein „AI-Pill"-Look). Englisch-Fallback aktiv.
 - **Domain-Migration** (2026-07-11): `sickmotos.com` ist primär; `sick-motos.com`,
@@ -99,6 +112,24 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   aus Dev Dashboard → Callback druckt Token → einsetzen → redeploy → `/admin/orders`
   prüfen. **Offen: verifizieren, dass echte Orders erscheinen.** App-/client-IDs siehe
   `src/app/api/shopify/oauth/callback/route.ts` (client_id dort als Fallback hardcoded).
+- **Analytics-Dashboard für Thomas** (`/admin/dashboard`, Nav „Analytics"): Shopify-Style
+  Übersicht mit **Alt-vs-Neu-Vergleich** (1/7/30 Tage, jede Periode gegen die Vorperiode,
+  Delta-% + Balken-Chart mit gestrichelter Vergleichslinie). Kennzahlen: **Gesamtumsatz,
+  Bestellungen, Ø Warenkorb, Sitzungen** + 2 Charts (Umsatz/Zeit, Sitzungen/Zeit).
+  - **Umsatz/Orders** aus der **Orders-Admin-API** neu berechnet (`src/lib/salesReport.ts`),
+    Berlin-Zeit-Bucketing, Test-/stornierte Orders raus, minus Refunds. Deckt sich mit
+    Shopify Analytics „Total sales" auf **~0,1%** (verifiziert Jul 9-15: 8.700 EUR / 54 Orders;
+    Orders + Steuern matchen exakt). **Wichtig:** die feine **Netto/Brutto/Rabatt/Versand-
+    Aufschlüsselung matcht NICHT** auf den Cent, weil der Shop **Brutto** (tax-inclusive)
+    verkauft und die Order-Felder dann nicht Shopifys steuer-exklusiven Report-Zeilen
+    entsprechen → diese Aufschlüsselung wurde bewusst **entfernt**. Für 1:1 braucht es
+    **`read_reports`/ShopifyQL-Scope** (Level-2, Token hat's nicht) → Freelancer/Thomas.
+  - **Sitzungen** aus dem **eigenen Besucher-Zähler** (`analyticsStore.ts`, Redis pro Tag),
+    der den echten headless-Traffic sieht, den Shopify seit dem Umzug NICHT mehr zählt
+    (Shopify-Sessions ~0, weil Storefront auf Vercel läuft). Kein Shopify-Backfill für die
+    Vergangenheit möglich → Session-Historie beginnt ab Zähler-Start; Order-Historie ist voll da.
+  - Temp-Verifikationsseite `/admin/analytics-test` (Jul-9-15-Abgleich) kann weg, sobald
+    Thomas das Dashboard abgesegnet hat.
 
 ### Offen / TODO
 - **Scene-Voice Copy-Rewrite (Thomas' Kern-Wunsch):** Die Seiten-Texte fühlen sich
