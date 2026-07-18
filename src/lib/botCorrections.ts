@@ -51,6 +51,8 @@ Rewrite and return the FULL updated document following these rules:
   longer than the current document plus the new correction, you are over-writing, stop.
 - Merge exact duplicates into one clear statement, but keep every unique detail.
 - Never contradict yourself. The newest correction always wins on the same specific point.
+- NEVER use em-dashes or en-dashes ("—" / "–") anywhere in the output. Use commas,
+  periods, or parentheses instead. This is a hard house-style rule for the whole shop.
 - Write the rules as direct instructions/answers the bot should follow, in the language the owner used.
 - Do not include meta commentary, the customer question, or the word "correction". Output ONLY the document, starting with the line "${HEADING}".`;
 }
