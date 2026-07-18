@@ -89,7 +89,12 @@ async function fetchOrders(fromDay: string, toDay: string): Promise<OrderNode[]>
   const q = `created_at:>=${addDays(fromDay, -1)} created_at:<=${addDays(toDay, 1)}`;
   const all: OrderNode[] = [];
   let after: string | null = null;
-  for (let i = 0; i < 12; i++) {
+  // Page until Shopify says there is no next page. The bound is only an
+  // infinite-loop backstop set far above any realistic window (200 x 100 =
+  // 20.000 orders), so we never silently truncate and under-report a window.
+  const MAX_PAGES = 200;
+  let i = 0;
+  for (; i < MAX_PAGES; i++) {
     const data: {
       orders: {
         edges: { node: OrderNode }[];
@@ -105,6 +110,13 @@ async function fetchOrders(fromDay: string, toDay: string): Promise<OrderNode[]>
     if (!data.orders.pageInfo.hasNextPage) break;
     after = data.orders.pageInfo.endCursor;
     if (!after) break;
+    if (i === MAX_PAGES - 1) {
+      // Should never happen at this shop's scale; if it does, the total would
+      // be under-reported, so make the truncation loud instead of silent.
+      console.error(
+        `[salesReport] order window ${fromDay}..${toDay} exceeded ${MAX_PAGES} pages, total may be undercounted`,
+      );
+    }
   }
   return all;
 }
@@ -202,7 +214,9 @@ export async function loadSalesComparison(rangeDays: number): Promise<SalesCompa
 // Percentage change vs the comparison value. Returns null when there's no
 // baseline to compare against (avoids a misleading "+100%").
 export function pctChange(current: number, previous: number): number | null {
-  if (previous === 0) return current === 0 ? 0 : null;
+  // No baseline to compare against (previous period empty or before tracking
+  // started) → return null so the UI shows "—" instead of a misleading number.
+  if (previous === 0) return null;
   return ((current - previous) / previous) * 100;
 }
 

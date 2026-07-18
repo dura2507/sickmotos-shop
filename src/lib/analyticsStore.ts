@@ -28,14 +28,17 @@ const KEY_LOCALES = (d: string) => `sm:vis:${d}:locales`;
 
 const HIT_TTL_SEC = 60 * 60 * 24 * 90; // keep raw counters 90 days
 
+// Bucket by the shop's timezone (Europe/Berlin), same as the sales report, so
+// the session days line up 1:1 with the revenue days in the dashboard. Using
+// UTC here shifted the first ~2h of every Berlin day into the wrong bucket.
 function today(): string {
-  return new Date().toISOString().slice(0, 10);
+  return new Date().toLocaleDateString("en-CA", { timeZone: "Europe/Berlin" });
 }
 
 function dateKey(offsetDaysFromToday: number): string {
   const d = new Date();
   d.setUTCDate(d.getUTCDate() + offsetDaysFromToday);
-  return d.toISOString().slice(0, 10);
+  return d.toLocaleDateString("en-CA", { timeZone: "Europe/Berlin" });
 }
 
 // Salted, daily-rotating hash so the same visitor counts once per day per
@@ -79,6 +82,11 @@ function normalizePath(p: string): string {
   return noQuery.length > 80 ? `${noQuery.slice(0, 77)}…` : noQuery;
 }
 
+// Crawlers, previewers and scripted clients that execute JS (or just POST the
+// beacon) would otherwise inflate the visitor numbers. Skip the obvious ones.
+const BOT_UA =
+  /bot|crawl|spider|slurp|mediapartners|bingpreview|headless|lighthouse|phantom|puppeteer|playwright|pingdom|uptime|monitor|curl|wget|python-requests|go-http|java\/|okhttp|facebookexternalhit|embedly|whatsapp|telegrambot|preview|scrap/i;
+
 export async function recordVisit(input: {
   path: string;
   ip: string | null;
@@ -88,6 +96,8 @@ export async function recordVisit(input: {
   locale: string | null;
 }) {
   if (!redis) return;
+  // Don't count bots/crawlers/scripted clients as real visitors.
+  if (!input.ua || BOT_UA.test(input.ua)) return;
   const d = today();
   const path = normalizePath(input.path || "/");
   const country = (input.country || "??").toUpperCase();
@@ -204,6 +214,11 @@ export type SessionsComparison = {
   prevViews: number;
   prevVisitors: number;
   persistent: boolean;
+  // True only when the whole previous window has real data. False when it
+  // reaches back before the counter started (some days are zero because we
+  // weren't tracking yet), which would otherwise produce a misleading
+  // "+280%"-style delta against an artificially low baseline.
+  prevComplete: boolean;
 };
 
 // Sessions (views + unique visitors) for an explicit list of days, plus the
@@ -222,6 +237,7 @@ export async function loadSessionsForDays(
       prevViews: 0,
       prevVisitors: 0,
       persistent: false,
+      prevComplete: false,
     };
   }
 
@@ -238,6 +254,9 @@ export async function loadSessionsForDays(
   }
 
   const [cur, prev] = await Promise.all([sumDays(currentDays), sumDays(prevDays)]);
+  // A live shop has views every day; a zero-view day in the previous window
+  // means we weren't tracking yet, so the comparison baseline is incomplete.
+  const prevComplete = prev.length > 0 && prev.every((d) => d.views > 0);
   return {
     perDay: cur,
     prevPerDay: prev,
@@ -246,6 +265,7 @@ export async function loadSessionsForDays(
     prevViews: prev.reduce((s, d) => s + d.views, 0),
     prevVisitors: prev.reduce((s, d) => s + d.visitors, 0),
     persistent: true,
+    prevComplete,
   };
 }
 

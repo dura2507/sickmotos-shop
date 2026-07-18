@@ -28,6 +28,9 @@ function int(n: number): string {
 function Delta({ cur, prev }: { cur: number; prev: number }) {
   const pct = pctChange(cur, prev);
   if (pct === null) return <span className="text-fg-dim">—</span>;
+  // Treat a rounding-zero change as neutral, not a green "up".
+  if (Math.abs(pct) < 0.05)
+    return <span className="font-semibold text-fg-muted">0,0%</span>;
   const up = pct >= 0;
   return (
     <span className={`font-semibold ${up ? "text-emerald-400" : "text-accent"}`}>
@@ -42,12 +45,16 @@ function StatCard({
   cur,
   prev,
   sub,
+  reliable = true,
 }: {
   label: string;
   value: string;
   cur: number;
   prev: number;
   sub?: string;
+  // When false, the comparison baseline is not trustworthy (e.g. it predates
+  // the tracker) so we show "—" instead of a misleading delta.
+  reliable?: boolean;
 }) {
   return (
     <div className="rounded-xl border border-border bg-surface/40 p-4">
@@ -58,7 +65,11 @@ function StatCard({
         {value}
       </p>
       <p className="mt-1.5 flex items-center gap-2 text-xs">
-        <Delta cur={cur} prev={prev} />
+        {reliable ? (
+          <Delta cur={cur} prev={prev} />
+        ) : (
+          <span className="text-fg-dim">—</span>
+        )}
         {sub && <span className="text-fg-muted">{sub}</span>}
       </p>
     </div>
@@ -238,6 +249,7 @@ export default async function AdminDashboard({
           value={sessions.persistent ? int(sessions.visitors) : "—"}
           cur={sessions.visitors}
           prev={sessions.prevVisitors}
+          reliable={sessions.persistent && sessions.prevComplete}
           sub={
             sessions.persistent
               ? `${int(sessions.views)} Aufrufe`
@@ -260,7 +272,11 @@ export default async function AdminDashboard({
             date: d.date,
             value: d.visitors,
           }))}
-          previous={sessions.prevPerDay.map((d) => d.visitors)}
+          previous={
+            sessions.prevComplete
+              ? sessions.prevPerDay.map((d) => d.visitors)
+              : []
+          }
           format={int}
         />
       </section>
@@ -269,9 +285,11 @@ export default async function AdminDashboard({
         Gesamtumsatz aus den Shopify-Order-Totals (deckt sich mit Shopify Analytics
         auf ~0,1%, Berlin-Zeit), davon Steuern {eur(c.taxes)}. Bestellungen exakt.
         Sitzungen aus dem eigenen Besucher-Zähler, der den echten headless-Traffic
-        sieht, den Shopify seit dem Umzug nicht mehr zählt. Eine feine Netto/Brutto-
-        Aufschlüsselung 1:1 wie in Shopify braucht den Report-Zugriff (read_reports)
-        und kommt, sobald der freigegeben ist.
+        sieht, den Shopify seit dem Umzug nicht mehr zählt. Der Zähler läuft seit dem
+        10.07.2026, der Sitzungs-Vergleich erscheint erst, sobald die Vorperiode
+        komplett in diesem Zeitraum liegt (vorher steht dort „—"). Eine feine
+        Netto/Brutto-Aufschlüsselung 1:1 wie in Shopify braucht den Report-Zugriff
+        (read_reports) und kommt, sobald der freigegeben ist.
       </p>
     </div>
   );
