@@ -196,6 +196,59 @@ export async function loadAnalytics(): Promise<AnalyticsSnapshot> {
   };
 }
 
+export type SessionsComparison = {
+  perDay: DailyBucket[]; // current window, oldest→newest
+  prevPerDay: DailyBucket[]; // previous window, same length, index-aligned
+  views: number;
+  visitors: number;
+  prevViews: number;
+  prevVisitors: number;
+  persistent: boolean;
+};
+
+// Sessions (views + unique visitors) for an explicit list of days, plus the
+// same for the previous comparison window. Reads exactly the days the sales
+// report uses so the two line up in the dashboard.
+export async function loadSessionsForDays(
+  currentDays: string[],
+  prevDays: string[]
+): Promise<SessionsComparison> {
+  if (!redis) {
+    return {
+      perDay: currentDays.map((date) => ({ date, views: 0, visitors: 0 })),
+      prevPerDay: prevDays.map((date) => ({ date, views: 0, visitors: 0 })),
+      views: 0,
+      visitors: 0,
+      prevViews: 0,
+      prevVisitors: 0,
+      persistent: false,
+    };
+  }
+
+  async function sumDays(days: string[]): Promise<DailyBucket[]> {
+    const [views, visitors] = await Promise.all([
+      Promise.all(days.map((d) => redis!.get<number>(KEY_VIEWS(d)))),
+      Promise.all(days.map((d) => redis!.scard(KEY_VISITORS(d)))),
+    ]);
+    return days.map((date, i) => ({
+      date,
+      views: Number(views[i] ?? 0),
+      visitors: Number(visitors[i] ?? 0),
+    }));
+  }
+
+  const [cur, prev] = await Promise.all([sumDays(currentDays), sumDays(prevDays)]);
+  return {
+    perDay: cur,
+    prevPerDay: prev,
+    views: cur.reduce((s, d) => s + d.views, 0),
+    visitors: cur.reduce((s, d) => s + d.visitors, 0),
+    prevViews: prev.reduce((s, d) => s + d.views, 0),
+    prevVisitors: prev.reduce((s, d) => s + d.visitors, 0),
+    persistent: true,
+  };
+}
+
 const COUNTRY_FLAGS: Record<string, string> = {
   DE: "🇩🇪", AT: "🇦🇹", CH: "🇨🇭", IT: "🇮🇹", ES: "🇪🇸",
   HR: "🇭🇷", FR: "🇫🇷", PL: "🇵🇱", GB: "🇬🇧", US: "🇺🇸",
