@@ -208,17 +208,20 @@ const CART_FRAGMENT = `
 // Storefront mutations DON'T benefit from Next's cache, so always
 // revalidate:false (or pass through a route handler with no cache).
 
-// Shopify Markets returns a checkoutUrl on our custom domain (e.g.
-// https://www.sick-motos.com/cart/c/XXX) because that's the "primary" domain
-// wired to this Market. But our Next.js app doesn't serve /cart/* — it lives
-// on Vercel. Rewriting the host to sickmotos.myshopify.com sends the buyer
-// straight to Shopify's checkout server, which is what actually processes it.
+// The Storefront API returns a checkoutUrl on whatever domain Shopify treats as
+// primary/market. Our Next.js storefront on Vercel doesn't serve /cart/*, so we
+// pin the checkout host to checkout.sickmotos.com, the Shopify checkout domain
+// (a subdomain of the storefront root sickmotos.com). That keeps the buyer on
+// the brand domain and gives Google a checkout URL on the same registrable
+// domain as the product pages (fixes the "mismatched checkout URL" concern).
+// Rollback: set CHECKOUT_HOST back to "sickmotos.myshopify.com" and redeploy.
+const CHECKOUT_HOST = "checkout.sickmotos.com";
 function fixCheckoutHost<T extends { checkoutUrl?: string } | null>(cart: T): T {
   if (!cart || !cart.checkoutUrl) return cart;
   try {
     const u = new URL(cart.checkoutUrl);
-    if (u.hostname !== "sickmotos.myshopify.com") {
-      u.hostname = "sickmotos.myshopify.com";
+    if (u.hostname !== CHECKOUT_HOST) {
+      u.hostname = CHECKOUT_HOST;
       u.protocol = "https:";
       u.port = "";
       cart.checkoutUrl = u.toString();
