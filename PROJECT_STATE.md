@@ -175,12 +175,24 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     Google hat via die Meta-Tags **automatisch neu verifiziert + beansprucht** (grün), kein manuelles
     Re-Claim. Warnung im Dialog beachtet (URL-Wechsel macht Claim ungültig, hier aber sofort
     auto-neu-beansprucht). Damit matcht Merchant-Domain = Feed-Domain = sickmotos.com.
-  - **Offen (Regel 8, NICHT blind „durch" melden):** Google muss neu crawlen, bis die ~1229 Produkte
-    von „受限/Limited" auf „genehmigt" kippen (Stunden bis ~2 Tage). Der operator sollte einen
-    Feed-Refresh anstoßen zum Beschleunigen. In 1-2 Tagen im Merchant/Ads-Konto prüfen: (a) Produkte
-    grün, (b) der Checkout-Feld-Wert (zeigt noch myshopify.com/cart) auf checkout.sickmotos.com
-    aktualisiert (Google reviewt Checkout-URL laut Hinweis binnen 24h). checkout.sickmotos.com-Root
-    zeigt den Storefront-Passwortschutz (nackte Theme nicht exponiert), Redirect-Theme daher optional.
+  - **Nachwehen + Fixes (2026-07-19 abends):** (1) Durch den Website-URL-Wechsel hat Google das
+    **Merchant-Checkout-Template automatisch auf `https://sickmotos.com/cart/{id}:1?checkout`
+    umgeschrieben** (Apex = Vercel = 404, operator + Thomas sahen den Fehler). Gefixt: Feld manuell
+    auf **`https://checkout.sickmotos.com/cart/{id}:1?checkout`** gestellt (verifiziert, Cart-Permalink
+    mit echter Varianten-ID → 302 in den Checkout; Googles 24h-Review läuft). Merke: Website-URL-Wechsel
+    im Merchant zieht das Checkout-Template mit um, danach IMMER kontrollieren. (2) **Re-Crawl greift:**
+    Thomas' Screenshot 18:22: **115 Approved** (war 0), 5 under review, Rest Limited → Welle läuft.
+  - **KORREKTUR einer früheren Annahme:** die **nackte alte Shopify-Theme IST unter
+    checkout.sickmotos.com öffentlich sichtbar** (alte „REITE WILD"-Landing; Passwortschutz ist AUS,
+    muss er für den Checkout auch sein). Frühere Aussage „Passwortseite schützt" war falsch (grep
+    hatte das Theme-Login-Formular erwischt). **Offen: Redirect-Snippet in `layout/theme.liquid`**
+    (Theme „Geen Experiment", id 178472648970, Ella-Schema): Whitelist-Redirect für `/`,
+    `/collections`, `/products`, `/pages`, `/blogs`, `/search`, `/policies` → sickmotos.com;
+    `/cart`, `/checkouts`, Wallets/Payments NICHT anfassen. Shopifys Code-Editor lud im
+    automatisierten Browser nicht (Monaco-Pane bleibt leer), daher manuell einfügen.
+  - **Offen (Regel 8):** In 1-2 Tagen prüfen: (a) alle Produkte grün (Limited → Approved), (b)
+    Checkout-URL-Review durch (Feld zeigt checkout.sickmotos.com), (c) Ads wieder aktiv (Thomas/
+    operator hatten sie pausiert „um kein Geld zu verbrennen", reaktivieren = deren Job).
 
 ### Offen / TODO
 - **Scene-Voice Copy-Rewrite (Thomas' Kern-Wunsch):** Die Seiten-Texte fühlen sich
