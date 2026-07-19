@@ -182,14 +182,24 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     mit echter Varianten-ID → 302 in den Checkout; Googles 24h-Review läuft). Merke: Website-URL-Wechsel
     im Merchant zieht das Checkout-Template mit um, danach IMMER kontrollieren. (2) **Re-Crawl greift:**
     Thomas' Screenshot 18:22: **115 Approved** (war 0), 5 under review, Rest Limited → Welle läuft.
-  - **KORREKTUR einer früheren Annahme:** die **nackte alte Shopify-Theme IST unter
-    checkout.sickmotos.com öffentlich sichtbar** (alte „REITE WILD"-Landing; Passwortschutz ist AUS,
-    muss er für den Checkout auch sein). Frühere Aussage „Passwortseite schützt" war falsch (grep
-    hatte das Theme-Login-Formular erwischt). **Offen: Redirect-Snippet in `layout/theme.liquid`**
-    (Theme „Geen Experiment", id 178472648970, Ella-Schema): Whitelist-Redirect für `/`,
-    `/collections`, `/products`, `/pages`, `/blogs`, `/search`, `/policies` → sickmotos.com;
-    `/cart`, `/checkouts`, Wallets/Payments NICHT anfassen. Shopifys Code-Editor lud im
-    automatisierten Browser nicht (Monaco-Pane bleibt leer), daher manuell einfügen.
+  - **Redirect-Snippet LIVE (2026-07-19 abends, Thomas hat es vom Handy eingefügt, ich habe
+    geleitet + verifiziert):** in `layout/theme.liquid` (Theme „Geen Experiment", id 178472648970,
+    Ella) direkt nach `<head>`. Whitelist-JS-Redirect: `/`, locale-only-Pfade (`/de`, `/en-hr` ...)
+    und (mit optionalem Locale-Prefix) `collections|products|pages|blogs|search|policies` →
+    sickmotos.com (Locale-Prefix wird gestript, unsere i18n ist cookie-basiert); `/cart`,
+    `/checkouts`, Wallets/Payments unangetastet. **Live verifiziert:** Root → sickmotos.com,
+    `/de/products/X` → `sickmotos.com/products/X` (200), Checkout via Cart-Permalink rendert
+    weiter sauber. Hintergrund-Korrektur: die alte Theme WAR öffentlich sichtbar (Passwortschutz
+    ist aus, frühere „Passwortseite schützt"-Annahme war falsch). Wichtig fürs nächste Mal:
+    Shopify leitet `/` serverseitig auf locale-Pfade um, ein Redirect-Skript muss locale-only-Pfade
+    explizit matchen. Shopifys Theme-Code-Editor rendert unter Browser-Automation nicht (Monaco
+    bleibt leer); Lese-Zugriff ging über die klassische Assets-REST-API mit Session, Schreib-Zugriff
+    wurde vom Permission-Classifier geblockt → Thomas' Handy-Paste war der Weg.
+  - **Feed-Link-Mechanik (wichtig, verifiziert am Produkt-Rohdatensatz):** die Shopify-Feed-Links
+    tragen die Domain, die beim letzten Produkt-Sync Shopify-Primary war (alte Produkte: noch
+    `sick-motos.com/de/products/...`, funktioniert via 301). Seit Primary = checkout.sickmotos.com
+    bekommen NEU gesyncte Produkte checkout.sickmotos.com-Links → durch das Redirect-Snippet
+    landen Crawler/Kunden trotzdem auf sickmotos.com. **Operator-Resync ist damit gefahrlos.**
   - **Offen (Regel 8):** In 1-2 Tagen prüfen: (a) alle Produkte grün (Limited → Approved), (b)
     Checkout-URL-Review durch (Feld zeigt checkout.sickmotos.com), (c) Ads wieder aktiv (Thomas/
     operator hatten sie pausiert „um kein Geld zu verbrennen", reaktivieren = deren Job).
