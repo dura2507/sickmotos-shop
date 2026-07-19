@@ -27,8 +27,15 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
 
 - **Headless Shopify:** Storefront API für Browse/Cart, Shopify-hosted Checkout
   (nur brandbar, nicht selbst-hostbar ohne Plus). `fixCheckoutHost()` in
-  `src/lib/shopify.ts` schreibt jede Checkout-URL auf `sickmotos.myshopify.com` um
-  → Domain-Wechsel bricht den Checkout nie.
+  `src/lib/shopify.ts` pinnt jede Checkout-URL auf `CHECKOUT_HOST` (seit 2026-07-19
+  **`checkout.sickmotos.com`**, vorher `sickmotos.myshopify.com`). Rollback = die eine
+  Konstante zurücksetzen + redeploy. Der Checkout läuft jetzt auf einer sickmotos.com-
+  Subdomain (Shopify-Primary, eigenes TLS), gleiche Root wie die Storefront → behebt
+  Googles „mismatched checkout URL". End-to-end getestet (echtes Checkout rendert auf
+  checkout.sickmotos.com, alle Zahlarten). **ACHTUNG DNS/Shopify-Falle:** eine Custom-
+  Domain in Shopify zu „connecten" macht sie AUTOMATISCH zur Primary (myshopify wird
+  Redirect) → bei noch nicht fertigem TLS bricht das den Live-Checkout kurz. Immer erst
+  TLS-fertig abwarten, dann promoten, sofort per curl + echtem Checkout testen.
 - **Auth:** on-site Login/Register/Forgot via Storefront API (kein OAuth-Redirect mehr).
 - **i18n:** cookie-basiert (`sm_lang`), KEIN URL-Restructure. DE/EN/IT/ES. Server liest
   Locale, ganze Seite rendert in der Sprache. Client-Komponenten via `LocaleProvider`
@@ -148,6 +155,25 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     Vergleiche >90 Tage.
   - Temp-Verifikationsseite `/admin/analytics-test` (Jul-9-15-Abgleich) kann weg, sobald
     Thomas das Dashboard abgesegnet hat.
+- **Google Merchant „Produkte abgelehnt" diagnostiziert + Checkout-Domain umgezogen (2026-07-19):**
+  Der operator/Ads-Kollege drängte auf „Verbindung resetten" + „Checkout auf sickmotos.com".
+  Read-only-Check ergab: **Merchant-Verbindung ist Active (nicht kaputt), aber alle ~1229 Produkte
+  „受限/Limited"** wegen **„网店网址不一致 / Mismatched online store URL"**. Ursache (Merchant →
+  Geschäftsinfos): das Feld **„Deine Website" steht auf `sickmotos.myshopify.com`**, die Feed-
+  Produkt-URLs sind aber `sickmotos.com` (seit der Domain-Migration ~8.-11. Juli, Chart zeigt den
+  Kipp-Punkt). **Eigentlicher Fix (Merchant-Seite, operator, 2 Min, null Risiko): „Deine Website"
+  auf `sickmotos.com` stellen.** DAS entsperrt die 1229 Produkte, nicht der Checkout.
+  - **Checkout-Domain trotzdem umgezogen** (Thomas' + operators Wunsch, komplementär gegen den
+    separaten „mismatched checkout URL"-Check): `checkout.sickmotos.com` als CNAME → `shops.myshopify.com`
+    (GoDaddy, Apex/www unangetastet), in Shopify verbunden + als **Primary** gesetzt, `CHECKOUT_HOST`
+    im Code umgestellt, **echter Testkauf** rendert sauber auf checkout.sickmotos.com (alle Zahlarten).
+    **Zwischenfall dabei ehrlich:** das erste „Connect" hat die Domain automatisch zur Primary gemacht
+    während TLS noch provisionierte → ~2-4 Min Checkout-SSL-Fehler-Risiko, sofort per curl bemerkt +
+    revertiert, dann sauber mit fertigem TLS gemacht. Lehre steht in Architektur-Abschnitt.
+  - **Offen:** operator muss (a) Merchant-Website-URL auf sickmotos.com, dann (b) Feed-Refresh +
+    Merchant-Recheck; danach im Konto prüfen ob Produkte grün werden UND der Checkout-URL-Mismatch weg
+    ist (Regel 8, nicht blind „durch" melden). Checkout.sickmotos.com-Root zeigt den Storefront-
+    Passwortschutz (nackte Theme also nicht exponiert), Redirect-Theme daher optional.
 
 ### Offen / TODO
 - **Scene-Voice Copy-Rewrite (Thomas' Kern-Wunsch):** Die Seiten-Texte fühlen sich
