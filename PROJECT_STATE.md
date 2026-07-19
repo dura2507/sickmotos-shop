@@ -170,10 +170,17 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     **Zwischenfall dabei ehrlich:** das erste „Connect" hat die Domain automatisch zur Primary gemacht
     während TLS noch provisionierte → ~2-4 Min Checkout-SSL-Fehler-Risiko, sofort per curl bemerkt +
     revertiert, dann sauber mit fertigem TLS gemacht. Lehre steht in Architektur-Abschnitt.
-  - **Offen:** operator muss (a) Merchant-Website-URL auf sickmotos.com, dann (b) Feed-Refresh +
-    Merchant-Recheck; danach im Konto prüfen ob Produkte grün werden UND der Checkout-URL-Mismatch weg
-    ist (Regel 8, nicht blind „durch" melden). Checkout.sickmotos.com-Root zeigt den Storefront-
-    Passwortschutz (nackte Theme also nicht exponiert), Redirect-Theme daher optional.
+  - **Merchant-Website-URL selbst umgestellt (2026-07-19, auf Leons Ansage):** in Merchant →
+    Geschäftsinfos → „Deine Website" von `sickmotos.myshopify.com` auf **`sickmotos.com`** geändert.
+    Google hat via die Meta-Tags **automatisch neu verifiziert + beansprucht** (grün), kein manuelles
+    Re-Claim. Warnung im Dialog beachtet (URL-Wechsel macht Claim ungültig, hier aber sofort
+    auto-neu-beansprucht). Damit matcht Merchant-Domain = Feed-Domain = sickmotos.com.
+  - **Offen (Regel 8, NICHT blind „durch" melden):** Google muss neu crawlen, bis die ~1229 Produkte
+    von „受限/Limited" auf „genehmigt" kippen (Stunden bis ~2 Tage). Der operator sollte einen
+    Feed-Refresh anstoßen zum Beschleunigen. In 1-2 Tagen im Merchant/Ads-Konto prüfen: (a) Produkte
+    grün, (b) der Checkout-Feld-Wert (zeigt noch myshopify.com/cart) auf checkout.sickmotos.com
+    aktualisiert (Google reviewt Checkout-URL laut Hinweis binnen 24h). checkout.sickmotos.com-Root
+    zeigt den Storefront-Passwortschutz (nackte Theme nicht exponiert), Redirect-Theme daher optional.
 
 ### Offen / TODO
 - **Scene-Voice Copy-Rewrite (Thomas' Kern-Wunsch):** Die Seiten-Texte fühlen sich
