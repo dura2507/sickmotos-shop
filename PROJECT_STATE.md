@@ -294,3 +294,12 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
    Merchant, GTM, Analytics, Shopify, Checkout, Tracking den echten End-Zustand im Konto
    oder Funnel prüfen (reingehen und schauen) oder klar sagen „nur Code-Seite gefixt, Konto
    nicht geprüft". Immer sagen WIE geprüft und WAS nicht.
+9. **Weiterleitungs-Standard (Leon, 2026-07-20): Alles, was für Thomas formuliert wird,
+   muss zu 100% selbst verifiziert sein.** Thomas vertraut Leon, falsche Infos gehen auf
+   Leons Kappe. Konkret: (a) „zum Weiterleiten"-Texte enthalten NUR end-to-end selbst
+   geprüfte Sätze (echtes Konto, echter Klick-Durchlauf; curl allein reicht bei UI nicht).
+   (b) Prognosen IM Text als Prognosen formulieren („sollte in 1-2 Tagen", nie „ist durch").
+   (c) Schritt-Anleitungen für Thomas vorher am selben Objekt testen oder explizit als
+   „ungetestet" markieren. (d) Nachdem Thomas/operator auf Basis der Info gehandelt hat,
+   Ergebnis sofort nachprüfen und Abweichungen unaufgefordert melden. (e) Falsche frühere
+   Aussagen sofort und unaufgefordert korrigieren, bevor sie weiterwandern.
