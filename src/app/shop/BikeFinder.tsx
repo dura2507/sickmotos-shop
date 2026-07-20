@@ -62,9 +62,27 @@ export function BikeFinder({
   useEffect(() => {
     if (selectedBrand || selectedYear || selectedModel) return;
     const saved = readBike();
-    if (saved.brand || saved.year || saved.model) {
-      onChange(saved.brand, saved.year, saved.model);
-    }
+    if (!(saved.brand || saved.year || saved.model)) return;
+    // Validate the saved selection against the CURRENT catalog. Stale
+    // localStorage (brand renamed, model gone, year no longer offered)
+    // would otherwise pre-select chips that no longer exist and leave the
+    // grid empty with no visible reason.
+    const brand =
+      saved.brand && brands.some((b) => b.name === saved.brand)
+        ? saved.brand
+        : null;
+    const model =
+      brand &&
+      saved.model &&
+      (modelsByBrand[brand] ?? []).some((m) => m.name === saved.model)
+        ? saved.model
+        : null;
+    const validYears = brand
+      ? yearsByFit[model ? `${brand}::${model}` : brand] ?? []
+      : years;
+    const year =
+      saved.year && validYears.includes(saved.year) ? saved.year : null;
+    if (brand || year) onChange(brand, year, model);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

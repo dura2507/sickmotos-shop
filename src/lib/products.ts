@@ -131,6 +131,9 @@ export const BIKE_BRANDS = [
   "Malaguti",
   "Mondial",
   "Honda",
+  // Stark Future (STARK VARG). Title scan matches "STARK VARG ..." products;
+  // verified no other title contains "stark" as a substring.
+  "Stark",
 ] as const;
 
 export type BikeBrand = (typeof BIKE_BRANDS)[number];
@@ -159,7 +162,16 @@ export function getBikeBrands(p: ShopifyProduct): BikeBrand[] {
 // year row for unrelated models).
 
 const YEAR_RE = /(20[0-2][0-9]|19[89][0-9])/g;
-const RANGE_RE = /(20[0-2][0-9])\s*[-–]\s*(20[0-2][0-9])/g;
+// Real titles use several range formats: "2017-2025" (full), "2021-24"
+// (two-digit end year), "2020-" / "2019-on" / "2024+" (open-ended, still in
+// production). The tail is optional so open ranges match too; displacement
+// figures like "50/125" stay excluded because the start needs 4 digits.
+const RANGE_RE =
+  /(20[0-2][0-9]|19[89][0-9])\s*[-–]\s*(20[0-2][0-9]|19[89][0-9]|[0-9]{2}(?![0-9])|on\b)?/gi;
+const PLUS_RE = /(20[0-2][0-9])\s*\+/g;
+
+// Open-ended fit ranges ("2020-") run through next year's models.
+const MAX_FIT_YEAR = Math.min(new Date().getFullYear() + 1, 2030);
 
 function yearsFromString(s: string, into: Set<number>) {
   for (const m of s.matchAll(YEAR_RE)) {
@@ -168,8 +180,27 @@ function yearsFromString(s: string, into: Set<number>) {
   }
   for (const m of s.matchAll(RANGE_RE)) {
     const a = parseInt(m[1], 10);
-    const b = parseInt(m[2], 10);
+    const tail = m[2];
+    let b: number;
+    if (!tail) {
+      // Bare trailing dash. Only treat it as an open range when it isn't a
+      // hyphenated word ("2021-Modelle"), i.e. nothing word-like follows.
+      const next = s[(m.index ?? 0) + m[0].length] ?? "";
+      if (/[a-z0-9äöü]/i.test(next)) continue;
+      b = MAX_FIT_YEAR;
+    } else if (/^on$/i.test(tail)) {
+      b = MAX_FIT_YEAR; // "2019-on"
+    } else if (tail.length === 2) {
+      b = Math.floor(a / 100) * 100 + parseInt(tail, 10); // "2021-24"
+    } else {
+      b = parseInt(tail, 10); // "2017-2025"
+    }
+    if (b < a || b > 2030) continue;
     for (let y = a; y <= b; y++) into.add(y);
+  }
+  for (const m of s.matchAll(PLUS_RE)) {
+    const a = parseInt(m[1], 10);
+    for (let y = a; y <= MAX_FIT_YEAR; y++) into.add(y);
   }
 }
 
@@ -227,10 +258,15 @@ export function getModels(p: ShopifyProduct): string[] {
   return Array.from(models);
 }
 
+// Chips in the Bike Finder must never offer a choice that ends in an empty
+// grid. The grid filters to in-stock products by default, so model/year chip
+// building skips sold-out products (a year whose only product is sold out
+// would otherwise render as a dead chip).
 export function getModelsForBrand(brand: string): { name: string; count: number }[] {
   const counts: Record<string, number> = {};
   const brandLower = brand.toLowerCase();
   for (const p of allProducts) {
+    if (!isInStock(p)) continue;
     if (!getBikeBrands(p).includes(brand as BikeBrand)) continue;
     for (const model of getModels(p)) {
       if (!model.toLowerCase().startsWith(brandLower + " ")) continue;
@@ -240,6 +276,30 @@ export function getModelsForBrand(brand: string): { name: string; count: number 
   return Object.entries(counts)
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count);
+}
+
+// Years a single product fits for ONE specific brand. Cross-compat products
+// list multiple brands in their tags but only reference one in the title
+// (e.g. an injector titled "...Yamaha WR 125 X/R 2009-2016" that's also
+// tagged Beta RR 125 LC). Title-derived years apply to a brand only when the
+// title mentions it; tag-derived years only from tags of that same brand.
+export function getYearsForBrandOnProduct(
+  p: ShopifyProduct,
+  brand: string
+): number[] {
+  const years = new Set<number>();
+  const brandLower = brand.toLowerCase();
+  for (const t of p.tags) {
+    const tagBrand = BIKE_BRANDS.find((b) =>
+      t.toLowerCase().startsWith(b.toLowerCase() + " ")
+    );
+    if (tagBrand?.toLowerCase() !== brandLower) continue;
+    yearsFromString(t, years);
+  }
+  if (p.title.toLowerCase().includes(brandLower)) {
+    yearsFromString(p.title, years);
+  }
+  return Array.from(years).sort((a, b) => a - b);
 }
 
 // Years that actually apply for a given brand + optional model. Used by the
@@ -252,6 +312,7 @@ export function getYearsForFit(
   const brandLower = brand.toLowerCase();
   const modelLower = model?.toLowerCase();
   for (const p of allProducts) {
+    if (!isInStock(p)) continue;
     if (!getBikeBrands(p).includes(brand as BikeBrand)) continue;
     if (modelLower) {
       const productModels = getModels(p).map((m) => m.toLowerCase());
@@ -267,22 +328,7 @@ export function getYearsForFit(
         continue;
       }
     }
-
-    // Cross-compat products list multiple brands in their tags but only
-    // reference one in the title (e.g. an injector titled "...Yamaha WR
-    // 125 X/R 2009-2016" that's also tagged Beta RR 125 LC). Title-derived
-    // years apply to THIS brand only when the title mentions it; otherwise
-    // they belong to a different brand entirely.
-    for (const t of p.tags) {
-      const tagBrand = BIKE_BRANDS.find((b) =>
-        t.toLowerCase().startsWith(b.toLowerCase() + " ")
-      );
-      if (tagBrand?.toLowerCase() !== brandLower) continue;
-      yearsFromString(t, years);
-    }
-    if (p.title.toLowerCase().includes(brandLower)) {
-      yearsFromString(p.title, years);
-    }
+    for (const y of getYearsForBrandOnProduct(p, brand)) years.add(y);
   }
   return Array.from(years).sort((a, b) => a - b);
 }
@@ -363,6 +409,10 @@ export type CardProduct = {
   inStock: boolean;
   fits: string[];
   years: number[];
+  // Years attributed per brand. The grid's year filter uses this when a
+  // brand is selected so cross-compat products don't leak another brand's
+  // build years (e.g. Yamaha years showing up under Beta).
+  yearsByBrand: Partial<Record<BikeBrand, number[]>>;
   models: string[];
   // Storefront variant gid of the first available variant. Needed for
   // one-click auto-add flows (e.g. lamp -> converter) where we don't want
@@ -377,17 +427,23 @@ function defaultVariantGid(p: ShopifyProduct): string | null {
 
 export function toCard(p: ShopifyProduct): CardProduct {
   const { price, compareAt } = getPrice(p);
+  const brands = getBikeBrands(p);
+  const yearsByBrand: Partial<Record<BikeBrand, number[]>> = {};
+  for (const b of brands) {
+    yearsByBrand[b] = getYearsForBrandOnProduct(p, b);
+  }
   return {
     handle: p.handle,
     title: cleanTitle(p.title),
     price,
     compareAt,
     image: p.images[0]?.src ?? "",
-    brands: getBikeBrands(p),
+    brands,
     category: categorize(p),
     inStock: isInStock(p),
     fits: p.options[0]?.values.slice(0, 4) ?? [],
     years: getYears(p),
+    yearsByBrand,
     models: getModels(p),
     defaultVariantGid: defaultVariantGid(p),
   };
@@ -561,8 +617,17 @@ export function getShopData(): ShopData {
   const brandCounts = countByBrand();
   const years = getAllYears();
 
+  // Brand chips count in-stock products only, mirroring the grid's default
+  // "in stock" filter, so a chip never promises more than the grid delivers.
+  const inStockBrandCounts: Record<string, number> = {};
+  for (const p of allProducts) {
+    if (!isInStock(p)) continue;
+    for (const b of getBikeBrands(p)) {
+      inStockBrandCounts[b] = (inStockBrandCounts[b] ?? 0) + 1;
+    }
+  }
   const brandList = (BIKE_BRANDS as readonly string[])
-    .map((name) => ({ name, count: brandCounts[name] ?? 0 }))
+    .map((name) => ({ name, count: inStockBrandCounts[name] ?? 0 }))
     .filter((b) => b.count > 0)
     .sort((a, b) => b.count - a.count);
 

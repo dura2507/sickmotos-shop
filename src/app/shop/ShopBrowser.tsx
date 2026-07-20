@@ -99,7 +99,11 @@ export function ShopBrowser({
       list = list.filter((p) =>
         garageFilter.some((b) => {
           if (!p.brands.includes(b.brand as BikeBrand)) return false;
-          if (b.year && p.years.length > 0 && !p.years.includes(b.year)) return false;
+          // Years attributed to THIS brand only (cross-compat products carry
+          // other brands' build years too). Empty list = universal part
+          // without year info; keep it rather than hiding it.
+          const ys = p.yearsByBrand[b.brand as BikeBrand] ?? p.years;
+          if (b.year && ys.length > 0 && !ys.includes(b.year)) return false;
           return true;
         })
       );
@@ -108,7 +112,15 @@ export function ShopBrowser({
         list = list.filter((p) => p.brands.includes(bikeBrand as BikeBrand));
       }
       if (bikeYear) {
-        list = list.filter((p) => p.years.includes(bikeYear));
+        // Same two rules as the garage filter: brand-attributed years when a
+        // brand is selected, and products without any year info (universal
+        // parts like the 50cc LED lamps or battery packs) always pass.
+        list = list.filter((p) => {
+          const ys = bikeBrand
+            ? p.yearsByBrand[bikeBrand as BikeBrand] ?? []
+            : p.years;
+          return ys.length === 0 || ys.includes(bikeYear);
+        });
       }
       if (bikeModel) {
         const m = bikeModel.toLowerCase();
