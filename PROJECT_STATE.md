@@ -111,6 +111,24 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   wie Nockenwellen/FuelX). Bot (`src/lib/botKnowledge.ts`) kennt die Differenzierung inkl.
   Pin-Mapping, live getestet (Beta 50 → 3-Pin, Sherco 50 → 4-Pin).
 
+- **BikeFinder/Modellsuche Komplett-Fix (2026-07-20, nach Thomas' „unter Beta 50 tauchen nicht
+  alle Produkte auf" + Leons „Jahre ohne Ergebnisse"):** Multi-Agent-Audit (echte Matching-Logik
+  gegen alle 486 Produkte ausgeführt) fand 5 Ursachen, alle gefixt + live verifiziert:
+  (1) Jahr-Filter warf Produkte ohne Jahresinfo raus (8 von 13 Beta-50-Produkten, alle
+  universellen 50er-LEDs/Akkus, verschwanden bei Jahreswahl) → Universalteile passieren jetzt.
+  (2) Jahres-Parser konnte keine zweistelligen Endjahre („2021-24", 87x) und keine offenen
+  Ranges („2020-", „2024+") → bei Beta+2023 fehlten 66 von 94 Produkten. Parser erweitert,
+  Wort-Bindestriche („2021-Modelle") bleiben ausgeschlossen. (3) Jahr-Filter nutzte die
+  Jahres-Union aller Marken (Yamaha-Baujahre bleedeten unter Beta) → `CardProduct.yearsByBrand`,
+  Filter markenattribuiert. (4) Chips waren nicht lagerbestandsbewusst (19 leere Modell+Jahr-
+  Kombos) → Marken/Modell/Jahres-Chips zählen nur In-Stock. (5) Marke **Stark** (STARK VARG,
+  9 Produkte) ergänzt, war in keiner Suche. Dazu: BikeFinder-localStorage-Restore validiert
+  gegen Katalog. **Live getestet:** Beta+2023 = 77 Treffer inkl. LED/Akku/Nockenwelle/FuelX,
+  0 leere Kombos (lokal gegen alle Produkte gerechnet). Mobile-Layout unverändert (nur Logik).
+  **Offen (Thomas' Datenseite, aus dem Audit):** ~18 Produkte mit falschem „Beta"-Tag (sind
+  KTM-Duke/Yamaha-MT/Fantic-Teile), Tag „Beta RR 50 LC" auf reinen 125er-Lampen, 14 Produkte
+  ohne product_type → in Shopify pflegen, dann wird die Zuordnung noch schärfer.
+
 ### In Arbeit / muss verifiziert werden
 - **Shopify Admin Orders** (`/admin/orders` = echte Bestellungen): OAuth-Offline-Token-
   Flow gebaut (`/api/shopify/oauth/callback`, `src/lib/shopifyAdmin.ts`, API-Version
