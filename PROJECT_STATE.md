@@ -258,6 +258,24 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   „Pending"-Status der App-Verbindung = Googles Review nach dem Reconnect, nicht anfassen.
   Nebenbei: GitHub-HTTPS-Token dieses Rechners ist tot, `origin` auf SSH umgestellt
   (`git@github.com:dura2507/sickmotos-shop.git`, Key `~/.ssh/id_ed25519_github` funktioniert).
+- **Regression Nr. 2 gleicher Ursache + Recovery läuft (2026-07-21 nachmittags):** Feld „Deine
+  Website" stand WIEDER auf checkout.sickmotos.com (dritte Umschreibung; Thomas-Screenshots 11:41,
+  Approved 183→0, App-Verbindung „Pending", CSV-Upload des Operators scheiterte am Quellen-Limit,
+  Fehlertext auf seinem Screenshot: „数据源数量已达到上限"). Um ~13:40 CEST zurück auf
+  `sickmotos.com` gestellt (Auto-Verify + Auto-Claim via Meta-Tags griffen sofort, Checkout-
+  Template blieb intakt). **Recovery messbar schnell:** ~30 Min später Approved 0→194 (über
+  gestrigem Peak 183), Limited 1203→1009. Zusätzlich Supplemental-Feed-Refetch MANUELL getriggert
+  (Quellen-Detailseite → „更新/Aktualisieren"-Button; letzter Fetch danach 13:59 CEST), statt auf
+  den 00:00-Auto-Fetch zu warten. Merke: der Refetch-Button ist der Beschleuniger-Hebel nach jedem
+  Link-Rewrite der App. Rest-Issues im Diagnostics-Snapshot 13:40: 791 Mismatch (löst der Feed
+  auf) + 216 „Produktseite nicht erreichbar" = VERALTETER Flag, live widerlegt (Beispiel-URL
+  liefert 200 in <1s für normale UA, Googlebot UND Storebot-Google; Produkt existiert, Link steht
+  seit dem Feed-Match auf sickmotos.com). Zeitachse-Falle: Merchant-UI zeigt Zeiten in Konto-
+  Zeitzone „AST" (6h hinter CEST), 07:40 AST = 13:40 CEST. Prognose (als Prognose an Leon/Thomas
+  kommuniziert): Großteil der 1009 Limited sollte binnen 24-48h drehen, gemessen an 0→194 in 30
+  Min; „Wochen"-Extrapolation von gestern Abend ist obsolet, weil der Feed jetzt ALLE Links auf
+  einmal überschreibt statt Produkt-für-Produkt-Resync. Falls es doch stockt, Plan B aus der
+  Recherche: Attribute-Rules-Add-on bzw. AdNabu (~99$/M).
 
 ### Offen / TODO
 - **Scene-Voice Copy-Rewrite (Thomas' Kern-Wunsch):** Die Seiten-Texte fühlen sich
