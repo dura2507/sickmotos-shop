@@ -291,6 +291,21 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   beim Anlegen vorher: „您已超出 Feed 限制"). Länder-Tail (~330 Offers außerhalb DE) bewusst offen,
   bräuchte je (Label, Sprache) eine weitere Quelle + Slot-Löschung; erst mit Leon klären ob nötig,
   deutsche Ads blockiert er nicht.
+- **Abend-Beschleunigung (2026-07-21 ~19:30-20:15, nach Leons „muss schneller gehen"):** Approved
+  hing seit ~14:30 bei 275 (die zwei Schübe 194+81 = exakt unsere zwei Feed-Matches). Frischer
+  Issues-Export bewies: DE-Mismatch bei AKTUELLEN Produkten = 0 (nur noch 54 tote Varianten),
+  d.h. Deutschland ist datenseitig komplett, es hängt NUR an den 218 stale „Unreachable"-Flags.
+  Getan: (1) **„Websiteprüfung anfordern"-Button gefunden + geklickt** (Diagnostics → Karte
+  „无法访问商品页面" → 查看解决方案 → 申请网站检查): Google re-crawlt die Seiten, dauert bis 12h,
+  danach 12h-Sperre für erneuten Antrag. DER Hebel für stale Unreachable-Flags. (2) **Drei
+  weitere Supplemental-Quellen** für den Länder-Tail (gleiche Feed-URL, tägl. 00:00): SOURCE 4 =
+  EUR_35948069130/en (Österreich, 107), SOURCE 5 = EUR_35948265738/es (Spanien, 87 sofort
+  gematcht), SOURCE 6 = EUR_35948003594/en (Multi-Label 20 Länder, 134). Für Slots gelöscht
+  (alle 0 Produkte): THB/Thailand, EUR_35948265738/en-Quelle (Spanien englisch), AUD/Australien.
+  Verbleibender Klein-Tail (~230 Offer-Einträge: GR 42, NL 40, BE 33, PT 27, FI 25, IT 21, FR 19,
+  Rest Mini) bewusst offen, bei Bedarf gleiches Muster. Merke Dialog-Falle: URL/Label-Feld erst
+  NACH Seiten-Load beschreibbar, Klicks landen sonst ins Leere; Sprach-Dropdown via find/ref
+  klicken, Koordinaten verrutschen.
 
 ### Offen / TODO
 - **Scene-Voice Copy-Rewrite (Thomas' Kern-Wunsch):** Die Seiten-Texte fühlen sich
