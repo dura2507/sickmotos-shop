@@ -276,6 +276,21 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   Min; „Wochen"-Extrapolation von gestern Abend ist obsolet, weil der Feed jetzt ALLE Links auf
   einmal überschreibt statt Produkt-für-Produkt-Resync. Falls es doch stockt, Plan B aus der
   Recherche: Attribute-Rules-Add-on bzw. AdNabu (~99$/M).
+- **Mismatch-Struktur exakt vermessen + zweite Supplemental-Quelle für DE/Englisch (2026-07-21
+  ~14:30):** Issues-Export aus Diagnostics (10.686 Zeilen) gegen products.json gerechnet:
+  Mismatch = nur 428 unique Offers (Karte zeigt 791 wegen Länder-Multiplikation), davon 373
+  aktuelle Produkt+Variante, 55 gelöschte Varianten (expiren von selbst), 0 gelöschte Produkte.
+  Aufteilung nach (FeedLabel, Sprache): **DE/de nur noch 49, DE/en 88** (= Deutschland), Rest
+  Länder-Tail (AT/en 107, ES/es 91, EUR-Multi/en 134, GR 42, NL 40, ...). Kernerkenntnis: die
+  App reicht jedes Produkt doppelt ein (de+en), unsere Supplemental-Quelle griff nur fuer (DE,
+  Deutsch) → en-Offers blieben mismatched. Die 218 „Produktseite nicht erreichbar" sind ALLE
+  aktuelle Produkte, URLs liefern 200 (auch Googlebot/Storebot) = stale Flags. **Fix:**
+  „SUPPLEMENTAL SOURCE 3" angelegt (gleiche Feed-URL, Feed-Label DE, Sprache ENGLISCH, an beide
+  „Shopify App API (DE, 英语)"-Quellen gehängt, täglicher Fetch 00:00): erster Fetch 1446 Zeilen,
+  **81 en-Offers sofort gematcht**. Für den Slot TZS/Tansania-Quelle gelöscht (0 Produkte; Fehler
+  beim Anlegen vorher: „您已超出 Feed 限制"). Länder-Tail (~330 Offers außerhalb DE) bewusst offen,
+  bräuchte je (Label, Sprache) eine weitere Quelle + Slot-Löschung; erst mit Leon klären ob nötig,
+  deutsche Ads blockiert er nicht.
 
 ### Offen / TODO
 - **Scene-Voice Copy-Rewrite (Thomas' Kern-Wunsch):** Die Seiten-Texte fühlen sich
