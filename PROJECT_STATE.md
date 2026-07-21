@@ -221,6 +221,43 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   - **Offen (Regel 8):** In 1-2 Tagen prüfen: (a) alle Produkte grün (Limited → Approved), (b)
     Checkout-URL-Review durch (Feld zeigt checkout.sickmotos.com), (c) Ads wieder aktiv (Thomas/
     operator hatten sie pausiert „um kein Geld zu verbrennen", reaktivieren = deren Job).
+- **Merchant-Regression 183→0 diagnostiziert + doppelt gefixt (2026-07-21):** Thomas meldete
+  morgens: Approved von 183 auf 0, alle 1203 Limited, Shopify-App „Ausstehend/Pending" mit
+  3757 Offers (fast verdoppelt, weil de+en-Sprachvarianten doppelt eingereicht werden). Read-only
+  verifiziert: einziges Produkt-Issue war wieder „Mismatched online store URL", und das Merchant-
+  Feld „Deine Website" stand NICHT mehr auf sickmotos.com, sondern auf **checkout.sickmotos.com**
+  (verified+claimed). Der Operator hatte KEINE CSV hochgeladen (Datenquellen zeigen keine), sein
+  Upload-Versuch scheiterte an „数据源数量已达到上限" = Datenquellen-Limit (188 Quellen, die App
+  legt pro Land/Währung eine an; offizielles Limit 200). Sein „Connection-Reset" hat mutmaßlich
+  das Website-Feld auf die Shopify-Primary (checkout.sickmotos.com) zurückgeschrieben — ob App-
+  Push oder manuell, ist von außen nicht unterscheidbar. **Fixes (beide live verifiziert):**
+  (1) Website-Feld zurück auf `sickmotos.com`, Google hat sofort auto-verifiziert + beansprucht
+  (Meta-Tags), Checkout-Template blieb diesmal intakt (`checkout.sickmotos.com/cart/{id}:1`).
+  (2) **Dauerhafter Link-Fix statt einmaliger CSV:** neue Route
+  `src/app/merchant-link-feed.csv/route.ts` (commit 508b04b) serviert
+  `https://sickmotos.com/merchant-link-feed.csv` (id+link für alle Varianten, Format
+  `shopify_DE_{productId}_{variantId}`, regeneriert sich pro Deploy aus products.json). Im
+  Merchant als ergänzende Datenquelle „SUPPLEMENTAL SOURCE 2" angelegt (Feed-Label DE, Sprache
+  Deutsch, an alle 3 „Shopify App API"-DE-Primärquellen gehängt), **täglicher Auto-Refetch 00:00**.
+  Erster Fetch verifiziert: 1446 Zeilen, „alle Attribute erkannt", 412 Offers sofort gematcht;
+  1034 „Produkt existiert nicht" = Offers, die die App gerade neu einreicht, matchen nach.
+  Damit überschreibt der Feed die Produkt-Links dauerhaft auf sickmotos.com, egal welche Domain
+  die Shopify-App schreibt. Für den Slot: leere App-Quelle NOK (Norwegen, 0 Produkte) gelöscht
+  (188→187; Recherche: App legt sie evtl. neu an — egal, unsere Quelle existiert dann schon).
+  **Multi-Agent-Recherche (14 Agenten, Quellen im Task-Output):** Es gibt KEIN Setting in der
+  Google&YouTube-App für die Feed-Link-Domain (von Google/Shopify offiziell eingeräumt); Standard-
+  Lösungen der Branche: Merchant-Feed-Regeln bzw. ergänzender Feed (= unser Weg, von Shopifys
+  Hydrogen-Migrationsdoku empfohlen), alternativ Dritt-Feed-Apps (AdNabu 99$/M dokumentiert
+  headless-fähig, Simprosys/Multifeed billiger aber Support fragen). Attribute-Rules im Merchant
+  (Add-on „Advanced data source management", Find&Replace auf link) wären die 0-Euro-Alternative,
+  ob `link` als Regelziel wählbar ist, ist unverifiziert. **Standing-Warnung ab jetzt:** Die App
+  kann das Website-Feld bei Reconnect/Resync WIEDER überschreiben → nach jedem Operator-Eingriff
+  Website-Feld + Checkout-Template kontrollieren; Operator angewiesen: nie mehr trennen/neu
+  verbinden, Website-Feld nicht anfassen, keine CSV-Uploads mehr nötig. Offen (Regel 8): in 24-72h
+  prüfen ob Approved wieder steigt (Prognose laut Google-Doku, gestern ging es in Stunden los);
+  „Pending"-Status der App-Verbindung = Googles Review nach dem Reconnect, nicht anfassen.
+  Nebenbei: GitHub-HTTPS-Token dieses Rechners ist tot, `origin` auf SSH umgestellt
+  (`git@github.com:dura2507/sickmotos-shop.git`, Key `~/.ssh/id_ed25519_github` funktioniert).
 
 ### Offen / TODO
 - **Scene-Voice Copy-Rewrite (Thomas' Kern-Wunsch):** Die Seiten-Texte fühlen sich
