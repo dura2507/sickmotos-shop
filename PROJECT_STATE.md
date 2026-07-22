@@ -325,6 +325,14 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   Google-Kontos verwenden" aktiviert → UI dauerhaft Deutsch fuer kristian2507@gmail.com,
   unabhaengig von der Konto-Sprache. Ads: Thomas hat Kampagnen wieder aktiviert (PMax Germany
   aktiv, „58% abgelehnt" = die noch limitierten Produkte, faellt mit der Recovery).
+- **Tag-2-Nachmittag (2026-07-22):** 2. Websiteprüfung hat die „Unreachable"-Karte KOMPLETT
+  geleert (105→0, Karte aus Diagnostics verschwunden, inkl. der 29 Lampen). Approved-Verlauf:
+  876 (Vormittag) → 997 (Mittag), Mismatch 352→316. **SOURCE 10 (Portugal, EUR_35948495114/en)
+  angelegt**, erster Fetch: 1446 Zeilen, 27 Offers sofort gematcht; dafuer Slowakei-Quelle (0
+  Produkte) geloescht. Offen nur noch FI (23), IT (21), FR (19) + Minis; Italien-Label-Quelle
+  als einziges Attach-Target NICHT loeschen. UI-Falle geloest: Sprach-Dropdown im Supplemental-
+  Dialog oeffnet unter dem Cursor und verschluckt Klicks → zuverlaessig via find/ref oder
+  Tastatur-Typeahead. SEK-Quelle hatte ploetzlich 1 Produkt (App befuellt Leichen wieder).
 
 ### Offen / TODO
 - **Scene-Voice Copy-Rewrite (Thomas' Kern-Wunsch):** Die Seiten-Texte fühlen sich
