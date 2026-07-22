@@ -333,6 +333,27 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   als einziges Attach-Target NICHT loeschen. UI-Falle geloest: Sprach-Dropdown im Supplemental-
   Dialog oeffnet unter dem Cursor und verschluckt Klicks → zuverlaessig via find/ref oder
   Tastatur-Typeahead. SEK-Quelle hatte ploetzlich 1 Produkt (App befuellt Leichen wieder).
+- **Nachtschicht Laender-Komplettausbau (2026-07-23 ~00:00-02:00):** Frischer Issues-Export
+  (Produktprobleme_2026-07-22_18-01-39.csv, 266 unique Mismatch-Offers) gegen products.json
+  gerechnet: 86 tote Varianten (expiren von selbst, werden NIE gruen), 180 lebende. ALLE Labels
+  mit Quelle standen auf 0 lebenden Mismatches (Muster funktioniert), nur BE hing (30, Quelle ok,
+  Google-Reprocessing-Lag, Refetch getriggert 18:06 AST). Danach 7 neue Supplemental-Quellen fuer
+  den Rest-Tail angelegt (gleiche Feed-URL, en, an die Label-Primaerquellen gehaengt, Fetch je
+  getriggert/gelaufen): **SOURCE 12 Italien** (EUR_35948167434, 21 Offers), **13 Frankreich**
+  (EUR_35948036362, 18), **14 Spanien-englisch** (EUR_35948265738/en, 11), **15 Philippinen**
+  (PHP_35948003594, 18, 3 Primaerquellen), **16 USA** (USD_35948200202, 16), **17 England**
+  (GBP_35948298506, 11 matched), **18 Schweiz** (CHF_35948134666, 10 matched). Fuer Slots
+  geloescht (alle 0 Produkte, 0 Offers im Export): MMK/Myanmar, SAR/Saudi-Arabien,
+  USD_35948003594 (Ecuador-Multi), UZS/Usbekistan, UYU/Uruguay, PYG/Paraguay, PLN/Polen.
+  Damit ist JEDES Label mit zweistelliger Offer-Zahl versorgt; Rest-Tail ohne Quelle nur noch
+  Minis (~35 lebende: INR 7, RON 5, AUD 5, LKR 4, IE 3, CAD 3 + je 1-2), bei Bedarf gleiches
+  Muster. Leon nachts gebrieft (warum Loeschungen = Slot-Treadmill; sein Produkt-Editor-Screenshot
+  zeigte sick-motos.com-Link = exakt unser Kernproblem, NICHT manuell editieren). Prognose an
+  Leon als Prognose: Hauptschub binnen 24-48h, ~86 tote Varianten bleiben dauerhaft aussen vor.
+  UI-Fallen der Nacht: Merchant-SPA-Tab haengt nach vielen Navigationen dauerhaft in
+  "Page still loading" → frischen Tab oeffnen; Sprach-Dropdown rendert erst kompakt, dann gross
+  → IMMER 3-4s warten + Screenshot vor dem Klick (einmal Franzoesisch erwischt, korrigiert);
+  URL/Label-Felder schlucken den ersten type → immer nachpruefen + neu tippen.
 - **Feld-Umschreibung Nr. 4 + Nacht-Konsolidierung (2026-07-22 ~23:00):** Thomas meldete
   „Hin und Her, mal 950, nun 888". Zwei getrennte Effekte: (1) Google/App hat ~280 Doppel-
   und Zombie-Offers ganz entfernt (Gesamt 1482→1204, die 130 Disapproved auf 2 runter,
