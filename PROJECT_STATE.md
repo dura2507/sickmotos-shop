@@ -306,6 +306,25 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   Rest Mini) bewusst offen, bei Bedarf gleiches Muster. Merke Dialog-Falle: URL/Label-Feld erst
   NACH Seiten-Load beschreibbar, Klicks landen sonst ins Leere; Sprach-Dropdown via find/ref
   klicken, Koordinaten verrutschen.
+- **Tag 2 der Recovery (2026-07-22 vormittags/mittags):** Über Nacht 733→876 Approved, aber
+  Gesamt-Offers 1196→1482 (App reicht ~290 nach), NEU: 130 „Nicht genehmigt" = ESKALIERTE
+  Alt-Mismatches (Google stuft lange ungelöste Limited auf Disapproved hoch, kein neues Problem),
+  16 in Prüfung. Frischer Issues-Export: DE-Mismatch aktuell weiter 0 (nur 53 tote Varianten),
+  Tail exakt die Länder ohne Quelle (NL 40, BE 33, PT 27, FI 23, IT 21, FR 19). Die 105
+  „Unreachable" (alle DE/de, davon 29 Lampen → Thomas' „exakt viele Lampen nicht grün") sind
+  über Nacht NICHT abgeschmolzen → **2. Websiteprüfung angefordert** (12h-Cooldown war um; Toast
+  bestätigt „bis zu 12 Stunden"). **SOURCE 8 (NL) + SOURCE 9 (BE) angelegt** (gleiche Feed-URL,
+  en, an die Label-Quellen gehängt, erste Fetches manuell getriggert); für Slots Ukraine-, Irland-
+  und Schweden-Leichen gelöscht (0 Produkte). WICHTIG: **die App legt gelöschte Länder-Quellen
+  über Nacht NEU an** (Irland war heute wieder da) = Limit-Treadmill, pro neuer Quelle ~1-2
+  frische Löschungen einplanen. Googles eigener Crawl („von Google entdeckt" sickmotos.com)
+  speist jetzt 289 Produkte ein. PT/FI/IT/FR + Minis offen (Italien-Quelle NICHT löschen, ist
+  einziges Attach-Target). **Sprachen-Dauerfix:** Operator hatte die Konto-Sprache heute wieder
+  auf Chinesisch gestellt (gestern auf Englisch gesetzt); statt Ping-Pong jetzt in Einstellungen →
+  Benutzerdefinierte Einstellungen die persoenliche Anzeigesprache „Bevorzugte Sprache meines
+  Google-Kontos verwenden" aktiviert → UI dauerhaft Deutsch fuer kristian2507@gmail.com,
+  unabhaengig von der Konto-Sprache. Ads: Thomas hat Kampagnen wieder aktiviert (PMax Germany
+  aktiv, „58% abgelehnt" = die noch limitierten Produkte, faellt mit der Recovery).
 
 ### Offen / TODO
 - **Scene-Voice Copy-Rewrite (Thomas' Kern-Wunsch):** Die Seiten-Texte fühlen sich
