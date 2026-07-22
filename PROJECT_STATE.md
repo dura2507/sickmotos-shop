@@ -333,6 +333,17 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   als einziges Attach-Target NICHT loeschen. UI-Falle geloest: Sprach-Dropdown im Supplemental-
   Dialog oeffnet unter dem Cursor und verschluckt Klicks → zuverlaessig via find/ref oder
   Tastatur-Typeahead. SEK-Quelle hatte ploetzlich 1 Produkt (App befuellt Leichen wieder).
+- **Feld-Umschreibung Nr. 4 + Nacht-Konsolidierung (2026-07-22 ~23:00):** Thomas meldete
+  „Hin und Her, mal 950, nun 888". Zwei getrennte Effekte: (1) Google/App hat ~280 Doppel-
+  und Zombie-Offers ganz entfernt (Gesamt 1482→1204, die 130 Disapproved auf 2 runter,
+  Quote real VERBESSERT: 74% gruen). (2) Website-Feld stand WIEDER auf checkout.sickmotos.com
+  (4. Mal; Zeitfenster ~15-23 Uhr, App-Sync mutmasslich). Um ~23:10 zurueckgestellt
+  (Auto-Verify sofort, Checkout-Template intakt), SOURCE-2-Refetch manuell getriggert.
+  Tags zuvor: SOURCE 11 (Finnland, EUR_35948429578/en) angelegt, erster Fetch 21 Offers
+  gematcht; MYR/Malaysia + SK geloescht. IT (21) + FR (19) noch offen (Loesch/Create-Grind,
+  deutscher Confirm-Button heisst „Entfernen" bei (1028,437), NICHT (959,437)=Abbrechen!).
+  **Konsequenz ab jetzt: bei JEDEM Check zuerst das Website-Feld pruefen. Strukturell klaeren
+  (morgen): Kann man der App die Website-Verwaltung entziehen bzw. das Feld sperren?**
 
 ### Offen / TODO
 - **Scene-Voice Copy-Rewrite (Thomas' Kern-Wunsch):** Die Seiten-Texte fühlen sich
