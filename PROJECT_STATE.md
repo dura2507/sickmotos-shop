@@ -369,6 +369,33 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   ~83 tote Varianten (expiren). Create-Flow-Falle: nach Feedlimit-Toast bleibt der Erstellen-
   Button tot, Formular-State ist invalide → Flow ganz neu starten (force-reload), nicht am
   haengenden Formular weiterklicken.
+- **Deep-Research + Vercel-DDoS-Fix (2026-07-23 ~10:00-11:00, nach Leons "was rotes wieder"):**
+  Das Rote war NICHT der URL-Fix (der faellt weiter: 265→128), sondern (a) **"Produktseite
+  nicht verfuegbar" zum 3. Mal zurueck (96)** und (b) neu **"Nicht uebereinstimmende Waehrung
+  in Versandinfos" (64)** auf den Fremdwaehrungs-Offers + der rote Disapproval-Berg im
+  Free-Listings-Chart. Deep-Research (104 Agenten, 22 Quellen, 16 bestaetigte Claims):
+  (1) Websitepruefung ist per Google-Doku NUR ein Review-Beschleuniger, kein Fix — Google
+  re-crawlt routinemaessig, Flag kommt wieder bis der echte Blocker weg ist; curl-200 beweist
+  nichts (Google crawlt von eigenen IPs, geo-verteilt, in Bursts). (2) **Vercel-Befund: Bot
+  Protection Inactive, 0 Custom Rules, ABER automatische DDoS-Mitigation blockt massiv
+  legitime Crawler: 1.800 Denied + 132 Challenged in 24h, Top-Opfer Microsoft/Bingbot!**
+  Verified-Bot-Ausnahme ist fuer die System-DDoS-Mitigation NICHT dokumentiert → bester
+  Kandidat fuer die wiederkehrenden Google-Flags (Indiz, kein Beweis: Google war im 24h-
+  Fenster nicht dabei, Merchant-Crawls kommen nur alle ~2 Tage). **FIX UMGESETZT: 2 System-
+  Bypass-Regeln in Vercel Firewall → Rules** (sickmotos.com): 66.249.64.0/19 (Kern-Range
+  Googlebot/Storebot aus common-crawlers.json) + 192.178.4.0/22 (neue Google-Range). Damit
+  kann die DDoS-Mitigation Google-Crawls nicht mehr blocken. 3. Websitepruefung angefordert
+  (leert die 96 binnen 12h). Erfolgskriterium: Flag darf danach NICHT mehr zurueckkommen;
+  falls doch, Bing-Range ergaenzen + Vercel-Support wegen System-Mitigation-Ausnahmen.
+  (3) **Waehrungs-Fix + Wurzelbehandlung Laender-Sprawl (Empfehlung, mit Leon/Thomas klaeren):**
+  Die Google&YouTube-App KANN offiziell auf ausgewaehlte Laender begrenzt werden: App-Settings
+  → Countries and Languages → Manage → Automatic sync OFF → nur DE (+Wunsch-EU) waehlen
+  (Shopify+Google-Doku, verifiziert; auf unserem Store ungetestet). Das entfernt Fremdwaehrungs-
+  Offers an der Quelle (= Waehrungsfehler + Quellen-Treadmill weg). ABER: ob bestehende Offers/
+  Feed-Label sauber verschwinden ist undokumentiert; Reconnect kann Auswahl zuruecksetzen.
+  (4) Website-Feld: Google-Doku bestaetigt offiziell, dass die App das Feld schreibt; KEIN
+  Lock-Mechanismus dokumentiert → Kontroll-Routine bleibt. Bing wird von der DDoS-Mitigation
+  ebenfalls massiv geblockt (SEO-Thema, Leon entscheiden ob Bypass auch fuer Bing).
 - **Feld-Umschreibung Nr. 4 + Nacht-Konsolidierung (2026-07-22 ~23:00):** Thomas meldete
   „Hin und Her, mal 950, nun 888". Zwei getrennte Effekte: (1) Google/App hat ~280 Doppel-
   und Zombie-Offers ganz entfernt (Gesamt 1482→1204, die 130 Disapproved auf 2 runter,
