@@ -354,6 +354,21 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   "Page still loading" → frischen Tab oeffnen; Sprach-Dropdown rendert erst kompakt, dann gross
   → IMMER 3-4s warten + Screenshot vor dem Klick (einmal Franzoesisch erwischt, korrigiert);
   URL/Label-Felder schlucken den ersten type → immer nachpruefen + neu tippen.
+- **Morgen-Check + Belgien-Blocker gefixt (2026-07-23 ~09:00-10:00):** Website-Feld intakt
+  (sickmotos.com, App hat NICHT umgeschrieben). Recovery ueber Nacht: 941 Freigegeben / 248
+  Begrenzt / 0 Nicht genehmigt (von 888/314/2), Mismatch-Karte 265→158. Frischer Export bewies:
+  ALLE 7 Nacht-Quellen wirkten (IT/FR/ES-en/PHP/USD/GBP/CHF alle 0 lebende Mismatches). Einziger
+  Haenger: **Belgien 30 alive TROTZ Quelle** → Ursache gefunden: es gibt DREI "Shopify App API
+  (EUR_35948232970, en)"-Primaerquellen, SOURCE 9 hing nur an EINER. Fix: **SOURCE 19** angelegt
+  (gleiche Feed-URL, en, an ALLE DREI BE-Quellen gehaengt), Fetch 03:03 AST, 30 matched. Slots:
+  MAD/Marokko + PLN + UZS + UYU + USD-Multi (Ecuador) geloescht (alle 0 Produkte; App legt
+  Leichen laufend neu an, MAD war frisch). MERKE fuers Muster: bei jedem neuen Label IMMER alle
+  gleichnamigen Primaerquellen im Dropdown anhaken (manche Labels haben 2-3 Duplikat-Quellen)!
+  Rest offen: ~45 lebende Mini-Offers ohne Quelle (INR 7, RON 5, AUD 5, LKR 4, PLN 4, IE 3,
+  CAD 3, Rest 1-2; PLN-Attach-Target geloescht → erst wieder moeglich wenn App sie neu anlegt),
+  ~83 tote Varianten (expiren). Create-Flow-Falle: nach Feedlimit-Toast bleibt der Erstellen-
+  Button tot, Formular-State ist invalide → Flow ganz neu starten (force-reload), nicht am
+  haengenden Formular weiterklicken.
 - **Feld-Umschreibung Nr. 4 + Nacht-Konsolidierung (2026-07-22 ~23:00):** Thomas meldete
   „Hin und Her, mal 950, nun 888". Zwei getrennte Effekte: (1) Google/App hat ~280 Doppel-
   und Zombie-Offers ganz entfernt (Gesamt 1482→1204, die 130 Disapproved auf 2 runter,
