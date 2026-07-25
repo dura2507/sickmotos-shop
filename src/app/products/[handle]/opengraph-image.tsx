@@ -198,12 +198,12 @@ export default async function ProductOpengraphImage({
     </div>
   );
 
+  // No cache-control here: Next sets its own on metadata image routes and
+  // drops whatever is passed in. Measured on sickmotos.com the card comes back
+  // as "public, max-age=3600" and the CDN serves it as a HIT after the first
+  // request, which is what we want anyway.
   return new ImageResponse(render, {
     ...size,
     fonts: [{ name: "Bebas Neue", data: bebas, weight: 400, style: "normal" }],
-    headers: {
-      "cache-control":
-        "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800",
-    },
   });
 }
