@@ -148,6 +148,33 @@ export async function Footer() {
             ))}
           </div>
         </div>
+
+        {/* Agency credit */}
+        <div className="mt-10 flex flex-col items-center gap-3">
+          <p className="text-sm tracking-wide text-fg-muted">
+            made with{" "}
+            <span className="text-accent/80" aria-hidden>
+              ♡
+            </span>{" "}
+            by
+          </p>
+          <a
+            href="https://krileo.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block opacity-80 transition-opacity hover:opacity-100"
+            aria-label="Krileo, krileo.com"
+          >
+            <Image
+              src="/krileo-full.png"
+              alt="Krileo"
+              width={870}
+              height={1024}
+              sizes="48px"
+              className="h-10 w-auto sm:h-12"
+            />
+          </a>
+        </div>
       </div>
     </footer>
   );
