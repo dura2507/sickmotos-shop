@@ -6,16 +6,30 @@ export const alt = "SickMotos. Ride in style, faster than others.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-// Dynamically composed link-preview card. Renders to a PNG at build time and
-// is reused across every share of https://sickmotos.com and any subpage
-// without its own opengraph-image. Layout: dark brand canvas on the left with
-// logo + kicker + tagline + URL, cropped bike photo bleeding in from the right
-// under a dark-to-transparent gradient.
+const asset = (p: string) => readFile(join(process.cwd(), p));
+const dataUri = (buf: Buffer, mime: string) =>
+  `data:${mime};base64,${buf.toString("base64")}`;
+
+// Photo column, anchored right. The scrim below has to be fully opaque at
+// PHOTO_LEFT, otherwise the black canvas meets a half-lit photo and you get a
+// hard vertical seam.
+const PHOTO_W = 700;
+const PHOTO_LEFT = size.width - PHOTO_W;
+const stop = (px: number) => `${((px / size.width) * 100).toFixed(1)}%`;
+
+// Link-preview card for every share of sickmotos.com (and any subpage without
+// its own opengraph-image). Everything brand-facing is a real asset, not a
+// lookalike: the SickMotos mark, the "Ride in style" hero lettering and
+// Bebas Neue (the site's display face, see --font-display in layout.tsx) are
+// embedded, because next/og ships only a generic fallback font and would
+// otherwise render the card in Noto Sans with every font-weight ignored.
 export default async function OpengraphImage() {
-  const bikeBuf = await readFile(
-    join(process.cwd(), "public/builds/build-fantic-bold-red.jpg")
-  );
-  const bikeSrc = `data:image/jpeg;base64,${bikeBuf.toString("base64")}`;
+  const [bike, logo, lockup, bebas] = await Promise.all([
+    asset("public/builds/build-fantic-bold-red.jpg"),
+    asset("public/logo-alt-2.png"),
+    asset("public/brand/ride-in-style.png"),
+    asset("public/fonts/BebasNeue-Regular.ttf"),
+  ]);
 
   return new ImageResponse(
     (
@@ -26,145 +40,114 @@ export default async function OpengraphImage() {
           height: "100%",
           background: "#0a0a0a",
           position: "relative",
-          fontFamily: "sans-serif",
+          fontFamily: "Bebas Neue",
         }}
       >
         <img
-          src={bikeSrc}
+          src={dataUri(bike, "image/jpeg")}
+          alt=""
+          width={PHOTO_W}
+          height={size.height}
           style={{
             position: "absolute",
             right: 0,
             top: 0,
-            height: "100%",
-            width: "58%",
+            width: PHOTO_W,
+            height: size.height,
             objectFit: "cover",
-            objectPosition: "center",
+            objectPosition: "50% 45%",
           }}
         />
+        {/* Feathered scrim so the bike dissolves into the canvas. Satori
+            ignores the `inset` shorthand, so the box is pinned explicitly. */}
         <div
           style={{
             position: "absolute",
-            inset: 0,
-            background:
-              "linear-gradient(90deg, #0a0a0a 0%, #0a0a0a 42%, rgba(10,10,10,0.55) 62%, rgba(10,10,10,0) 100%)",
+            top: 0,
+            left: 0,
+            width: size.width,
+            height: size.height,
             display: "flex",
+            background: `linear-gradient(90deg, #0a0a0a 0%, #0a0a0a ${stop(
+              PHOTO_LEFT - 8
+            )}, rgba(10,10,10,0.94) ${stop(PHOTO_LEFT + 24)}, rgba(10,10,10,0.5) ${stop(
+              PHOTO_LEFT + 110
+            )}, rgba(10,10,10,0.12) ${stop(PHOTO_LEFT + 190)}, rgba(10,10,10,0) ${stop(
+              PHOTO_LEFT + 265
+            )})`,
           }}
         />
+
         <div
           style={{
             position: "relative",
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
-            padding: "58px 70px",
-            width: "62%",
+            padding: "50px 56px",
+            width: 560,
             height: "100%",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 14,
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                width: 52,
-                height: 52,
-                background: "#E10600",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 32,
-                fontWeight: 900,
-                color: "#ffffff",
-                letterSpacing: -1,
-              }}
-            >
-              S
-            </div>
-            <div
-              style={{
-                display: "flex",
-                fontSize: 40,
-                color: "#ffffff",
-                fontWeight: 900,
-                letterSpacing: 1,
-              }}
-            >
-              SICKMOTOS
-            </div>
-          </div>
+          <img
+            src={dataUri(logo, "image/png")}
+            alt=""
+            width={150}
+            height={96}
+            style={{ width: 150, height: 96, objectFit: "contain" }}
+          />
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <div
-              style={{
-                display: "flex",
-                fontSize: 20,
-                color: "#E10600",
-                letterSpacing: 6,
-                fontWeight: 700,
-                textTransform: "uppercase",
-              }}
-            >
-              Supermoto performance parts
-            </div>
-            <div
-              style={{
-                display: "flex",
-                fontSize: 104,
-                color: "#ffffff",
-                lineHeight: 1,
-                fontWeight: 900,
-                letterSpacing: -2,
-              }}
-            >
-              RIDE IN STYLE
-            </div>
-            <div
-              style={{
-                display: "flex",
-                fontSize: 34,
-                color: "#d0d0d0",
-                marginTop: 6,
-                lineHeight: 1.2,
-              }}
-            >
-              Faster than others.
-            </div>
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 16,
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                width: 46,
-                height: 5,
-                background: "#E10600",
-              }}
-            />
+          <div style={{ display: "flex", flexDirection: "column" }}>
             <div
               style={{
                 display: "flex",
                 fontSize: 26,
-                color: "#ffffff",
-                letterSpacing: 1,
-                fontWeight: 600,
+                color: "#E10600",
+                letterSpacing: 6,
+                marginBottom: 16,
               }}
             >
-              sickmotos.com
+              SUPERMOTO PERFORMANCE PARTS
+            </div>
+            <img
+              src={dataUri(lockup, "image/png")}
+              alt=""
+              width={430}
+              height={169}
+              style={{ width: 430, height: 169, objectFit: "contain" }}
+            />
+          </div>
+
+          {/* Same face and tracking as the site's display type. */}
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <div
+              style={{ display: "flex", width: 42, height: 6, background: "#E10600" }}
+            />
+            <div
+              style={{
+                display: "flex",
+                fontSize: 52,
+                color: "#ffffff",
+                letterSpacing: -1,
+                lineHeight: 1,
+              }}
+            >
+              SICKMOTOS.COM
             </div>
           </div>
         </div>
       </div>
     ),
-    { ...size }
+    {
+      ...size,
+      fonts: [
+        {
+          name: "Bebas Neue",
+          data: bebas,
+          weight: 400,
+          style: "normal",
+        },
+      ],
+    }
   );
 }
