@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-07-18.
+> Stand: 2026-07-25.
 
 ---
 
@@ -50,6 +50,36 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
 ## 3. Status-Board
 
 ### Erledigt / live
+- **Link-Vorschau (OG-Bilder) komplett neu, 2026-07-25** (commits 3611cc0, 31f04d5, a0fb0d1),
+  ausgeloest von Thomas/Leon („die url vorschau ist ja grottig, die Schrift rendert nicht,
+  das Logo muss rein"). (1) **Startseiten-Karte** `src/app/opengraph-image.tsx`: Ursache der
+  falschen Schrift war, dass `next/og` nur einen generischen Fallback mitliefert und ohne
+  die `fonts`-Option jedes `fontWeight` ignoriert, alles lief in Noto Sans. Bebas Neue
+  (= `--font-display` der Site) ist jetzt als TTF eingebettet, `SICKMOTOS.COM` steht in
+  derselben Laufweite wie die Website (tracking-tight, vorher gesperrt). Statt Fake-Logo
+  (roter Kasten mit „S") jetzt `public/logo-alt-2.png` + der echte „Ride in style"-Schriftzug.
+  Der Schwarz-Verlauf lag bis 85% Breite ueber dem Bike, verkuerzt; **Satori ignoriert die
+  `inset`-Kurzschreibweise**, deshalb feste top/left/width/height, sonst kompositiert der
+  Scrim gar nicht (harte Kante). Leon hat aus 5 Varianten „D" gewaehlt. (2) **Produktkarten**
+  `src/app/products/[handle]/opengraph-image.tsx`: schwarzes Markenpanel (Logo, Titel in Bebas,
+  Preis + Streichpreis, sickmotos.com) plus Produktfoto in **weisser Lightbox-Kachel**. Die
+  Kachel ist noetig, weil die Shopify-Fotos mal auf Weiss, mal auf Schwarz liegen, jede
+  einfarbige Flaeche erzeugt sonst bei der Haelfte der Produkte einen Fremdkoerper-Kasten.
+  Titel auf 3 Zeilen geklemmt + laengenabhaengige Schriftgroesse (laengster Titel 130 Zeichen);
+  alle Zeichen aller 486 Titel sind von Bebas abgedeckt (per fontTools geprueft). `force-dynamic`,
+  sonst wuerde der Build 486 Karten backen; Produktfoto per Shopify-CDN-`&width=900` (spart
+  zwei Drittel Bytes). **Falle:** ein explizites `openGraph.images` in `generateMetadata`
+  gewinnt gegen die generierte Karte, das Meta-Tag zeigte weiter das nackte Shopify-Foto,
+  deshalb ist die Liste in `page.tsx` bewusst leer. Zweite Falle: `headers` in den
+  ImageResponse-Optionen wird auf Metadaten-Bildrouten von Next verworfen (live gemessen
+  `public, max-age=3600`, CDN liefert ab dem 2. Abruf HIT). **Live verifiziert** auf
+  sickmotos.com: Startkarte pixelgleich mit der freigegebenen Variante, 4 Produktkarten
+  (Auspuff/Carbon/Dekor/Elektronik-Infografik) HTTP 200 in 0,8-1,9s, `og:image` +
+  `twitter:image` + per-Produkt `og:image:alt` korrekt. Merke fuer Social: bereits geteilte
+  Links haengen im Cache der jeweiligen App, Facebook/LinkedIn haben Debugger-Tools dafuer,
+  WhatsApp nicht.
+- **Agentur-Credit im Footer** (commit ea777e5): „made with ♡ by" + Krileo-Logo, gleiches
+  Muster wie im Zadar-Rental-Projekt, Link auf **krileo.com** (von Leon bestaetigt).
 - Design, Mobile (375px), on-site Auth, Produkte, Bike-Finder/Filter.
 - Alle Zahlungsmethoden aktiv (Viva.com Gateway).
 - 11 Kunden-Emails + Checkout gebrandet (SickMotos dark/rot).
