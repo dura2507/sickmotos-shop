@@ -37,7 +37,6 @@ export async function generateMetadata({
   const title = `${cleanTitle(p.title)} | SickMotos`;
   const desc = htmlToBlocks(p.body_html)[0]?.slice(0, 160) ??
     `Performance part for ${p.vendor || "SickMotos"}.`;
-  const image = p.images[0]?.src;
   return {
     title,
     description: desc,
@@ -45,7 +44,9 @@ export async function generateMetadata({
       title,
       description: desc,
       type: "website",
-      images: image ? [{ url: image }] : [],
+      // No images here on purpose: an explicit list wins over the generated
+      // card in opengraph-image.tsx, which would put the bare Shopify photo
+      // back into every link preview.
     },
     other: {
       "product:price:amount": price.toFixed(2),
