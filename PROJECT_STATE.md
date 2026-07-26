@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-07-25.
+> Stand: 2026-07-26.
 
 ---
 
@@ -50,6 +50,46 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
 ## 3. Status-Board
 
 ### Erledigt / live
+- **Merchant-Ursachenanalyse + zwei Fixes, 2026-07-26.** Stand morgens: 1446 Angebote,
+  1197 freigegeben, 121 begrenzt, 128 nicht genehmigt. Website-Feld intakt (sickmotos.com,
+  verifiziert+beansprucht), Checkout-Template intakt. **„Produktseite nicht verfuegbar" ist
+  komplett weg** und war in keiner der 10 Fehlerarten mehr gelistet, damit ist das
+  Erfolgskriterium der Vercel-Bypass-Regeln vom 23.07. erfuellt (die 2 System-Bypass-Regeln
+  stehen weiter; Firewall letzte Stunde: 7.800 erlaubt, 69 geblockt, Top-Opfer eine
+  Microsoft-Azure-IP, kein Google). Frischer Issues-Export gegen den **Live-Feed**
+  (merchant-link-feed.csv, nicht gegen die lokale products.json, die ist vom 9. Juli und
+  waere nicht belastbar) ergab:
+  - **128 Ablehnungen = 121 Waehrungsfehler in den Versandinfos (USA 83, UK 30, AU 7, CA 1)
+    + 7 „Produktpreis fehlt" (DE).** Kein einziges deutsches Feed-Angebot abgelehnt.
+  - **Ursache Waehrung, verifizierte Kette:** die abgelehnten Angebote tragen die Feedlabels
+    US/GB/AU/CA (Googles eigener Crawl von sickmotos.com), unsere Storefront zeigt jedem
+    Euro (Preise auf country=DE gepinnt), die Merchant-Versandrichtlinien fuer diese Laender
+    stehen aber in USD/GBP/AUD/CAD (US-Richtlinie im UI geprueft: 34,26 USD). Shopify-Versand
+    ist durchgaengig Euro: DE 7,19, EU 14,99, **Restliche Welt 29,99 (10-21 Tage)**.
+  - **Fix 1:** neue Merchant-Versandrichtlinie `flat_29.99_EUR_crawl_US_GB_AU_CA`
+    (US, GB, AU, CA, alle Produkte, 10-22 Werktage, Pauschalpreis 29,99 EUR). Die bestehenden
+    Fremdwaehrungs-Richtlinien wurden NICHT angefasst, US-Kunden sehen bei den App-Angeboten
+    weiter Dollar.
+  - **Fix 2 (Code, commit 741f9c9):** Produktseiten lieferten ein AggregateOffer mit
+    lowPrice/highPrice ohne einzelnes `price`; Googles Crawler legte daraus Angebote ohne
+    Preis an. Jetzt zusaetzlich ein Offer je Variante mit Preis, Verfuegbarkeit, SKU und
+    Variantenname. Live gegengeprueft.
+  - **Korrektur einer falschen Empfehlung von mir:** ich hatte vorgeschlagen, die Google-App
+    auf Deutschland zu begrenzen. Falsch. Shopify-Maerkte USA, UK, Australien, Kanada und
+    „Weltweit" (212 Regionen) sind aktiv, und laut Shopify-Report „Customers by location"
+    ueber die gesamte Historie gibt es dort echte Kunden: **USA 78, UK 80, Australien 30,
+    Kanada 18** (DE 4245, AT 1483, CH 371, NL 183, IT 121, FR 112, gesamt 7406).
+  - **Rest-URL-Mismatches:** 81 Angebote, davon 37 aktuell im Katalog, alle in Kleinstmaerkten
+    ohne Supplemental-Quelle. Feedlabel DE: 36 Eintraege, davon **0 aktuell** (nur Karteileichen).
+    SOURCE 20 fuer Indien (INR_35948003594, an alle 3 INR-Primaerquellen) angelegt, Slot durch
+    Loeschen der leeren Pakistan-Quelle frei gemacht. Offen bleiben 13 Labels mit zusammen 30
+    Angeboten: RON 4, LKR 3, CAD 3, EUR_35948331274 3, AUD 3, PLN 2, JPY 2, MYR 2, SGD 2,
+    SEK/THB/DKK/IDR je 1.
+  - **Kein Sammel-Hebel vorhanden:** das Add-on fuer Attributregeln ist in diesem Konto nicht
+    verfuegbar (angeboten werden nur API-Diagnose, benutzerdefinierte Berichte, automatische
+    Rabatte, Produktbewertungen). Es bleibt beim Rezept pro Label.
+  - **Offen (Regel 8):** nachpruefen, ob die 121 + 7 Ablehnungen nach Googles Reprocessing
+    tatsaechlich fallen. Bis dahin ist das eine Prognose, kein Ergebnis.
 - **Link-Vorschau (OG-Bilder) komplett neu, 2026-07-25** (commits 3611cc0, 31f04d5, a0fb0d1),
   ausgeloest von Thomas/Leon („die url vorschau ist ja grottig, die Schrift rendert nicht,
   das Logo muss rein"). (1) **Startseiten-Karte** `src/app/opengraph-image.tsx`: Ursache der
