@@ -67,6 +67,24 @@ export default async function ProductPage({
   const base = "https://sickmotos.com";
   const dict = await getDictionary(await getLocale());
 
+  const productUrl = `${base}/products/${handle}`;
+  const availability = (ok: boolean) =>
+    ok ? "https://schema.org/InStock" : "https://schema.org/OutOfStock";
+
+  // Google builds its own offer for the Merchant Center by crawling this
+  // markup. An AggregateOffer that only carries lowPrice/highPrice leaves it
+  // without a price, and Merchant then rejects the product as "Produktpreis
+  // fehlt". So every variant also ships its own Offer with an explicit price.
+  const variantOffers = product.variants.map((v, i) => ({
+    "@type": "Offer",
+    priceCurrency: "EUR",
+    price: v.price.toFixed(2),
+    availability: availability(v.available),
+    url: productUrl,
+    sku: shopify.variants[i]?.sku || undefined,
+    name: Object.values(v.options).filter(Boolean).join(" / ") || undefined,
+  }));
+
   // Schema.org Product structured data for Google rich results.
   const jsonLd = {
     "@context": "https://schema.org",
@@ -82,18 +100,16 @@ export default async function ProductPage({
       lowPrice: Math.min(...product.variants.map((v) => v.price)).toFixed(2),
       highPrice: Math.max(...product.variants.map((v) => v.price)).toFixed(2),
       offerCount: product.variants.length,
-      availability: product.inStock
-        ? "https://schema.org/InStock"
-        : "https://schema.org/OutOfStock",
-      url: `${base}/products/${handle}`,
+      availability: availability(product.inStock),
+      url: productUrl,
+      offers: variantOffers,
     } : {
       "@type": "Offer",
       priceCurrency: "EUR",
       price: product.basePrice.toFixed(2),
-      availability: product.inStock
-        ? "https://schema.org/InStock"
-        : "https://schema.org/OutOfStock",
-      url: `${base}/products/${handle}`,
+      availability: availability(product.inStock),
+      url: productUrl,
+      sku: shopify.variants[0]?.sku || undefined,
     },
   };
 
