@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-07-26.
+> Stand: 2026-07-27.
 
 ---
 
@@ -477,6 +477,30 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   deutscher Confirm-Button heisst „Entfernen" bei (1028,437), NICHT (959,437)=Abbrechen!).
   **Konsequenz ab jetzt: bei JEDEM Check zuerst das Website-Feld pruefen. Strukturell klaeren
   (morgen): Kann man der App die Website-Verwaltung entziehen bzw. das Feld sperren?**
+- **Restlicher Laender-Tail komplett abgearbeitet (2026-07-27 vormittags):** 11 neue
+  Supplemental-Quellen angelegt, damit hat JEDES Label mit lebenden Mismatch-Offers eine
+  Quelle: **SOURCE 23** CAD_35948593418 (Kanada, erster Fetch 1446 Zeilen / 3 Offers
+  gematcht, verifiziert), **24** EUR_35948331274, **25** AUD_35948658954 (Australien),
+  **26** PLN_35948626186 (Polen, beide Primaerquellen angehaengt), **27** DKK_35948396810
+  (Daenemark, 3 Primaerquellen), **28** SEK_35948364042 (Schweden), **29** JPY_35948003594
+  (Japan, 3), **30** MYR_35948003594 (Malaysia), **31** SGD_35948003594 (Singapur, 2),
+  **32** THB_35948003594 (Thailand), **33** IDR_35948003594 (Indonesien, 3). Alle mit
+  Feed-URL `https://sickmotos.com/merchant-link-feed.csv`, Sprache Englisch, taeglicher
+  Auto-Fetch 00:00. Fuer die Slots geloescht (alle 0 Produkte, keine lebenden Offers):
+  KRW/Suedkorea, DZD/Algerien, NZD/Neuseeland, NIO/Nicaragua, XAF/Kamerun, ETB/Aethiopien,
+  DOP/Dominikanische Republik, TWD/Taiwan, CRC/Costa Rica, VND/Vietnam, KHR/Kambodscha
+  (11 Stueck, Primaerquellen 167→162→…). **Stand danach live geprueft (Uebersicht 27.07.):
+  1425 Produkte, 1341 Freigegeben (94,1%), 74 Begrenzt, 10 Nicht genehmigt, 0 in Pruefung**
+  (Sessionstart war 1320/94/10). Diagnostics: „Abweichende Onlineshop-URL" nur noch **69
+  Produkte (4,8%)** — genau die Labels, die die neuen Quellen jetzt bedienen; dazu **10x
+  „Produktpreis fehlt"** (Google muss die gefixten Produktseiten mit den Per-Varianten-Offers
+  neu crawlen). UI-Fallen dieser Runde: (a) das erste `type` nach Seiten-Load wird
+  verschluckt, das zweite kommt an — immer per Screenshot pruefen, sonst steht der Wert
+  doppelt drin; (b) Sprach-Dropdown NUR klicken, wenn der Screenshot die GROSSE Liste zeigt
+  (Englisch dann bei y=216), sonst erwischt man Deutsch/Franzoesisch; (c) im
+  Zeilen-Kontextmenue liegt der echte Hit-Bereich ~20px unter dem gezeichneten Text
+  („Quelle loeschen" bei rowY+37), und es haengen alte Menue-Knoten im DOM → immer den
+  zuletzt gerenderten nehmen bzw. nach Screenshot klicken.
 
 ### Offen / TODO
 - **Scene-Voice Copy-Rewrite (Thomas' Kern-Wunsch):** Die Seiten-Texte fühlen sich
