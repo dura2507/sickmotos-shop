@@ -1,23 +1,11 @@
 import "server-only";
 import { createHash } from "node:crypto";
-import { Redis } from "@upstash/redis";
+import { redis, safe, storeStatus } from "./redisSafe";
 
 // Lightweight self-hosted pageview counter, backed by Upstash Redis. One
 // counter per (day, dimension) — no per-hit rows, so it stays cheap even at
 // millions of pageviews. A daily-rotated session hash lets us count uniques
 // without storing IPs or setting a cookie.
-
-let redis: Redis | null = null;
-try {
-  if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
-    redis = new Redis({
-      url: process.env.KV_REST_API_URL,
-      token: process.env.KV_REST_API_TOKEN,
-    });
-  }
-} catch {
-  redis = null;
-}
 
 const KEY_VIEWS = (d: string) => `sm:vis:${d}:views`;
 const KEY_VISITORS = (d: string) => `sm:vis:${d}:visitors`;
@@ -87,6 +75,14 @@ function normalizePath(p: string): string {
 const BOT_UA =
   /bot|crawl|spider|slurp|mediapartners|bingpreview|headless|lighthouse|phantom|puppeteer|playwright|pingdom|uptime|monitor|curl|wget|python-requests|go-http|java\/|okhttp|facebookexternalhit|embedly|whatsapp|telegrambot|preview|scrap/i;
 
+// A day's keys only need a TTL once. Upstash bills every command inside a
+// pipeline separately, so re-stamping six expires on every hit doubled the
+// price of a pageview for nothing. The set lives per lambda instance, a cold
+// one stamps once more, and NX keeps that from sliding the expiry forward.
+// Folge davon: die 90 Tage laufen ab dem ersten Treffer des Tages, nicht ab
+// dem letzten.
+const ttlStamped = new Set<string>();
+
 export async function recordVisit(input: {
   path: string;
   ip: string | null;
@@ -100,25 +96,42 @@ export async function recordVisit(input: {
   if (!input.ua || BOT_UA.test(input.ua)) return;
   const d = today();
   const path = normalizePath(input.path || "/");
-  const country = (input.country || "??").toUpperCase();
+  // Zwei Zeichen, das Feld kommt aus einem Request-Header und landet als
+  // Hash-Feldname in einem Key, den topN spaeter komplett liest.
+  const country = (input.country || "??").toUpperCase().slice(0, 2);
   const referrer = normalizeReferrer(input.referrer);
   const locale = (input.locale || "??").slice(0, 5).toLowerCase();
   const sh = sessionHash(input.ip || "", input.ua || "");
 
   const pipe = redis.pipeline();
   pipe.incr(KEY_VIEWS(d));
-  pipe.expire(KEY_VIEWS(d), HIT_TTL_SEC);
   pipe.sadd(KEY_VISITORS(d), sh);
-  pipe.expire(KEY_VISITORS(d), HIT_TTL_SEC);
   pipe.hincrby(KEY_PATHS(d), path, 1);
-  pipe.expire(KEY_PATHS(d), HIT_TTL_SEC);
   pipe.hincrby(KEY_COUNTRIES(d), country, 1);
-  pipe.expire(KEY_COUNTRIES(d), HIT_TTL_SEC);
   pipe.hincrby(KEY_REFERRERS(d), referrer, 1);
-  pipe.expire(KEY_REFERRERS(d), HIT_TTL_SEC);
   pipe.hincrby(KEY_LOCALES(d), locale, 1);
-  pipe.expire(KEY_LOCALES(d), HIT_TTL_SEC);
-  await pipe.exec();
+  const stampTtl = !ttlStamped.has(d);
+  if (stampTtl) {
+    pipe.expire(KEY_VIEWS(d), HIT_TTL_SEC, "NX");
+    pipe.expire(KEY_VISITORS(d), HIT_TTL_SEC, "NX");
+    pipe.expire(KEY_PATHS(d), HIT_TTL_SEC, "NX");
+    pipe.expire(KEY_COUNTRIES(d), HIT_TTL_SEC, "NX");
+    pipe.expire(KEY_REFERRERS(d), HIT_TTL_SEC, "NX");
+    pipe.expire(KEY_LOCALES(d), HIT_TTL_SEC, "NX");
+  }
+  const ok = await safe(
+    "analytics.recordVisit",
+    async () => {
+      await pipe.exec();
+      return true;
+    },
+    false
+  );
+  // Den TTL erst als gesetzt merken, wenn der Schreibvorgang wirklich lief.
+  if (ok && stampTtl) {
+    if (ttlStamped.size > 2) ttlStamped.clear(); // gestern ist Ballast
+    ttlStamped.add(d);
+  }
 }
 
 export type DailyBucket = { date: string; views: number; visitors: number };
@@ -134,6 +147,10 @@ export type AnalyticsSnapshot = {
   topCountries: TopRow[];
   topReferrers: TopRow[];
   topLocales: TopRow[];
+  // Gesetzt, wenn Redis zwar konfiguriert ist, aber nicht antwortet. Die Seiten
+  // zeigen dann Striche statt Nullen, eine Null wuerde behaupten es habe keine
+  // Besucher gegeben.
+  fetchError?: string;
 };
 
 const EMPTY_SNAPSHOT: AnalyticsSnapshot = {
@@ -164,46 +181,70 @@ async function topN(days: string[], key: (d: string) => string, n: number): Prom
     .slice(0, n);
 }
 
+// Die Aufrufe eines ganzen Fensters kommen mit einem MGET zurueck. Die
+// eindeutigen Besucher brauchen weiter ein SCARD pro Tag, fuer Sets gibt es
+// kein Sammelkommando.
+async function readDailyBuckets(days: string[]): Promise<DailyBucket[]> {
+  if (!redis || days.length === 0) {
+    return days.map((date) => ({ date, views: 0, visitors: 0 }));
+  }
+  const [views, visitors] = await Promise.all([
+    redis.mget<(number | null)[]>(days.map(KEY_VIEWS)),
+    Promise.all(days.map((d) => redis!.scard(KEY_VISITORS(d)))),
+  ]);
+  return days.map((date, i) => ({
+    date,
+    views: Number(views?.[i] ?? 0),
+    visitors: Number(visitors[i] ?? 0),
+  }));
+}
+
+// /admin und /admin/visitors rendern das bei jedem Request neu und beide sind
+// force-dynamic. Ohne Cache kostete jedes Neuladen ueber hundert Kommandos.
+const SNAPSHOT_TTL_MS = 60_000;
+let snapshot: { at: number; data: AnalyticsSnapshot } | null = null;
+
 export async function loadAnalytics(): Promise<AnalyticsSnapshot> {
   if (!redis) return EMPTY_SNAPSHOT;
+  if (snapshot && Date.now() - snapshot.at < SNAPSHOT_TTL_MS) return snapshot.data;
 
   const days30: string[] = [];
   for (let i = 29; i >= 0; i--) days30.push(dateKey(-i));
   const days7 = days30.slice(-7);
 
-  const [viewsRaw, visitorsRaw] = await Promise.all([
-    Promise.all(days30.map((d) => redis!.get<number>(KEY_VIEWS(d)))),
-    Promise.all(days30.map((d) => redis!.scard(KEY_VISITORS(d)))),
-  ]);
-  const perDay: DailyBucket[] = days30.map((d, i) => ({
-    date: d,
-    views: Number(viewsRaw[i] ?? 0),
-    visitors: Number(visitorsRaw[i] ?? 0),
-  }));
+  // Als Ganzes abgesichert, nicht pro Lesevorgang: ein halb gefuellter
+  // Schnappschuss ist schlimmer als gar keiner, er sieht aus wie ein Einbruch.
+  const data = await safe<AnalyticsSnapshot | null>(
+    "analytics.loadAnalytics",
+    async () => {
+      const perDay = await readDailyBuckets(days30);
+      const [topPaths, topCountries, topReferrers, topLocales] = await Promise.all([
+        topN(days30, KEY_PATHS, 10),
+        topN(days30, KEY_COUNTRIES, 10),
+        topN(days30, KEY_REFERRERS, 10),
+        topN(days7, KEY_LOCALES, 6),
+      ]);
+      return {
+        totalViews7d: perDay.slice(-7).reduce((s, d) => s + d.views, 0),
+        totalVisitors7d: perDay.slice(-7).reduce((s, d) => s + d.visitors, 0),
+        totalViews30d: perDay.reduce((s, d) => s + d.views, 0),
+        totalVisitors30d: perDay.reduce((s, d) => s + d.visitors, 0),
+        perDay,
+        topPaths,
+        topCountries,
+        topReferrers,
+        topLocales,
+      };
+    },
+    null
+  );
 
-  const totalViews7d = perDay.slice(-7).reduce((s, d) => s + d.views, 0);
-  const totalVisitors7d = perDay.slice(-7).reduce((s, d) => s + d.visitors, 0);
-  const totalViews30d = perDay.reduce((s, d) => s + d.views, 0);
-  const totalVisitors30d = perDay.reduce((s, d) => s + d.visitors, 0);
-
-  const [topPaths, topCountries, topReferrers, topLocales] = await Promise.all([
-    topN(days30, KEY_PATHS, 10),
-    topN(days30, KEY_COUNTRIES, 10),
-    topN(days30, KEY_REFERRERS, 10),
-    topN(days7, KEY_LOCALES, 6),
-  ]);
-
-  return {
-    totalViews7d,
-    totalVisitors7d,
-    totalViews30d,
-    totalVisitors30d,
-    perDay,
-    topPaths,
-    topCountries,
-    topReferrers,
-    topLocales,
-  };
+  // Einen Fehlschlag nie cachen, der naechste Request muss es neu versuchen.
+  if (!data) {
+    return { ...EMPTY_SNAPSHOT, fetchError: storeStatus().error ?? "unbekannt" };
+  }
+  snapshot = { at: Date.now(), data };
+  return data;
 }
 
 export type SessionsComparison = {
@@ -219,6 +260,8 @@ export type SessionsComparison = {
   // weren't tracking yet), which would otherwise produce a misleading
   // "+280%"-style delta against an artificially low baseline.
   prevComplete: boolean;
+  // Wie bei AnalyticsSnapshot: Redis konfiguriert, aber keine Antwort.
+  fetchError?: string;
 };
 
 // Sessions (views + unique visitors) for an explicit list of days, plus the
@@ -241,19 +284,28 @@ export async function loadSessionsForDays(
     };
   }
 
-  async function sumDays(days: string[]): Promise<DailyBucket[]> {
-    const [views, visitors] = await Promise.all([
-      Promise.all(days.map((d) => redis!.get<number>(KEY_VIEWS(d)))),
-      Promise.all(days.map((d) => redis!.scard(KEY_VISITORS(d)))),
-    ]);
-    return days.map((date, i) => ({
-      date,
-      views: Number(views[i] ?? 0),
-      visitors: Number(visitors[i] ?? 0),
-    }));
+  const both = await safe<DailyBucket[] | null>(
+    "analytics.loadSessionsForDays",
+    // Beide Fenster in einem Rutsch, so kostet ein 30-Tage-Bereich ein MGET
+    // statt zwei.
+    () => readDailyBuckets([...currentDays, ...prevDays]),
+    null
+  );
+  if (!both) {
+    return {
+      perDay: currentDays.map((date) => ({ date, views: 0, visitors: 0 })),
+      prevPerDay: prevDays.map((date) => ({ date, views: 0, visitors: 0 })),
+      views: 0,
+      visitors: 0,
+      prevViews: 0,
+      prevVisitors: 0,
+      persistent: true,
+      prevComplete: false,
+      fetchError: storeStatus().error ?? "unbekannt",
+    };
   }
-
-  const [cur, prev] = await Promise.all([sumDays(currentDays), sumDays(prevDays)]);
+  const cur = both.slice(0, currentDays.length);
+  const prev = both.slice(currentDays.length);
   // A live shop has views every day; a zero-view day in the previous window
   // means we weren't tracking yet, so the comparison baseline is incomplete.
   const prevComplete = prev.length > 0 && prev.every((d) => d.views > 0);

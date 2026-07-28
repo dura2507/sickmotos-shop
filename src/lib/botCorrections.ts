@@ -65,15 +65,25 @@ export async function applyCorrection(input: {
   wrongAnswer?: string;
   correction: string;
   chatId?: string;
-}): Promise<{ ok: boolean; doc: string; entry: BotCorrection; error?: string }> {
+}): Promise<{ ok: boolean; doc: string; entry: BotCorrection | null; error?: string }> {
   const entry = await addCorrection({
     question: input.question,
     wrongAnswer: input.wrongAnswer,
     correction: input.correction,
     chatId: input.chatId,
   });
+  if (!entry) {
+    // Die rohe Korrektur liess sich nicht einmal speichern, es gibt also nichts
+    // zum Einmergen. Lieber den Fehler melden als das Wissens-Dokument anfassen.
+    return { ok: false, doc: "", entry: null, error: "store_unavailable_not_saved" };
+  }
 
   const current = await getBotKnowledge();
+  if (current === undefined) {
+    // Wissens-Dokument nicht lesbar. Gegen ein leeres Dokument zu mergen und das
+    // zurueckzuschreiben wuerde jede bisherige Korrektur loeschen.
+    return { ok: false, doc: "", entry, error: "knowledge_unreadable_not_merged" };
+  }
   const apiKey = process.env.ANTHROPIC_API_KEY;
 
   if (!apiKey) {

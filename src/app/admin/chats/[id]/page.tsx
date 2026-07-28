@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getConversation, markReviewed, saveNote } from "@/lib/adminStore";
+import { StoreNotice } from "../../StoreNotice";
 import { applyCorrection } from "@/lib/botCorrections";
 
 export const dynamic = "force-dynamic";
@@ -70,6 +71,15 @@ export default async function ChatDetail({
 }) {
   const { id } = await params;
   const conv = await getConversation(id);
+  // undefined heisst der Speicher hat nicht geantwortet. notFound() wuerde
+  // Thomas erzaehlen der Chat sei geloescht, das stimmt nicht.
+  if (conv === undefined) {
+    return (
+      <div className="mx-auto max-w-4xl px-5 py-8 md:px-8">
+        <StoreNotice what="Dieser Chat" />
+      </div>
+    );
+  }
   if (!conv) notFound();
 
   return (

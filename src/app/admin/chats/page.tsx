@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { listConversations } from "@/lib/adminStore";
+import { StoreNotice } from "../StoreNotice";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +21,11 @@ export default async function AdminChats({
   searchParams: Promise<{ filter?: string }>;
 }) {
   const { filter } = await searchParams;
-  const all = await listConversations(200);
+  const conversations = await listConversations(200);
+  // undefined heisst der Speicher hat nicht geantwortet. Eine leere Liste wuerde
+  // behaupten es gebe keine Chats.
+  const storeOk = conversations !== undefined;
+  const all = conversations ?? [];
   const list = filter === "new" ? all.filter((c) => !c.reviewed) : all;
   const unreviewed = all.filter((c) => !c.reviewed).length;
 
@@ -54,11 +59,15 @@ export default async function AdminChats({
         </div>
       </div>
 
+      {!storeOk && <StoreNotice what="Bot-Chats" />}
+
       {list.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border bg-surface/40 p-10 text-center text-sm text-fg-muted">
-          {filter === "new"
-            ? "Keine ungelesenen Chats."
-            : "Noch keine Chats erfasst."}
+          {!storeOk
+            ? "Chats können gerade nicht geladen werden."
+            : filter === "new"
+              ? "Keine ungelesenen Chats."
+              : "Noch keine Chats erfasst."}
         </div>
       ) : (
         <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-surface/40">

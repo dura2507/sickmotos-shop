@@ -5,6 +5,7 @@ import {
   type TopRow,
 } from "@/lib/analyticsStore";
 import { Flag, type FlagCode } from "@/app/_components/Flag";
+import { StoreNotice } from "../StoreNotice";
 
 const SUPPORTED_FLAGS: ReadonlySet<FlagCode> = new Set([
   "DE", "AT", "CH", "RO", "LU", "GB", "IT", "ES",
@@ -25,6 +26,10 @@ function renderCountry(code: string): ReactNode {
 }
 
 export const dynamic = "force-dynamic";
+
+// Gleicher Platzhalter wie im Dashboard, als Escape damit kein Gedankenstrich
+// im Quelltext steht.
+const NO_VALUE = "\u2014";
 
 function formatAverage(n: number): string {
   if (n === 0) return "0";
@@ -105,6 +110,9 @@ function TopTable({
 export default async function AdminVisitors() {
   const data = await loadAnalytics();
   const persistent = isPersistent();
+  // fetchError heisst Redis ist eingerichtet, antwortet aber nicht. Nullen
+  // wuerden behaupten es habe keine Besucher gegeben.
+  const statsOk = !data.fetchError;
   const maxDay = data.perDay.reduce((m, d) => Math.max(m, d.views), 0);
 
   return (
@@ -117,6 +125,10 @@ export default async function AdminVisitors() {
           Self-hosted Zähler · anonym · keine Cookies
         </p>
       </div>
+
+      {!statsOk && (
+        <StoreNotice what="Besucherdaten" detail={data.fetchError} />
+      )}
 
       {!persistent && (
         <div className="mb-6 rounded-xl border border-accent/50 bg-accent/[0.06] p-4">
@@ -135,17 +147,17 @@ export default async function AdminVisitors() {
       <section className="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatCard
           label="Besucher 7 Tage"
-          value={String(data.totalVisitors7d)}
-          sub={`${data.totalViews7d} Seitenaufrufe`}
+          value={statsOk ? String(data.totalVisitors7d) : NO_VALUE}
+          sub={statsOk ? `${data.totalViews7d} Seitenaufrufe` : "keine Verbindung"}
         />
         <StatCard
           label="Besucher 30 Tage"
-          value={String(data.totalVisitors30d)}
-          sub={`${data.totalViews30d} Seitenaufrufe`}
+          value={statsOk ? String(data.totalVisitors30d) : NO_VALUE}
+          sub={statsOk ? `${data.totalViews30d} Seitenaufrufe` : "keine Verbindung"}
         />
         <StatCard
           label="Ø pro Tag (7 T)"
-          value={formatAverage(data.totalVisitors7d / 7)}
+          value={statsOk ? formatAverage(data.totalVisitors7d / 7) : NO_VALUE}
           sub="Einzel-Besucher"
         />
         <StatCard

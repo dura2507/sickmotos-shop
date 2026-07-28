@@ -8,8 +8,13 @@ import {
   isPersistent,
 } from "@/lib/adminStore";
 import { BotTest } from "./BotTest";
+import { StoreNotice } from "../StoreNotice";
 
 export const dynamic = "force-dynamic";
+
+// Gleicher Platzhalter wie im Dashboard, als Escape damit kein Gedankenstrich
+// im Quelltext steht.
+const NO_VALUE = "\u2014";
 
 async function saveDoc(formData: FormData) {
   "use server";
@@ -38,7 +43,13 @@ export default async function BotKnowledgePage() {
     listCorrections(300),
   ]);
   const persistent = isPersistent();
-  const chars = doc.length;
+  // undefined heisst der Speicher hat nicht geantwortet. Der Editor muss dann
+  // verborgen bleiben: sein Textfeld waere leer und ein Klick auf Speichern
+  // wuerde das komplette Bot-Wissen mit einem leeren Feld ueberschreiben.
+  const storeOk = doc !== undefined && corrections !== undefined;
+  const knowledge = doc ?? "";
+  const list = corrections ?? [];
+  const chars = knowledge.length;
 
   return (
     <div className="mx-auto max-w-4xl px-5 py-8 md:px-8">
@@ -60,13 +71,15 @@ export default async function BotKnowledgePage() {
         </div>
       )}
 
+      {!storeOk && <StoreNotice what="Bot-Wissen" />}
+
       <section className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
         <div className="rounded-xl border border-border bg-surface/40 p-4">
           <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-fg-dim">
             Korrekturen gesamt
           </p>
           <p className="mt-1 font-display text-4xl leading-none text-fg tabular-nums">
-            {corrections.length}
+            {storeOk ? list.length : NO_VALUE}
           </p>
         </div>
         <div className="rounded-xl border border-border bg-surface/40 p-4">
@@ -74,7 +87,7 @@ export default async function BotKnowledgePage() {
             Wissens-Umfang
           </p>
           <p className="mt-1 font-display text-4xl leading-none text-fg tabular-nums">
-            {chars}
+            {storeOk ? chars : NO_VALUE}
           </p>
           <p className="mt-1 text-xs text-fg-muted">Zeichen</p>
         </div>
@@ -83,10 +96,14 @@ export default async function BotKnowledgePage() {
             Status
           </p>
           <p className="mt-1 font-display text-2xl leading-tight text-fg">
-            {doc.trim() ? "Aktiv" : "Leer"}
+            {!storeOk ? NO_VALUE : knowledge.trim() ? "Aktiv" : "Leer"}
           </p>
           <p className="mt-1 text-xs text-fg-muted">
-            {doc.trim() ? "fließt in jede Antwort ein" : "noch keine Korrekturen"}
+            {!storeOk
+              ? "keine Verbindung"
+              : knowledge.trim()
+                ? "fließt in jede Antwort ein"
+                : "noch keine Korrekturen"}
           </p>
         </div>
       </section>
@@ -98,6 +115,13 @@ export default async function BotKnowledgePage() {
         <BotTest />
       </section>
 
+      {!storeOk ? (
+        <section className="mb-8 rounded-xl border border-accent/50 bg-accent/[0.06] p-4 text-sm text-fg-muted">
+          Der Wissens-Text wird ausgeblendet, solange der Speicher nicht
+          antwortet. Sonst würde ein Speichern das vorhandene Wissen mit einem
+          leeren Feld überschreiben.
+        </section>
+      ) : (
       <section className="mb-8">
         <form action={saveDoc} className="flex flex-col gap-2">
           <label className="text-xs font-bold uppercase tracking-[0.12em] text-fg">
@@ -109,7 +133,7 @@ export default async function BotKnowledgePage() {
           </p>
           <textarea
             name="doc"
-            defaultValue={doc}
+            defaultValue={knowledge}
             rows={14}
             placeholder="Noch leer. Sobald du eine Korrektur abschickst, erscheint hier das strukturierte Wissen."
             className="rounded-lg border border-border bg-bg px-3 py-2 font-mono text-xs leading-relaxed text-fg outline-none transition-colors focus:border-accent"
@@ -122,6 +146,7 @@ export default async function BotKnowledgePage() {
           </button>
         </form>
       </section>
+      )}
 
       <section className="rounded-xl border border-border bg-surface/40">
         <div className="border-b border-border px-4 py-3">
@@ -129,7 +154,11 @@ export default async function BotKnowledgePage() {
             Verlauf deiner Korrekturen
           </h2>
         </div>
-        {corrections.length === 0 ? (
+        {!storeOk ? (
+          <div className="p-8 text-center text-sm text-fg-muted">
+            Verlauf kann gerade nicht geladen werden.
+          </div>
+        ) : list.length === 0 ? (
           <div className="p-8 text-center text-sm text-fg-muted">
             Noch keine Korrekturen. Öffne einen{" "}
             <Link href="/admin/chats" className="text-accent hover:text-accent-hi">
@@ -139,7 +168,7 @@ export default async function BotKnowledgePage() {
           </div>
         ) : (
           <ul className="divide-y divide-border">
-            {corrections.map((c) => (
+            {list.map((c) => (
               <li key={c.id} className="flex flex-col gap-1 px-4 py-3">
                 <div className="flex items-start justify-between gap-3">
                   <p className="text-[11px] text-fg-dim">

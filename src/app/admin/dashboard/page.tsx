@@ -246,12 +246,20 @@ export default async function AdminDashboard({
         />
         <StatCard
           label="Sitzungen"
-          value={sessions.persistent ? int(sessions.visitors) : "—"}
+          value={
+            sessions.persistent && !sessions.fetchError
+              ? int(sessions.visitors)
+              : "\u2014"
+          }
           cur={sessions.visitors}
           prev={sessions.prevVisitors}
-          reliable={sessions.persistent && sessions.prevComplete}
+          reliable={
+            sessions.persistent && sessions.prevComplete && !sessions.fetchError
+          }
           sub={
-            sessions.persistent
+            sessions.fetchError
+              ? "Zähler nicht erreichbar"
+              : sessions.persistent
               ? `${int(sessions.views)} Aufrufe`
               : "Zähler inaktiv"
           }

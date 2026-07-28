@@ -2,8 +2,13 @@ import Link from "next/link";
 import { isPersistent, listConversations } from "@/lib/adminStore";
 import { loadAnalytics } from "@/lib/analyticsStore";
 import { loadOrdersSnapshot, formatEUR, customerName } from "@/lib/orders";
+import { StoreNotice } from "./StoreNotice";
 
 export const dynamic = "force-dynamic";
+
+// Platzhalter fuer "kein Wert". Gleiches Zeichen, das das Dashboard schon
+// benutzt, hier als Escape damit kein Gedankenstrich im Quelltext steht.
+const NO_VALUE = "\u2014";
 
 function timeAgo(ts: number): string {
   const s = Math.floor((Date.now() - ts) / 1000);
@@ -45,6 +50,11 @@ export default async function AdminHome() {
     loadOrdersSnapshot(),
   ]);
   const persistent = isPersistent();
+  // undefined bzw. fetchError heissen der Speicher hat nicht geantwortet. Eine 0
+  // wuerde behaupten es habe keine Besucher und keine Chats gegeben.
+  const chatsOk = conversations !== undefined;
+  const statsOk = !analytics.fetchError;
+  const chats = conversations ?? [];
   const maxDay = analytics.perDay.reduce((m, d) => Math.max(m, d.views), 0);
   const todaysVisitors = analytics.perDay[analytics.perDay.length - 1]?.visitors ?? 0;
   const todaysViews = analytics.perDay[analytics.perDay.length - 1]?.views ?? 0;
@@ -53,17 +63,17 @@ export default async function AdminHome() {
   today.setHours(0, 0, 0, 0);
   const midnight = today.getTime();
   const last7 = midnight - 6 * 24 * 60 * 60 * 1000;
-  const chatsToday = conversations.filter((c) => c.createdAt >= midnight).length;
-  const chats7d = conversations.filter((c) => c.createdAt >= last7).length;
-  const unreviewed = conversations.filter((c) => !c.reviewed).length;
+  const chatsToday = chats.filter((c) => c.createdAt >= midnight).length;
+  const chats7d = chats.filter((c) => c.createdAt >= last7).length;
+  const unreviewed = chats.filter((c) => !c.reviewed).length;
 
-  const totalMessages = conversations.reduce(
+  const totalMessages = chats.reduce(
     (sum, c) => sum + c.messages.length,
     0
   );
   const avgMsgs =
-    conversations.length > 0
-      ? (totalMessages / conversations.length).toFixed(1)
+    chats.length > 0
+      ? (totalMessages / chats.length).toFixed(1)
       : "0";
 
   return (
@@ -89,6 +99,11 @@ export default async function AdminHome() {
         </div>
       )}
 
+      {!statsOk && (
+        <StoreNotice what="Besucherdaten" detail={analytics.fetchError} />
+      )}
+      {!chatsOk && <StoreNotice what="Bot-Chats" />}
+
       <section className="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatCard
           label="Umsatz heute"
@@ -101,17 +116,17 @@ export default async function AdminHome() {
         />
         <StatCard
           label="Besucher heute"
-          value={String(todaysVisitors)}
-          sub={`${todaysViews} Seitenaufrufe`}
+          value={statsOk ? String(todaysVisitors) : NO_VALUE}
+          sub={statsOk ? `${todaysViews} Seitenaufrufe` : "keine Verbindung"}
         />
         <StatCard
           label="Chats heute"
-          value={String(chatsToday)}
-          sub={`${chats7d} in den letzten 7 Tagen`}
+          value={chatsOk ? String(chatsToday) : NO_VALUE}
+          sub={chatsOk ? `${chats7d} in den letzten 7 Tagen` : "keine Verbindung"}
         />
         <StatCard
           label="Ungelesen"
-          value={String(unreviewed)}
+          value={chatsOk ? String(unreviewed) : NO_VALUE}
           sub={unreviewed > 0 ? "wollen deine Aufmerksamkeit" : "alles sauber"}
         />
       </section>
@@ -129,8 +144,8 @@ export default async function AdminHome() {
         />
         <StatCard
           label="Besucher 7 Tage"
-          value={String(analytics.totalVisitors7d)}
-          sub={`${analytics.totalViews7d} Seitenaufrufe`}
+          value={statsOk ? String(analytics.totalVisitors7d) : NO_VALUE}
+          sub={statsOk ? `${analytics.totalViews7d} Seitenaufrufe` : "keine Verbindung"}
         />
       </section>
 
@@ -146,7 +161,11 @@ export default async function AdminHome() {
             Details →
           </Link>
         </div>
-        {maxDay === 0 ? (
+        {!statsOk ? (
+          <p className="text-xs text-fg-muted">
+            Keine Verbindung zum Zähler, deshalb kein Verlauf.
+          </p>
+        ) : maxDay === 0 ? (
           <p className="text-xs text-fg-muted">
             Noch keine Besuche gezählt. Sobald jemand die Seite aufruft,
             erscheint hier ein Balken.
@@ -184,12 +203,12 @@ export default async function AdminHome() {
       <section className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatCard
           label="Ø Nachrichten/Chat"
-          value={avgMsgs}
+          value={chatsOk ? avgMsgs : NO_VALUE}
           sub={`${totalMessages} insgesamt`}
         />
         <StatCard
           label="Chats gesamt"
-          value={String(conversations.length)}
+          value={chatsOk ? String(chats.length) : NO_VALUE}
           sub="in Live-Ansicht"
         />
         <StatCard
@@ -274,14 +293,18 @@ export default async function AdminHome() {
             Alle anzeigen →
           </Link>
         </div>
-        {conversations.length === 0 ? (
+        {!chatsOk ? (
+          <div className="p-10 text-center text-sm text-fg-muted">
+            Chats können gerade nicht geladen werden.
+          </div>
+        ) : chats.length === 0 ? (
           <div className="p-10 text-center text-sm text-fg-muted">
             Noch keine Chats erfasst. Sobald Kunden mit SickBot sprechen,
             landen sie hier.
           </div>
         ) : (
           <ul className="divide-y divide-border">
-            {conversations.slice(0, 8).map((c) => (
+            {chats.slice(0, 8).map((c) => (
               <li key={c.id}>
                 <Link
                   href={`/admin/chats/${c.id}`}

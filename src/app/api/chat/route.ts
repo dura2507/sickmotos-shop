@@ -51,7 +51,13 @@ export async function POST(req: Request) {
 
   // Owner corrections override the base knowledge. Kept in a separate,
   // uncached block so a fresh correction takes effect on the very next answer.
-  const corrections = await getBotKnowledge().catch(() => "");
+  // safe() wirft nicht mehr, undefined heisst der Speicher hat nicht
+  // geantwortet. Der Bot antwortet dann ohne Thomas' Korrekturen (H4-Adapter,
+  // 3-Pin vs 4-Pin, EXTRA5), was man der Antwort nicht ansieht, deshalb ins Log.
+  const corrections = await getBotKnowledge();
+  if (corrections === undefined) {
+    console.warn("[chat] keine Korrekturen geladen, Antwort nur auf Basiswissen");
+  }
   const system: Anthropic.MessageCreateParams["system"] = [
     {
       type: "text",

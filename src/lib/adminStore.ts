@@ -1,17 +1,11 @@
 import "server-only";
-import { Redis } from "@upstash/redis";
+import { redis, safe } from "./redisSafe";
 
-let redis: Redis | null = null;
-try {
-  if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
-    redis = new Redis({
-      url: process.env.KV_REST_API_URL,
-      token: process.env.KV_REST_API_TOKEN,
-    });
-  }
-} catch {
-  redis = null;
-}
+// Lesekonvention fuer alles hier drunter: undefined heisst der Speicher hat
+// nicht geantwortet (Ausfall, Kontingent aufgebraucht). null / [] / "" heissen
+// er hat geantwortet und da ist nichts. Wer zurueckschreibt, muss die beiden
+// Faelle unterscheiden, sonst loescht ein fehlgeschlagener Lesevorgang plus
+// erfolgreicher Schreibvorgang echte Daten.
 
 const memory = {
   conversations: new Map<string, StoredConversation>(),
@@ -74,7 +68,16 @@ export async function appendConversation(
   const convId = id || makeId();
 
   if (redis) {
-    const raw = await redis.get<StoredConversation>(KEY_CONV(convId));
+    // undefined heisst der Lesevorgang selbst ist gescheitert. Das als "noch
+    // kein Gespraech" zu behandeln wuerde einen echten Verlauf mit einem
+    // einzeiligen Stummel ueberschreiben.
+    const raw = await safe<StoredConversation | null | undefined>(
+      "adminStore.appendConversation.read",
+      () => redis!.get<StoredConversation>(KEY_CONV(convId)),
+      undefined
+    );
+    if (raw === undefined) return convId;
+
     const existing: StoredConversation =
       raw ?? {
         id: convId,
@@ -89,10 +92,19 @@ export async function appendConversation(
     if (!existing.preview && turns[0]) {
       existing.preview = shortPreview(turns[0].content);
     }
-    await redis.set(KEY_CONV(convId), existing);
-    // lpush prepends → index is newest-first
-    await redis.lpush(KEY_INDEX, convId);
-    await redis.ltrim(KEY_INDEX, 0, 999); // keep last 1000
+    // Eine Pipeline statt drei Roundtrips.
+    await safe(
+      "adminStore.appendConversation.write",
+      async () => {
+        const pipe = redis!.pipeline();
+        pipe.set(KEY_CONV(convId), existing);
+        pipe.lpush(KEY_INDEX, convId); // lpush prepends, index is newest-first
+        pipe.ltrim(KEY_INDEX, 0, 999); // keep last 1000
+        await pipe.exec();
+        return true;
+      },
+      false
+    );
     return convId;
   }
 
@@ -116,13 +128,23 @@ export async function appendConversation(
 export async function listConversations(
   limit = 50,
   offset = 0
-): Promise<StoredConversation[]> {
+): Promise<StoredConversation[] | undefined> {
   if (redis) {
-    const ids = (await redis.lrange<string>(KEY_INDEX, offset, offset + limit - 1)) ?? [];
-    // Deduplicate — lpush on every turn can leave duplicates.
+    const ids = await safe<string[] | undefined>(
+      "adminStore.listConversations.index",
+      () => redis!.lrange<string>(KEY_INDEX, offset, offset + limit - 1),
+      undefined
+    );
+    if (ids === undefined) return undefined;
+    // Deduplicate, lpush on every turn can leave duplicates.
     const uniq = [...new Set(ids)];
     if (uniq.length === 0) return [];
-    const rows = (await redis.mget<StoredConversation[]>(...uniq.map(KEY_CONV))) ?? [];
+    const rows = await safe<StoredConversation[] | undefined>(
+      "adminStore.listConversations.rows",
+      () => redis!.mget<StoredConversation[]>(...uniq.map(KEY_CONV)),
+      undefined
+    );
+    if (rows === undefined) return undefined;
     return rows.filter((r): r is StoredConversation => !!r);
   }
   return memory.order
@@ -131,34 +153,55 @@ export async function listConversations(
     .filter((c): c is StoredConversation => !!c);
 }
 
-export async function getConversation(id: string): Promise<StoredConversation | null> {
+export async function getConversation(
+  id: string
+): Promise<StoredConversation | null | undefined> {
   if (redis) {
-    const raw = await redis.get<StoredConversation>(KEY_CONV(id));
-    return raw ?? null;
+    return safe<StoredConversation | null | undefined>(
+      "adminStore.getConversation",
+      () => redis!.get<StoredConversation>(KEY_CONV(id)),
+      undefined
+    );
   }
   return memory.conversations.get(id) ?? null;
 }
 
-export async function markReviewed(id: string, reviewed: boolean): Promise<void> {
+export async function markReviewed(id: string, reviewed: boolean): Promise<boolean> {
   const conv = await getConversation(id);
-  if (!conv) return;
+  // Deckt "nicht gefunden" und "Lesen fehlgeschlagen" ab: ohne den aktuellen
+  // Stand darf nicht geschrieben werden.
+  if (!conv) return false;
   conv.reviewed = reviewed;
   if (redis) {
-    await redis.set(KEY_CONV(id), conv);
-  } else {
-    memory.conversations.set(id, conv);
+    return safe(
+      "adminStore.markReviewed",
+      async () => {
+        await redis!.set(KEY_CONV(id), conv);
+        return true;
+      },
+      false
+    );
   }
+  memory.conversations.set(id, conv);
+  return true;
 }
 
-export async function saveNote(id: string, note: string): Promise<void> {
+export async function saveNote(id: string, note: string): Promise<boolean> {
   const conv = await getConversation(id);
-  if (!conv) return;
+  if (!conv) return false;
   conv.note = note;
   if (redis) {
-    await redis.set(KEY_CONV(id), conv);
-  } else {
-    memory.conversations.set(id, conv);
+    return safe(
+      "adminStore.saveNote",
+      async () => {
+        await redis!.set(KEY_CONV(id), conv);
+        return true;
+      },
+      false
+    );
   }
+  memory.conversations.set(id, conv);
+  return true;
 }
 
 export function isPersistent(): boolean {
@@ -169,21 +212,37 @@ export function isPersistent(): boolean {
 
 export async function addCorrection(
   input: Omit<BotCorrection, "id" | "at">
-): Promise<BotCorrection> {
+): Promise<BotCorrection | undefined> {
   const entry: BotCorrection = { ...input, id: makeId(), at: Date.now() };
   if (redis) {
-    await redis.lpush(KEY_CORR, JSON.stringify(entry));
-    await redis.ltrim(KEY_CORR, 0, 499);
-  } else {
-    memory.corrections.unshift(entry);
-    if (memory.corrections.length > 500) memory.corrections.length = 500;
+    const ok = await safe(
+      "adminStore.addCorrection",
+      async () => {
+        const pipe = redis!.pipeline();
+        pipe.lpush(KEY_CORR, JSON.stringify(entry));
+        pipe.ltrim(KEY_CORR, 0, 499);
+        await pipe.exec();
+        return true;
+      },
+      false
+    );
+    return ok ? entry : undefined;
   }
+  memory.corrections.unshift(entry);
+  if (memory.corrections.length > 500) memory.corrections.length = 500;
   return entry;
 }
 
-export async function listCorrections(limit = 300): Promise<BotCorrection[]> {
+export async function listCorrections(
+  limit = 300
+): Promise<BotCorrection[] | undefined> {
   if (redis) {
-    const rows = (await redis.lrange<string>(KEY_CORR, 0, limit - 1)) ?? [];
+    const rows = await safe<string[] | undefined>(
+      "adminStore.listCorrections",
+      () => redis!.lrange<string>(KEY_CORR, 0, limit - 1),
+      undefined
+    );
+    if (rows === undefined) return undefined;
     return rows
       .map((r) => {
         try {
@@ -197,32 +256,61 @@ export async function listCorrections(limit = 300): Promise<BotCorrection[]> {
   return memory.corrections.slice(0, limit);
 }
 
-export async function deleteCorrection(id: string): Promise<void> {
+export async function deleteCorrection(id: string): Promise<boolean> {
   if (redis) {
     const all = await listCorrections(500);
+    // Ein fehlgeschlagener Lesevorgang sieht aus wie eine leere Liste. Darauf
+    // zu loeschen wuerde den ganzen Korrektur-Verlauf ausradieren.
+    if (all === undefined) return false;
     const kept = all.filter((c) => c.id !== id);
-    await redis.del(KEY_CORR);
-    if (kept.length) {
-      // preserve newest-first order (rpush oldest→newest of the reversed list)
-      await redis.rpush(KEY_CORR, ...kept.map((c) => JSON.stringify(c)));
-    }
-  } else {
-    memory.corrections = memory.corrections.filter((c) => c.id !== id);
+    if (kept.length === all.length) return true; // nichts getroffen
+    return safe(
+      "adminStore.deleteCorrection",
+      async () => {
+        // Eine Transaktion, damit ein Fehler die Liste nie geloescht aber
+        // ungeschrieben zuruecklassen kann.
+        const tx = redis!.multi();
+        tx.del(KEY_CORR);
+        if (kept.length) {
+          // preserve newest-first order (rpush oldest to newest)
+          tx.rpush(KEY_CORR, ...kept.map((c) => JSON.stringify(c)));
+        }
+        await tx.exec();
+        return true;
+      },
+      false
+    );
   }
+  memory.corrections = memory.corrections.filter((c) => c.id !== id);
+  return true;
 }
 
-export async function getBotKnowledge(): Promise<string> {
+export async function getBotKnowledge(): Promise<string | undefined> {
   if (redis) {
-    const doc = await redis.get<string>(KEY_KNOW);
-    return doc ?? "";
+    const doc = await safe<string | null | undefined>(
+      "adminStore.getBotKnowledge",
+      () => redis!.get<string>(KEY_KNOW),
+      undefined
+    );
+    // undefined = Lesen fehlgeschlagen, "" = wirklich leer. applyCorrection und
+    // der Editor brauchen den Unterschied: in ein faelschlich leeres Dokument
+    // zu mergen und das zurueckzuschreiben loescht jede Korrektur.
+    return doc === undefined ? undefined : doc ?? "";
   }
   return memory.knowledge;
 }
 
-export async function setBotKnowledge(doc: string): Promise<void> {
+export async function setBotKnowledge(doc: string): Promise<boolean> {
   if (redis) {
-    await redis.set(KEY_KNOW, doc);
-  } else {
-    memory.knowledge = doc;
+    return safe(
+      "adminStore.setBotKnowledge",
+      async () => {
+        await redis!.set(KEY_KNOW, doc);
+        return true;
+      },
+      false
+    );
   }
+  memory.knowledge = doc;
+  return true;
 }
