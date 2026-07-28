@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-07-27.
+> Stand: 2026-07-28.
 
 ---
 
@@ -501,6 +501,57 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   Zeilen-Kontextmenue liegt der echte Hit-Bereich ~20px unter dem gezeichneten Text
   („Quelle loeschen" bei rowY+37), und es haengen alte Menue-Knoten im DOM → immer den
   zuletzt gerenderten nehmen bzw. nach Screenshot klicken.
+
+- **Admin-Serverfehler: Upstash-Kontingent aufgebraucht, Code jetzt ausfallsicher
+  (2026-07-28, commit d88afcf).** Thomas morgens: „Die Admin Page ist nicht mehr
+  erreichbar" plus Safari-Screenshot „A server error occurred". **Ursache im
+  Vercel-Runtime-Log gefunden, nicht geraten:** `[track] recordVisit failed:
+  UpstashError: Command 1 [ incr ] failed: ERR max requests limit exceeded.
+  Limit: 500000, Usage: 500000`. Das Gratis-Kontingent von Upstash ist weg,
+  danach wirft **jedes** Redis-Kommando. `/api/track` hatte ein try/catch, alle
+  Admin-Seiten nicht, und im ganzen Projekt gab es **keine einzige error.tsx** →
+  Next liefert den nackten 500. Rechnung dahinter: `recordVisit` feuerte **12
+  Kommandos pro Seitenaufruf** (6 Schreib + 6 expire, Upstash zaehlt jedes
+  Pipeline-Kommando einzeln), macht 500.000/12 = **41.666 Aufrufe im Monat**.
+  Dazu kostete jeder Admin-Aufruf ~157 Kommandos (30x GET + 30x SCARD + 97x
+  HGETALL), bei force-dynamic also pro Reload neu.
+  - **Gefixt:** neue `src/lib/redisSafe.ts` (ein Client + `safe()`, faengt jeden
+    Kommandofehler, loggt max. 1x/Minute je Instanz statt 1x pro Aufruf);
+    `src/app/admin/error.tsx` als erste Fehlergrenze ueberhaupt; Leseergebnisse
+    unterscheiden jetzt **„leer" von „keine Antwort"** (undefined-Sentinel), die
+    Seiten zeigen Striche + ehrlichen Hinweis statt erfundener Nullen.
+  - **Datenverlust-Sicherungen (waren echte Bomben):** `deleteCorrection` lief
+    als `del` + `rpush` ohne Transaktion, ein Fehler dazwischen haette **alle**
+    Korrekturen geloescht → jetzt `multi()`. `getBotKnowledge` gab bei Lesefehler
+    `""` zurueck, ein anschliessender Merge haette das ganze Wissens-Dokument
+    ueberschrieben → jetzt `undefined`, `applyCorrection` bricht ab. Der Editor
+    auf /admin/bot wird bei Ausfall **ausgeblendet**, sonst wuerde ein Klick auf
+    „Wissen speichern" das leere Textfeld schreiben.
+  - **Verbrauch halbiert:** TTL nur noch einmal pro Tag statt pro Aufruf
+    (`expire ... NX` + In-Memory-Guard) → 12 auf **6 Kommandos je Aufruf**
+    (~83.000 Aufrufe/Monat statt 41.666); `MGET` statt 30 Einzel-GET;
+    60-Sekunden-Cache auf dem Analytics-Schnappschuss; Client dedupliziert
+    denselben Pfad 30s lang (der Sprachwechsel laedt die Seite neu und zaehlte
+    bisher doppelt).
+  - **Verifiziert, nicht behauptet:** lokaler Dev-Server mit absichtlich kaputten
+    Upstash-Zugangsdaten, eingeloggt per curl → /admin, /admin/dashboard,
+    /admin/chats, /admin/bot, /admin/visitors alle **200** statt 500, Hinweise
+    und Striche im HTML, auf /admin/bot **kein `<textarea>`** (Editor korrekt
+    verborgen), Shop-Startseite 200, /api/track 200, nur **2** Logzeilen trotz
+    vieler Aufrufe. Live nach Deploy: alle Admin-Routen antworten, ausgeloggt
+    307 auf den Login.
+  - **NICHT per Code loesbar (Entscheidung Leon):** das Kontingent selbst. Es
+    laeuft weiter auf Anschlag (im Live-Log nach dem Deploy weiter sichtbar),
+    bis es zurueckgesetzt wird oder der Upstash-Plan hochgestuft wird. Solange
+    zeigt der Admin den ehrlichen Hinweis statt Zahlen. Dritte Option waere eine
+    neue Redis-Datenbank, das killt aber die komplette Besucher-Historie plus
+    alle Bot-Chats und Korrekturen. **Die Besucherzahlen der Ausfalltage sind
+    endgueltig weg**, Umsatz und Bestellungen nicht (die kommen aus der
+    Shopify-Orders-API). Offen ausserdem: ob die 500k organischer Traffic waren
+    oder Missbrauch, `/api/track` ist weiter ein offener POST ohne Rate-Limit
+    (Origin-Pruefung bewusst NICHT eingebaut, weil sendBeacon je nach Browser
+    keinen Origin-Header schickt und das Tracking still auf null faellt, gehoert
+    in die Vercel-Firewall).
 
 ### Offen / TODO
 - **Scene-Voice Copy-Rewrite (Thomas' Kern-Wunsch):** Die Seiten-Texte fühlen sich
