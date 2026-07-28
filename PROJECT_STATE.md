@@ -553,6 +553,47 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     keinen Origin-Header schickt und das Tracking still auf null faellt, gehoert
     in die Vercel-Firewall).
 
+- **Tracking-Audit nach Operator-Anfrage „migrate complete Google tracking codes"
+  (2026-07-28, alles selbst nachgeprueft, kein Code geaendert).** Antwort auf die
+  Anfrage: **nichts muss migriert werden**, alte und neue Seite benutzen dieselben
+  drei IDs. Kaputt ist die Verdrahtung.
+  - **Laeuft nachweislich:** GTM `GTM-NN3V8K3D` auf allen Seiten, GA4
+    `G-CJ8F4XV6F9` bekommt Seitenaufrufe auch bei Client-Navigation.
+  - **BUG, selbst im Browser bestaetigt:** `window.google_tag_manager` auf
+    sickmotos.com enthaelt den Schluessel **`AW-AW-395813654`**. Im Container
+    steht `vtp_conversionId: "AW-395813654"` in einem Feld, das `AW-` selbst
+    voranstellt. Gegenprobe per curl: `gtag/js?id=AW-395813654` liefert 5x
+    `__ccd_ads_conv_marking`, `AW-AW-395813654` liefert **0** (generischer Stub).
+    Das Remarketing-Tag adressiert also ein Konto, das es nicht gibt. **Fix: im
+    GTM-Feld nur `395813654` eintragen. Operator-Job, ein Feld.**
+  - **Ecommerce-Events verpuffen:** der Container hat 4 Tags und 2 Trigger
+    (`gtm.init`, `gtm.js`), **kein GA4-Event-Tag, kein Custom-Event-Trigger**.
+    `src/lib/analytics.ts` pusht view_item/add_to_cart/begin_checkout korrekt,
+    es hoert nur niemand zu. Kein Code-Bug, reine Container-Arbeit.
+  - **Conversion-Tag auf unserer Domain: `grep -c __awct` = 0.** Und es kann dort
+    auch keins geben: der Checkout liegt auf checkout.sickmotos.com bei Shopify,
+    `next.config.ts` leitet /checkout sogar zurueck auf /shop. **Kein Code, den
+    wir schreiben, kann jemals ein purchase-Event ausloesen.** Gute Nachricht:
+    weil checkout.sickmotos.com eine Subdomain ist, ueberleben `_ga` und
+    `_gcl_au` den Sprung identisch, es braucht kein Cross-Domain-Linking.
+  - **Kauf-Conversion ist in der Google-und-YouTube-App hinterlegt**
+    (`AW-395813654/mhrbCIvzg7oaEJbG3rwB`), aber in einem echten Checkout war
+    `window.google_tag_manager` **null**. Verdacht: EEA-Consent-Gating, unser
+    Banner schreibt nach localStorage (origin-scoped), Shopify sieht das nie;
+    `setTrackingConsent` kommt im Repo **0x** vor. **Muss im Ads-Konto geprueft
+    werden: kommen seit dem Umzug ueberhaupt Kaeufe an? Wichtigster Einzelcheck.**
+  - **Doppelzaehl-Risiko:** in Shopify liegt zusaetzlich ein eigenes Pixel
+    `227115274` „thank yoy page tracking". Inhalt von aussen nicht lesbar. Wenn
+    es eine zweite Ads-Conversion feuert, werden Bestellungen doppelt gezaehlt.
+  - **Anfragen-Conversion `MNNtCLH-3PAZEJbG3rwB`** haengt an
+    `sick-motos.com/pages/contact`, die Seite existiert nicht mehr. Die neue
+    Seite hat ueberhaupt kein Kontaktformular, nur zwei mailto-Links und den
+    SickBot. Was als Anfrage zaehlt, muss der Operator definieren.
+  - Kleinkram bestaetigt: GTM laedt auch auf /admin (Skripte sitzen ausserhalb
+    des isAdmin-Zweigs), `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` weiter `sick-motos.com`,
+    Conversion-Linker zeigt noch auf zwei tote Hosts, zwei identische
+    `__googtag`-Tags mit derselben GA4-ID.
+
 ### Offen / TODO
 - **Scene-Voice Copy-Rewrite (Thomas' Kern-Wunsch):** Die Seiten-Texte fühlen sich
   für Thomas noch „unecht" an, zu weit weg von der deutschen 125er-Supermoto/Enduro-Szene.
