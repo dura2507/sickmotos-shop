@@ -618,7 +618,55 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   Problem vorbei. Unsere Links sind nachweislich korrekt, die Altdatensaetze haben
   ueberhaupt keinen Link mehr.
 
+- **Upstash auf Pay As You Go hochgestuft, Ausfall beendet (2026-07-29, Leons Freigabe).**
+  Das Gratis-Kontingent (500.000 Kommandos/Monat) war seit dem 28.07. aufgebraucht. Der
+  sichtbare Schaden war nicht die fehlende Statistik, sondern **der Bot**: `getBotKnowledge()`
+  lieferte `undefined`, der Korrektur-Block wurde uebersprungen, und `/api/chat` antwortete
+  trotzdem. Live gemessen am echten Endpunkt: Frage nach dem Rabattcode, Antwort „Aktuell habe
+  ich keinen aktiven Rabattcode" (EXTRA5 steht NUR im Korrektur-Dokument, `grep` in
+  botKnowledge.ts = 0 Treffer). Betroffen waren damit auch H4-Adapter, 3-Pin/4-Pin und die
+  LED-Wandler-Regeln.
+  - **Wo abgerechnet wird, jetzt belegt:** die Datenbank ist eine **Vercel-Marketplace-Ressource**
+    (`store_R2WKiSeYPPQqxD7U`, `upstash-kv-fuchsia-queen`, Integration `icfg_bJLKwWrAX4ZZCO7qGxpl1SBq`,
+    Region fra1) im Team `dura2507s-projects` (Leons Agentur-Account, 14 Projekte). **Nicht** in
+    einem separaten Upstash-Konto und **nicht** bei Thomas. Thomas kann dort deshalb nicht selbst
+    kaufen, ohne Zugriff auf alle anderen Kundenprojekte zu bekommen. Abgemacht: Leon zahlt, Thomas
+    erstattet.
+  - **Der Tarifwechsel ist ein reiner Oberflaechen-Vorgang.** `vercel integration update --plan`
+    greift nur bei Integrationen mit `supportsInstallationBillingPlans: true`, unsere hat `false`
+    und der Tarif hat `"scope": "resource"`. Im CLI-Quellcode existiert kein Endpunkt fuer einen
+    Tarifwechsel auf Ressourcen-Ebene, nur `.../billing/threshold`. Weg: Storage → Ressource →
+    „Change Configuration" → Tarif waehlen → Continue → Update.
+  - **Gewaehlt: `paid` / Pay As You Go, 0,20 USD je 100K Kommandos**, 10 GB, 10.000 Kommandos/sec.
+    Bei rund 500.000 bis 600.000 Kommandos im Monat sind das ca. 1,00 bis 1,30 USD. Bewusst NICHT
+    genommen: Prod Pack (+200 USD/Monat), Auto Upgrade, Read-Regions (je +5 USD). Alle drei stehen
+    per API bestaetigt auf `False` bzw. leer.
+  - **Verifiziert, nicht behauptet:** API sagt `billingPlan.id = paid`, `billingState active`,
+    `usageQuotaExceeded false`, `autoUpgrade false`, `prodPack false`, `readRegions []`. Danach
+    derselbe Bot-Test noch einmal: **„Ja, auf die erste Bestellung gibt es den Code EXTRA5"**.
+    Redis liest und schreibt also wieder. Das Admin-Panel habe ich NICHT selbst angesehen (kein
+    Passwort auf diesem Rechner), aber es haengt an derselben Datenbank.
+  - **Kein Ausgabenlimit gesetzt.** `vercel integration-resource create-threshold` gehoert zur
+    Guthaben-Aufladung (`<resource> <minimum> <spend> <limit>`), und der Balance-Endpunkt der
+    Installation antwortet leer, hier laeuft also kein Prepaid-Modell. Ein Deckel muesste ueber
+    die Oberflaeche gesetzt werden, falls gewuenscht.
+  - **Wiedervorlage 01.09.2026:** Verbrauchskurve eines vollen August ansehen. Unter 300.000
+    Kommandos war die Halbierung vom 28.07. allein ausreichend und der Tarif ist nur Versicherung.
+    Ueber 450.000 ist der naechste Hebel der Admin-Lesepreis (Cache hoch, Top-Listen auf 7 Tage),
+    nicht mehr Geld. Zurueck in die Gratisstufe geht laut Upstash-AGB nicht.
+  - **Offen:** ob die 500.000 organischer Traffic waren oder Missbrauch. `/api/track` ist weiter
+    ein offener POST ohne Rate-Limit. Klaeren liesse sich das an der Tageskurve im Upstash-Konto.
+
 ### Offen / TODO
+- **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
+  Merchant zeigt „Content API for Shopping wird am **18. August 2026** abgeschaltet". **Betrifft
+  unseren Code NICHT**, selbst geprueft: `grep` nach `content/v2`, `shopping/content`,
+  `googleapis.com/content` in `src/` und `scripts/` = 0 Treffer. Wir liefern an Google nur eine
+  statische CSV ueber HTTP aus (`src/app/merchant-link-feed.csv/route.ts`), das ist keine API-
+  Integration. Die Content API nutzt die **Shopify-App Google & YouTube** (daher heissen die
+  Primaerquellen „Shopify App API"). Migration ist damit Shopifys Job, nicht unserer. Offen: dem
+  Operator sagen, dass er beim Shopify-App-Stand nachhaelt, und nach dem 18.08. kontrollieren, ob
+  die Primaerquellen weiter befuellt werden. Unser Supplemental-Feed laeuft unabhaengig weiter.
 - **Scene-Voice Copy-Rewrite (Thomas' Kern-Wunsch):** Die Seiten-Texte fühlen sich
   für Thomas noch „unecht" an, zu weit weg von der deutschen 125er-Supermoto/Enduro-Szene.
   **Erledigt (2026-07-16): Keyword-Pass.** Thomas' Schlagwörter (LED-Scheinwerfer,
