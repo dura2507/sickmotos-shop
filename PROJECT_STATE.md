@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-07-28.
+> Stand: 2026-07-29.
 
 ---
 
@@ -593,6 +593,30 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     des isAdmin-Zweigs), `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` weiter `sick-motos.com`,
     Conversion-Linker zeigt noch auf zwei tote Hosts, zwei identische
     `__googtag`-Tags mit derselben GA4-ID.
+- **Die letzten 66 „Begrenzt" sind tote Varianten, kein Feed-Problem (bewiesen 2026-07-29):**
+  Nach dem Laender-Komplettausbau blieben 66 Produkte mit „Abweichende Onlineshop-URL"
+  haengen, ohne dass eine weitere Quelle etwas bewirkt haette. Ursache jetzt am
+  Einzelobjekt bewiesen, nicht geschaetzt. Google haelt zu einem Produkt Angebote mit
+  **Varianten-IDs, die es in Shopify nicht mehr gibt**; unser Supplemental-Feed
+  ueberschreibt aber per Angebots-ID, kann diese Karteileichen also grundsaetzlich
+  nicht erreichen. Sauberer Gegenbeweis an EINEM Produkt (10077911318794, SickMotos
+  Tuning Nockenwelle Beta RR 125 LC):
+  - `shopify_DE_10077911318794_51209771647242` (steht in merchant-link-feed.csv):
+    Status **Freigegeben**, Feld „Produktseite auf Ihrer Website" =
+    `https://sickmotos.com/products/...`, letzte Aktualisierung vor 8 Stunden.
+  - `shopify_DE_10077911318794_51209771712778` (steht NICHT im Feed): Status
+    **Begrenzt**, gar kein Website-Feld mehr, **letzte Aktualisierung 17. Mai 2025**,
+    und Titel und Beschreibung passen nicht mal zueinander (Titel Nockenwelle,
+    Beschreibung Injector) = eindeutig ein eingefrorener Altdatensatz.
+  Zweiter Stichprobenfund gleicher Bauart: `shopify_DE_10037524267274_51319103684874`
+  (Label EUR_35948069130, en), im Feed stehen fuer dasselbe Produkt drei voellig
+  andere Varianten-IDs. Passt zur Messung vom 23.07. (~86 tote Varianten, „werden NIE
+  gruen") und dazu, dass die Zahl ohne jedes Zutun weiter faellt (69 auf 67 auf 66).
+  **Konsequenz: hier ist nichts mehr zu tun, die Eintraege laufen von selbst aus.**
+  Wichtig fuer die Kommunikation: der Vorschlag des Operators, deswegen den
+  Shopify-Support wegen „API-generierter Landingpage-URLs" anzuschreiben, zielt am
+  Problem vorbei. Unsere Links sind nachweislich korrekt, die Altdatensaetze haben
+  ueberhaupt keinen Link mehr.
 
 ### Offen / TODO
 - **Scene-Voice Copy-Rewrite (Thomas' Kern-Wunsch):** Die Seiten-Texte fühlen sich
