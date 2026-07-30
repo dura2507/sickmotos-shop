@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-07-29.
+> Stand: 2026-07-30.
 
 ---
 
@@ -656,6 +656,32 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     nicht mehr Geld. Zurueck in die Gratisstufe geht laut Upstash-AGB nicht.
   - **Offen:** ob die 500.000 organischer Traffic waren oder Missbrauch. `/api/track` ist weiter
     ein offener POST ohne Rate-Limit. Klaeren liesse sich das an der Tageskurve im Upstash-Konto.
+
+- **Admin-Panel nach dem Upstash-Upgrade mit eigenen Augen geprueft (2026-07-30).** Nicht ueber
+  das Passwort, sondern ueber Leons eingeloggte Browser-Sitzung. `/admin` zeigt 537 EUR heute,
+  305 Besucher, 865 Aufrufe, echte Bestellungen und Chats. `/admin/visitors` zeigt 2970 Besucher
+  (7 Tage), 16143 (30 Tage), Top-Seiten, Laender, Referrer, Sprachen. `/admin/bot` zeigt 102
+  Korrekturen, 10037 Zeichen, Status Aktiv, **Editor wieder sichtbar** (der war bei Ausfall
+  bewusst versteckt). Keine Striche, keine StoreNotice-Kaesten. Merke: die Vercel-Oberflaeche
+  und lange benutzte Merchant-Tabs haengen unter der Browser-Automatisierung dauerhaft in
+  „Page still loading", frischer Tab loest es; die Vercel-Log-CLI liefert hier gar keine Zeilen,
+  taugt also nicht als Nachweis.
+- **„Fehlende Altersgruppe" (7 Produkte) ueber den eigenen Feed geloest (2026-07-30, commit
+  6b60e68).** Statt in Shopify Produkt fuer Produkt zu pflegen, liefert
+  `src/app/merchant-link-feed.csv/route.ts` jetzt eine dritte Spalte `age_group` mit dem Wert
+  `adult` fuer jede Zeile. Belegt statt geraten: von 486 Produkten enthaelt **kein einziger
+  Titel** einen Kinder-, Jugend-, Baby- oder Junior-Begriff, die Produkttypen sind ausschliesslich
+  Motorradteile (Dekor 180, Kruemmer 39, Carbon-Schutz, Angel EYES, ECU Tuning). `adult` ist damit
+  fuer den ganzen Katalog korrekt, und neue Produkte tragen es automatisch.
+  - Live verifiziert: Kopfzeile `id,link,age_group`, **1447 Zeilen, genau 1 ohne `adult`**
+    (die Kopfzeile). Merchant-Refetch angestossen, Ergebnis **„Insgesamt aktualisierte Produkte
+    1.446, Attributnamen: Alle erkannt"** = Google akzeptiert die neue Spalte.
+  - Die restlichen Quellen holen um 00:00 automatisch, die Warnung sollte morgen weg sein
+    (Prognose, nicht gemessen).
+  - **Bewusst NICHT im Feed: `price`.** Bei einer Preisaenderung in Shopify wuerde der Feedwert
+    bis zum naechsten Deploy von der Produktseite abweichen, und eine Preisabweichung ist eine
+    harte Ablehnung statt einer Warnung. Die 2 „Produktpreis fehlt" fallen ohnehin von selbst
+    (waren am 29.07. noch 10).
 
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
