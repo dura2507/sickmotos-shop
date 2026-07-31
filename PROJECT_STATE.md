@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-07-30.
+> Stand: 2026-07-31.
 
 ---
 
@@ -682,6 +682,29 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     bis zum naechsten Deploy von der Produktseite abweichen, und eine Preisabweichung ist eine
     harte Ablehnung statt einer Warnung. Die 2 „Produktpreis fehlt" fallen ohnehin von selbst
     (waren am 29.07. noch 10).
+
+- **Altersgruppe erledigt, „Merchant API"-Frage beantwortet (2026-07-31).**
+  - **`age_group` hat gewirkt:** die Karte „Fehlende Altersgruppe" ist aus der Diagnose
+    verschwunden. An ihrer Stelle steht jetzt **„Fehlende Farbe" mit denselben 7 Produkten**.
+    Das ist Googles Attribut-Treppe: ist ein empfohlenes Attribut da, schlaegt es das naechste
+    vor. **Farbe wird NICHT pauschal gesetzt**, im Gegensatz zu `adult` gaebe es keinen Wert,
+    der fuer alle stimmt, und geraten wird nicht (Regel 2). Es ist eine Warnung, sie blockiert
+    kein Produkt.
+  - **Content API betrifft uns nicht, jetzt am Konto belegt statt nur am Code:** in der
+    Datenquellen-Uebersicht steht als Quelle der Shopify-Eintraege **„Merchant API"**, nicht
+    „Content API". In jeder Zeile, die ich lesen konnte (13 gerenderte von 156, die Tabelle ist
+    virtualisiert), steht 13x „Shopify App API" mit 13x Quelle „Merchant API", **0x Content API**.
+    Die Shopify-App hat also bereits migriert. Dazu wie gehabt: `grep` nach `content/v2`,
+    `shopping/content`, `googleapis.com/content` in `src/` und `scripts/` = 0 Treffer.
+  - **Auffaellig, aber NICHT erklaert:** die Primaerquelle „Shopify App API, Feedlabel DE,
+    Deutsch" (ID 10516947860) zeigt nur **24 Produkte**, „Letzte Aktualisierung: -" und die
+    Warnung **„Aktualisierung erforderlich"**. Die uebrigen App-Quellen zeigen 0 oder 1 Produkt,
+    Googles eigener Crawl 267, das Konto gesamt 1428. Diese Zahlen gehen nicht sauber auf, die
+    Spalte „Produkte" bedeutet also offenbar etwas anderes als „von dieser Quelle geliefert".
+    Keine Theorie daraus bauen, das gehoert dem Operator bzw. Shopify vorgelegt.
+  - UI-Falle: `/mc/apidashboard` existiert nicht und leitet auf die Uebersicht; der Knopf
+    „API-Nutzung pruefen" im Hinweis ist kein Link mit href und tat unter Automatisierung nichts.
+    Die Quellen-Detailseite mit `tab=processing` haengt den Tab dauerhaft auf.
 
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
