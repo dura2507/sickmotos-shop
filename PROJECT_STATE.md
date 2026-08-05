@@ -729,6 +729,25 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     (analytics.google.com landet auf der Provisionierungsseite). Shopify kann es nicht sagen,
     es sieht den headless-Traffic nicht.
 
+- **Produkt-Sync-Webhook war seit Monaten tot, Ursache Secret-Mismatch (2026-08-05).**
+  Thomas' Aenderungen (neue Artikel, Preise) kamen NIE automatisch auf die Seite, nur ueber
+  unsere manuellen Deploys. Beweiskette: alle 3 Webhooks (Product update/deletion, Inventory
+  level update) sind in Shopify korrekt eingetragen und zeigen auf
+  `sickmotos-shop.vercel.app/api/shopify-webhook`; die Route lebt (401 bei ungueltiger
+  Signatur); Shopifys „Send test" loeste trotzdem KEIN Deployment aus, und die letzten 15
+  Vercel-Deployments waren ausnahmslos Git-Pushes, kein einziges per Deploy-Hook. In Vercel
+  war `SHOPIFY_WEBHOOK_SECRET` seit 25. Mai nie aktualisiert, die Shopify-Webhook-Seite
+  signiert aber mit dem dort angezeigten aktuellen Secret → Mismatch. **Fix:** Secret von der
+  Shopify-Webhook-Seite (Settings → Notifications → Webhooks, Zeile „Your webhooks will be
+  signed with") in die Vercel-Env uebertragen (Oberflaeche, nicht CLI; der Auto-Classifier
+  blockt Secrets in Shell-Kommandos). Erklaert nebenbei die 3 „Produktpreis stimmt nicht
+  ueberein" im Merchant: products.json war schlicht Wochen alt.
+  - Offen bei Abfassung dieses Eintrags: Redeploy + erneuter Shopify-Test → es muss ein
+    Deployment mit deployHookName auftauchen. Ergebnis im naechsten Commit nachtragen.
+- **Merchant-Feld-Wache: Leon hat der stuendlichen Selbstheilung noch NICHT zugestimmt**
+  (Zustand „puhhh ja keine Ahnung", 05.08.). Bis dahin: taeglich manuell pruefen
+  (`/mc/merchantprofile/businessinfo`). Nichts ohne sein Wort bauen.
+
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
   Merchant zeigt „Content API for Shopping wird am **18. August 2026** abgeschaltet". **Betrifft
