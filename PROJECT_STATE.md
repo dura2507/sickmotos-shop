@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-07-31.
+> Stand: 2026-08-05.
 
 ---
 
@@ -705,6 +705,29 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   - UI-Falle: `/mc/apidashboard` existiert nicht und leitet auf die Uebersicht; der Knopf
     „API-Nutzung pruefen" im Hinweis ist kein Link mit href und tat unter Automatisierung nichts.
     Die Quellen-Detailseite mit `tab=processing` haengt den Tab dauerhaft auf.
+
+- **Website-Feld zum 5. Mal umgesprungen, am 05.08. zurueckgestellt.** Thomas meldete morgens
+  „wir schmieren nach 2 guten Tagen wieder ab" plus Merchant-Screenshot mit Klicks 8.080 (-37,2%).
+  Kontrolle ergab: „Ihr Onlineshop" stand wieder auf **checkout.sickmotos.com**. Produktstatus
+  dabei 1082 freigegeben / 79 begrenzt / 0 abgelehnt (zwei Tage zuvor 1092/69/0), also kein
+  Absturz wie im Juli, aber die Richtung stimmte. Zurueckgestellt auf `https://sickmotos.com`,
+  Google hat **sofort automatisch verifiziert und beansprucht** („Automatisch von Google
+  bestaetigt"), das Checkout-Template blieb diesmal intakt.
+  - **Neuer Pfad in der Oberflaeche:** das Feld liegt jetzt unter Einstellungen →
+    Informationen zum Unternehmen → Karte „Ihr Onlineshop" → „Onlineshop bearbeiten",
+    direkt `/mc/merchantprofile/businessinfo` bzw. `/mc/settings/website`. Die alten URLs
+    `/mc/businessinfo` und `/mc/settings/business` leiten auf die Uebersicht um.
+  - **Ads-Conversion nachgemessen, meine frueheren Aussagen praezisiert.** Letzte 30 Tage im
+    Ads-Konto (Zugang: Suchfeld in der Kontoauswahl, Kundennummer tippen, Pfeil runter, Enter,
+    Koordinatenklicks prallen am Angular-Widget ab): 5.651 Seitenaufrufe, 251 Warenkorb,
+    47 Bezahlvorgang, **9 Kaeufe / 1.478 EUR**. Shop im selben Fenster: **198 Bestellungen /
+    32.470 EUR**. Ads sieht 11,2% der Aufrufe, schreibt sich aber nur 4,5% der Bestellungen zu,
+    und Checkout-Start zu Kauf liegt bei 19% statt der ueblichen 40-70%. Warenkorb und
+    Checkout-Start laufen auf unserer Domain, der Kauf auf checkout.sickmotos.com, wo am 28.07.
+    `window.google_tag_manager` null war. **Verdacht auf Untererfassung im Checkout bleibt,
+    beweisen liesse es sich nur mit GA4, und Leons Google-Konto hat keinen Analytics-Zugriff**
+    (analytics.google.com landet auf der Provisionierungsseite). Shopify kann es nicht sagen,
+    es sieht den headless-Traffic nicht.
 
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
