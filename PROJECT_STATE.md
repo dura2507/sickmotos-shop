@@ -742,8 +742,11 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   signed with") in die Vercel-Env uebertragen (Oberflaeche, nicht CLI; der Auto-Classifier
   blockt Secrets in Shell-Kommandos). Erklaert nebenbei die 3 „Produktpreis stimmt nicht
   ueberein" im Merchant: products.json war schlicht Wochen alt.
-  - Offen bei Abfassung dieses Eintrags: Redeploy + erneuter Shopify-Test → es muss ein
-    Deployment mit deployHookName auftauchen. Ergebnis im naechsten Commit nachtragen.
+  - **End-to-end verifiziert am 05.08. ~14:18:** nach Env-Fix + Redeploy loeste Shopifys
+    „Send test" sofort das Deployment **„Shopify product sync"** aus (deployHookName in der
+    Vercel-API, Status READY). Produkt-/Preisaenderungen von Thomas gehen jetzt automatisch
+    binnen ~3 Minuten live. Prognose: die 3 „Produktpreis stimmt nicht ueberein" im Merchant
+    fallen nach dem naechsten 00:00-Refetch, weil products.json nicht mehr wochenlang altert.
 - **Merchant-Feld-Wache: Leon hat der stuendlichen Selbstheilung noch NICHT zugestimmt**
   (Zustand „puhhh ja keine Ahnung", 05.08.). Bis dahin: taeglich manuell pruefen
   (`/mc/merchantprofile/businessinfo`). Nichts ohne sein Wort bauen.
