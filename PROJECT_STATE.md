@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-08-05.
+> Stand: 2026-08-06.
 
 ---
 
@@ -747,6 +747,11 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     Vercel-API, Status READY). Produkt-/Preisaenderungen von Thomas gehen jetzt automatisch
     binnen ~3 Minuten live. Prognose: die 3 „Produktpreis stimmt nicht ueberein" im Merchant
     fallen nach dem naechsten 00:00-Refetch, weil products.json nicht mehr wochenlang altert.
+- **Nachwelle des 5. Umspringers sichtbar (06.08. frueh):** Diagnose-Datenstand 06:16 zeigt
+  ~230 Eintraege in der Warnliste, fast alle „Abweichende Onlineshop-URL" = Schaden aus dem
+  Zeitraum VOR dem Ruecksetzen (gestern 13:17). Feld selbst kontrolliert und korrekt
+  (sickmotos.com, Verifiziert, Beansprucht). Gleiche Mechanik wie Juli: Zahlen werden erst
+  schlechter, dann dreht es binnen 24-48h. Keine neue Aktion noetig, taeglich nachschauen.
 - **Merchant-Feld-Wache: Leon hat der stuendlichen Selbstheilung noch NICHT zugestimmt**
   (Zustand „puhhh ja keine Ahnung", 05.08.). Bis dahin: taeglich manuell pruefen
   (`/mc/merchantprofile/businessinfo`). Nichts ohne sein Wort bauen.
