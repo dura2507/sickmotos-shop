@@ -756,6 +756,20 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   (Zustand „puhhh ja keine Ahnung", 05.08.). Bis dahin: taeglich manuell pruefen
   (`/mc/merchantprofile/businessinfo`). Nichts ohne sein Wort bauen.
 
+- **Ursache der Ads-Untererfassung eingegrenzt (06.08., Shopify-Konto selbst geprueft):**
+  Settings → Customer privacy zeigt Shopifys eigenen Cookie-Banner **aktiv in 31 europaeischen
+  Regionen** (automatische Einstellung, Opt-in-Text „unless you accept them"), zusaetzlich ist
+  **Consentmo GDPR** als Privacy-App installiert (Shopify warnt selbst vor Doppel-Bannern).
+  Zusammen mit dem Befund vom 28.07. (unser Storefront-Banner schreibt nur localStorage,
+  `setTrackingConsent` kommt im Repo 0x vor, GTM auf checkout.sickmotos.com im echten Checkout
+  null) ergibt das die Kette: **Zustimmung vom Kunden erreicht den Checkout nie, Kauf-Conversion
+  der Google&YouTube-App bleibt fuer EU-Kaeufer blockiert** → 9 Ads-Kaeufe vs 198 Bestellungen,
+  Checkout→Kauf 19%. Loesungsweg (noch NICHT gebaut, braucht Leons Go): Shopifys
+  consent-tracking-api in unseren Banner einbinden (`storefrontRootDomain` sickmotos.com,
+  Cookie gilt dann auch fuer checkout.sickmotos.com), wie Hydrogen es macht. Konsequenz fuers
+  Aufgaben-Split: der Consent-Check ist UNSER Part, nicht der des Operators (kein Shopify-Zugang),
+  Operator-Liste entsprechend auf 3 Punkte gekuerzt.
+
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
   Merchant zeigt „Content API for Shopping wird am **18. August 2026** abgeschaltet". **Betrifft
