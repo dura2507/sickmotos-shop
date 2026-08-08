@@ -15,6 +15,7 @@
 
 import { useEffect, useState } from "react";
 import { useDictionary } from "./LocaleProvider";
+import { syncShopifyConsent } from "@/lib/shopifyConsent";
 
 type Choice = "granted" | "denied";
 const KEY = "sickmotos:consent:v1";
@@ -67,28 +68,40 @@ const REJECT: Consent = {
   security_storage: "granted",
 };
 
-export function CookieConsent() {
+export function CookieConsent({ shopifyToken }: { shopifyToken?: string }) {
   const dict = useDictionary();
   const [shown, setShown] = useState(false);
 
   useEffect(() => {
     try {
-      if (!localStorage.getItem(KEY)) setShown(true);
+      const raw = localStorage.getItem(KEY);
+      if (!raw) {
+        setShown(true);
+        return;
+      }
+      // Wiederkehrender Besucher: die frühere Wahl liegt nur in localStorage,
+      // der Checkout auf checkout.sickmotos.com kennt sie nicht. Einmal pro
+      // Seitenaufruf an Shopify spiegeln, damit der _tracking_consent-Cookie
+      // für die Root-Domain existiert, bevor der Kunde in den Checkout geht.
+      const stored = JSON.parse(raw) as { ad_storage?: string };
+      syncShopifyConsent(stored.ad_storage === "granted", shopifyToken);
     } catch {
       // If localStorage is unavailable, don't bother the user with the banner.
     }
-  }, []);
+  }, [shopifyToken]);
 
   if (!shown) return null;
 
   const accept = () => {
     apply(ACCEPT_ALL);
     persist(ACCEPT_ALL);
+    syncShopifyConsent(true, shopifyToken);
     setShown(false);
   };
   const reject = () => {
     apply(REJECT);
     persist(REJECT);
+    syncShopifyConsent(false, shopifyToken);
     setShown(false);
   };
 

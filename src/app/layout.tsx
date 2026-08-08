@@ -131,7 +131,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               <main className="flex-1">{children}</main>
               <Footer />
               <SupportChat />
-              {GTM_ID && <CookieConsent />}
+              {/* Der Storefront-Token ist per Design oeffentlich (Shopify
+                  nutzt ihn client-seitig), er landet hier bewusst im HTML,
+                  damit der Banner die Consent-Wahl an Shopify melden kann. */}
+              {GTM_ID && (
+                <CookieConsent
+                  shopifyToken={process.env.SHOPIFY_STOREFRONT_API_TOKEN}
+                />
+              )}
               <VisitTracker />
             </>
           )}
