@@ -770,6 +770,30 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   Aufgaben-Split: der Consent-Check ist UNSER Part, nicht der des Operators (kein Shopify-Zugang),
   Operator-Liste entsprechend auf 3 Punkte gekuerzt.
 
+- **Consent-Bruecke gebaut + Ads-Konto final geprueft (06.08. abends, Leons „go mach beides").**
+  (1) **Consent-Fix LIVE und end-to-end verifiziert** (commit e9febf8): `src/lib/shopifyConsent.ts`
+  laedt Shopifys consent-tracking-api, `CookieConsent.tsx` meldet Accept/Reject und spiegelt beim
+  Seitenaufruf auch die gespeicherte Wahl wiederkehrender Besucher (localStorage → Shopify).
+  `storefrontRootDomain=sickmotos.com`, dadurch gilt der `_tracking_consent`-Cookie auch fuer
+  checkout.sickmotos.com. Storefront-Token wird bewusst als Prop ins Client-HTML gereicht
+  (per Design oeffentlich). **Beweis am echten Checkout:** vor Fix keine Google-Scripts, nach
+  Zustimmung auf der Storefront laden im Checkout 4x googletagmanager gtag/js + 2 Web-Pixel,
+  kein Consent-Banner mehr noetig. Ads sollte ab jetzt EU-Kaeufe zustimmender Kunden zaehlen
+  (rueckwirkend bleibt die Luecke). Messhinweis: Extension-JS laeuft in isolierter Welt,
+  window-Globals der Seite sind unsichtbar, DOM/Cookies sichtbar; auf Checkout-Seiten blockt
+  die Extension Cookie-Zugriffe („BLOCKED"). Beweisfuehrung daher ueber DOM-Script-Tags.
+  (2) **Ads-Aufraeumen erledigte sich nach harter Pruefung von selbst:** mit 30-Tage-Filter pro
+  Aktion sind die sick-motos.com-Ziele BEREITS Sekundaer (meine „zwei primaere Ziele"-Aussage
+  vom 02.08. war ein Parser-Fehler: Googles dt. UI nennt primaere Aktionen „Primaere
+  Zahlungsmethode", mein Regex matchte /Primär/), das Kontakt-Zielvorhaben hat laut Googles
+  eigenem Hinweis GAR KEINE primaeren Aktionen, die 3 App-Duplikate sind sekundaer mit 0.
+  Primaer und aktiv: Purchase, Add To Cart (1), Begin Checkout (1). NICHTS angefasst.
+  (3) **„Ein Google-Tag fehlt" in GTM ist WEG**, der v9-Fix (AW-AW → 395813654) hat es
+  miterledigt; GT-MJJQZSP7 per gtag-js-Fetch verifiziert als Alias unseres AW-Kontos (2x
+  AW-395813654 im Script, 0x GA4). Container-Diagnose zeigt nur noch 2 Hinweise: „einige
+  Seiten nicht getaggt" (Checkout/Alt-Theme, informativ) + „zweiten Admin hinzufuegen"
+  (Governance, Kandidat: Thomas). Operator-Liste damit auf „nichts anfassen" geschrumpft.
+
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
   Merchant zeigt „Content API for Shopping wird am **18. August 2026** abgeschaltet". **Betrifft
