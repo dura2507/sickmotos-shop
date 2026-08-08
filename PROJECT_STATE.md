@@ -794,6 +794,14 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   Seiten nicht getaggt" (Checkout/Alt-Theme, informativ) + „zweiten Admin hinzufuegen"
   (Governance, Kandidat: Thomas). Operator-Liste damit auf „nichts anfassen" geschrumpft.
 
+- **Doppelzaehl-Risiko des Zusatz-Pixels entschaerft (06.08. abends, im Shopify-Admin gelesen):**
+  Das Custom-Pixel „thank yoy page tracking" (227115274) enthaelt ein gtag-Conversion-Snippet auf
+  `AW-395813654/oTbUCL7ozN4DEJbG3rwB` (= Duplikat-Aktion „Purchase Sickmotos Styles", value 1.0,
+  transaction_id leer), aber Shopify zeigt direkt am Pixel: **„not subscribed to any events"**,
+  Datenspalte leer → es feuert NIE, kein Doppelzaehlen moeglich, auch nicht nach dem Consent-Fix.
+  Erklaert zugleich, woher die tote Duplikat-Conversion stammt. Nichts geaendert; loeschen kann
+  es Thomas/Operator bei Gelegenheit.
+
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
   Merchant zeigt „Content API for Shopping wird am **18. August 2026** abgeschaltet". **Betrifft
