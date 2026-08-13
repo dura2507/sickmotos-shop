@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-08-06.
+> Stand: 2026-08-13.
 
 ---
 
@@ -801,6 +801,47 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   Datenspalte leer → es feuert NIE, kein Doppelzaehlen moeglich, auch nicht nach dem Consent-Fix.
   Erklaert zugleich, woher die tote Duplikat-Conversion stammt. Nichts geaendert; loeschen kann
   es Thomas/Operator bei Gelegenheit.
+
+- **Merchant-Absturz vom 13.08. komplett diagnostiziert + Versandrichtlinie neu gebaut
+  (13.08., Thomas' Screenshot: 1425 Produkte / 1194 freigegeben / 79 begrenzt / 151 abgelehnt).**
+  Alle 215 Zeilen der Diagnose-Liste ausgelesen (virtualisierte Tabelle, Scroll-Sammler per
+  In-Page-JS ueber 3 Seiten; Downloads-Ordner ist fuer die Shell tabu, macOS blockt auch
+  Finder-AppleScript, der CSV-Export war deshalb nicht lesbar). Ergebnis, Stand 00:00 13.08.:
+  - **89x „Produktpreis fehlt": zu 100% Googles EIGENE Crawl-Angebote** (numerische Offer-IDs,
+    Quelle am Objekt geprueft: „Onlineshop, Automatisch aktualisiert", nicht loeschbar), Labels
+    US 29, DE 25, GB 18, IE 15, IT 1, AU 1. **Kein einziges Shopify-App-Offer betroffen** →
+    der Operator-Satz „price data cannot be passed over from Shopify" ist widerlegt, die App
+    liefert Preise sauber. Beispiel-Offer 17239472655540827020 (Styles Graphics KIT Fluo
+    Yellow, Label US): Preisfeld zeigt „$" ohne Betrag, Link zeigt auf ein kopie-von-Handle
+    (Thomas' Produkt-Duplikate); die Live-Seite traegt nachweislich Preise im JSON-LD
+    (curl-geprueft). Googles Crawler hat beim letzten Crawl (vor ~7 Tagen) schlicht keinen
+    Preis extrahiert; eine „Ausstehende Onlineshop-Pruefung" laeuft bereits, die Angebote
+    aktualisieren sich beim Re-Crawl von selbst. Per Supplemental-Feed NICHT erreichbar
+    (der matcht nur shopify_-IDs).
+  - **72x „Nicht uebereinstimmende Waehrung in den Versandinformationen": ebenfalls 100%
+    Crawl-Angebote**, nur US (59) und GB (13). Ursache gefunden: die Google&YouTube-App hat
+    die **Versandrichtlinien komplett neu gesynct** (98 per-Land-Richtlinien, Muster
+    `flat_<Betrag>_<Waehrung>_<zoneId>_<rateId>_standard`, 29,99 EUR in Lokalwaehrung
+    umgerechnet: US 34,59 USD, GB 12,85 GBP, AU 49,11 AUD, CA 48,67 CAD) und dabei **meine
+    Juli-Richtlinie `flat_29.99_EUR_crawl_US_GB_AU_CA` geloescht** (Zeitpunkt mutmasslich
+    App-Re-Sync bzw. Merchant-API-Migration). Die EUR-Preise der Crawl-Offers treffen damit
+    wieder auf Fremdwaehrungs-Versand, exakt das Juli-Problem. **Fix: Richtlinie neu angelegt
+    als `flat_29.99_EUR_crawl_US_GB_AU_CA_v2`** (US/GB/AU/CA, alle Produkte, 10-22 Werktage,
+    Pauschalpreis 29,99 EUR), Speicher-Bestaetigung gesehen und in der Liste verifiziert.
+    Prognose (wie Juli, da fielen 121 solcher Fehler nach demselben Fix): binnen Tagen weg.
+    **MERKE: der App-Versand-Re-Sync loescht manuelle Richtlinien.** Nach jedem Reconnect,
+    Re-Sync oder der Merchant-API-Migration die Versandrichtlinien-Liste kontrollieren.
+    Achtung UI-Falle: die Liste rendert anfangs LEER (virtualisiert), erst scrollen, sonst
+    zieht man falsche Schluesse (ist mir passiert, „Liste ist leer" war falsch).
+  - **46x „Abweichende Onlineshop-URL": zu 100% App-Offers** = die bekannten toten Varianten
+    (29.07. waren es 66, expiren weiter von selbst, nichts zu tun).
+  - Rest: 2x Preisabweichung (faellt, seit der Sync-Webhook products.json frisch haelt),
+    4x Warnung „Ungueltige Direktkauf-URL [checkout_link_template]" (nur Warnstufe),
+    3x Bekleidungs-Attributwarnungen (Altersgruppe/Farbe/Groesse/Geschlecht, Produkte
+    trotzdem freigegeben). Merchant schlaegt ausserdem eine Versandrichtlinie fuer Libanon
+    vor (einziges unversorgtes Land, bewusst offen gelassen).
+  - Einordnung fuer Thomas' „wir schmieren ab": die 151 Ablehnungen betreffen fast nur
+    Googles Zusatz-Crawl-Angebote fuer Auslands-Labels, die deutschen App-Angebote laufen.
 
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
