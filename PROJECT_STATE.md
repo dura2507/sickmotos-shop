@@ -864,6 +864,26 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   inkl. „Produkte archivieren"; im Juli war das Add-on nicht buchbar) = Notfall-Hebel, falls
   die 96 nach dem Re-Crawl nicht fallen. Naechster Check: 17.08., Zahl an Leon melden.
 
+- **„Mach alles jetzt"-Runde (16.08. mittags, auf Leons Ansage):** (1) **10 gezielte
+  Supplemental-Refetches** ausgeloest fuer alle Labels der Rest-Mismatches (Quellen 2, 3,
+  4, 5, 6, 8, 9, 11, 14, 19), per In-Page-JS-Klick auf die Aktualisieren-Buttons,
+  **verifiziert am Zeitstempel: alle 10 zeigen 16. Aug. 11:01 AST** (uebrige 23 weiter
+  00:00). JS-Klicks funktionieren auf den Material-Buttons, das ist kuenftig der schnelle
+  Weg statt 10 Einzel-Klick-Flows. (2) **Attributregeln-UI der Onlineshop-Quelle erkundet**
+  (Quelle sickmotos.com, afmDataSourceId=10594384820, Tab „Attributregeln"): Regelgruppe
+  heisst „-, Englisch", regelbare Attribute u.a. „eingeschlossenes ziel", Sonderangebotspreis,
+  Grundpreis-Masse; das Kern-Attribut „Preis" ist NICHT regelbar. **Bewusst KEINE Regel
+  gesetzt:** die Gruppe wuerde ALLE englischen Crawl-Angebote treffen, auch gesunde
+  freigegebene (DE/en 32, GB/en 30 usw.), Kollateralschaden > Nutzen. Bleibt Notfall-Hebel.
+  Die Crawl-Quelle liefert laut Detailseite: US/en 88, DE/de 82, DE/en 32, GB/en 30,
+  IE/en 19, ES 8, AU 4, GR 4, IT 1 = 268. (3) **Versandrichtlinie `flat_29.99_EUR_LB`
+  fuer Libanon angelegt** (letztes unversorgtes Land, EUR 29,99 pauschal, 10-22 Werktage,
+  Bestaetigung gesehen): die Merchant-Karte „Standardversandrichtlinie fuer die
+  verbleibenden Laender" ist jetzt GRUEN, alle Verkaufslaender versorgt, 99 Richtlinien.
+  Korrektur zu frueher am selben Tag: die letzten 10 URL-Mismatches sind KEINE
+  Karteileichen, sondern lebende Produkte im Reprocessing (an 3 Beispielen gegen
+  products.json geprueft, Produkt+Variante existieren).
+
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
   Merchant zeigt „Content API for Shopping wird am **18. August 2026** abgeschaltet". **Betrifft
