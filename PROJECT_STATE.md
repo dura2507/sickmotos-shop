@@ -843,6 +843,27 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   - Einordnung fuer Thomas' „wir schmieren ab": die 151 Ablehnungen betreffen fast nur
     Googles Zusatz-Crawl-Angebote fuer Auslands-Labels, die deutschen App-Angebote laufen.
 
+- **Recovery-Check 16.08. + Crawl-Refresh manuell angestossen:** Uebersicht 05:57: **1254
+  freigegeben (13.08.: 1190), 11 begrenzt (49), 96 nicht genehmigt (158)**. Die 72
+  Waehrungsfehler sind KOMPLETT weg (Versandrichtlinien-Fix vom 13.08. hat gegriffen), auch
+  die 2 Preisabweichungen. Uebrig: 96x „Produktpreis fehlt" (Crawl-Offers, Welle begann laut
+  Googles eigener Betroffene-Kurve um den 3.8., Detailseite bietet KEINEN Pruefung-anfordern-
+  Knopf, nur externes Streitbeilegungsverfahren) + 10x URL-Mismatch. **Korrektur zur
+  Karteileichen-These: die letzten 10 Mismatches sind LEBENDE Produkte** (Produkt+Variante in
+  products.json vorhanden, z.B. Plastik Kit KTM 690 / LED Angel Eye V4 / Plastik Kit Husqvarna
+  701), also Reprocessing-Nachlauf des App-Link-Rewrites von Anfang August, kein Datenmuell;
+  Messreihe Mismatch: 86 (23.07.) / 66 (29.07.) / 46 (13.08.) / 10 (16.08.). Getan: (1) **die
+  Quelle „Von Google gefunden" (268 Produkte, Erzeuger der preislosen Crawl-Offers) hat seit
+  der Merchant-API-Migration einen eigenen „Aktualisieren"-Knopf, gedrueckt + bestaetigt**
+  (Zeile gesperrt, Tooltip „Produkte jetzt aktualisieren") = erzwungener Re-Crawl statt Warten
+  auf den Turnus. (2) Alle 33 Zusatz-Quellen geprueft: JEDE hat 16.08. 00:00 gefetcht, und
+  jedes Label der 10 Rest-Mismatches hat eine Quelle (EUR_35948101898 = SOURCE 8/NL).
+  (3) Live-Seiten erneut curl-verifiziert (Kruemmer Minarelli 38,99-219 EUR mit 5 Varianten-
+  Preisen, Styles KIT 325-405 EUR mit 4), an Shopify/Code gibt es weiterhin nichts zu fixen.
+  **NEU: Attributregeln sind jetzt im Konto verfuegbar** (Tooltip an der Onlineshop-Quelle,
+  inkl. „Produkte archivieren"; im Juli war das Add-on nicht buchbar) = Notfall-Hebel, falls
+  die 96 nach dem Re-Crawl nicht fallen. Naechster Check: 17.08., Zahl an Leon melden.
+
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
   Merchant zeigt „Content API for Shopping wird am **18. August 2026** abgeschaltet". **Betrifft
