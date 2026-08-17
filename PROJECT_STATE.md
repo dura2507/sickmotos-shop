@@ -884,6 +884,25 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   Karteileichen, sondern lebende Produkte im Reprocessing (an 3 Beispielen gegen
   products.json geprueft, Produkt+Variante existieren).
 
+- **Search Console angelegt + 8 Prioritaets-Crawls erzwungen (17.08., Leons „muss jetzt
+  durchgehen"):** Tageszahlen 05:50: 1248 frei / 11 begrenzt / 102 abgelehnt (Preis fehlt
+  96→102, Mismatch 10 unveraendert, Klicks aber 7.770→8.121 und -37,7%→-33,1%, Website-Feld
+  + Checkout-Template kontrolliert intakt). Da der Merchant keinen weiteren Hebel bietet,
+  den offenen Juli-Punkt Search Console gezogen: **Property `https://sickmotos.com/`
+  angelegt, Inhaberschaft automatisch bestaetigt** (HTML-Tag + GTM, die Meta-Tags aus
+  layout.tsx), **Sitemap eingereicht und sofort verarbeitet: Status Erfolgreich, 496
+  Seiten erkannt**. Dann fuer 8 betroffene Produktseiten (Minarelli-Kruemmer + 7 Styles
+  KITs, Handles aus products.json) per URL-Pruefung **„Indexierung beantragt"** = 
+  priorisierter Re-Crawl (Kontingent ~10/Tag). Nebenbefunde: die URL-Pruefung zeigt
+  **„Letztes Crawling 05.08."** (exakt das Fenster des 5. Feld-Umspringers, erklaert die
+  preislosen Crawl-Angebote) und **„Produkt-Snippets: 1 gueltiges Element erkannt"**
+  (Google liest unsere Preis-Daten nachweislich). SC-UI-Fallen: erster type nach
+  Seitenwechsel wird verschluckt (zoom-Kontrolle vor Enter), der Indexierung-Knopf
+  braucht einen Klick NACH vollstaendigem Render, Erfolg am Text „Indexierung wurde
+  beantragt" pruefen. Merchant-Support-Ticket bewusst zurueckgestellt: solange der
+  erzwungene Re-Crawl laeuft, antwortet der Support nur „Re-Crawl abwarten"; fliegt
+  raus, falls der 18.08.-Datenstand keine Bewegung zeigt.
+
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
   Merchant zeigt „Content API for Shopping wird am **18. August 2026** abgeschaltet". **Betrifft
