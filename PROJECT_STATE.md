@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-08-13.
+> Stand: 2026-08-19.
 
 ---
 
@@ -924,6 +924,46 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   setzen, native value-Setter + input/change-Events); so wurde das Formular am Ende
   zuverlaessig gefuellt. Tageszahlen 19.08. frueh: Klicks 8.397 (-28,7%, dritter Tag
   besser), 1249 frei / 11 begrenzt / 105 abgelehnt.
+
+- **Shopify-Gesamtcheck auf Operator-Vorwurf + 6. Feld-Umspringer gefunden und gefixt (19.08. nachts CEST):**
+  Leons Auftrag nach erneutem "Shopify ist schuld" des Operators. Ergebnis eindeutig:
+  (1) **Kompletter Storefront-Audit (6 parallele Pruef-Agenten, alles gemessen statt behauptet):**
+  482/482 Sitemap-Produkt-URLs direkt HTTP 200 (0 Redirects, 0 Timeouts); 482/482 Seiten mit
+  serverseitigem JSON-LD, priceCurrency EUR, jedem Preis > 0, availability gesetzt (972
+  Offer-Objekte allein in Haelfte 2); Googlebot- und Storebot-UA erhalten identisches HTML mit
+  allen Preisen (6 Abrufe, 0,8-3,0s); robots.txt beider Domains blockiert nichts; Katalog 486
+  Produkte / 1444 Varianten, 0 ohne Preis; merchant-link-feed.csv 1424 Zeilen formal fehlerfrei,
+  Delta zur lokalen products.json geht exakt auf (1444 minus 25 geloeschte plus 5 neue). Dazu
+  Shopify-Admin selbst angesehen (Google-und-YouTube-App): Product sync On, App meldet 3798
+  Angebote / 3662 freigegeben / 0 begrenzt / 135 nicht genehmigt / 1 in Pruefung, Merchant
+  644535201 + Ads 7453225011 + GA4 korrekt verbunden. **FAZIT: kein einziger Shopify-seitiger
+  Fehler erklaert die Preis-Ablehnungen, die Operator-These ist auf allen Ebenen widerlegt.**
+  (2) **Nebenbefunde aus dem Audit (nicht ursaechlich, Merkliste):** kein Canonical-Tag auf
+  sickmotos.com, auch nicht auf Produktseiten (Mini-Fix moeglich: alternates.canonical in
+  generateMetadata, metadataBase existiert); checkout.sickmotos.com ist ein Duplikat-Storefront
+  ohne serverseitigen Redirect und mit Self-Canonical (nur JS-Redirect aus dem Theme-Snippet);
+  Demo-T-Shirt-Testprodukt mit 99999 EUR ist published (Thomas fragen, ob Draft/loeschen);
+  137 Kopie-Handles, davon 79 mit Handle/Titel-Mismatch (Thomas dupliziert und aendert nur den
+  Titel, das erklaert verwirrende Crawl-Zuordnungen, aber keine fehlenden Preise); 63 Produkte
+  mit exakt identischen Titeln (12 Gruppen); 2 Titel mit Zeilenumbruechen; Produktseiten
+  rendern dynamisch mit TTFB 3-8s ohne Cache-Hit (einziger theoretischer Nebenfaktor, durch
+  die schnellen Google-UA-Messungen und den SC-Befund "Produkt-Snippet gueltig" entkraeftet).
+  (3) **DER eigentliche Fund beim Konto-Check: das Website-Feld stand zum 6. Mal auf
+  checkout.sickmotos.com** (am 17.08. morgens noch intakt; dazwischen lag die Merchant-API-
+  Abschaltung der Content API am 18.08. = wahrscheinlichster Ausloeser, wie immer nicht
+  beweisbar). Um ~19:45 AST zurueckgestellt auf https://sickmotos.com, Auto-Verify + Auto-Claim
+  griffen sofort, Checkout-Template blieb intakt. Danach ALLE 32 Supplemental-Quellen plus die
+  Google-Crawl-Quelle manuell refetcht; Zeitstempel 18. Aug. 19:57 AST an den Zeilen verifiziert.
+  Tageszahlen im selben Fenster: 1247 frei / 11 begrenzt / 107 nicht genehmigt / 1 in Pruefung,
+  Klicks 8.397 (-28,7%, dritter Tag in Folge besser). Prognose wie bei den 5 Malen davor:
+  ohne den Umspringer-Schaden drehen die Zahlen binnen 24-48h weiter hoch.
+  **UI-Fallen dieser Runde:** die Datenquellen-Tabelle ist jetzt PAGINIERT (5 pro Seite, 33
+  Zeilen) statt virtualisiert; nach Seitenwechsel das Klick-Skript erst nach ~4s laufen lassen,
+  sonst klickt es die alten, noch nicht ersetzten Zeilen (2 Seiten mussten nachgeholt werden);
+  Pagination zuverlaessig per JS ueber aria-label "Naechste Seite aufrufen". Der Embedded-App-
+  Iframe der Google-und-YouTube-App in Shopify schluckt unter Automatisierung JEDEN Scroll
+  (Maus, Tastatur, JS), Sektionen unterhalb des Folds bleiben unlesbar; Kernzahlen stehen im
+  sichtbaren Bereich, resize_window ist auf Bildschirmgroesse gedeckelt und hilft nicht.
 
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
