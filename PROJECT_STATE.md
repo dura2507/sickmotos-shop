@@ -903,6 +903,28 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   erzwungene Re-Crawl laeuft, antwortet der Support nur „Re-Crawl abwarten"; fliegt
   raus, falls der 18.08.-Datenstand keine Bewegung zeigt.
 
+- **Komplett-Abgleich Google vs. Shopify + Support-Ticket EINGEREICHT (19.08., Leons
+  "das kann doch nicht sein" + "schicks selbst ab"):** Alle 120 Diagnose-Zeilen erneut
+  eingesammelt: 99 sichtbare Preis-fehlt-Offers, **100% Google-Crawl-Angebote, 0 aus der
+  Shopify-App** (DE 33, US 27, GB 19, IE 16, AU 3, IT 1), darunter Thomas' NEUE Produkte
+  (Endtopf Flame, Einspritzduesen, Bar Ends, Starter Motor). 16 betroffene Produkte gegen
+  products.json und Live-Seiten geprueft: alle im Katalog, alle 200, alle mit EUR-Preisen
+  je Variante im JSON-LD. **Search-Console-LIVE-Test auf betroffener Seite: "URL ist fuer
+  Google verfuegbar" + "Produkt-Snippets: 1 gueltiges Element erkannt"** = Google kann die
+  Preise JETZT lesen, keine Blockade. Fehlerbild damit final: Googles Angebots-Datenbestand
+  der Onlineshop-Quelle hinkt dem eigenen Crawl hinterher (Reprocessing-Rueckstand seit
+  05.08.), reiner Google-Bug. **Support-Ticket im Merchant-Hilfe-Formular eingereicht
+  (Bestaetigung "Ihre E-Mail wurde gesendet"),** mit kompletter Beweiskette, Beispiel-Offer
+  17239472655540827020, Kategorie "Fehlerhafte Landingpage", Option "Probleme behoben,
+  Ueberpruefung-Button fehlt", Zielland Deutschland, Antwort an kristian2507@gmail.com.
+  Temporaeren Google-Kontozugriff bewusst NICHT gewaehrt (haette Pflicht-Upload eines
+  Autorisierungsformulars verlangt). **Technik-Merker:** das Hilfe-Formular steckt in einem
+  same-origin-iframe (renderframe2), Koordinaten-Klicks driften dort, aber
+  iframe.contentDocument ist per JS voll zugreifbar (Radios/Selects/Textareas direkt
+  setzen, native value-Setter + input/change-Events); so wurde das Formular am Ende
+  zuverlaessig gefuellt. Tageszahlen 19.08. frueh: Klicks 8.397 (-28,7%, dritter Tag
+  besser), 1249 frei / 11 begrenzt / 105 abgelehnt.
+
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
   Merchant zeigt „Content API for Shopping wird am **18. August 2026** abgeschaltet". **Betrifft
