@@ -991,6 +991,10 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   Quelle speist ~270 Produkte ein, u.a. Irland-Angebote, die die App nicht liefert; nach
   Loeschung gibt es dort gar keine Listings statt abgelehnter. Da die Ursache jetzt im Markup
   gefixt ist, erst den Re-Crawl abwarten (Support: 24-48h), Quelle nur als Eskalation ziehen.
+  (4b) **Fix live verifiziert 14:13 MESZ** (Endtopf-Flame-Seite: offers-Array mit 5 Einzelpreisen
+  14,99 bis 210,00 EUR, kein AggregateOffer, kein sku) und **Antwort an den Support gesendet
+  14:16** (im Ticket-Thread, mit Beispiel-URL + Bitte um Reprocessing der ~107 Angebote;
+  Datenquelle Onlineshop bleibt auf unseren Wunsch aktiv). Supports Prognose: 24-48h nach Fix.
   (5) Supports robots.txt-Hinweis ist FALSCH (Boilerplate): unsere robots.txt blockt nur /api/
   und /_next/, der Audit vom 19.08. und der SC-Livetest beweisen freies Crawling. Die
   vorgeschlagene explizite Googlebot-Gruppe wuerde die /api/-Sperre fuer Googlebot sogar
