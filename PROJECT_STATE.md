@@ -965,6 +965,44 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   (Maus, Tastatur, JS), Sektionen unterhalb des Folds bleiben unlesbar; Kernzahlen stehen im
   sichtbaren Bereich, resize_window ist auf Bildschirmgroesse gedeckelt und hilft nicht.
 
+- **Google-Support-Antwort da, Ursache bestaetigt, JSON-LD-Fix deployt (19.08. mittags, commit 90c8724):**
+  Antwort von gTech (Karishma, Ticket 6-7428000041097, 11:58) auf unser Ticket vom 18.08.:
+  (1) **Offizielle Ursache der 107 "Produktpreis fehlt":** Googles Merchant-Crawler sucht beim
+  automatischen Angebots-Erzeugen einen EINZELNEN eindeutigen Preis; unsere Mehrvarianten-Seiten
+  lieferten ein AggregateOffer mit lowPrice/highPrice, aus der Preisspanne kann der Extractor
+  keinen Preis ziehen, daher die Ablehnungen. Deckt sich exakt mit dem Befund, dass nur
+  Mehrvarianten-Produkte betroffen sind. Die per-Varianten-Offers vom Juli (741f9c9) reichten
+  dem Crawler NICHT, solange das AggregateOffer mit der Spanne davor stand.
+  (2) **Fix umgesetzt (commit 90c8724):** AggregateOffer komplett entfernt, `offers` ist jetzt
+  bei Mehrvarianten-Produkten ein ARRAY einzelner Offer-Objekte (je Variante expliziter Preis,
+  EUR, availability, sku, Name), Default-Variante zuerst (= der initial angezeigte Seitenpreis,
+  Googles "Preis muss der Landingpage entsprechen"-Regel). Nebenbei die Search-Console-Warnung
+  "Ungueltige Stringlaenge in sku" gefixt: sku wird auf 50 Zeichen begrenzt (Google-Limit),
+  der alte Fallback auf den Handle (bis ~100 Zeichen) ist raus. tsc sauber, deployt.
+  (3) **Search-Console-Mails vom 18.08.** (Haendlereintraege + Produkt-Snippets, alle NICHT
+  kritisch): shippingDetails fehlt, hasMerchantReturnPolicy fehlt, sku-Stringlaenge (gefixt),
+  review/aggregateRating fehlt. shippingDetails/ReturnPolicy BEWUSST nicht ins Markup genommen:
+  falsche Versandwerte im Markup erzeugen harte Mismatches gegen die Merchant-Versandrichtlinien
+  (Juli-Lektion), Nutzen minimal solange die Angebote aus App + Richtlinien kommen. Reviews
+  werden nicht erfunden (Regel 3).
+  (4) **Supports Alternativ-Angebot, NICHT ausgefuehrt (Leons Entscheidung):** die Crawl-Quelle
+  "Onlineshop" im Merchant loeschen/deaktivieren wuerde alle 107 Fehler sofort entfernen, weil
+  die doppelten Auto-Angebote wegfallen (App-Angebote sind ja freigegeben). Tradeoff: die
+  Quelle speist ~270 Produkte ein, u.a. Irland-Angebote, die die App nicht liefert; nach
+  Loeschung gibt es dort gar keine Listings statt abgelehnter. Da die Ursache jetzt im Markup
+  gefixt ist, erst den Re-Crawl abwarten (Support: 24-48h), Quelle nur als Eskalation ziehen.
+  (5) Supports robots.txt-Hinweis ist FALSCH (Boilerplate): unsere robots.txt blockt nur /api/
+  und /_next/, der Audit vom 19.08. und der SC-Livetest beweisen freies Crawling. Die
+  vorgeschlagene explizite Googlebot-Gruppe wuerde die /api/-Sperre fuer Googlebot sogar
+  AUFHEBEN (spezifischste UA-Gruppe gewinnt), deshalb bewusst nicht uebernommen.
+  (6) **Thomas' Fragen beantwortet:** "Adress Check aktiv?" = JA, selbst im Admin verifiziert
+  (Settings -> Checkout -> Address collection: "Validate shipping address" angehakt, Haken
+  unveraendert gelassen). "Viele Links durch Duplikate falsch, kann das ein Grund sein?" =
+  Nein fuer die Preis-Ablehnungen (Ursache siehe oben, von Google bestaetigt); sein Beispiel
+  (Titel V7, Handle/Beschreibung V5, Link auf checkout.sickmotos.com) ist die bekannte
+  Kombination aus Kopie-Handles (79 Stueck, Datenpflege-Thema) und Shopify-Primary-Domain in
+  App-Links (Redirect-Snippet faengt sie, Supplemental-Feed ueberschreibt sie im Merchant).
+
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
   Merchant zeigt „Content API for Shopping wird am **18. August 2026** abgeschaltet". **Betrifft
