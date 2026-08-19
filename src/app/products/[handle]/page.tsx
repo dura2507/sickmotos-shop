@@ -72,16 +72,22 @@ export default async function ProductPage({
     ok ? "https://schema.org/InStock" : "https://schema.org/OutOfStock";
 
   // Google builds its own offer for the Merchant Center by crawling this
-  // markup. An AggregateOffer that only carries lowPrice/highPrice leaves it
-  // without a price, and Merchant then rejects the product as "Produktpreis
-  // fehlt". So every variant also ships its own Offer with an explicit price.
+  // markup, and its extractor needs an unambiguous single price per Offer: a
+  // lowPrice/highPrice range makes it fail and Merchant rejects the product
+  // as "Produktpreis fehlt" (confirmed by Google support, case
+  // 6-7428000041097). So no AggregateOffer; every variant is a plain Offer
+  // with an explicit price, the default variant first to match the price the
+  // page initially displays. Google caps sku at 50 chars, longer values are
+  // flagged by Search Console, so anything over that is dropped.
+  const skuOf = (raw?: string | null) =>
+    raw && raw.length <= 50 ? raw : undefined;
   const variantOffers = product.variants.map((v, i) => ({
     "@type": "Offer",
     priceCurrency: "EUR",
     price: v.price.toFixed(2),
     availability: availability(v.available),
     url: productUrl,
-    sku: shopify.variants[i]?.sku || undefined,
+    sku: skuOf(shopify.variants[i]?.sku),
     name: Object.values(v.options).filter(Boolean).join(" / ") || undefined,
   }));
 
@@ -92,24 +98,15 @@ export default async function ProductPage({
     name: product.title,
     description: product.highlights.join(" ").slice(0, 500),
     image: product.images.map((i) => i.src),
-    sku: shopify.variants[0]?.sku ?? handle,
+    sku: skuOf(shopify.variants[0]?.sku),
     brand: { "@type": "Brand", name: shopify.vendor || "SickMotos" },
-    offers: product.variants.length > 1 ? {
-      "@type": "AggregateOffer",
-      priceCurrency: "EUR",
-      lowPrice: Math.min(...product.variants.map((v) => v.price)).toFixed(2),
-      highPrice: Math.max(...product.variants.map((v) => v.price)).toFixed(2),
-      offerCount: product.variants.length,
-      availability: availability(product.inStock),
-      url: productUrl,
-      offers: variantOffers,
-    } : {
+    offers: product.variants.length > 1 ? variantOffers : {
       "@type": "Offer",
       priceCurrency: "EUR",
       price: product.basePrice.toFixed(2),
       availability: availability(product.inStock),
       url: productUrl,
-      sku: shopify.variants[0]?.sku || undefined,
+      sku: skuOf(shopify.variants[0]?.sku),
     },
   };
 
