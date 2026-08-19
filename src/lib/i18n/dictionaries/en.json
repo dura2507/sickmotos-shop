@@ -226,7 +226,8 @@
     "engineeredIn": "Performance parts for supermoto & enduro. Handmade in Germany by Thomas Krawietz.",
     "hours": "Mon-Sat 9-22, Sun 10-18",
     "instagramAria": "Instagram",
-    "emailAria": "Email"
+    "emailAria": "Email",
+    "returnRequest": "Register a return"
   },
   "consent": {
     "title": "Cookies & tracking",
@@ -593,5 +594,43 @@
     "body": "This page does not exist (anymore). Maybe you mistyped, or the part is currently delisted.",
     "home": "Home",
     "shopCatalog": "Shop the catalog"
+  },
+  "returnsPage": {
+    "metaTitle": "Register a return, SickMotos",
+    "kicker": "Service",
+    "title": "Register a return",
+    "intro": "To process your return quickly we need a few details. After you submit, we will reply by email with the next steps and the return address.",
+    "noteNoAttachments": "Please do not send photos or attachments yet. If we need any, we will ask by email.",
+    "noteElectronics": "Electronic items are excluded from exchange.",
+    "noteElectronicsLink": "Details in the cancellation policy",
+    "orderNumber": "Order number",
+    "orderNumberPlaceholder": "e.g. 1234",
+    "orderNumberHint": "You can find it in your order confirmation, e.g. #1234",
+    "name": "First and last name",
+    "email": "Email address",
+    "emailHint": "We will send our reply to this address",
+    "street": "Street and house number",
+    "zip": "ZIP code",
+    "city": "City",
+    "country": "Country",
+    "reason": "Reason for the return",
+    "reasonPlaceholder": "Please describe as precisely as possible which item you want to return and why ...",
+    "reasonCounter": "{n} of at least 150 characters",
+    "submit": "Submit return request",
+    "sending": "Sending ...",
+    "successTitle": "Request received",
+    "successBody": "Thank you, your return request has been received. We will reply by email with the next steps and the return address.",
+    "errors": {
+      "orderNumber": "Please enter your order number",
+      "name": "Please enter your name",
+      "email": "Please enter a valid email address",
+      "street": "Please enter street and house number",
+      "zip": "Please enter your ZIP code",
+      "city": "Please enter your city",
+      "country": "Please enter your country",
+      "reason": "Please describe the reason with at least 150 characters",
+      "server": "Sending is not possible right now. Please try again in a few minutes.",
+      "tooMany": "Too many requests. Please try again later."
+    }
   }
 }

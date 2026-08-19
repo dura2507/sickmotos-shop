@@ -226,7 +226,8 @@
     "engineeredIn": "Repuestos performance para supermoto y enduro. Hechos a mano en Alemania por Thomas Krawietz.",
     "hours": "Lun-Sáb 9-22, Dom 10-18",
     "instagramAria": "Instagram",
-    "emailAria": "Correo electrónico"
+    "emailAria": "Correo electrónico",
+    "returnRequest": "Registrar devolución"
   },
   "consent": {
     "title": "Cookies y seguimiento",
@@ -593,5 +594,43 @@
     "body": "Esta página ya no existe. Quizá te equivocaste al escribir, o la pieza está descatalogada.",
     "home": "Inicio",
     "shopCatalog": "Ver el catálogo"
+  },
+  "returnsPage": {
+    "metaTitle": "Registrar una devolución, SickMotos",
+    "kicker": "Servicio",
+    "title": "Registrar una devolución",
+    "intro": "Para tramitar tu devolución rápidamente necesitamos algunos datos. Tras el envío te responderemos por correo con los siguientes pasos y la dirección de devolución.",
+    "noteNoAttachments": "Por ahora no envíes fotos ni archivos adjuntos. Si los necesitamos, te los pediremos por correo.",
+    "noteElectronics": "Los artículos electrónicos están excluidos del cambio.",
+    "noteElectronicsLink": "Detalles en la política de desistimiento",
+    "orderNumber": "Número de pedido",
+    "orderNumberPlaceholder": "p. ej. 1234",
+    "orderNumberHint": "Lo encuentras en la confirmación del pedido, p. ej. #1234",
+    "name": "Nombre y apellidos",
+    "email": "Correo electrónico",
+    "emailHint": "Responderemos a esta dirección",
+    "street": "Calle y número",
+    "zip": "Código postal",
+    "city": "Ciudad",
+    "country": "País",
+    "reason": "Motivo de la devolución",
+    "reasonPlaceholder": "Describe con la mayor precisión posible qué artículo quieres devolver y por qué ...",
+    "reasonCounter": "{n} de un mínimo de 150 caracteres",
+    "submit": "Enviar solicitud de devolución",
+    "sending": "Enviando ...",
+    "successTitle": "Solicitud recibida",
+    "successBody": "Gracias, tu solicitud de devolución ha llegado. Te responderemos por correo con los siguientes pasos y la dirección de devolución.",
+    "errors": {
+      "orderNumber": "Introduce tu número de pedido",
+      "name": "Introduce tu nombre",
+      "email": "Introduce un correo electrónico válido",
+      "street": "Introduce calle y número",
+      "zip": "Introduce tu código postal",
+      "city": "Introduce tu ciudad",
+      "country": "Introduce tu país",
+      "reason": "Describe el motivo con al menos 150 caracteres",
+      "server": "El envío no es posible en este momento. Inténtalo de nuevo en unos minutos.",
+      "tooMany": "Demasiadas solicitudes. Inténtalo de nuevo más tarde."
+    }
   }
 }

@@ -36,6 +36,7 @@ export async function Footer() {
       links: [
         { label: dict.footer.shippingDelivery, href: "/legal/versand" },
         { label: dict.footer.returns, href: "/legal/widerruf" },
+        { label: dict.footer.returnRequest, href: "/returns" },
         { label: dict.footer.blog, href: "/blog" },
         { label: dict.footer.helpFaq, href: "/#faq" },
       ],

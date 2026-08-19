@@ -226,7 +226,8 @@
     "engineeredIn": "Performance Parts für Supermoto und Enduro. Handgemacht in Deutschland von Thomas Krawietz.",
     "hours": "Mo-Sa 9-22, So 10-18",
     "instagramAria": "Instagram",
-    "emailAria": "E-Mail"
+    "emailAria": "E-Mail",
+    "returnRequest": "Rückgabe anmelden"
   },
   "consent": {
     "title": "Cookies und Tracking",
@@ -593,5 +594,43 @@
     "body": "Diese Seite gibt es nicht (mehr). Vielleicht hast du dich vertippt, oder das Teil ist gerade ausgelistet.",
     "home": "Startseite",
     "shopCatalog": "Zum Katalog"
+  },
+  "returnsPage": {
+    "metaTitle": "Rückgabe anmelden, SickMotos",
+    "kicker": "Service",
+    "title": "Rückgabe anmelden",
+    "intro": "Damit wir deine Rücksendung schnell bearbeiten können, brauchen wir ein paar Angaben. Nach dem Absenden melden wir uns per E-Mail mit den nächsten Schritten und der Rücksendeadresse.",
+    "noteNoAttachments": "Bitte zunächst keine Fotos oder Anhänge senden. Falls wir welche brauchen, fragen wir per E-Mail nach.",
+    "noteElectronics": "Elektronikartikel sind vom Umtausch ausgeschlossen.",
+    "noteElectronicsLink": "Details in der Widerrufsbelehrung",
+    "orderNumber": "Bestellnummer",
+    "orderNumberPlaceholder": "z. B. 1234",
+    "orderNumberHint": "Steht in deiner Bestellbestätigung, z. B. #1234",
+    "name": "Vor- und Nachname",
+    "email": "E-Mail-Adresse",
+    "emailHint": "An diese Adresse schicken wir unsere Antwort",
+    "street": "Straße und Hausnummer",
+    "zip": "PLZ",
+    "city": "Ort",
+    "country": "Land",
+    "reason": "Grund der Rückgabe",
+    "reasonPlaceholder": "Beschreibe bitte so genau wie möglich, welchen Artikel du zurückgeben möchtest und warum ...",
+    "reasonCounter": "{n} von mindestens 150 Zeichen",
+    "submit": "Rückgabe absenden",
+    "sending": "Wird gesendet ...",
+    "successTitle": "Anfrage eingegangen",
+    "successBody": "Danke, deine Rückgabe-Anfrage ist bei uns eingegangen. Wir melden uns per E-Mail mit den nächsten Schritten und der Rücksendeadresse.",
+    "errors": {
+      "orderNumber": "Bitte gib deine Bestellnummer an",
+      "name": "Bitte gib deinen Namen an",
+      "email": "Bitte gib eine gültige E-Mail-Adresse an",
+      "street": "Bitte gib Straße und Hausnummer an",
+      "zip": "Bitte gib deine Postleitzahl an",
+      "city": "Bitte gib deinen Ort an",
+      "country": "Bitte gib dein Land an",
+      "reason": "Bitte beschreibe den Grund mit mindestens 150 Zeichen",
+      "server": "Senden gerade nicht möglich. Bitte versuche es in ein paar Minuten erneut.",
+      "tooMany": "Zu viele Anfragen. Bitte versuche es später erneut."
+    }
   }
 }

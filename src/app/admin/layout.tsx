@@ -14,6 +14,7 @@ const NAV = [
   { label: "Analytics", href: "/admin/dashboard" },
   { label: "Bestellungen", href: "/admin/orders" },
   { label: "Bot-Chats", href: "/admin/chats" },
+  { label: "Rückgaben", href: "/admin/returns" },
   { label: "Bot-Wissen", href: "/admin/bot" },
   { label: "Besucher", href: "/admin/visitors" },
 ];

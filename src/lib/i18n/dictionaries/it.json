@@ -226,7 +226,8 @@
     "engineeredIn": "Pezzi performance per supermoto ed enduro. Fatti a mano in Germania da Thomas Krawietz.",
     "hours": "Lun-Sab 9-22, Dom 10-18",
     "instagramAria": "Instagram",
-    "emailAria": "Email"
+    "emailAria": "Email",
+    "returnRequest": "Registra un reso"
   },
   "consent": {
     "title": "Cookie e tracciamento",
@@ -593,5 +594,43 @@
     "body": "Questa pagina non esiste (più). Forse hai sbagliato a digitare, oppure il pezzo è stato rimosso.",
     "home": "Home",
     "shopCatalog": "Vai al catalogo"
+  },
+  "returnsPage": {
+    "metaTitle": "Registra un reso, SickMotos",
+    "kicker": "Servizio",
+    "title": "Registra un reso",
+    "intro": "Per elaborare rapidamente il tuo reso abbiamo bisogno di alcuni dati. Dopo l'invio ti risponderemo via e-mail con i prossimi passi e l'indirizzo per la spedizione.",
+    "noteNoAttachments": "Per ora non inviare foto o allegati. Se ci serviranno, te li chiederemo via e-mail.",
+    "noteElectronics": "Gli articoli elettronici sono esclusi dal cambio.",
+    "noteElectronicsLink": "Dettagli nelle condizioni di recesso",
+    "orderNumber": "Numero d'ordine",
+    "orderNumberPlaceholder": "es. 1234",
+    "orderNumberHint": "Lo trovi nella conferma d'ordine, es. #1234",
+    "name": "Nome e cognome",
+    "email": "Indirizzo e-mail",
+    "emailHint": "Risponderemo a questo indirizzo",
+    "street": "Via e numero civico",
+    "zip": "CAP",
+    "city": "Città",
+    "country": "Paese",
+    "reason": "Motivo del reso",
+    "reasonPlaceholder": "Descrivi nel modo più preciso possibile quale articolo vuoi restituire e perché ...",
+    "reasonCounter": "{n} di almeno 150 caratteri",
+    "submit": "Invia richiesta di reso",
+    "sending": "Invio in corso ...",
+    "successTitle": "Richiesta ricevuta",
+    "successBody": "Grazie, la tua richiesta di reso è arrivata. Ti risponderemo via e-mail con i prossimi passi e l'indirizzo per la spedizione.",
+    "errors": {
+      "orderNumber": "Inserisci il numero d'ordine",
+      "name": "Inserisci il tuo nome",
+      "email": "Inserisci un indirizzo e-mail valido",
+      "street": "Inserisci via e numero civico",
+      "zip": "Inserisci il CAP",
+      "city": "Inserisci la città",
+      "country": "Inserisci il paese",
+      "reason": "Descrivi il motivo con almeno 150 caratteri",
+      "server": "Invio momentaneamente non disponibile. Riprova tra qualche minuto.",
+      "tooMany": "Troppe richieste. Riprova più tardi."
+    }
   }
 }
