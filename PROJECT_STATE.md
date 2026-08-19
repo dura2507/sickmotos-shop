@@ -1038,6 +1038,24 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     Nebenbefund: im Cookie-Banner steckt ein englischer Satz im deutschen Text
     ("You can change this any time in Datenschutz"), Bestand, nicht neu.
 
+- **Komplettcheck 19.08. nachmittags (nach JSON-LD-Umbau + Formular-Deploy), alles gruen:**
+  (1) **Markup-Sweep ueber ALLE 482 Produktseiten** (2 parallele Pruefagenten + Roh-grep
+  ueber das komplette HTML): 482/482 HTTP 200, 1423 Offer-Objekte, JEDES mit price > 0,
+  EUR, availability; AggregateOffer und lowPrice/highPrice je 0 Treffer; laengste sku 13
+  Zeichen (Limit 50); Googlebot- und Storebot-UA erhalten identisches serverseitiges HTML,
+  sichtbare Seitenpreise decken sich mit dem JSON-LD. Der Fix aus 90c8724 ist flaechendeckend
+  live. (2) **/returns in allen 4 Sprachen 200** mit lokalisierten Titeln, /api/returns lehnt
+  leere/unvollstaendige/kaputte Payloads mit 400 ab (kein 500). (3) Basis: 30 Stichproben-URLs
+  200, GTM auf allen geprueften Seiten, /api/cart validiert sauber, robots.txt beider Domains
+  ok, Feed 1424 Zeilen / 100% sickmotos.com-Links. (4) **Konto:** Klicks 8.630 / -24,3%
+  (4. Tag besser), 1245 frei / 11 begrenzt / 106 nicht genehmigt / **4 wird ueberprueft**
+  (erstes Reprocessing-Signal nach dem Fix), Website-Feld HAELT (sickmotos.com, verifiziert
+  + beansprucht), keine Support-Antwort seit 14:16. Neu notiert: Merchant-Karte
+  "US-Haendlerqualitaetsfaktor verschlechtert" (Stufe Maessig, fehlende Signale, blockiert
+  nichts). Befunde ohne Handlungsbedarf: 1 tote kopie-von-URL (Produkt in Shopify geloescht/
+  umbenannt, expiret von selbst); unkachierte Renders in Spitzen 12-14s kalt (bekannt,
+  blockiert Google nachweislich nicht, Perf-Thema fuer spaeter).
+
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
   Merchant zeigt „Content API for Shopping wird am **18. August 2026** abgeschaltet". **Betrifft
