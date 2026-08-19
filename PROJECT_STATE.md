@@ -1007,6 +1007,37 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   Kombination aus Kopie-Handles (79 Stueck, Datenpflege-Thema) und Shopify-Primary-Domain in
   App-Links (Redirect-Snippet faengt sie, Supplemental-Feed ueberschreibt sie im Merchant).
 
+- **Rueckgabe-Formular live (19.08., commit 7dcd894, Thomas' Vorgabe "Vorlage die vom Kunden
+  sauber auszufuellen ist, sonst keine E-Mail, Postfach wird geflutet"):** Neue Seite
+  `/returns` (DE/EN/IT/ES, Footer-Link "Rueckgabe anmelden" in der Service-Spalte).
+  - **Pflichtfelder wie von Thomas verlangt:** Bestellnummer, Vor-/Nachname, E-Mail,
+    Strasse+Nr, PLZ, Ort, Land, Grund der Rueckgabe mit **mindestens 150 Zeichen**
+    (Live-Zaehler "x von mindestens 150 Zeichen"). Unvollstaendig = kein Absenden moeglich,
+    Client- UND Server-Validierung (`/api/returns` prueft dieselben Regeln nochmal).
+    **Keine Anhaenge moeglich** (kein Datei-Feld, Hinweistext "erst nach Rueckfrage").
+    Hinweisbox "Elektronik vom Umtausch ausgeschlossen" mit Link auf die Widerrufsbelehrung.
+  - **Kanal:** Anfragen landen NICHT in Thomas' Postfach, sondern in Redis
+    (`src/lib/returnsStore.ts`, 180 Tage TTL, Index gedeckelt auf 500) und werden unter
+    **`/admin/returns`** abgearbeitet (Offen/Erledigt-Toggle, Kundene-mail als mailto-Link
+    zum Antworten, Nav-Punkt "Rueckgaben" im Admin). Junk-Schutz: Honeypot-Feld (Bots
+    bekommen Fake-ok), Rate-Limit 5/Stunde/IP (fail-open wenn Redis down), Redis-Ausfall
+    liefert ehrliches 503 statt stillem Verlust (lokal ohne Redis-Env verifiziert).
+  - **Optionaler Telegram-Push vorbereitet:** `notifyTelegram()` in der API-Route feuert
+    nur, wenn `TELEGRAM_BOT_TOKEN` + `TELEGRAM_RETURNS_CHAT_ID` in der Vercel-Env stehen
+    (aktuell nicht gesetzt, No-op). Wenn Leon das will: beide Envs setzen, dann landet jede
+    Anfrage zusaetzlich in der Telegram-Gruppe.
+  - **Verifiziert (Dev-Server, alle Faelle durchgeklickt):** leeres Absenden zeigt alle 8
+    Fehlermeldungen, kurzer Grund nur den Grund-Fehler, Zaehler zaehlt live, EN-Locale
+    rendert, Mobile 375px ohne horizontales Scrollen, Footer-Link vorhanden. UI-Falle des
+    Tests: `document.querySelector('button[type=submit]')` erwischt zuerst den
+    Header-Such-Button, immer ueber den Button-Text matchen. **Live-Verify nach Deploy:**
+    /returns 200 (DE im Browser, EN-Fallback fuer curl ohne Accept-Language), Produktions-API
+    nimmt gueltige TEST-Anfrage an (ok:true, liegt als "TEST-1" offen in /admin/returns,
+    Thomas/Leon bitte als erledigt markieren) und lehnt Unvollstaendiges mit 400 ab;
+    /admin/returns leitet ohne Session auf den Login (Middleware-Gate greift).
+    Nebenbefund: im Cookie-Banner steckt ein englischer Satz im deutschen Text
+    ("You can change this any time in Datenschutz"), Bestand, nicht neu.
+
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
   Merchant zeigt „Content API for Shopping wird am **18. August 2026** abgeschaltet". **Betrifft
