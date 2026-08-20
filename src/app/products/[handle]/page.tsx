@@ -40,6 +40,12 @@ export async function generateMetadata({
   return {
     title,
     description: desc,
+    // Canonical against the duplicate storefront on checkout.sickmotos.com,
+    // which declares itself canonical; without this tag the main domain
+    // leaves that call entirely to Google (SC flags it as "Duplikat, vom
+    // Nutzer nicht als kanonisch festgelegt"). metadataBase in layout.tsx
+    // resolves the relative path to https://sickmotos.com.
+    alternates: { canonical: `/products/${handle}` },
     openGraph: {
       title,
       description: desc,
