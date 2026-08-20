@@ -1056,6 +1056,23 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   umbenannt, expiret von selbst); unkachierte Renders in Spitzen 12-14s kalt (bekannt,
   blockiert Google nachweislich nicht, Perf-Thema fuer spaeter).
 
+- **Google-Mails vom 19./20.08. eingeordnet + Canonical-Fix deployt (20.08., commit be7e0a0):**
+  Leon meldete "Mails von Google". Bestand: (1) **Support-Antwort 20.08. 07:20 (Karishma):
+  unser Markup-Fix wird ausdruecklich als korrekt bestaetigt ("diese Genauigkeit ist genau
+  das, was erforderlich ist"), Google loest das Reprocessing der automatisch erstellten
+  Angebote SELBST aus, 24-48h bis es in der Diagnose sichtbar wird, keine weiteren Massnahmen
+  noetig.** (2) Ads 19.08.: 1 Anzeigen-Asset abgelehnt, Richtlinie "Physischer Standort nicht
+  verfuegbar" (Standort-Asset, es gibt keinen Laden); Anzeigen-Pflege = Operator/Thomas,
+  nicht angefasst. (3) SC "Traffic ueberwachen" = Willkommensmail der neuen Property, keine
+  Aktion. (4) SC "Neue Gruende verhindern Indexierung" (19.08.): Erstinventur der neuen
+  Property, Kategorien alle erklaerbar (301 der Alt-Domains/Locale-Pfade, 404 geloeschter
+  kopie-Produkte, robots-gesperrte /api-/_next-Pfade, noindex Admin, "Duplikat ohne
+  Canonical"). (5) Google-Sicherheitswarnung 18.08.: Anmeldung iPhone 12 Pro Max = eigenes
+  Geraet, harmlos. **Konsequenz aus (4): der Merkzettel-Mini-Fix umgesetzt, Produktseiten
+  tragen jetzt alternates.canonical auf sickmotos.com/products/{handle}** (gegen den
+  Self-Canonical des checkout.sickmotos.com-Duplikat-Storefronts), tsc sauber, deployt,
+  live verifiziert 15:41 (link rel=canonical im Roh-HTML der H4-Adapter-Seite).
+
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
   Merchant zeigt „Content API for Shopping wird am **18. August 2026** abgeschaltet". **Betrifft
