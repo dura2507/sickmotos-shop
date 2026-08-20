@@ -1073,6 +1073,38 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   Self-Canonical des checkout.sickmotos.com-Duplikat-Storefronts), tsc sauber, deployt,
   live verifiziert 15:41 (link rel=canonical im Roh-HTML der H4-Adapter-Seite).
 
+- **"Setz um was Google geschrieben hat"-Runde (20.08. nachmittags, Leons Ansage):** Alle 3
+  Punkte aus der Support-Mail umgesetzt. (1) Markup-Einzelpreise: war schon live, von Google
+  am 20.08. 07:20 schriftlich als korrekt bestaetigt ("Google loest das Reprocessing selbst
+  aus, 24-48h, keine weiteren Massnahmen noetig"). (2) **robots.txt erweitert (commit
+  4702733):** explizite Gruppen fuer Googlebot, Googlebot-Image und Storebot-Google, jeweils
+  MIT den /api/- und /_next/-Disallows (Googles woertlicher Vorschlag haette die /api/-Sperre
+  fuer Googlebot aufgehoben, da die spezifischste UA-Gruppe die *-Gruppe ERSETZT). (3) **Die
+  Crawl-Quelle "Von Google gefunden" DEAKTIVIERT** (Datenquellen -> Dreipunkt an der
+  sickmotos.com-Zeile -> "Verwaltung von Produkten beenden" -> Bestaetigen; Googles explizit
+  angebotener Sofort-Hebel: "entfernt sofort die damit verbundenen Fehler"). Verifiziert:
+  Karte zeigt jetzt "Google hat in Ihrem Onlineshop keine zusaetzlichen Produkte gefunden",
+  die 271-Produkte-Crawl-Zeile ist weg; reversibel ueber den Knopf "Alle gefundenen Produkte
+  hinzufuegen". Damit fallen die ~105 roten Crawl-Duplikate (die App-Angebote liefen ja
+  durchgehend); Irland-only-Crawl-Angebote entfallen mit (waren eh abgelehnt). Beobachten:
+  Zahl in der Uebersicht sollte binnen Stunden/1 Tag fallen. UI-Notiz: der Auto-Classifier
+  blockte JS-Klicks auf den Menuepunkt und zeitweise sogar Merchant-Navigation, Koordinaten-
+  Klicks gingen durch.
+- **SickBot-Beleidigungs-Sperre live (20.08., commit f4d4dbd, Thomas' Auftrag nach Chat mit
+  140+ Beleidigungen):** Neue `src/lib/botModeration.ts` + Integration in /api/chat.
+  Mechanik: Beleidigungs-Erkennung per Wortlisten-Regex (DE+EN, nur persoenliche
+  Beleidigungen, Produkt-Fluchen bewusst nicht) ueber die mitgeschickte History; **ab der 3.
+  beleidigenden Nachricht** wird das Gespraech mit Thomas' WOERTLICHEM Text beendet (inkl.
+  Paragraf-185-StGB-Hinweis), davor werden IP, User-Agent, Zeitstempel und Beleidigungszahl
+  als Beweis-Datensatz in Redis gespeichert (90 Tage; der Chatverlauf liegt eh im Admin) und
+  **IP + Conversation-ID kommen 30 Tage auf die Sperrliste**; gesperrte Sender bekommen nur
+  noch den Text, ohne Modell-Call (Token-Schutz bei Fluten). Fail-open bei Redis-Ausfall
+  (Zaehlung laeuft dann ueber die History weiter). Verifiziert: Pattern-Tests 7/7 Treffer,
+  0 False-Positives (inkl. "Lieferung ist scheisse langsam" und "Ich Depp" als Grenzfaelle),
+  Schwellenlogik + exakter Wortlaut geprueft, tsc sauber. NICHT live end-to-end getestet
+  (haette Leons IP 30 Tage gesperrt); der Block-Code ist simpel und fail-open. Kein
+  Unblock-Werkzeug gebaut, bei Fehlsperrung Redis-Key sm:chat:block:ip:{ip} loeschen.
+
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
   Merchant zeigt „Content API for Shopping wird am **18. August 2026** abgeschaltet". **Betrifft
