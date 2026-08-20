@@ -2,6 +2,13 @@ import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { buildSystemPrompt, buildStockPrompt } from "@/lib/botKnowledge";
 import { appendConversation, getBotKnowledge } from "@/lib/adminStore";
+import {
+  ABUSE_THRESHOLD,
+  TERMINATION_MESSAGE,
+  blockChat,
+  countAbusiveMessages,
+  isChatBlocked,
+} from "@/lib/botModeration";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -45,6 +52,47 @@ export async function POST(req: Request) {
       { error: "Expected a user message." },
       { status: 400 }
     );
+  }
+
+  const ip =
+    req.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
+    req.headers.get("x-real-ip") ||
+    "";
+  const ua = req.headers.get("user-agent") || "";
+
+  // Blocked senders get Thomas' termination text and never reach the model,
+  // so a flood of follow-up insults costs no tokens.
+  if (await isChatBlocked(ip, body.conversationId ?? null)) {
+    return NextResponse.json({
+      reply: TERMINATION_MESSAGE,
+      conversationId: body.conversationId ?? null,
+      terminated: true,
+    });
+  }
+
+  // From the third insulting message on, the conversation ends with Thomas'
+  // exact wording (2026-08-20). Evidence is stored BEFORE the text goes out,
+  // because the text claims it.
+  if (countAbusiveMessages(messages) >= ABUSE_THRESHOLD) {
+    const now = Date.now();
+    let conversationId = body.conversationId ?? null;
+    try {
+      conversationId = await appendConversation(conversationId, [
+        { role: "user", content: messages[messages.length - 1].content, at: now },
+        { role: "assistant", content: TERMINATION_MESSAGE, at: now + 1 },
+      ]);
+    } catch (logErr) {
+      console.error("[chat] failed to log terminated conversation:", logErr);
+    }
+    await blockChat(ip, conversationId ?? "unknown", {
+      ua,
+      insultCount: countAbusiveMessages(messages),
+    });
+    return NextResponse.json({
+      reply: TERMINATION_MESSAGE,
+      conversationId,
+      terminated: true,
+    });
   }
 
   const client = new Anthropic({ apiKey });
