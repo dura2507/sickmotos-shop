@@ -1105,6 +1105,21 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   (haette Leons IP 30 Tage gesperrt); der Block-Code ist simpel und fail-open. Kein
   Unblock-Werkzeug gebaut, bei Fehlsperrung Redis-Key sm:chat:block:ip:{ip} loeschen.
 
+- **Admin-Chat-Uebersetzung live (20.08., Thomas' "Bot fragen in deutsch übersetzen.
+  Erleichtert die Korrektur"):** Neue `src/lib/chatTranslation.ts` + Integration in
+  `/admin/chats/[id]`. Nicht-deutsche Nachrichten (Kundenfragen UND Bot-Antworten, beides
+  noetig um eine Antwort beurteilen zu koennen) bekommen unter der Original-Bubble eine
+  kursive Zeile "Deutsch: ...". Mechanik: EIN Haiku-Call pro Gespraechsstand (JSON-Antwort,
+  Modell entscheidet selbst was nicht-deutsch ist; Produktnamen/Codes bleiben unveraendert),
+  Ergebnis 180 Tage in Redis gecacht (Key sm:chat:translation:{id}, invalidiert sich ueber
+  die Nachrichtenanzahl, neue Nachrichten = einmal neu uebersetzen). Kosten nur beim ersten
+  Oeffnen eines Chats, deutsche Chats erzeugen eine leere Map. Fail-open an jeder Stelle:
+  ohne ANTHROPIC_API_KEY, ohne Redis oder bei Upstream-Fehler rendert die Seite exakt wie
+  bisher (Korrektur-Loop unberuehrt, Korrekturen laufen weiter auf dem ORIGINAL-Text).
+  Verifiziert: tsc sauber, Code-Pfade fail-open; live NICHT selbst geprueft (kein
+  Admin-Passwort auf diesem Rechner), Thomas testet beim naechsten Oeffnen eines
+  englischen Chats.
+
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
   Merchant zeigt „Content API for Shopping wird am **18. August 2026** abgeschaltet". **Betrifft
