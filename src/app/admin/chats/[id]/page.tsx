@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { getConversation, markReviewed, saveNote } from "@/lib/adminStore";
 import { StoreNotice } from "../../StoreNotice";
 import { applyCorrection } from "@/lib/botCorrections";
+import { getConversationTranslations } from "@/lib/chatTranslation";
 
 export const dynamic = "force-dynamic";
 // Submitting a correction runs a synchronous Haiku merge of the whole knowledge
@@ -82,6 +83,11 @@ export default async function ChatDetail({
   }
   if (!conv) notFound();
 
+  // Thomas (20.08.): fremdsprachige Chats zur Korrektur auf Deutsch anzeigen.
+  // Einmal pro Gespraechsstand uebersetzt und gecacht; bei Fehlern bleibt die
+  // Map leer und die Seite rendert wie bisher.
+  const translations = await getConversationTranslations(conv);
+
   return (
     <div className="mx-auto max-w-4xl px-5 py-8 md:px-8">
       <div className="mb-6 flex items-center justify-between gap-3">
@@ -151,6 +157,18 @@ export default async function ChatDetail({
                   {m.role === "user" ? "Kunde" : "SickBot"} · {fmtTime(m.at)}
                 </div>
                 <div>{renderInline(m.content)}</div>
+                {translations[i] && (
+                  <div
+                    className={`mt-2 border-t pt-2 text-xs italic leading-relaxed opacity-80 ${
+                      m.role === "user" ? "border-white/30" : "border-border"
+                    }`}
+                  >
+                    <span className="mr-1 font-bold uppercase not-italic tracking-widest opacity-70">
+                      Deutsch:
+                    </span>
+                    {translations[i]}
+                  </div>
+                )}
               </div>
 
               {m.role === "assistant" && (
