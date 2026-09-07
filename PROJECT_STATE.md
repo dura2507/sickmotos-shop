@@ -1146,6 +1146,28 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   wird von jedem Abruf geleert, mehrere Rechner), Leon hat die Nachrichten privat an den
   Bot weitergeleitet, das funktioniert zuverlaessig.
 
+- **Highlight-Sektion fuer neue Produkte (07.09., Thomas per Telegram: "Neues Produkt mit auf
+  die Page mit einbinden. Eventuell eine neue Produkte / Highlight Sektion", dazu 12 Fotos + 4
+  Videos einer Sitzbank in einer "Grand Theft Moto VI"-Edition mit LED-Streifen, lila Rauten-
+  Steppung, Palmen, "wanted"-Sternen):** Das Produkt existiert in Shopify NOCH NICHT (Admin-Suche
+  sitzbank/seat + Sitemap leer), also nichts erfunden, sondern eine **tag-gesteuerte Sektion**
+  gebaut: `src/app/_components/NewHighlight.tsx` + `getHighlightProducts()` in
+  `src/lib/products.ts`. Thomas setzt in Shopify am Produkt das Tag **Highlight**, der Sync-
+  Webhook deployt, die Sektion erscheint auf der Startseite direkt nach "Shop by Model" vor den
+  Bestsellern: grosses Hauptbild + 3 Thumbnails aus den Shopify-Medien, Kicker "Neu im Shop",
+  Titel, Preis + Streichpreis, "Auf Lager"-Pill, 260-Zeichen-Auszug aus der Shopify-Beschreibung,
+  Button "Zum Produkt". Alle Inhalte kommen aus Shopify, UI-Labels in DE/EN/IT/ES
+  (`newHighlight.*`). Ohne getaggtes Produkt rendert die Sektion nichts (deshalb sofort
+  deploybar). Mehrere getaggte Produkte: das juengste (published_at) gewinnt. Zusaetzlich landet
+  jedes neue Produkt automatisch in "Neuheiten" (getLatestArrivals sortiert nach published_at).
+  **Verifiziert lokal** (Dev-Server, products.json temporaer mit Tag am Minarelli-Kruemmer, nicht
+  committet): Sektion rendert mit 4 geladenen Bildern, Titel, 199/229 EUR, Auszug, CTA, Links;
+  375px ohne horizontalen Ueberlauf (scrollWidth 375), einspaltig. Sichttest per Screenshot
+  stand aus (Vorschau-Pane versteckt, Leons Chrome-Extension getrennt), DOM-Messung als Beleg.
+  Thomas-Fotos liegen NICHT im Repo (er laedt sie als Produktmedien in Shopify hoch, daraus
+  zieht die Sektion). Die 4 Videos (IMG_9298/9299/9306/9311, 1,5 bis 4 MB) koennen als Shopify-
+  Produktvideos hochgeladen werden, die Sektion nutzt derzeit nur Bilder.
+
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
   Merchant zeigt „Content API for Shopping wird am **18. August 2026** abgeschaltet". **Betrifft
