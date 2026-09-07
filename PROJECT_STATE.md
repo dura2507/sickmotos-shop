@@ -1168,6 +1168,29 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   zieht die Sektion). Die 4 Videos (IMG_9298/9299/9306/9311, 1,5 bis 4 MB) koennen als Shopify-
   Produktvideos hochgeladen werden, die Sektion nutzt derzeit nur Bilder.
 
+- **Thomas' Search-Console-Paket ausgewertet (07.09., 4 Fotos + ZIP-Export sc-domain:sickmotos.com
+  vom 03.09.):** (1) **Einziger KRITISCHER Punkt: "Feld image fehlt" bei Haendlereintraegen**
+  (SC Uebersicht: Haendlereintraege 189 gueltig / 1 ungueltig, Produkt-Snippets 276/0,
+  Navigationspfade 276/0). Ursache gefunden: **2 Produkte haben in Shopify KEIN Bild**, live
+  steht `"image":[]` im JSON-LD: `sickmotos-angel-eye-led-rgbw-v6-1-scheinwerfer-cob-furbeta-rr-
+  125-lc-2021-2026-tayo-und-minarelli-beta-alp-4-0` und `...-cob-fur-beta-kreidler-modelle-50-
+  125-250-300` (beide Angel Eye V6.1 COB, April 2026). Kein Code-Fix moeglich, Thomas muss Fotos
+  hochladen. Die nicht-kritischen Mails (aggregateRating/review, shippingDetails/
+  hasMerchantReturnPolicy, sku-Laenge) sind bekannt; sku ist seit 19.08. gefixt, SC-Report
+  hinkt. (2) **Export-Zahlen (Domain-Property hat nur Daten ab 01.09., ein Tag = 262 Klicks /
+  2.378 Impressionen / CTR 11% / Position 5,5):** Geraete 82% Mobil (216) vs 45 Desktop;
+  Laender DE 147, AT 56, CH 12, IT 7; **73% der Query-Klicks sind Markensuchen** (sickmotos,
+  sick motos, sickmoto ...); Top-Seiten: Startseite 81 Klicks (CTR 48%), Zontes-125-Upgrade-Kit
+  12, Beta-Felgen-Set 11 (131 Impressionen bei CTR 8% = Potenzial), Fantic-Kruemmer 8,
+  Minarelli-Kruemmer 7. **Haendlereintraege-Rich-Results haben CTR 46%** (19 Klicks/41 Impr)
+  vs Produkt-Snippets 7% → jeder gueltige Haendlereintrag lohnt sich; Nachdenken ueber
+  shippingDetails/hasMerchantReturnPolicy im Markup (bisher bewusst weggelassen wegen
+  Mismatch-Risiko), Leons Entscheidung. Generische Queries mit Impressionen ohne Klick (Pos
+  4-8): "angel eye", "beta rr50 led licht", "yamaha dt 125 tuning", "aprilia sx 125 kruemmer",
+  "ktm duke 125 leistungssteigerung" = SEO-Content-Kandidaten. 59 kopie-von-Seiten mit 10
+  Klicks = das Handle-Chaos ist auch in der Suche sichtbar. Export liegt im Scratchpad
+  (sc_export.zip), Umlaut-Dateinamen im ZIP brauchen cp437→utf-8 (python zipfile).
+
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
   Merchant zeigt „Content API for Shopping wird am **18. August 2026** abgeschaltet". **Betrifft
