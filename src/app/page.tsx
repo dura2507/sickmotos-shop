@@ -7,6 +7,7 @@ import { SignatureParts } from "./_components/SignatureParts";
 import { FeaturedBuilds } from "./_components/FeaturedBuilds";
 import { LatestArrivals } from "./_components/LatestArrivals";
 import { Spotlight } from "./_components/Spotlight";
+import { NewHighlight } from "./_components/NewHighlight";
 import { ActionBanner } from "./_components/ActionBanner";
 import { GraphicsKits } from "./_components/GraphicsKits";
 import { Merchandise } from "./_components/Merchandise";
@@ -26,6 +27,7 @@ export default function Home() {
       <TrustBar />
       <Categories />
       <ShopByModel />
+      <NewHighlight />
       <Bestsellers />
       <SignatureParts />
       <FeaturedBuilds />

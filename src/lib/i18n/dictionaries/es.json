@@ -632,5 +632,10 @@
       "server": "El envío no es posible en este momento. Inténtalo de nuevo en unos minutos.",
       "tooMany": "Demasiadas solicitudes. Inténtalo de nuevo más tarde."
     }
+  },
+  "newHighlight": {
+    "kicker": "Novedad en la tienda",
+    "cta": "Ver producto",
+    "inStock": "En stock"
   }
 }

@@ -570,6 +570,21 @@ export function getLatestArrivals(n = 8): CardProduct[] {
     .map(toCard);
 }
 
+// Products Thomas tagged "Highlight" in Shopify (Telegram 2026-09-07: "neues
+// Produkt mit auf die Page einbinden, eventuell eine Highlight Sektion"). He
+// controls the homepage highlight himself by setting or removing the tag, the
+// sync webhook redeploys within minutes. Newest first, so the latest tagged
+// product wins if several carry the tag.
+export function getHighlightProducts(n = 1): ShopifyProduct[] {
+  return allProducts
+    .filter((p) => p.tags.some((t) => t.trim().toLowerCase() === "highlight"))
+    .sort(
+      (a, b) =>
+        new Date(b.published_at).getTime() - new Date(a.published_at).getTime()
+    )
+    .slice(0, n);
+}
+
 export function countByCategory(): Record<Category, number> {
   const acc = Object.fromEntries(CATEGORIES.map((c) => [c, 0])) as Record<
     Category,

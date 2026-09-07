@@ -632,5 +632,10 @@
       "server": "Senden gerade nicht möglich. Bitte versuche es in ein paar Minuten erneut.",
       "tooMany": "Zu viele Anfragen. Bitte versuche es später erneut."
     }
+  },
+  "newHighlight": {
+    "kicker": "Neu im Shop",
+    "cta": "Zum Produkt",
+    "inStock": "Auf Lager"
   }
 }

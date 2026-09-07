@@ -632,5 +632,10 @@
       "server": "Sending is not possible right now. Please try again in a few minutes.",
       "tooMany": "Too many requests. Please try again later."
     }
+  },
+  "newHighlight": {
+    "kicker": "New in the shop",
+    "cta": "View product",
+    "inStock": "In stock"
   }
 }

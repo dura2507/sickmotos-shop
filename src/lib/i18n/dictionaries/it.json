@@ -632,5 +632,10 @@
       "server": "Invio momentaneamente non disponibile. Riprova tra qualche minuto.",
       "tooMany": "Troppe richieste. Riprova più tardi."
     }
+  },
+  "newHighlight": {
+    "kicker": "Novità in negozio",
+    "cta": "Vai al prodotto",
+    "inStock": "Disponibile"
   }
 }
