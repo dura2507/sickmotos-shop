@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-08-19.
+> Stand: 2026-09-07.
 
 ---
 
@@ -1119,6 +1119,32 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   Verifiziert: tsc sauber, Code-Pfade fail-open; live NICHT selbst geprueft (kein
   Admin-Passwort auf diesem Rechner), Thomas testet beim naechsten Oeffnen eines
   englischen Chats.
+
+- **Check 07.09. nach 2,5 Wochen Pause (Thomas' Telegram-Zahlen + eigener Rundum-Check):**
+  Thomas schickte 2 Fotos: (1) Search Console der ALTEN Domain sick-motos.com, 3 Monate,
+  16.749 Klicks, Absturz Mitte Juli von 300-450 auf ~40 Klicks/Tag = erwartete Verschiebung
+  durch die 301-Umleitung vom 11.07., kein Verlust; (2) Merchant 28 Tage 9.726 Klicks +13,9%.
+  Thomas hat zusaetzlich die **Domain-Property sc-domain:sickmotos.com** in der Search Console
+  verbunden (~04.09., Willkommensmail an kristian2507) und Leon hinzugefuegt; unsere
+  URL-Praefix-Property https://sickmotos.com/ vom 17.08. bleibt parallel bestehen (die
+  Domain-Property umfasst auch checkout.sickmotos.com, Zahlen weichen deshalb leicht ab).
+  **Eigener Check 07.09.:** Merchant **1085 Produkte, 1084 freigegeben, 1 begrenzt, 0 nicht
+  genehmigt, 0 in Pruefung** (20.08.: 1366/1245/11/106), Klicks 28 Tage **9.664 / +33,1%**
+  (20.08.: -24,3%), Conversion-Wert 14.040 bei 1.025 EUR Kosten; die Crawl-Quellen-
+  Abschaltung vom 20.08. hat die roten Duplikate wie von Google angekuendigt entfernt,
+  Gesamtzahl entsprechend gesunken. Merchant-Karte "33 Produkte aus Ihrem Onlineshop
+  herunterladen" = Reste des Crawls, bewusst nicht hinzugefuegt. **Website-Feld HAELT seit
+  19.08.** (sickmotos.com, verifiziert + beansprucht, Checkout-Template intakt), kein 7.
+  Umspringer. Search Console https://sickmotos.com/ 28 Tage: **5.420 Klicks, 47.200
+  Impressionen, CTR 11,5%, Position 6,2**, Kurve von ~190 auf ~300 Klicks/Tag Ende August
+  gestiegen, aktuell 230-260 = Aufholjagd zum alten Niveau (300-450) laeuft. Gmail: letzte
+  Support-Mail ist Karishmas Bestaetigung vom 20.08. (Fall damit faktisch erledigt, 0
+  Ablehnungen); 7x Google-Ads "Richtlinienverstoesse (1)" seit 19.08. = immer dasselbe
+  Standort-Asset (kein Laden), Operator/Thomas sollte das Asset entfernen; SC-Inventurmails
+  der neuen Domain-Property (301/404/noindex/robots, bekannt, nicht kritisch).
+  Telegram-Lehre: getUpdates war leer obwohl die Gruppe Nachrichten hatte (Puffer ~24h,
+  wird von jedem Abruf geleert, mehrere Rechner), Leon hat die Nachrichten privat an den
+  Bot weitergeleitet, das funktioniert zuverlaessig.
 
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
