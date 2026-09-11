@@ -1242,6 +1242,80 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   Fallback. Thomas soll den 4 Produkten trotzdem einen Text geben (Kundennutzen). Live-Verify
   **Live verifiziert (curl, alle 4 Seiten): description jetzt `{Titel} von Sickmotos-Styles` (Shopify-Vendor-Feld), kein leerer String mehr.**
 
+- **KOMPLETTANALYSE 11.09. (6 parallele Pruefagenten + Synthese, ~30 Min Messung, alles curl/
+  python/Repo-Lesen, Google-Konten NICHT zugreifbar weil Chrome-Extension offline):**
+  **A) Standort vs Vor-Krise:** organisch grob 50 bis 70% (alte Domain 300-450 Klicks/Tag, neue
+  im 28-Tage-Schnitt 194, Ende August ~300, steigend; 73% der sichtbaren Query-Klicks sind
+  Markensuchen, die generischen Rankings der alten Domain sind noch nicht zurueck); Merchant 58
+  bis 63% (Vor-Krise ~600/Tag, jetzt 350-380, +33% vs Vorperiode, 1084/1/0 gruen). Beides
+  zusammen ~65%. Thomas' "taumeln hinterher" stimmt fuer organisch, Merchant erholt sich messbar.
+  **B) Gruen (gemessen):** 497/497 URLs 200, 497 korrekte Canonicals, 483/483 JSON-LD sauber
+  (0 AggregateOffer, 1426 Offers EUR > 0), robots/Altdomain-301/Feed ok. Korrektur frueherer
+  Aussage: die "5 bis 14 s kalt" liessen sich in ~60 Abrufen NICHT reproduzieren (max TTFB 2,0 s,
+  warm 0,3 bis 0,5 s; Renderzeit lokal 20-40 ms). Die Langsamkeit war Parallellast + unkomprimierter
+  Transfer + Kaltstart, nicht die Seiten selbst.
+  **C) Was JETZT bremst (Rangliste):**
+  1. [kritisch|Code] **Duplikat-Storefront checkout.sickmotos.com**: robots Allow /, Sitemap-Index
+     136 Sub-Sitemaps, **13.771 URLs in 27 Locales**, 483/483 Produkte 200 mit Self-Canonical
+     (Attribut canonical-shop-url), 0 noindex, 28-30 hreflang je Seite, lastmod = Abrufzeit,
+     /de-Variante mit lang=de, 354 interne Links auf den Host. JS-Snippet ist laut Google-Doku
+     KEIN Canonical-Signal. Fix nach Muster des offiziellen Shopify hydrogen-redirect-theme:
+     Cross-Domain-Canonical auf sickmotos.com + Pfad-Mapping (Locale strippen, /collections ->
+     /shop, /blogs/news -> /blog, /pages -> /legal), meta noindex, hreflang-Block raus, Snippet
+     bleibt; /checkouts ist gemessen NICHT von theme.liquid abhaengig (Cart-Permalink-Kette laeuft
+     ueber shop.app). Passwortschutz und robots-Disallow sind ausgeschlossen (Permalinks koennen
+     Passwort nicht umgehen; Disallow verhindert das Lesen von Canonical/noindex).
+  2. [hoch|Code] **Googlebot sieht sickmotos.com nur auf Englisch**: ohne Accept-Language
+     Fallback en, kein Vary, kein hreflang; deutsche Fassung existiert fuer Google nur auf
+     checkout.sickmotos.com/de/. Fix S: Default ohne Header auf Deutsch + Vary.
+  3. [hoch|Code] **/shop ist force-static und liefert JEDEM Besucher Englisch** (Cookie und
+     Accept-Language ignoriert, HIT age 1295 s, Title "Shop, SickMotos performance parts").
+     Echte deutsche Kunden betroffen! Fix: force-static raus, Daten cachen.
+  4. [kritisch|Code] **Tracking: CookieConsent.tsx wendet gespeicherte Zustimmung bei weiteren
+     Seitenaufrufen NICHT auf den dataLayer an** (apply() nur in Klick-Handlern, seit Erstcommit
+     bd2fad8). Gemessen: Rueckkehrer mit granted -> gcs=G100, neue GA4-Client-ID, bei ?gclid=
+     KEIN _gcl_aw. Jeder Kunde, der schon zugestimmt hat und spaeter ueber eine Anzeige kommt,
+     landet ohne gclid im Checkout = direkter Beitrag zur Ads-Untererfassung (9 von 198). Die
+     Consent-Bruecke zu Shopify selbst funktioniert (Cookie granted -> Checkout 3AMPS). Fix S.
+  5. [hoch|Thomas] Katalog-Duplikate: 63 Produkte in 12 Gruppen mit identischem Titel (10 auch
+     identische Beschreibung), 156 Produkte in 34 Gruppen identische Beschreibung, 146 Kopie-
+     Artefakte (62 mit Farbe/Marke-Widerspruch), 23 Handles mit Zukunftsjahren 2027-2037.
+  6. [mittel|Thomas+Code] Shopify schreibt den GESAMTEN Katalog im Block neu (alle 484 updated_at
+     identisch, mehrmals taeglich), Webhook entprellt nicht: **30 Production-Deployments in 24h**,
+     lastmod fuer Google wertlos, Caches werden staendig geleert. Thomas: App finden; Code:
+     Entprellung + lastmod aus published_at.
+  7. [hoch|Leon] Function-Region iad1 (Washington) bei Edge/Nutzer/Redis in fra1: jede dynamische
+     Antwort x-vercel-id fra1::iad1, vercel inspect bestaetigt. Fix: vercel.json regions fra1.
+  8. [mittel|Thomas] 2 Produkte ohne Bild (kritischer SC-Punkt), Datenpflege-Rest (89 Matt-
+     Streichpreise unter Preis, 22 falsche Beta-Tags, 14 ohne product_type, Kundenkonto-Login
+     springt auf account.sick-motos.com, Garantie ohne Text).
+  9. [mittel|Code] Meta-Descriptions = erste Shopify-Zeile (331 von 483 unter 50 Zeichen, 180x
+     "FIRST CLASS QUALITY GRAPHIC KIT", eine nur "C"); JSON-LD auf 4 Seiten mit ausverkauftem
+     Erst-Offer (2 mit Preis, der nicht sichtbar ist); Suchindex 178 KB auf JEDER Seite (Header
+     -> HeaderSearch als RSC-Prop), /shop 2,15 MB unkomprimiert; Lambda 32 MB (public/ per
+     fs-Read mitgetraced, 7 MB unreferenzierte PNGs, products.json doppelt); middleware.ts ist in
+     Next 16 deprecated (proxy.ts) und laeuft fuer alle public-Assets; /returns fehlt in der
+     Sitemap; /pages/impressum -> / statt /legal/impressum; Bilder ohne width-Parameter
+     (Optimizer-MISS 0,6-5,6 s bei 5200-px-Originalen); GA4 item_brand = "Default Title".
+  10. [mittel|Operator] GTM-Conversion-Linker ohne URL-Passthrough (bei denied geht gclid im
+     Checkout verloren, Parameter ueberleben die Redirect-Kette nachweislich), GA4-Cross-Domain-
+     Regeln auf toten Hosts, zwei identische G-Config-Tags, GTM im Checkout doppelt (App-Pixel +
+     Theme-Snippet), Standort-Asset 7x abgelehnt, Kaufzaehlung seit Consent-Fix ungeprueft.
+  11. [mittel|Leon] Checkout haelt ein eigenes host-only _tracking_consent, spaetere Consent-
+     Aenderung auf der Storefront kommt im Checkout nicht mehr an (Meta/TikTok/Pinterest-Pixel
+     setzen dann weiter Cookies). Plausible sendet 0 Events (Domain-Label sick-motos.com).
+  **D) Plan:** Code S-Paket sofort machbar: (a) Consent-Reapply, (b) /shop force-static raus,
+  (c) Default-Sprache de + Vary, (d) vercel.json regions fra1, (e) Webhook-Entprellung + lastmod,
+  (f) Offers nach erster verfuegbarer Variante + image-Feld bei leer weglassen + /returns in
+  Sitemap + /pages-Mapping + vendor.trim + item_brand=vendor + GTM nicht unter /admin + Suchindex
+  lazy laden. Code M: theme.liquid-Snippet fuer Thomas (Canonical+noindex, an Theme-Duplikat
+  testen). Thomas: Fotos 2 Lampen, Editionsnamen fuer die 63 Kits, kopie-Handles in Etappen mit
+  Auto-Redirect, Block-Schreib-App finden, Datenpflege-Rest, Sitzbank + Tag Highlight. Operator:
+  Standort-Asset raus, Linker URL-Passthrough an, GA4-Domains, Kaufzaehlung pruefen.
+  **E) Luecken:** Google-Konten nicht gemessen (welche Canonical Google wirklich waehlt: vor dem
+  Theme-Umbau 3 URLs per SC-URL-Pruefung ablesen), Block-Schreib-App von aussen nicht
+  identifizierbar, lokale products.json inhaltlich vom 09.07.
+
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
   Merchant zeigt „Content API for Shopping wird am **18. August 2026** abgeschaltet". **Betrifft
