@@ -1222,6 +1222,26 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   pruefen. Stand 11.09.: Sitzbank NICHT in der Sitemap, keine Sektion im DOM, also nicht
   published (Entwurf nicht pruefbar ohne Admin-Zugang, Chrome-Extension offline).
 
+- **Thomas' Zahlen vom 10.09. + description-Fix (11.09. abends):** Thomas schickte 3 Fotos mit
+  "Aktuelle Zahlen. Leider taumeln wir noch immer dem alten Shop hinterher": (1) Merchant 28 Tage
+  (13.08.-09.09.) **9.749 Klicks, +38,0%** vs Vorperiode, Kurve stabil 350-380 Klicks/Tag.
+  (2) Googles Monatsmail "Business performance August 2026": nur Anzeigen 3.045 Klicks (-2,5%),
+  143.200 Impressionen (-86,1%), CTR 2,1% (+600%); organisch+Anzeigen 4.995 Klicks (+28,4%),
+  182.300 Impressionen (-83%), CTR 2,7%. Einordnung: Impressionen brachen weg, weil die
+  Duplikat- und Auslands-Angebote (Crawl-Quelle deaktiviert 20.08., tote Varianten, Fremd-
+  waehrungs-Offers) im Juli Massen-Impressionen ohne Klicks erzeugt hatten; Klicks blieben bzw.
+  stiegen, die Effizienz ist versechsfacht. **Thomas' Hinterhertaumeln stimmt trotzdem:** das
+  Vor-Krisen-Niveau lag laut dem 20.08.-Chart bei ~600 Klicks/Tag, aktuell 350-380, also grob
+  60%. Technisch ist der Merchant gruen (1084/1/0), weitere Klicks haengen jetzt an Ads-Budget/
+  Impression-Share (Operator), nicht an Fixes. Ads-Konto NICHT geprueft (Chrome-Extension in
+  dieser Session durchgehend offline). (3) Neue SC-Mail 10.09.: "Feld description fehlt"
+  (Haendlereintraege, nicht kritisch). Ursache: **4 Produkte ohne jeden Shopify-Text**
+  (adapter-kabel, montagehilfe-neue-modelle, h4-adapter-montagehilfe, 1-year-extended-warranty)
+  lieferten `"description":""` im JSON-LD. **Fix (commit 74c899a):** Fallback auf
+  `{Titel} von {Vendor}` (echte Daten, nichts erfunden); die Meta-Description hatte schon einen
+  Fallback. Thomas soll den 4 Produkten trotzdem einen Text geben (Kundennutzen). Live-Verify
+  laeuft per Poll (naechster Eintrag ergaenzt das Ergebnis).
+
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
   Merchant zeigt „Content API for Shopping wird am **18. August 2026** abgeschaltet". **Betrifft
