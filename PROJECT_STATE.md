@@ -1214,6 +1214,13 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   zeigen beide Hosts auf dieselbe Kanonik und der Duplikat-Konflikt ist strukturell weg.
   Alternativ noindex auf dem Theme, aber Canonical ist der sauberere Weg (Cross-Domain-Canonical
   ist von Google offiziell unterstuetzt). Vorher mit Leon klaeren.
+  **Live verifiziert 18:24 MESZ (curl, Roh-HTML):** Canonical auf Startseite, /shop, /blog,
+  Blog-Artikel, /legal/widerruf, /returns und Produktseite jeweils self-referenzierend auf
+  sickmotos.com. **Fehlalarm-Notiz:** `grep 'Neu im Shop'` auf der Startseite ist KEIN
+  Indikator fuer die Highlight-Sektion, der String steckt im mitgelieferten DE-Dictionary
+  (mit Accept-Language: de immer 1 Treffer); Sektion nur ueber DOM/h2 oder /products/-Link
+  pruefen. Stand 11.09.: Sitzbank NICHT in der Sitemap, keine Sektion im DOM, also nicht
+  published (Entwurf nicht pruefbar ohne Admin-Zugang, Chrome-Extension offline).
 
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
