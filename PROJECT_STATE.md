@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-09-07.
+> Stand: 2026-09-11.
 
 ---
 
@@ -1190,6 +1190,30 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   "ktm duke 125 leistungssteigerung" = SEO-Content-Kandidaten. 59 kopie-von-Seiten mit 10
   Klicks = das Handle-Chaos ist auch in der Suche sichtbar. Export liegt im Scratchpad
   (sc_export.zip), Umlaut-Dateinamen im ZIP brauchen cp437→utf-8 (python zipfile).
+
+- **Canonical auf ALLEN Seiten nachgezogen (11.09., nach Thomas' SC-Mails vom 06.09., commit
+  siehe git log):** Thomas leitete 3 Search-Console-Mails der Domain-Property weiter ("Wichtig
+  bitte Google", 08.09.): (1) "Feld image fehlt" = bekannt, 2 bildlose Angel-Eye-Lampen, Fotos
+  sind Thomas' Job; (2) "Neue Gruende verhindern Indexierung": Weiterleitung, robots.txt,
+  Alternative Seite mit richtigem Canonical (alles erwartbar) PLUS "Duplikat, vom Nutzer nicht
+  als kanonisch festgelegt" und "Duplikat, Google hat eine andere Seite als kanonisch bestimmt";
+  (3) dieselben zwei Duplikat-Gruende fuer **Sitemap-URLs**. Per curl belegt: nur Produktseiten
+  hatten ein Canonical (Fix vom 20.08.), **Startseite, /shop, /blog, alle Blog-Artikel, 5
+  Legal-Seiten und /returns hatten KEINS**, waehrend die Shopify-Kopie auf checkout.sickmotos.com
+  auf JEDER Seite ein Self-Canonical setzt (`canonical-shop-url`-Attribut, Shopify-Standard).
+  Die Domain-Property sieht beide Hosts, Google hatte also pro Seite ein Duplikatpaar, bei dem
+  nur die Kopie eine Kanonik-Meinung aeussert. **Fix:** `alternates.canonical` auf allen 10
+  restlichen Seitentypen (Startseite "/", /shop, /blog, /blog/{slug}, /legal/{5}, /returns),
+  metadataBase existiert. Damit tragen alle 497 Sitemap-URLs ein Self-Canonical auf
+  sickmotos.com. Den konkreten SC-Bericht (welche URLs, welche von Google gewaehlte Kanonik)
+  konnte ich NICHT lesen: Chrome-Extension in dieser Session nicht verbunden. Nachholen, sobald
+  Chrome da ist (Seitenindexierung der Domain-Property, Grund "Google hat andere Seite als
+  kanonisch bestimmt", Beispiel-URLs + gewaehlte Kanonik). **Empfehlung fuer den Shopify-Teil
+  (Thomas-Paste, ungetestet):** im Theme "Geen Experiment" (`layout/theme.liquid`) das Shopify-
+  Canonical `{{ canonical_url }}` durch `https://sickmotos.com{{ request.path }}` ersetzen, dann
+  zeigen beide Hosts auf dieselbe Kanonik und der Duplikat-Konflikt ist strukturell weg.
+  Alternativ noindex auf dem Theme, aber Canonical ist der sauberere Weg (Cross-Domain-Canonical
+  ist von Google offiziell unterstuetzt). Vorher mit Leon klaeren.
 
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
