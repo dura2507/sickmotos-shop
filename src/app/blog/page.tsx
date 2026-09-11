@@ -7,6 +7,7 @@ import { getDictionary } from "@/lib/i18n/dictionaries";
 export async function generateMetadata() {
   const dict = await getDictionary(await getLocale());
   return {
+    alternates: { canonical: "/blog" },
     title: dict.blogIndex.metaTitle,
     description: dict.blogIndex.metaDescription,
   };

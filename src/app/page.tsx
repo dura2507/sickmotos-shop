@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Hero } from "./_components/Hero";
 import { TrustBar } from "./_components/TrustBar";
 import { Categories } from "./_components/Categories";
@@ -18,6 +19,13 @@ import { TestCenter } from "./_components/TestCenter";
 import { Founder } from "./_components/Founder";
 import { Reviews } from "./_components/Reviews";
 import { FAQ } from "./_components/FAQ";
+
+// Self-canonical so Google prefers this page over the Shopify duplicate
+// storefront on checkout.sickmotos.com (Search Console: "Duplikat, Google hat
+// eine andere Seite als kanonisch bestimmt", 2026-09-06).
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default function Home() {
   return (

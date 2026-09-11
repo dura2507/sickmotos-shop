@@ -14,6 +14,7 @@ export const dynamic = "force-static";
 export async function generateMetadata(): Promise<Metadata> {
   const dict = await getDictionary(await getLocale());
   return {
+    alternates: { canonical: "/shop" },
     title: dict.shopPage.metaTitle,
   };
 }

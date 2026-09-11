@@ -1,6 +1,7 @@
 import { LegalLayout } from "../_layout";
 
 export const metadata = {
+  alternates: { canonical: "/legal/impressum" },
   title: "Impressum | SickMotos",
   robots: { index: true, follow: true },
 };

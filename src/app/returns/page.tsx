@@ -7,6 +7,7 @@ import { ReturnForm } from "./ReturnForm";
 export async function generateMetadata(): Promise<Metadata> {
   const dict = await getDictionary(await getLocale());
   return {
+    alternates: { canonical: "/returns" },
     title: dict.returnsPage.metaTitle,
     description: dict.returnsPage.intro,
   };
