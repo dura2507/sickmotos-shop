@@ -1240,7 +1240,7 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   lieferten `"description":""` im JSON-LD. **Fix (commit 74c899a):** Fallback auf
   `{Titel} von {Vendor}` (echte Daten, nichts erfunden); die Meta-Description hatte schon einen
   Fallback. Thomas soll den 4 Produkten trotzdem einen Text geben (Kundennutzen). Live-Verify
-  laeuft per Poll (naechster Eintrag ergaenzt das Ergebnis).
+  **Live verifiziert (curl, alle 4 Seiten): description jetzt `{Titel} von SICKMOTOS`, kein leerer String mehr.**
 
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
