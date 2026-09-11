@@ -102,7 +102,13 @@ export default async function ProductPage({
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.title,
-    description: product.highlights.join(" ").slice(0, 500),
+    // 4 products have no Shopify description at all (adapter-kabel,
+    // montagehilfe-neue-modelle, h4-adapter-montagehilfe, extended warranty);
+    // an empty string made Search Console flag "Feld description fehlt" on
+    // merchant listings (2026-09-10). Fall back to title + vendor, both real data.
+    description:
+      product.highlights.join(" ").slice(0, 500) ||
+      `${cleanTitle(shopify.title)} von ${shopify.vendor || "SickMotos"}`,
     image: product.images.map((i) => i.src),
     sku: skuOf(shopify.variants[0]?.sku),
     brand: { "@type": "Brand", name: shopify.vendor || "SickMotos" },
