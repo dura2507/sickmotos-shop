@@ -1335,6 +1335,26 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   gewollt fuer die Bildersuche. **Live verifiziert:** robots.txt ohne /_next/-Sperre in allen 4
   Gruppen, eine /_next/image-URL liefert 200 mit image/jpeg, 5,8 KB (vorher fuer Google gesperrt).
 
+- **Versand- und Rueckgabe-Markup live (17.09., Leons "mach"):** `shippingDetails` und
+  `hasMerchantReturnPolicy` haengen jetzt an JEDEM Offer im Product-JSON-LD. **Werte nicht aus
+  der Rechtsseite, sondern aus dem echten Checkout:** per Storefront-API `cartCreate` mit
+  Lieferadresse je Land abgefragt (Testwarenkorb, kein Kauf): DE 7,19 EUR "Standard"; 14,99 EUR
+  "Standard International" fuer AT BE BG EE FI FR GR IT HR LV LT LU MT NL SK SI ES (17 EU-Laender,
+  jedes einzeln verifiziert); in Lokalwaehrung DK 115 DKK, PL 67 PLN, SE 173 SEK, CZ 372 CZK,
+  HU 5600 HUF, CH 29 CHF, GB 14 GBP, US 36 USD; **IE und RO liefern KEINE Versandoption** (kein
+  Versand moeglich, obwohl beide auf der Versandseite als Lieferlaender stehen). Markup enthaelt
+  nur die EUR-Faelle (DE + die 17), Rueckgabe-Policy fuer DE + alle EU-Lieferlaender mit Option
+  (inkl. DK PL SE CZ HU): 14 Tage nach Erhalt, ReturnByMail, ReturnShippingFees (Kunde zahlt,
+  laut widerruf.md), FullRefund, MerchantReturnFiniteReturnWindow; NICHT fuer CH/GB/US, weil
+  dort die Ausnahmen (Elektronik, Sale) greifen und nur in der EU das Widerrufsrecht sie
+  ueberlagert. deliveryTime bewusst weggelassen (Made-to-order-Zeiten je Produkt verschieden).
+  **WICHTIGER NEBENBEFUND fuer Thomas:** `src/data/legal/versand.md` (Seite /legal/versand)
+  nennt 6,99 / Europa 13,99 / Weltweit 22,99 EUR und Lieferung DE 1-4 Tage, der Checkout
+  berechnet aber 7,19 / 14,99 / 29,99-Aequivalent. Die Rechtsseite ist veraltet, Preisangaben
+  muessen stimmen (Abmahnrisiko), Thomas entscheidet/liefert den korrigierten Text; ausserdem
+  Irland und Rumaenien auf der Seite streichen oder in Shopify eine Zone anlegen. Verifikation
+  des Markups live: siehe Folgeeintrag.
+
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
   Merchant zeigt „Content API for Shopping wird am **18. August 2026** abgeschaltet". **Betrifft
