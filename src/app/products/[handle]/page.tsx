@@ -77,6 +77,39 @@ export default async function ProductPage({
   const availability = (ok: boolean) =>
     ok ? "https://schema.org/InStock" : "https://schema.org/OutOfStock";
 
+  // Shipping and return terms for merchant listings (Search Console asked for
+  // shippingDetails and hasMerchantReturnPolicy). Rates are the live checkout
+  // rates read from the Storefront API on 2026-09-17: DE 7,19 EUR, and 14,99
+  // EUR for exactly these EU countries (each one verified with a test cart).
+  // EU countries billed in local currency (DK, PL, SE, CZ, HU) and non-EUR
+  // markets are left out of shippingDetails, those offers come from the
+  // Shopify app in local currency. Return terms mirror /legal/widerruf: 14
+  // days after receipt, return by mail, customer pays return shipping, full
+  // refund; the EU cooling-off period applies regardless of the exclusions,
+  // so the policy is only declared for EU destinations.
+  const EU_1499 = ["AT", "BE", "BG", "EE", "FI", "FR", "GR", "IT", "HR", "LV", "LT", "LU", "MT", "NL", "SK", "SI", "ES"];
+  const shippingDetails = [
+    {
+      "@type": "OfferShippingDetails",
+      shippingRate: { "@type": "MonetaryAmount", value: "7.19", currency: "EUR" },
+      shippingDestination: { "@type": "DefinedRegion", addressCountry: "DE" },
+    },
+    {
+      "@type": "OfferShippingDetails",
+      shippingRate: { "@type": "MonetaryAmount", value: "14.99", currency: "EUR" },
+      shippingDestination: { "@type": "DefinedRegion", addressCountry: EU_1499 },
+    },
+  ];
+  const returnPolicy = {
+    "@type": "MerchantReturnPolicy",
+    applicableCountry: ["DE", ...EU_1499, "DK", "PL", "SE", "CZ", "HU"],
+    returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+    merchantReturnDays: 14,
+    returnMethod: "https://schema.org/ReturnByMail",
+    returnFees: "https://schema.org/ReturnShippingFees",
+    refundType: "https://schema.org/FullRefund",
+  };
+
   // Google builds its own offer for the Merchant Center by crawling this
   // markup, and its extractor needs an unambiguous single price per Offer: a
   // lowPrice/highPrice range makes it fail and Merchant rejects the product
@@ -95,6 +128,8 @@ export default async function ProductPage({
     url: productUrl,
     sku: skuOf(shopify.variants[i]?.sku),
     name: Object.values(v.options).filter(Boolean).join(" / ") || undefined,
+    shippingDetails,
+    hasMerchantReturnPolicy: returnPolicy,
   }));
 
   // Schema.org Product structured data for Google rich results.
@@ -119,6 +154,8 @@ export default async function ProductPage({
       availability: availability(product.inStock),
       url: productUrl,
       sku: skuOf(shopify.variants[0]?.sku),
+      shippingDetails,
+      hasMerchantReturnPolicy: returnPolicy,
     },
   };
 
