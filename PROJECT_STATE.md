@@ -1353,7 +1353,9 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   berechnet aber 7,19 / 14,99 / 29,99-Aequivalent. Die Rechtsseite ist veraltet, Preisangaben
   muessen stimmen (Abmahnrisiko), Thomas entscheidet/liefert den korrigierten Text; ausserdem
   Irland und Rumaenien auf der Seite streichen oder in Shopify eine Zone anlegen. Verifikation
-  des Markups live: siehe Folgeeintrag.
+  **Live verifiziert (curl, JSON geparst):** Endtopf Flame 5 Offers und H4-Adapter 1 Offer, jedes
+  Offer mit shippingDetails (DE 7,19 / EU 14,99 fuer 17 Laender) und hasMerchantReturnPolicy
+  (14 Tage, ReturnShippingFees, 23 Laender), JSON valide.
 
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
