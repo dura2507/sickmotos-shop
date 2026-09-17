@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-09-11.
+> Stand: 2026-09-17.
 
 ---
 
@@ -1315,6 +1315,24 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   **E) Luecken:** Google-Konten nicht gemessen (welche Canonical Google wirklich waehlt: vor dem
   Theme-Umbau 3 URLs per SC-URL-Pruefung ablesen), Block-Schreib-App von aussen nicht
   identifizierbar, lokale products.json inhaltlich vom 09.07.
+
+- **robots.txt sperrte /_next/ und damit Googles Rendering + Bildersuche (17.09., gefixt):**
+  Thomas leitete 3 SC-Mails weiter: (1) "Feld description fehlt" (sickmotos.com, 10.09.) = am
+  11.09. gefixt, heute live erneut bestaetigt (alle 4 Ex-Leerseiten mit Fallback); (2) Property
+  der ALTEN Domain sick-motos.com: hasMerchantReturnPolicy/shippingDetails fehlen (nicht
+  kritisch, bekannte Entscheidung, Leon offen); (3) **NEU: "Indexiert, obwohl durch robots.txt-
+  Datei blockiert"** (Domain-Property sickmotos.com, 17.09. 08:14). Ursache gemessen: unsere
+  robots.txt hatte in allen 4 UA-Gruppen `Disallow: /_next/`, darunter liegen pro Produktseite
+  13 JS-Chunks, 2 CSS-Dateien und 60 `/_next/image`-Bild-URLs (srcset). Folge: Googlebot konnte
+  Seiten nicht rendern (CWV/Mobile-Signale), Googlebot-Image bekam kein einziges Produktbild
+  (Bildersuche leer), und ueberall verlinkte, aber gesperrte Bild-URLs erscheinen als "indexiert
+  obwohl blockiert". Zweite moegliche Quelle derselben Meldung: Shopify-Host-Pfade /cart,
+  /checkouts, /account (per Shopify-robots gesperrt, aber vom Theme verlinkt), da die Domain-
+  Property checkout.sickmotos.com einschliesst; ohne SC-Zugriff nicht unterscheidbar.
+  **Fix (robots.ts):** nur noch `/api/` gesperrt, `/_next/` frei in allen 4 Gruppen; Googlebot-
+  Gruppen bleiben (Support-Wunsch). Nebenwirkung bewusst in Kauf genommen: Google darf jetzt
+  bis zu 10 srcset-Groessen je Bild abrufen (Crawl-Budget), das ist Standard bei Next-Sites und
+  gewollt fuer die Bildersuche. Live-Verify siehe Folgeeintrag.
 
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
