@@ -1332,7 +1332,8 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   **Fix (robots.ts):** nur noch `/api/` gesperrt, `/_next/` frei in allen 4 Gruppen; Googlebot-
   Gruppen bleiben (Support-Wunsch). Nebenwirkung bewusst in Kauf genommen: Google darf jetzt
   bis zu 10 srcset-Groessen je Bild abrufen (Crawl-Budget), das ist Standard bei Next-Sites und
-  gewollt fuer die Bildersuche. Live-Verify siehe Folgeeintrag.
+  gewollt fuer die Bildersuche. **Live verifiziert:** robots.txt ohne /_next/-Sperre in allen 4
+  Gruppen, eine /_next/image-URL liefert 200 mit image/webp (vorher fuer Google gesperrt).
 
 ### Offen / TODO
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
