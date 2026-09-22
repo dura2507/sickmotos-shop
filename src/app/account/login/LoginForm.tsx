@@ -33,17 +33,23 @@ function SubmitButton({ label }: { label: string }) {
 }
 
 function Feedback({ state }: { state: AuthState }) {
+  const dict = useDictionary();
   if (state.error) {
+    const text =
+      (state.code && dict.login.errors[state.code]) || state.error;
     return (
       <p className="rounded-xl border border-accent/40 bg-accent/10 px-3 py-2.5 text-xs text-accent">
-        {state.error}
+        {text}
       </p>
     );
   }
   if (state.notice) {
+    const text =
+      (state.noticeCode && dict.login.notices[state.noticeCode]) ||
+      state.notice;
     return (
       <p className="rounded-xl border border-border-strong bg-surface/60 px-3 py-2.5 text-xs text-fg-muted">
-        {state.notice}
+        {text}
       </p>
     );
   }

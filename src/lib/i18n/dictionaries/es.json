@@ -552,7 +552,21 @@
     "recoverBody": "Introduce tu correo y te enviaremos un enlace para restablecer tu contraseña.",
     "sendResetLink": "Enviar enlace",
     "backToSignIn": "Volver al inicio de sesión",
-    "checkoutNote": "El pago se gestiona de forma segura con Shopify. Tu cuenta te permite seguir pedidos y agilizar futuras compras."
+    "checkoutNote": "El pago se gestiona de forma segura con Shopify. Tu cuenta te permite seguir pedidos y agilizar futuras compras.",
+    "errors": {
+      "missingCredentials": "Introduce tu correo y tu contraseña.",
+      "missingEmail": "Introduce tu correo.",
+      "passwordTooShort": "La contraseña debe tener al menos 5 caracteres.",
+      "wrongCredentials": "Correo o contraseña incorrectos. Si hasta ahora solo has comprado como invitado, aún no hay contraseña: usa «Crear cuenta» arriba con el mismo correo.",
+      "noAccountForEmail": "No existe una cuenta con contraseña para este correo, por eso no podemos enviar el enlace. Usa «Crear cuenta» con el mismo correo de tu pedido.",
+      "emailTaken": "Ya existe una cuenta con este correo. Inicia sesión o restablece la contraseña.",
+      "notActivated": "Tu cuenta aún no está activada. Abre el enlace de activación en tu correo.",
+      "generic": "Algo ha salido mal. Inténtalo de nuevo."
+    },
+    "notices": {
+      "accountCreatedCheckEmail": "Cuenta creada. Abre el enlace de activación en tu correo y luego inicia sesión.",
+      "resetLinkSent": "Si existe una cuenta para este correo, te hemos enviado un enlace para restablecer la contraseña. Revisa tu bandeja de entrada."
+    }
   },
   "orders": {
     "metaTitle": "Pedidos, Mi cuenta, SickMotos",

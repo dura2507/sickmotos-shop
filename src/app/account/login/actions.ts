@@ -2,14 +2,29 @@
 
 import { redirect } from "next/navigation";
 import {
+  authErrorCode,
   customerLogin,
   customerRecover,
   customerRegister,
   friendlyAuthError,
   setCustomerToken,
+  type AuthErrorCode,
 } from "@/lib/customerStorefront";
 
-export type AuthState = { error?: string; notice?: string };
+export type AuthFormErrorCode =
+  | AuthErrorCode
+  | "missingCredentials"
+  | "missingEmail"
+  | "passwordTooShort";
+export type AuthNoticeCode = "accountCreatedCheckEmail" | "resetLinkSent";
+
+// `error`/`notice` are English fallbacks; the form localizes via the codes.
+export type AuthState = {
+  error?: string;
+  code?: AuthFormErrorCode;
+  notice?: string;
+  noticeCode?: AuthNoticeCode;
+};
 
 // Only allow same-origin relative paths, so a crafted ?returnTo= can't
 // bounce the user to another site after login.
@@ -26,10 +41,15 @@ export async function loginAction(
   const password = String(formData.get("password") ?? "");
   const returnTo = safeReturn(formData.get("returnTo"));
   if (!email || !password) {
-    return { error: "Enter your email and password." };
+    return { error: "Enter your email and password.", code: "missingCredentials" };
   }
   const res = await customerLogin(email, password);
-  if (!res.ok) return { error: friendlyAuthError(res.errors) };
+  if (!res.ok) {
+    return {
+      error: friendlyAuthError(res.errors, "login"),
+      code: authErrorCode(res.errors, "login"),
+    };
+  }
   await setCustomerToken(res.token, res.expiresAt);
   redirect(returnTo);
 }
@@ -44,10 +64,10 @@ export async function registerAction(
   const lastName = String(formData.get("lastName") ?? "").trim();
   const returnTo = safeReturn(formData.get("returnTo"));
   if (!email || !password) {
-    return { error: "Enter your email and a password." };
+    return { error: "Enter your email and a password.", code: "missingCredentials" };
   }
   if (password.length < 5) {
-    return { error: "Password must be at least 5 characters." };
+    return { error: "Password must be at least 5 characters.", code: "passwordTooShort" };
   }
   const reg = await customerRegister({
     email,
@@ -55,7 +75,12 @@ export async function registerAction(
     firstName: firstName || undefined,
     lastName: lastName || undefined,
   });
-  if (!reg.ok) return { error: friendlyAuthError(reg.errors) };
+  if (!reg.ok) {
+    return {
+      error: friendlyAuthError(reg.errors, "register"),
+      code: authErrorCode(reg.errors, "register"),
+    };
+  }
 
   // Try to sign them straight in. If the store requires email activation,
   // login fails with CUSTOMER_DISABLED and we tell them to check their mail.
@@ -64,6 +89,7 @@ export async function registerAction(
     return {
       notice:
         "Account created. Please check your email to activate it, then sign in.",
+      noticeCode: "accountCreatedCheckEmail",
     };
   }
   await setCustomerToken(res.token, res.expiresAt);
@@ -75,11 +101,17 @@ export async function recoverAction(
   formData: FormData
 ): Promise<AuthState> {
   const email = String(formData.get("email") ?? "").trim();
-  if (!email) return { error: "Enter your email." };
+  if (!email) return { error: "Enter your email.", code: "missingEmail" };
   const res = await customerRecover(email);
-  if (!res.ok) return { error: friendlyAuthError(res.errors) };
+  if (!res.ok) {
+    return {
+      error: friendlyAuthError(res.errors, "recover"),
+      code: authErrorCode(res.errors, "recover"),
+    };
+  }
   return {
     notice:
       "If an account exists for that email, we sent a reset link. Check your inbox.",
+    noticeCode: "resetLinkSent",
   };
 }

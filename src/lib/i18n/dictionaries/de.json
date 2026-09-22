@@ -552,7 +552,21 @@
     "recoverBody": "Gib deine E-Mail ein und wir schicken dir einen Link zum Zurücksetzen deines Passworts.",
     "sendResetLink": "Link senden",
     "backToSignIn": "Zurück zur Anmeldung",
-    "checkoutNote": "Der Checkout läuft sicher über Shopify. Mit deinem Konto verfolgst du Bestellungen und bezahlst künftig schneller."
+    "checkoutNote": "Der Checkout läuft sicher über Shopify. Mit deinem Konto verfolgst du Bestellungen und bezahlst künftig schneller.",
+    "errors": {
+      "missingCredentials": "Bitte E-Mail und Passwort eingeben.",
+      "missingEmail": "Bitte E-Mail eingeben.",
+      "passwordTooShort": "Das Passwort braucht mindestens 5 Zeichen.",
+      "wrongCredentials": "E-Mail oder Passwort falsch. Falls du bisher nur als Gast bestellt hast, gibt es noch kein Passwort: bitte oben „Konto erstellen“ mit derselben E-Mail wählen.",
+      "noAccountForEmail": "Zu dieser E-Mail gibt es noch kein Konto mit Passwort, deshalb können wir keinen Link schicken. Bitte „Konto erstellen“ wählen und dieselbe E-Mail wie bei deiner Bestellung nutzen.",
+      "emailTaken": "Zu dieser E-Mail gibt es bereits ein Konto. Bitte anmelden oder das Passwort zurücksetzen.",
+      "notActivated": "Dein Konto ist noch nicht aktiviert. Bitte den Aktivierungslink in deiner E-Mail öffnen.",
+      "generic": "Da ist etwas schiefgelaufen. Bitte noch einmal versuchen."
+    },
+    "notices": {
+      "accountCreatedCheckEmail": "Konto erstellt. Bitte den Aktivierungslink in deiner E-Mail öffnen und dann anmelden.",
+      "resetLinkSent": "Wenn zu dieser E-Mail ein Konto existiert, haben wir dir einen Link zum Zurücksetzen geschickt. Bitte Posteingang prüfen."
+    }
   },
   "orders": {
     "metaTitle": "Bestellungen, Mein Konto, SickMotos",

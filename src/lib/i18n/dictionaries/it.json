@@ -552,7 +552,21 @@
     "recoverBody": "Inserisci la tua email e ti invieremo un link per reimpostare la password.",
     "sendResetLink": "Invia link",
     "backToSignIn": "Torna all'accesso",
-    "checkoutNote": "Il checkout è gestito in modo sicuro da Shopify. Con il tuo account segui gli ordini e velocizzi i pagamenti futuri."
+    "checkoutNote": "Il checkout è gestito in modo sicuro da Shopify. Con il tuo account segui gli ordini e velocizzi i pagamenti futuri.",
+    "errors": {
+      "missingCredentials": "Inserisci email e password.",
+      "missingEmail": "Inserisci la tua email.",
+      "passwordTooShort": "La password deve avere almeno 5 caratteri.",
+      "wrongCredentials": "Email o password errata. Se finora hai ordinato solo come ospite, non esiste ancora una password: usa «Crea account» qui sopra con la stessa email.",
+      "noAccountForEmail": "Per questa email non esiste ancora un account con password, quindi non possiamo inviare il link. Usa «Crea account» con la stessa email del tuo ordine.",
+      "emailTaken": "Esiste già un account con questa email. Accedi o reimposta la password.",
+      "notActivated": "Il tuo account non è ancora attivato. Apri il link di attivazione nella tua email.",
+      "generic": "Qualcosa è andato storto. Riprova."
+    },
+    "notices": {
+      "accountCreatedCheckEmail": "Account creato. Apri il link di attivazione nella tua email, poi accedi.",
+      "resetLinkSent": "Se esiste un account per questa email, ti abbiamo inviato un link per reimpostare la password. Controlla la posta."
+    }
   },
   "orders": {
     "metaTitle": "Ordini, Il mio account, SickMotos",

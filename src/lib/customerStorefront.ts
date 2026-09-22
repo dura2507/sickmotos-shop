@@ -240,17 +240,49 @@ export async function getCustomer(): Promise<Customer | null> {
 }
 
 // Maps Shopify customerUserErrors to a single friendly message.
-export function friendlyAuthError(errors: CustomerUserError[]): string {
-  if (!errors.length) return "Something went wrong. Please try again.";
+export type AuthContext = "login" | "register" | "recover";
+
+export type AuthErrorCode =
+  | "wrongCredentials"
+  | "noAccountForEmail"
+  | "emailTaken"
+  | "notActivated"
+  | "generic";
+
+// Maps Shopify's CustomerUserError codes to a stable key the client can
+// localize. Context matters: UNIDENTIFIED_CUSTOMER on the login form means
+// wrong email/password, but on the reset form it means Shopify has no
+// customer with a password for that email (never registered, or ordered as
+// a guest), so "wrong password" would send the customer in circles.
+export function authErrorCode(
+  errors: CustomerUserError[],
+  context: AuthContext
+): AuthErrorCode {
   const codes = errors.map((e) => e.code);
   if (codes.includes("UNIDENTIFIED_CUSTOMER")) {
-    return "Wrong email or password.";
+    return context === "recover" ? "noAccountForEmail" : "wrongCredentials";
   }
-  if (codes.includes("TAKEN")) {
-    return "An account with this email already exists. Sign in instead.";
+  if (codes.includes("TAKEN")) return "emailTaken";
+  if (codes.includes("CUSTOMER_DISABLED")) return "notActivated";
+  return "generic";
+}
+
+// English fallback text, used when the client has no dictionary entry.
+export function friendlyAuthError(
+  errors: CustomerUserError[],
+  context: AuthContext = "login"
+): string {
+  if (!errors.length) return "Something went wrong. Please try again.";
+  switch (authErrorCode(errors, context)) {
+    case "wrongCredentials":
+      return "Wrong email or password. If you only ordered as a guest so far, there is no password yet: please use Create account with the same email.";
+    case "noAccountForEmail":
+      return "There is no account with a password for this email, so we cannot send a reset link. Please use Create account with the same email you ordered with.";
+    case "emailTaken":
+      return "An account with this email already exists. Sign in instead.";
+    case "notActivated":
+      return "Your account is not activated yet. Check your email for the activation link.";
+    default:
+      return errors[0].message || "Something went wrong. Please try again.";
   }
-  if (codes.includes("CUSTOMER_DISABLED")) {
-    return "Your account is not activated yet. Check your email for the activation link.";
-  }
-  return errors[0].message || "Something went wrong. Please try again.";
 }

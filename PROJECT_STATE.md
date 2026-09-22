@@ -1389,6 +1389,55 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   fuer checkout.sickmotos.com (Canonical + noindex, Thomas-Paste), /shop-Payload, Bild-width-
   Parameter, middleware -> proxy.ts, Lambda-Bundle (public/ per fs-Read).
 
+- **Double-Check in Leons Chrome + Kundenkonto-Problem diagnostiziert (22.09.):** Leons Auftrag nach dem
+  Sofort-Paket vom 11.09. ("schau nochmal double check geh in meinen browser") plus Thomas' Screenshot
+  eines Instagram-Kunden (Fihax_garage), der sich nicht einloggen kann.
+  - **Merchant (im Konto gelesen):** Klicks 28 Tage 10.060 (+7,3%), Produkte 1082 freigegeben / 3
+    begrenzt / 0 abgelehnt, Website-Feld haelt weiter auf sickmotos.com (verifiziert + beansprucht),
+    Checkout-Template intakt. Kein 7. Umspringer.
+  - **Search Console sc-domain, Drilldowns gelesen:** die 21 "Google hat eine andere Seite als
+    kanonisch bestimmt" sind Thomas' identische Styles-Kits (Tenere 700 mit 12 gleichen Titeln,
+    BMW GS 1300 mit 12, Multistrada) plus 2 checkout.sickmotos.com-Cart-URLs; per URL-Pruefung an
+    zwei Beispielen bestaetigt (tenere-700-2018-2031 und bmw-gs-1300-2031: Google nimmt jeweils das
+    Original-Handle ...-2024 als kanonisch, unser Self-Canonical wird ignoriert, weil der Inhalt
+    identisch ist). Die 930 "vom Nutzer nicht als kanonisch festgelegt" sind alle sickmotos.com
+    (/shop-Filtervarianten und Produkte mit Canonical auf die Hauptseite, gewollt). Die 82
+    "robots.txt" sind 81x /_next/static aus der Zeit vor dem Fix vom 17.09. Nichts davon ist ein
+    Code-Fehler; die Styles-Kit-Duplikate loest nur Thomas (Editions-Namen im Titel).
+  - **Google Ads (30 Tage, 23.08. bis 21.09., im Konto gelesen):** 3 aktive PMax-Kampagnen
+    (Germany 15 EUR/Tag "durch Budget eingeschraenkt", Austria 15, Angel Eye 30), Konto 60 EUR/Tag,
+    Kosten 872 EUR, 2.933 Klicks, 88.986 Impressionen. Conversions: Kaeufe 17 / 3.595 EUR,
+    Bezahlvorgang starten 86, In den Einkaufswagen 0, Seitenaufrufe 119. Vergleich zum Fenster vor
+    dem Consent-Fix (05.08.: 9 Kaeufe / 1.478 EUR) fast verdoppelt, aber Checkout-Start zu Kauf
+    weiter nur ~20% (vorher 19%), die Untererfassung im Checkout ist also NICHT bewiesen geschlossen.
+    Warenkorb-Events bei 0 = die GTM-Container-Luecke vom 28.07. (kein Tag hoert auf add_to_cart),
+    Operator-Thema. Status aller drei aktiven Kampagnen: "Anruf-Asset wurde abgelehnt" (die
+    Richtlinien-Mails seit 19.08. betreffen dieses Anruf-Asset, nicht wie zuvor notiert ein
+    Standort-Asset; Politik "Physischer Standort nicht verfuegbar"). Nichts angefasst (Geld).
+  - **Kundenkonto-Problem, Ursache belegt (curl + dig, kein Shopify-Login noetig):** Shopify hat
+    "Neue Kundenkonten" aktiv, und deren Login-Domain ist noch **account.sick-motos.com** (die alte
+    Primary). JEDER Konto-Link von Shopify leitet dorthin: checkout.sickmotos.com/account/login,
+    sickmotos.myshopify.com/account/login und der Checkout-Login (customer_authentication/login,
+    OAuth-Authorize) antworten 302 auf account.sick-motos.com, und diese Domain liefert **HTTP 406**
+    (DNS zeigt noch auf shops.myshopify.com, Shopify kennt die Domain aber nicht mehr). Damit sind
+    Shopifys Aktivierungs-, Einladungs- und Passwort-Reset-Mails tot, und wer im Checkout auf
+    "Anmelden" klickt, landet auf einer Fehlerseite. Unser eigener Login (Storefront API) kann nur
+    Kunden mit Passwort einloggen; Gast-Besteller ohne Passwort bekamen bisher die irrefuehrende
+    Meldung "Wrong email or password", auch bei "Passwort vergessen".
+  - **Code-Fix (dieser Commit):** Auth-Fehler laufen jetzt ueber Codes und sind in DE/EN/IT/ES
+    lokalisiert (`login.errors` / `login.notices` in den Woerterbuechern). Passwort-vergessen mit
+    unbekannter E-Mail sagt jetzt "kein Konto mit Passwort, bitte Konto erstellen mit derselben
+    E-Mail", Login mit falschen Daten weist auf Gast-Bestellungen hin. Beide Meldungen im Dev-Server
+    gegen die echte Storefront API verifiziert (unbekannte Test-E-Mail, kein echter Kunde beruehrt).
+  - **Offen, braucht Shopify-Admin (Leon einloggen) + Thomas' Entscheidung:** Einstellungen ->
+    Kundenkonten bzw. Domains: entweder die Kundenkonto-Domain auf Shopify-Standard zuruecksetzen,
+    oder account.sickmotos.com anlegen (GoDaddy CNAME auf shops.myshopify.com + in Shopify
+    verbinden), oder auf klassische Kundenkonten wechseln. Bis dahin funktionieren Shopifys
+    eigene Konto-Mails nicht; unser Register-Weg auf sickmotos.com/account/login geht.
+  - Nebenbefund: die Domain-Property in der SC zeigt fuer Sitemaps "Voruebergehender
+    Verarbeitungsfehler" an den geprueften URLs (Google-seitig, Sitemap selbst war am 17.08. mit
+    496 Seiten erfolgreich); beobachten.
+
 ### Offen / TODO
 - **Notiz Operator-Erwartung (22.09., WhatsApp Thomas mit Operator "kimmy", von Leon geparkt):**
   Operator: "need 3-4 months to working on new domain", "if not working, just let it go, may need
