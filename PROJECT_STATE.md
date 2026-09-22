@@ -1358,6 +1358,16 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   (14 Tage, ReturnShippingFees, 23 Laender), JSON valide.
 
 ### Offen / TODO
+- **Notiz Operator-Erwartung (22.09., WhatsApp Thomas mit Operator "kimmy", von Leon geparkt):**
+  Operator: "need 3-4 months to working on new domain", "if not working, just let it go, may need
+  1-2 years", "He keeps regretting the old domain. Google places huge weight on historical account
+  data. We need to rebuild everything from scratch." Thomas: "Hope we are in full business end of
+  Oktober, new rebuild season starts." Einordnung fuer spaeter: Merchant-Konto (644535201) und
+  Ads-Konto (7453225011) sind DIESELBEN Konten wie vor der Migration, deren Historie ist intakt;
+  neu ist nur die Website-Domain. Domainhistorie wirkt organisch, und die 301-Umleitung vom 11.07.
+  vererbt einen Grossteil davon. Die messbaren Bremsen stehen in der Komplettanalyse vom 11.09.
+  (Duplikat-Host, Googlebot sieht nur Englisch, /shop englisch, Consent-Bug, Katalog-Duplikate),
+  das Sofort-Paket wartet weiter auf Leons Go. Thomas' Zielmarke: Ende Oktober.
 - **TODO Kundenkonto-Login (22.09., Instagram-DM von Kunde Fihax_garage / Filip, filiphalcin9@gmail.com,
   von Leon geparkt "auf die Todo-Liste"):** Kunde bekam Shopifys Mail "Activate your account"
   (Sickmotos-Styles-Branding), scheitert dann auf sickmotos.com beim Sign-in mit "Wrong email or
