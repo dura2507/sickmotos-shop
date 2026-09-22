@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-09-17.
+> Stand: 2026-09-22.
 
 ---
 
@@ -1358,6 +1358,21 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   (14 Tage, ReturnShippingFees, 23 Laender), JSON valide.
 
 ### Offen / TODO
+- **TODO Kundenkonto-Login (22.09., Instagram-DM von Kunde Fihax_garage / Filip, filiphalcin9@gmail.com,
+  von Leon geparkt "auf die Todo-Liste"):** Kunde bekam Shopifys Mail "Activate your account"
+  (Sickmotos-Styles-Branding), scheitert dann auf sickmotos.com beim Sign-in mit "Wrong email or
+  password" und bekommt beim "Send reset link" dieselbe Fehlermeldung. Zu pruefen: (1) welcher
+  Konto-Typ in Shopify aktiv ist (Settings -> Customer accounts: classic vs. neue Kundenkonten) und
+  wohin der Aktivierungslink der Mail zeigt (Audit 11.09.: checkout.sickmotos.com/account/login
+  springt auf account.sick-motos.com, ALTE Domain); (2) ob ein nicht aktiviertes/eingeladenes
+  Konto ueber die Storefront-API (customerAccessTokenCreate / customerRecover in
+  src/app/account/login/actions.ts) grundsaetzlich nicht einloggbar ist und unsere Fehlermeldung
+  dann irrefuehrend "Wrong email or password" statt "Konto noch nicht aktiviert" sagt; (3) ob der
+  Reset-Fehler aus customerRecover kommt (Shopify verweigert Recover bei deaktivierten Konten).
+  Kandidat fuer den Fix: Aktivierungs-Mail-Link auf sickmotos.com fuehren bzw. im Login-Formular
+  bei "invited"-Status einen klaren Hinweis mit Neu-Registrierung ueber dieselbe E-Mail anbieten.
+  Bis dahin Workaround fuer den Kunden: Konto ueber "Create account" mit derselben E-Mail neu
+  anlegen (ungetestet, ob Shopify das bei bestehendem Kundendatensatz erlaubt).
 - **Google „Migration zur Merchant API" (Thomas' Screenshot 29.07. 15:30, orange eingekringelt):**
   Merchant zeigt „Content API for Shopping wird am **18. August 2026** abgeschaltet". **Betrifft
   unseren Code NICHT**, selbst geprueft: `grep` nach `content/v2`, `shopping/content`,
