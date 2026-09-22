@@ -51,11 +51,7 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  const res = NextResponse.next({ request: { headers: requestHeaders } });
-  // Pages render in the language of the Accept-Language header, so caches
-  // and crawlers must know the response varies by it.
-  res.headers.set("Vary", "Accept-Language");
-  return res;
+  return NextResponse.next({ request: { headers: requestHeaders } });
 }
 
 export const config = {

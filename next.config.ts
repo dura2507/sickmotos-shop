@@ -41,17 +41,6 @@ const nextConfig: NextConfig = {
       { source: "/discount/:slug*", destination: "/shop", permanent: false },
     ];
   },
-  // Responses render in the language of Accept-Language (or the sm_lang
-  // cookie), so tell caches and crawlers that HTML varies by it. Set here
-  // because Next overwrites a Vary set in the middleware.
-  async headers() {
-    return [
-      {
-        source: "/((?!_next/|api/).*)",
-        headers: [{ key: "Vary", value: "Accept-Language" }],
-      },
-    ];
-  },
   images: {
     remotePatterns: [
       {

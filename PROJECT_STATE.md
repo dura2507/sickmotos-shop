@@ -1374,11 +1374,17 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   Offers stabil sortiert, erste VERFUEGBARE Variante zuerst (= Panel-Preis), `image` bei leerem
   Array weggelassen, Brand getrimmt. (9) `toDetailViewModel.brand` = Vendor (GA4 item_brand war
   "Default Title"). (10) GTM-Scripts + noscript nur ausserhalb /admin. (11) Vary: Accept-Language
-  in Middleware UND next.config headers() gesetzt; lokal hat Next beide ueberschrieben, Live-
-  Verify entscheidet, sonst wieder raus. **Lokal verifiziert (Dev-Server):** /shop de/it/fr/ohne
+  in Middleware UND next.config headers() versucht, Next ueberschreibt beides auch live (Vary
+  bleibt rsc/next-router-*), deshalb wieder entfernt (Seiten sind ohnehin no-store). **Lokal verifiziert (Dev-Server):** /shop de/it/fr/ohne
   Header -> de/it/en/de, Googlebot-UA ohne Header -> de, Sitemap /returns 1 und 0 lastmod,
   /pages/impressum 308 -> /legal/impressum, Offers mit OutOfStock am Ende, brand "SICKMOTOS",
-  tsc sauber. Consent-Reapply lokal nicht testbar (kein GTM_ID in .env.local), Live-Test folgt.
+  tsc sauber. **LIVE verifiziert 22.09. 22:40:** Googlebot ohne Header auf / und /shop lang=de,
+  fr -> en, it -> it; x-vercel-id jetzt fra1::fra1 (vorher fra1::iad1); Sitemap /returns 1 und 0
+  lastmod; /pages/impressum 308 -> /legal/impressum; KTM-EXC-Kruemmer-Offers OutOfStock am Ende;
+  /admin/login ohne googletagmanager. **Consent-Reapply live im Browser-Pane getestet:** Banner
+  akzeptiert, /shop neu geladen -> dataLayer enthaelt consent update:granted OHNE erneuten Klick,
+  Banner bleibt weg, /shop auf Deutsch ("Katalog durchstoebern"). Cookies waren im Pane nicht
+  lesbar (Sandbox), der dataLayer-Eintrag beim Reload ist der Beweis fuer den Fix.
   NICHT im Paket (Folgeschritte): Suchindex lazy laden (178 KB je Seite), theme.liquid-Snippet
   fuer checkout.sickmotos.com (Canonical + noindex, Thomas-Paste), /shop-Payload, Bild-width-
   Parameter, middleware -> proxy.ts, Lambda-Bundle (public/ per fs-Read).
