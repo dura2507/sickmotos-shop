@@ -234,7 +234,10 @@
     "body": "Usamos cookies esenciales para el funcionamiento de la tienda. Con tu consentimiento también usamos cookies de análisis y marketing para mejorar el sitio y llegar a los pilotos adecuados.",
     "onlyEssential": "Solo esenciales",
     "acceptAll": "Aceptar todo",
-    "dialogAria": "Preferencias de cookies"
+    "dialogAria": "Preferencias de cookies",
+    "changeAnytimePrefix": "Puedes cambiarlo en cualquier momento en",
+    "privacyLink": "Privacidad",
+    "changeAnytimeSuffix": "."
   },
   "bot": {
     "askSickBot": "Preguntar a SickBot",

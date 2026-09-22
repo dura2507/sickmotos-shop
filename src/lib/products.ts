@@ -818,7 +818,9 @@ export function toDetailViewModel(p: ShopifyProduct): DetailViewModel {
     handle: p.handle,
     title: cleanTitle(p.title),
     category: categorize(p),
-    brand: p.options[0]?.values[0] ?? "",
+    // Vendor is the brand; the first option value was "Default Title" on
+    // every single-variant product and landed as item_brand in GA4.
+    brand: (p.vendor || "SickMotos").trim(),
     basePrice: price,
     comparePrice: compareAt,
     inStock,

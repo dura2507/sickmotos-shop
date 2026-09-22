@@ -120,13 +120,19 @@ export default async function ProductPage({
   // flagged by Search Console, so anything over that is dropped.
   const skuOf = (raw?: string | null) =>
     raw && raw.length <= 50 ? raw : undefined;
-  const variantOffers = product.variants.map((v, i) => ({
+  // The purchase panel preselects the first AVAILABLE variant, so its price
+  // is what the page shows; the first Offer must be that one (Google: price
+  // must match the landing page). Stable sort keeps Shopify order otherwise.
+  const orderedVariants = product.variants
+    .map((v, i) => ({ v, sv: shopify.variants[i] }))
+    .sort((a, b) => Number(b.v.available) - Number(a.v.available));
+  const variantOffers = orderedVariants.map(({ v, sv }) => ({
     "@type": "Offer",
     priceCurrency: "EUR",
     price: v.price.toFixed(2),
     availability: availability(v.available),
     url: productUrl,
-    sku: skuOf(shopify.variants[i]?.sku),
+    sku: skuOf(sv?.sku),
     name: Object.values(v.options).filter(Boolean).join(" / ") || undefined,
     shippingDetails,
     hasMerchantReturnPolicy: returnPolicy,
@@ -144,9 +150,12 @@ export default async function ProductPage({
     description:
       product.highlights.join(" ").slice(0, 500) ||
       `${cleanTitle(shopify.title)} von ${shopify.vendor || "SickMotos"}`,
-    image: product.images.map((i) => i.src),
+    // An empty image array is a critical merchant-listing error in Search
+    // Console; leaving the field out is the lesser evil until Thomas adds
+    // photos (2 products, 2026-09-07).
+    ...(product.images.length > 0 ? { image: product.images.map((i) => i.src) } : {}),
     sku: skuOf(shopify.variants[0]?.sku),
-    brand: { "@type": "Brand", name: shopify.vendor || "SickMotos" },
+    brand: { "@type": "Brand", name: (shopify.vendor || "SickMotos").trim() },
     offers: product.variants.length > 1 ? variantOffers : {
       "@type": "Offer",
       priceCurrency: "EUR",

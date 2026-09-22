@@ -14,11 +14,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/legal/datenschutz`, changeFrequency: "yearly", priority: 0.1 },
     { url: `${BASE}/legal/widerruf`, changeFrequency: "yearly", priority: 0.1 },
     { url: `${BASE}/legal/versand`, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${BASE}/returns`, changeFrequency: "yearly", priority: 0.3 },
   ];
 
   const products: MetadataRoute.Sitemap = allProducts.map((p) => ({
     url: `${BASE}/products/${p.handle}`,
-    lastModified: p.updated_at ? new Date(p.updated_at) : undefined,
+    // No lastModified: Shopify rewrites updated_at for ALL products in one
+    // burst several times a day, so the value carried no information and
+    // Google learns to ignore a sitemap whose dates are always "today".
     changeFrequency: "weekly",
     priority: 0.7,
   }));

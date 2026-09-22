@@ -26,10 +26,13 @@ export function isLocale(value: string | undefined | null): value is Locale {
 export const FALLBACK_LOCALE: Locale = "en";
 
 // Best-effort match of an Accept-Language header against our supported set.
-// Ignores region tags (en-US → en, de-AT → de, es-MX → es). Anything we do
-// not support, or a missing header, falls back to English.
+// Ignores region tags (en-US → en, de-AT → de, es-MX → es). A language we do
+// not support falls back to English. NO header at all means a crawler
+// (Googlebot sends none): that case gets German, the home market, otherwise
+// Google indexed the whole site in English while 82% of clicks come from
+// DE/AT/CH (Search Console, 2026-09-11).
 export function pickLocale(acceptLanguage: string | null): Locale {
-  if (!acceptLanguage) return FALLBACK_LOCALE;
+  if (!acceptLanguage) return DEFAULT_LOCALE;
   const parsed = acceptLanguage
     .split(",")
     .map((p) => {

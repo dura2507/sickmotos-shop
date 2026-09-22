@@ -90,7 +90,7 @@ export default async function RootLayout({
             strategy="afterInteractive"
           />
         )}
-        {GTM_ID && (
+        {GTM_ID && !isAdmin && (
           <>
             {/* Google Consent Mode v2: everything denied by default so GTM
                 boots but ad/analytics tags stay dormant until the user clicks
@@ -110,7 +110,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         )}
       </head>
       <body className="min-h-screen bg-bg text-fg flex flex-col">
-        {GTM_ID && (
+        {GTM_ID && !isAdmin && (
           <noscript>
             <iframe
               src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
@@ -134,7 +134,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               {/* Der Storefront-Token ist per Design oeffentlich (Shopify
                   nutzt ihn client-seitig), er landet hier bewusst im HTML,
                   damit der Banner die Consent-Wahl an Shopify melden kann. */}
-              {GTM_ID && (
+              {GTM_ID && !isAdmin && (
                 <CookieConsent
                   shopifyToken={process.env.SHOPIFY_STOREFRONT_API_TOKEN}
                 />

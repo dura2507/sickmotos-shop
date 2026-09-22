@@ -6,10 +6,11 @@ import { getDictionary } from "@/lib/i18n/dictionaries";
 import { ShopBrowser } from "./ShopBrowser";
 import { ShopSkeleton } from "./ShopSkeleton";
 
-// Static: HTML is cached at the edge. Filter state is read from the URL on
-// the client via useSearchParams, so we never need the server to re-render
-// for a query change.
-export const dynamic = "force-static";
+// Rendered per request like every other page: force-static baked ONE
+// English HTML for all visitors (cookies and Accept-Language are empty at
+// build time), so German customers saw "Shop the catalog" (2026-09-11).
+// Product data is cached in-process by getShopData(), the render itself
+// costs ~30 ms. Filter state is read from the URL on the client.
 
 export async function generateMetadata(): Promise<Metadata> {
   const dict = await getDictionary(await getLocale());

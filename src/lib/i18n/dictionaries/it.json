@@ -234,7 +234,10 @@
     "body": "Usiamo cookie essenziali per far funzionare lo shop. Con il tuo consenso usiamo anche cookie di analisi e marketing per migliorare il sito e raggiungere i piloti giusti.",
     "onlyEssential": "Solo essenziali",
     "acceptAll": "Accetta tutti",
-    "dialogAria": "Preferenze cookie"
+    "dialogAria": "Preferenze cookie",
+    "changeAnytimePrefix": "Puoi modificarlo in qualsiasi momento in",
+    "privacyLink": "Privacy",
+    "changeAnytimeSuffix": "."
   },
   "bot": {
     "askSickBot": "Chiedi al SickBot",

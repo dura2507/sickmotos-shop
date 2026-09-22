@@ -234,7 +234,10 @@
     "body": "Wir nutzen essenzielle Cookies um den Shop zu betreiben. Mit deiner Zustimmung setzen wir zusätzlich Analyse- und Marketing-Cookies, damit wir die Seite verbessern und die richtigen Fahrer erreichen können.",
     "onlyEssential": "Nur essenziell",
     "acceptAll": "Alles akzeptieren",
-    "dialogAria": "Cookie-Einstellungen"
+    "dialogAria": "Cookie-Einstellungen",
+    "changeAnytimePrefix": "Du kannst das jederzeit unter",
+    "privacyLink": "Datenschutz",
+    "changeAnytimeSuffix": " ändern."
   },
   "bot": {
     "askSickBot": "SickBot fragen",

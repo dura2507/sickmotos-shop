@@ -38,8 +38,9 @@ function apply(consent: Consent) {
   w.dataLayer = w.dataLayer || [];
   // Push a raw arguments-style entry so GTM/gtag.js reads it as
   // gtag('consent','update',{...}). Works even if gtag helper isn't defined.
+  // One push is enough: layout.tsx defines window.gtag as a dataLayer push,
+  // so calling both produced two identical consent updates per click.
   w.dataLayer.push(["consent", "update", consent]);
-  if (typeof w.gtag === "function") w.gtag("consent", "update", consent);
 }
 
 function persist(consent: Consent) {
@@ -83,7 +84,13 @@ export function CookieConsent({ shopifyToken }: { shopifyToken?: string }) {
       // der Checkout auf checkout.sickmotos.com kennt sie nicht. Einmal pro
       // Seitenaufruf an Shopify spiegeln, damit der _tracking_consent-Cookie
       // für die Root-Domain existiert, bevor der Kunde in den Checkout geht.
-      const stored = JSON.parse(raw) as { ad_storage?: string };
+      const stored = JSON.parse(raw) as Partial<Consent>;
+      // Re-apply the stored choice to Consent Mode on EVERY page load. Until
+      // 2026-09-22 this only happened in the click handlers, so a returning
+      // customer who had accepted was still tracked as "denied": GA4 ran
+      // cookieless and an ad click never wrote _gcl_aw, which is why Ads saw
+      // almost no purchases from returning visitors.
+      apply(stored.ad_storage === "granted" ? ACCEPT_ALL : REJECT);
       syncShopifyConsent(stored.ad_storage === "granted", shopifyToken);
     } catch {
       // If localStorage is unavailable, don't bother the user with the banner.
@@ -113,11 +120,11 @@ export function CookieConsent({ shopifyToken }: { shopifyToken?: string }) {
     >
       <p className="text-sm font-semibold text-fg">{dict.consent.title}</p>
       <p className="mt-1 text-xs leading-relaxed text-fg-muted">
-        {dict.consent.body} You can change this any time in{" "}
+        {dict.consent.body} {dict.consent.changeAnytimePrefix}{" "}
         <a href="/legal/datenschutz" className="underline hover:text-fg">
-          Datenschutz
+          {dict.consent.privacyLink}
         </a>
-        .
+        {dict.consent.changeAnytimeSuffix}
       </p>
       <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:gap-2.5">
         <button

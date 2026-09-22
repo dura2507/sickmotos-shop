@@ -234,7 +234,10 @@
     "body": "We use essential cookies to run the shop. With your consent we also use analytics and marketing cookies so we can improve the site and reach the right riders.",
     "onlyEssential": "Only essential",
     "acceptAll": "Accept all",
-    "dialogAria": "Cookie preferences"
+    "dialogAria": "Cookie preferences",
+    "changeAnytimePrefix": "You can change this any time under",
+    "privacyLink": "Privacy",
+    "changeAnytimeSuffix": "."
   },
   "bot": {
     "askSickBot": "Ask SickBot",

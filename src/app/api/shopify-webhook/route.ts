@@ -28,6 +28,27 @@
 
 import { NextResponse } from "next/server";
 import { createHmac, timingSafeEqual } from "node:crypto";
+import { redis, safe } from "@/lib/redisSafe";
+
+// Shopify (some app) rewrites the whole catalog in one burst several times a
+// day, which produced 30 deployments in 24 h (2026-09-11). Webhooks arriving
+// within this window after a deploy was triggered are coalesced into it: the
+// build fetches products.json 15 to 40 s after the hook, so the burst is
+// already in the data. Fails open when Redis is down.
+const COALESCE_SEC = 15;
+const LOCK_KEY = "sm:deploy:lock";
+
+async function alreadyTriggered(): Promise<boolean> {
+  if (!redis) return false;
+  return safe(
+    "webhook.lock",
+    async () => {
+      const set = await redis!.set(LOCK_KEY, Date.now(), { nx: true, ex: COALESCE_SEC });
+      return set === null;
+    },
+    false
+  );
+}
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -65,6 +86,10 @@ export async function POST(req: Request) {
     // Shopify doesn't keep retrying.
     console.warn(`[shopify-webhook] no VERCEL_DEPLOY_HOOK_URL set; received ${topic} from ${shop}`);
     return NextResponse.json({ ok: true, action: "skipped" });
+  }
+
+  if (await alreadyTriggered()) {
+    return NextResponse.json({ ok: true, action: "coalesced", topic, shop });
   }
 
   // Fire-and-forget the deploy hook. Shopify expects a 200 quickly or

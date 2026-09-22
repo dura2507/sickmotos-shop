@@ -24,10 +24,32 @@ const nextConfig: NextConfig = {
       { source: "/checkout", destination: "/shop", permanent: true },
       { source: "/checkout/:path*", destination: "/shop", permanent: true },
       { source: "/search", destination: "/shop", permanent: true },
+      // Shopify content pages with a real counterpart first, the rest to home
+      { source: "/pages/impressum", destination: "/legal/impressum", permanent: true },
+      { source: "/pages/datenschutz", destination: "/legal/datenschutz", permanent: true },
+      { source: "/pages/datenschutzerklarung", destination: "/legal/datenschutz", permanent: true },
+      { source: "/pages/datenschutzerklaerung", destination: "/legal/datenschutz", permanent: true },
+      { source: "/pages/agb", destination: "/legal/agb", permanent: true },
+      { source: "/pages/widerruf", destination: "/legal/widerruf", permanent: true },
+      { source: "/pages/widerrufsbelehrung", destination: "/legal/widerruf", permanent: true },
+      { source: "/pages/versand", destination: "/legal/versand", permanent: true },
+      { source: "/pages/contact", destination: "/legal/impressum", permanent: true },
+      { source: "/pages/kontakt", destination: "/legal/impressum", permanent: true },
       { source: "/pages/:slug*", destination: "/", permanent: true },
       { source: "/apps/:slug*", destination: "/shop", permanent: true },
       { source: "/services/:slug*", destination: "/shop", permanent: true },
       { source: "/discount/:slug*", destination: "/shop", permanent: false },
+    ];
+  },
+  // Responses render in the language of Accept-Language (or the sm_lang
+  // cookie), so tell caches and crawlers that HTML varies by it. Set here
+  // because Next overwrites a Vary set in the middleware.
+  async headers() {
+    return [
+      {
+        source: "/((?!_next/|api/).*)",
+        headers: [{ key: "Vary", value: "Accept-Language" }],
+      },
     ];
   },
   images: {
