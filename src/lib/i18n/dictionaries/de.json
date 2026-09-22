@@ -557,8 +557,8 @@
       "missingCredentials": "Bitte E-Mail und Passwort eingeben.",
       "missingEmail": "Bitte E-Mail eingeben.",
       "passwordTooShort": "Das Passwort braucht mindestens 5 Zeichen.",
-      "wrongCredentials": "E-Mail oder Passwort falsch. Falls du bisher nur als Gast bestellt hast, gibt es noch kein Passwort: bitte oben „Konto erstellen“ mit derselben E-Mail wählen.",
-      "noAccountForEmail": "Zu dieser E-Mail gibt es noch kein Konto mit Passwort, deshalb können wir keinen Link schicken. Bitte „Konto erstellen“ wählen und dieselbe E-Mail wie bei deiner Bestellung nutzen.",
+      "wrongCredentials": "E-Mail oder Passwort falsch. Wenn du im Shop bestellt hast, gibt es kein Passwort: bitte oben „Mit E-Mail-Code anmelden“ nutzen.",
+      "noAccountForEmail": "Zu dieser E-Mail gibt es kein Konto mit Passwort, deshalb können wir keinen Link schicken. Bitte oben „Mit E-Mail-Code anmelden“ nutzen oder hier ein Konto mit Passwort erstellen.",
       "emailTaken": "Zu dieser E-Mail gibt es bereits ein Konto. Bitte anmelden oder das Passwort zurücksetzen.",
       "notActivated": "Dein Konto ist noch nicht aktiviert. Bitte den Aktivierungslink in deiner E-Mail öffnen.",
       "generic": "Da ist etwas schiefgelaufen. Bitte noch einmal versuchen."
@@ -566,6 +566,13 @@
     "notices": {
       "accountCreatedCheckEmail": "Konto erstellt. Bitte den Aktivierungslink in deiner E-Mail öffnen und dann anmelden.",
       "resetLinkSent": "Wenn zu dieser E-Mail ein Konto existiert, haben wir dir einen Link zum Zurücksetzen geschickt. Bitte Posteingang prüfen."
+    },
+    "shopifyLogin": {
+      "kicker": "Bestellungen und Kundenkonto",
+      "title": "Anmelden ohne Passwort",
+      "body": "Wer im Shop bestellt hat, hat ein Shopify-Kundenkonto ohne Passwort. Zum Anmelden reicht die E-Mail-Adresse der Bestellung, Shopify schickt dir einen Code.",
+      "cta": "Mit E-Mail-Code anmelden",
+      "divider": "oder Konto auf sickmotos.com mit Passwort"
     }
   },
   "orders": {

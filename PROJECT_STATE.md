@@ -1414,26 +1414,45 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     Operator-Thema. Status aller drei aktiven Kampagnen: "Anruf-Asset wurde abgelehnt" (die
     Richtlinien-Mails seit 19.08. betreffen dieses Anruf-Asset, nicht wie zuvor notiert ein
     Standort-Asset; Politik "Physischer Standort nicht verfuegbar"). Nichts angefasst (Geld).
-  - **Kundenkonto-Problem, Ursache belegt (curl + dig, kein Shopify-Login noetig):** Shopify hat
-    "Neue Kundenkonten" aktiv, und deren Login-Domain ist noch **account.sick-motos.com** (die alte
-    Primary). JEDER Konto-Link von Shopify leitet dorthin: checkout.sickmotos.com/account/login,
-    sickmotos.myshopify.com/account/login und der Checkout-Login (customer_authentication/login,
-    OAuth-Authorize) antworten 302 auf account.sick-motos.com, und diese Domain liefert **HTTP 406**
-    (DNS zeigt noch auf shops.myshopify.com, Shopify kennt die Domain aber nicht mehr). Damit sind
-    Shopifys Aktivierungs-, Einladungs- und Passwort-Reset-Mails tot, und wer im Checkout auf
-    "Anmelden" klickt, landet auf einer Fehlerseite. Unser eigener Login (Storefront API) kann nur
-    Kunden mit Passwort einloggen; Gast-Besteller ohne Passwort bekamen bisher die irrefuehrende
-    Meldung "Wrong email or password", auch bei "Passwort vergessen".
-  - **Code-Fix (dieser Commit):** Auth-Fehler laufen jetzt ueber Codes und sind in DE/EN/IT/ES
-    lokalisiert (`login.errors` / `login.notices` in den Woerterbuechern). Passwort-vergessen mit
-    unbekannter E-Mail sagt jetzt "kein Konto mit Passwort, bitte Konto erstellen mit derselben
-    E-Mail", Login mit falschen Daten weist auf Gast-Bestellungen hin. Beide Meldungen im Dev-Server
-    gegen die echte Storefront API verifiziert (unbekannte Test-E-Mail, kein echter Kunde beruehrt).
-  - **Offen, braucht Shopify-Admin (Leon einloggen) + Thomas' Entscheidung:** Einstellungen ->
-    Kundenkonten bzw. Domains: entweder die Kundenkonto-Domain auf Shopify-Standard zuruecksetzen,
-    oder account.sickmotos.com anlegen (GoDaddy CNAME auf shops.myshopify.com + in Shopify
-    verbinden), oder auf klassische Kundenkonten wechseln. Bis dahin funktionieren Shopifys
-    eigene Konto-Mails nicht; unser Register-Weg auf sickmotos.com/account/login geht.
+  - **Kundenkonto-Problem, KORRIGIERTE Ursache (22.09. abends, im Shopify-Admin und im echten
+    Browser geprueft):** Meine erste Diagnose "account.sick-motos.com liefert 406, Domain tot" war
+    FALSCH. Der 406 kommt nur fuer Nicht-Browser-Clients (curl ohne Browser-UA: 406; mit Browser-UA
+    und Accept-Header: 302 in den OAuth-Flow; in Leons Chrome rendert die Seite sauber). Shopify
+    zeigt die Domain unter Einstellungen -> Domains als "Connected, DNS ok, live in allen Regionen,
+    TLS ok, Ziel Customer Accounts, Primary" (angelegt 16.09.2025). Tatsaechlicher Befund:
+    (1) Der Shop laeuft auf Shopifys **neuen Kundenkonten**: Login-Seite "Sign in or create an
+    account" mit "Continue with shop" oder E-Mail-Feld, KEIN Passwortfeld, kein Registrieren mit
+    Passwort. Einstellungen -> Kundenkonten zeigt keine Classic-Option mehr; im Kundendatensatz gibt
+    es unter "More actions" kein "Send account invite" mehr (nur Store credit, Merge, Daten anfordern/
+    loeschen, Delete, Flow). Kundenkonto-URL laut Einstellung: https://account.sick-motos.com.
+    (2) Alle Shopify-Kontopfade (/account/login, /register, /activate/..., /reset/..., Checkout-Login
+    customer_authentication/login) leiten per 302 auf account.sick-motos.com und funktionieren dort.
+    (3) Filip Halcin (filiphalcin9@gmail.com) existiert seit 29.07.2025 als Kunde (Zeitleiste nur
+    "Customer was created"), 0 Bestellungen, 0 EUR, Slowakei. Sein Fehlbild: er versuchte unseren
+    **Passwort-Login auf sickmotos.com** (Storefront API, klassische Konten). Ein Shopify-Kunde ohne
+    Passwort kann dort nie einloggen, und customerRecover liefert UNIDENTIFIED_CUSTOMER, weil kein
+    klassisches Konto mit Passwort existiert. Unsere alte Meldung "Wrong email or password" war
+    irrefuehrend; Shopifys Aktivierungs-Mail ("Activate your account", Vorlage "Customer account
+    invite" existiert weiter unter Benachrichtigungen) fuehrt dagegen korrekt auf die Shopify-Anmeldung.
+    (4) Die Domain account.sick-motos.com ist nur ein Schoenheitsfehler (alte Marke in der URL), kein
+    Funktionsfehler. Umstellen auf account.sickmotos.com waere: GoDaddy CNAME account -> shops.myshopify.com,
+    dann Shopify Einstellungen -> Domains -> "Connect existing" mit Ziel Customer Accounts -> Primary.
+    NICHT gemacht, Thomas' Entscheidung, Schritte ungetestet.
+  - **Code-Fix (Commits 6907c92 + dieser):** (a) Auth-Fehler laufen ueber Codes, lokalisiert DE/EN/IT/ES
+    (`login.errors` / `login.notices`). (b) Die Login-Seite /account/login zeigt jetzt ganz oben eine
+    Karte "Anmelden ohne Passwort" mit Button "Mit E-Mail-Code anmelden" auf
+    `SHOPIFY_ACCOUNT_LOGIN_URL` (= https://checkout.sickmotos.com/account/login, exportiert aus
+    src/lib/shopify.ts, folgt CHECKOUT_HOST; Shopify leitet selbst auf die konfigurierte Konto-Domain
+    weiter, aendert Thomas die Domain, bleibt der Link richtig). Darunter Trenner "oder Konto auf
+    sickmotos.com mit Passwort" und die bisherigen Formulare (Garage/Bestellungen auf unserer Seite
+    haengen weiter am Storefront-Token). (c) Fehlermeldungen bei falschem Passwort und bei
+    Passwort-vergessen ohne Konto verweisen auf den E-Mail-Code-Login. Verifiziert im Dev-Server:
+    Karte + Link (href checkout.sickmotos.com/account/login), DE-Texte, 375 px ohne Ueberlauf
+    (scrollWidth 375). Den Code-Schritt der Shopify-Anmeldung habe ich NICHT bis zum Ende
+    durchgeklickt (Test-E-Mail auf .invalid blieb im Spinner haengen), die Passwortlosigkeit ist am
+    Formular selbst sichtbar (kein Passwortfeld).
+  - **Merke fuer curl-Diagnosen:** Shopify-Kontodomains antworten 406 auf Standard-curl. Vor einer
+    "tot"-Aussage immer mit Browser-UA + Accept-Header oder im echten Browser gegenpruefen (Regel 8).
   - Nebenbefund: die Domain-Property in der SC zeigt fuer Sitemaps "Voruebergehender
     Verarbeitungsfehler" an den geprueften URLs (Google-seitig, Sitemap selbst war am 17.08. mit
     496 Seiten erfolgreich); beobachten.
@@ -1450,7 +1469,7 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   (Duplikat-Host, Googlebot sieht nur Englisch, /shop englisch, Consent-Bug, Katalog-Duplikate),
   das Sofort-Paket wartet weiter auf Leons Go. Thomas' Zielmarke: Ende Oktober.
 - **TODO Kundenkonto-Login (22.09., Instagram-DM von Kunde Fihax_garage / Filip, filiphalcin9@gmail.com,
-  von Leon geparkt "auf die Todo-Liste"):** Kunde bekam Shopifys Mail "Activate your account"
+  von Leon geparkt "auf die Todo-Liste"; ERLEDIGT 22.09., siehe Eintrag "Kundenkonto-Problem, KORRIGIERTE Ursache"):** Kunde bekam Shopifys Mail "Activate your account"
   (Sickmotos-Styles-Branding), scheitert dann auf sickmotos.com beim Sign-in mit "Wrong email or
   password" und bekommt beim "Send reset link" dieselbe Fehlermeldung. Zu pruefen: (1) welcher
   Konto-Typ in Shopify aktiv ist (Settings -> Customer accounts: classic vs. neue Kundenkonten) und

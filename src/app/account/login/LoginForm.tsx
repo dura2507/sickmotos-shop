@@ -56,7 +56,13 @@ function Feedback({ state }: { state: AuthState }) {
   return null;
 }
 
-export function LoginForm({ returnTo }: { returnTo: string }) {
+export function LoginForm({
+  returnTo,
+  shopifyLoginUrl,
+}: {
+  returnTo: string;
+  shopifyLoginUrl: string;
+}) {
   const dict = useDictionary();
   const [mode, setMode] = useState<Mode>("login");
   const [login, loginFormAction] = useActionState(loginAction, initial);
@@ -94,6 +100,28 @@ export function LoginForm({ returnTo }: { returnTo: string }) {
               : dict.login.resetPassword}
         </h1>
       </div>
+
+      <div className="mb-8 rounded-2xl border border-accent/40 bg-accent/10 p-5">
+        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-accent">
+          {dict.login.shopifyLogin.kicker}
+        </p>
+        <h2 className="mt-2 font-display text-2xl uppercase tracking-tight">
+          {dict.login.shopifyLogin.title}
+        </h2>
+        <p className="mt-2 text-xs leading-relaxed text-fg-muted">
+          {dict.login.shopifyLogin.body}
+        </p>
+        <a
+          href={shopifyLoginUrl}
+          className="mt-4 block w-full rounded-full bg-accent px-5 py-3 text-center text-xs font-bold uppercase tracking-wider text-fg transition-colors hover:bg-accent-hi"
+        >
+          {dict.login.shopifyLogin.cta}
+        </a>
+      </div>
+
+      <p className="mb-4 text-center text-[11px] font-semibold uppercase tracking-wider text-fg-dim">
+        {dict.login.shopifyLogin.divider}
+      </p>
 
       {mode !== "recover" && (
         <div className="mb-6 flex items-center gap-1 rounded-full border border-border bg-surface/40 p-1">

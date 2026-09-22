@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getCustomerToken } from "@/lib/customerStorefront";
 import { getLocale } from "@/lib/i18n/getLocale";
 import { getDictionary } from "@/lib/i18n/dictionaries";
+import { SHOPIFY_ACCOUNT_LOGIN_URL } from "@/lib/shopify";
 import { LoginForm } from "./LoginForm";
 
 export const dynamic = "force-dynamic";
@@ -31,7 +32,7 @@ export default async function LoginPage({
 
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-md items-center justify-center px-4 py-16 md:py-24">
-      <LoginForm returnTo={returnTo} />
+      <LoginForm returnTo={returnTo} shopifyLoginUrl={SHOPIFY_ACCOUNT_LOGIN_URL} />
     </div>
   );
 }

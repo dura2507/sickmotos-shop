@@ -557,8 +557,8 @@
       "missingCredentials": "Enter your email and password.",
       "missingEmail": "Enter your email.",
       "passwordTooShort": "Password must be at least 5 characters.",
-      "wrongCredentials": "Wrong email or password. If you only ordered as a guest so far, there is no password yet: please use Create account above with the same email.",
-      "noAccountForEmail": "There is no account with a password for this email, so we cannot send a reset link. Please use Create account with the same email you ordered with.",
+      "wrongCredentials": "Wrong email or password. If you ordered in the shop, there is no password: please use “Sign in with email code” above.",
+      "noAccountForEmail": "There is no account with a password for this email, so we cannot send a reset link. Please use “Sign in with email code” above or create an account with a password here.",
       "emailTaken": "An account with this email already exists. Sign in or reset your password.",
       "notActivated": "Your account is not activated yet. Open the activation link in your email.",
       "generic": "Something went wrong. Please try again."
@@ -566,6 +566,13 @@
     "notices": {
       "accountCreatedCheckEmail": "Account created. Open the activation link in your email, then sign in.",
       "resetLinkSent": "If an account exists for that email, we sent a reset link. Check your inbox."
+    },
+    "shopifyLogin": {
+      "kicker": "Orders and customer account",
+      "title": "Sign in without a password",
+      "body": "If you ordered in the shop, you have a Shopify customer account without a password. Just use the email from your order and Shopify sends you a code.",
+      "cta": "Sign in with email code",
+      "divider": "or sickmotos.com account with password"
     }
   },
   "orders": {

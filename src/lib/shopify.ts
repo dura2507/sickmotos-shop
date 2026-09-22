@@ -216,6 +216,11 @@ const CART_FRAGMENT = `
 // domain as the product pages (fixes the "mismatched checkout URL" concern).
 // Rollback: set CHECKOUT_HOST back to "sickmotos.myshopify.com" and redeploy.
 const CHECKOUT_HOST = "checkout.sickmotos.com";
+
+// Shopify-hosted customer login (new customer accounts, passwordless email
+// code / Shop). Shopify redirects this path to the configured customer
+// accounts domain, so it keeps working if Thomas changes that domain later.
+export const SHOPIFY_ACCOUNT_LOGIN_URL = `https://${CHECKOUT_HOST}/account/login`;
 function fixCheckoutHost<T extends { checkoutUrl?: string } | null>(cart: T): T {
   if (!cart || !cart.checkoutUrl) return cart;
   try {
