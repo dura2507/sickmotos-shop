@@ -1357,6 +1357,32 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   Offer mit shippingDetails (DE 7,19 / EU 14,99 fuer 17 Laender) und hasMerchantReturnPolicy
   (14 Tage, ReturnShippingFees, 23 Laender), JSON valide.
 
+- **SOFORT-PAKET aus der Komplettanalyse umgesetzt (22.09., Leons "fix alles", commit 69a7c55):**
+  (1) **Consent-Reapply:** `CookieConsent.tsx` wendet die gespeicherte Wahl jetzt bei JEDEM
+  Seitenaufruf auf Consent Mode an (vorher nur im Klick-Handler, seit Erstcommit); doppelter
+  gtag-Push entfernt; der englische Satz im Banner ist uebersetzt (Keys consent.changeAnytime*,
+  consent.privacyLink). (2) **Sprache:** `pickLocale(null)` liefert jetzt DEFAULT_LOCALE de
+  (Crawler ohne Accept-Language), unsupported Sprachen bleiben Englisch (Regel unveraendert).
+  (3) **/shop nicht mehr force-static** (hatte allen Besuchern Englisch geliefert). (4)
+  **vercel.json `regions: ["fra1"]`**, Funktionen laufen bei Edge/Nutzern/Redis. (5) **Webhook-
+  Entprellung:** Redis-Lock `sm:deploy:lock` 15 s (NX/EX), Bursts der Shopify-Massenupdates
+  loesen 1 Deploy statt Hunderte aus, fail-open ohne Redis; 15 s bewusst kurz, damit Thomas'
+  Einzeledits nie verloren gehen (Build zieht products.json 15-40 s nach dem Hook). (6)
+  Sitemap: /returns drin, Produkt-lastmod raus (Shopify schreibt updated_at fuer alle Produkte
+  gleichzeitig, Wert war wertlos). (7) next.config: /pages/impressum, datenschutz(erklaerung),
+  agb, widerruf, versand, contact/kontakt auf die Legal-Seiten, Rest weiter auf /. (8) JSON-LD:
+  Offers stabil sortiert, erste VERFUEGBARE Variante zuerst (= Panel-Preis), `image` bei leerem
+  Array weggelassen, Brand getrimmt. (9) `toDetailViewModel.brand` = Vendor (GA4 item_brand war
+  "Default Title"). (10) GTM-Scripts + noscript nur ausserhalb /admin. (11) Vary: Accept-Language
+  in Middleware UND next.config headers() gesetzt; lokal hat Next beide ueberschrieben, Live-
+  Verify entscheidet, sonst wieder raus. **Lokal verifiziert (Dev-Server):** /shop de/it/fr/ohne
+  Header -> de/it/en/de, Googlebot-UA ohne Header -> de, Sitemap /returns 1 und 0 lastmod,
+  /pages/impressum 308 -> /legal/impressum, Offers mit OutOfStock am Ende, brand "SICKMOTOS",
+  tsc sauber. Consent-Reapply lokal nicht testbar (kein GTM_ID in .env.local), Live-Test folgt.
+  NICHT im Paket (Folgeschritte): Suchindex lazy laden (178 KB je Seite), theme.liquid-Snippet
+  fuer checkout.sickmotos.com (Canonical + noindex, Thomas-Paste), /shop-Payload, Bild-width-
+  Parameter, middleware -> proxy.ts, Lambda-Bundle (public/ per fs-Read).
+
 ### Offen / TODO
 - **Notiz Operator-Erwartung (22.09., WhatsApp Thomas mit Operator "kimmy", von Leon geparkt):**
   Operator: "need 3-4 months to working on new domain", "if not working, just let it go, may need
