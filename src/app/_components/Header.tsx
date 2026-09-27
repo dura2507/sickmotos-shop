@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getSearchIndex } from "@/lib/products";
 import { getLocale } from "@/lib/i18n/getLocale";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { CartButton } from "./CartButton";
@@ -18,7 +17,6 @@ const nav = [
 ];
 
 export async function Header() {
-  const searchIndex = getSearchIndex();
   const locale = await getLocale();
   const dict = await getDictionary(locale);
   const catCards = dict.categoryCards as Record<string, { name: string }>;
@@ -40,7 +38,7 @@ export async function Header() {
           />
         </Link>
 
-        <HeaderSearch index={searchIndex} />
+        <HeaderSearch />
 
         <div className="ml-auto flex items-center gap-2">
           <LanguageSwitcher current={locale} />

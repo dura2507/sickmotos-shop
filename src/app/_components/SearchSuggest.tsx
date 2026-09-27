@@ -32,6 +32,14 @@ type Props = {
   /** Restrict product suggestions to parts fitting this bike. */
   filterBrand?: string;
   filterModel?: string;
+  /** True while the lazily fetched product index is still on its way. */
+  indexLoading?: boolean;
+  /**
+   * Fired as soon as the user shows intent to search (hover, pointer down,
+   * focus, key press). The header uses it to fetch the product index lazily
+   * instead of shipping it with every page.
+   */
+  onIntent?: () => void;
 };
 
 export function SearchSuggest({
@@ -43,6 +51,8 @@ export function SearchSuggest({
   brand,
   filterBrand,
   filterModel,
+  indexLoading = false,
+  onIntent,
 }: Props) {
   const dict = useDictionary();
   const router = useRouter();
@@ -273,7 +283,12 @@ export function SearchSuggest({
   );
 
   return (
-    <div ref={wrapRef} className={wrapClass}>
+    <div
+      ref={wrapRef}
+      className={wrapClass}
+      onMouseEnter={onIntent}
+      onPointerDown={onIntent}
+    >
       <form
         ref={formRef}
         role="search"
@@ -303,8 +318,14 @@ export function SearchSuggest({
             setActive(-1);
             setOpen(true);
           }}
-          onFocus={() => setOpen(true)}
-          onKeyDown={onKey}
+          onFocus={() => {
+            onIntent?.();
+            setOpen(true);
+          }}
+          onKeyDown={(e) => {
+            onIntent?.();
+            onKey(e);
+          }}
           placeholder={placeholderText}
           autoComplete="off"
           className={inputClass}
@@ -414,7 +435,7 @@ export function SearchSuggest({
               </li>
             ))}
 
-            {mode === "products" && q.trim().length >= 2 && productSuggestions.length === 0 && (
+            {mode === "products" && !indexLoading && q.trim().length >= 2 && productSuggestions.length === 0 && (
               <li className="px-3 py-4 text-center text-xs text-fg-muted">
                 {dict.searchSuggest.noProducts.replace("{query}", q)}
               </li>
