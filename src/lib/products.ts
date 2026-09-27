@@ -453,6 +453,47 @@ export function getAllCards(): CardProduct[] {
   return allProducts.map(toCard);
 }
 
+// Card shape for the /shop grid. It is serialized into the RSC payload once
+// per product (485 times), so it carries exactly the fields ShopBrowser reads
+// for the cards, the search box, the BikeFinder filters and the garage filter,
+// nothing else. The variant gid from CardProduct is only needed by the product
+// page's add-on flow and cost about 31 KB of /shop HTML for nothing.
+export type ShopCard = Pick<
+  CardProduct,
+  | "handle"
+  | "title"
+  | "price"
+  | "compareAt"
+  | "image"
+  | "brands"
+  | "category"
+  | "inStock"
+  | "fits"
+  | "years"
+  | "yearsByBrand"
+  | "models"
+>;
+
+export function toShopCard(p: ShopifyProduct): ShopCard {
+  const card = toCard(p);
+  // Listed explicitly so a field added to CardProduct later does not silently
+  // ride along into every /shop response.
+  return {
+    handle: card.handle,
+    title: card.title,
+    price: card.price,
+    compareAt: card.compareAt,
+    image: card.image,
+    brands: card.brands,
+    category: card.category,
+    inStock: card.inStock,
+    fits: card.fits,
+    years: card.years,
+    yearsByBrand: card.yearsByBrand,
+    models: card.models,
+  };
+}
+
 // Slim search index used by the live typeahead. Keep keys short to keep
 // the client JS payload small.
 export type SearchEntry = {
@@ -613,9 +654,8 @@ export function countByBrand(): Record<string, number> {
 // shipped to ShopBrowser as one frozen blob.
 
 export type ShopData = {
-  products: CardProduct[];
+  products: ShopCard[];
   categoryCounts: Record<Category, number>;
-  brandCounts: Record<string, number>;
   years: number[];
   brandList: { name: string; count: number }[];
   modelsByBrand: Record<string, { name: string; count: number }[]>;
@@ -627,9 +667,8 @@ let cachedShopData: ShopData | null = null;
 export function getShopData(): ShopData {
   if (cachedShopData) return cachedShopData;
 
-  const products = allProducts.map(toCard);
+  const products = allProducts.map(toShopCard);
   const categoryCounts = countByCategory();
-  const brandCounts = countByBrand();
   const years = getAllYears();
 
   // Brand chips count in-stock products only, mirroring the grid's default
@@ -663,7 +702,6 @@ export function getShopData(): ShopData {
   cachedShopData = {
     products,
     categoryCounts,
-    brandCounts,
     years,
     brandList,
     modelsByBrand,
