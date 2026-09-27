@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { shopifyImage } from "@/lib/shopifyImage";
 import { getLocale } from "@/lib/i18n/getLocale";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { SectionHeader } from "./SectionHeader";
@@ -56,10 +57,10 @@ export async function GraphicsKits() {
             >
               <div className="relative aspect-[4/3] overflow-hidden border-b border-border bg-white">
                 <Image
-                  src={k.image}
+                  src={shopifyImage(k.image)}
                   alt={k.title}
                   fill
-                  sizes="(max-width: 768px) 100vw, 25vw"
+                  sizes="(max-width: 1023px) 50vw, (max-width: 1280px) 25vw, 308px"
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>

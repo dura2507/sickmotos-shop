@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useVariantImage } from "./VariantImageContext";
+import { shopifyImage, SHOPIFY_IMAGE_WIDTH } from "@/lib/shopifyImage";
 
 export function Gallery({
   images,
@@ -34,13 +35,21 @@ export function Gallery({
   return (
     <div className="flex flex-col gap-3 md:flex-row-reverse md:items-start md:gap-4">
       <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-surface-2 to-bg">
+        {/*
+          The first photo is the LCP of the product page, so only it gets a
+          preload link; later photos are always in view and load eagerly
+          without polluting <head> with one preload per click. The column is
+          capped at md:max-w-[520px] minus the 80 px thumbnail strip, so the
+          main image never exceeds 424 px on desktop.
+        */}
         <Image
           key={active}
-          src={current.src}
+          src={shopifyImage(current.src, SHOPIFY_IMAGE_WIDTH.hero)}
           alt={current.alt}
           fill
-          priority
-          sizes="(max-width: 768px) 100vw, 60vw"
+          preload={active === 0}
+          loading="eager"
+          sizes="(max-width: 767px) 100vw, (max-width: 1279px) 40vw, 424px"
           className="object-contain p-3 md:p-5"
         />
       </div>
@@ -58,12 +67,18 @@ export function Gallery({
                 : "border-border hover:border-border-strong"
             }`}
           >
+            {/*
+              No loading="eager" here: React 19 emits a <link rel="preload">
+              for every eagerly loaded img during SSR, which put up to 20
+              thumbnail preloads in <head> ahead of the main photo (the LCP).
+              The strip sits inside the first viewport, so the browser fetches
+              the thumbnails right after layout anyway.
+            */}
             <Image
-              src={img.src}
+              src={shopifyImage(img.src, SHOPIFY_IMAGE_WIDTH.thumb)}
               alt=""
               fill
               sizes="80px"
-              loading="eager"
               className="object-contain p-1"
             />
           </button>

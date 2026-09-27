@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { shopifyImage } from "@/lib/shopifyImage";
 import Link from "next/link";
 import { countByCategory, CATEGORIES } from "@/lib/products";
 import { getLocale } from "@/lib/i18n/getLocale";
@@ -104,10 +105,10 @@ export async function Categories() {
                 className="reveal-soft group relative flex h-64 flex-col justify-end overflow-hidden rounded-2xl border border-white/10 transition-all duration-300 hover:-translate-y-1 hover:border-accent/60 md:h-72"
               >
                 <Image
-                  src={m.image}
+                  src={shopifyImage(m.image)}
                   alt={title}
                   fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, (max-width: 1280px) 33vw, 405px"
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 {/* overall dark tint so the whole image reads darker, then a

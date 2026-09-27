@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { shopifyImage } from "@/lib/shopifyImage";
 import { getLocale } from "@/lib/i18n/getLocale";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 
@@ -25,7 +26,7 @@ export async function SectionHeader({
       {backdropImage && (
         <>
           <Image
-            src={backdropImage}
+            src={shopifyImage(backdropImage)}
             alt=""
             fill
             sizes="100vw"

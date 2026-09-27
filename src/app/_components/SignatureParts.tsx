@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { shopifyImage } from "@/lib/shopifyImage";
 import { getLocale } from "@/lib/i18n/getLocale";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 
@@ -72,10 +73,10 @@ export async function SignatureParts() {
             >
               <div className="relative aspect-[16/9] w-full overflow-hidden border-b border-border sm:aspect-[4/3]">
                 <Image
-                  src={p.src}
+                  src={shopifyImage(p.src)}
                   alt={item.alt}
                   fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
+                  sizes="(max-width: 767px) 100vw, (max-width: 1280px) 33vw, 400px"
                   className={`${p.focal ?? "object-center"} object-cover transition-transform duration-500 group-hover:scale-[1.04]`}
                 />
               </div>

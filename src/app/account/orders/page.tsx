@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { shopifyImage, SHOPIFY_IMAGE_WIDTH } from "@/lib/shopifyImage";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCustomer, getCustomerToken } from "@/lib/customerStorefront";
@@ -79,7 +80,7 @@ export default async function OrdersPage() {
                   >
                     {li.variant?.image && (
                       <Image
-                        src={li.variant.image.url}
+                        src={shopifyImage(li.variant.image.url, SHOPIFY_IMAGE_WIDTH.thumb)}
                         alt={li.variant.image.altText ?? li.title}
                         fill
                         sizes="48px"

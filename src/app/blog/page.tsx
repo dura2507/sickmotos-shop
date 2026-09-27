@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { shopifyImage } from "@/lib/shopifyImage";
 import Link from "next/link";
 import { getAllPosts } from "@/lib/blog";
 import { getLocale } from "@/lib/i18n/getLocale";
@@ -41,10 +42,10 @@ export default async function BlogIndexPage() {
               {p.cover && (
                 <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-surface-2 to-bg">
                   <Image
-                    src={p.cover}
+                    src={shopifyImage(p.cover)}
                     alt={p.title}
                     fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
+                    sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, (max-width: 1152px) 33vw, 368px"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>

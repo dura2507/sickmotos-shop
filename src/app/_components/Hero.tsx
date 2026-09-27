@@ -16,7 +16,7 @@ export async function Hero() {
         src="/builds/hero-beta-cyan-sunset.jpg"
         alt=""
         fill
-        priority
+        preload
         sizes="100vw"
         className="-z-20 object-cover object-[50%_38%]"
       />
