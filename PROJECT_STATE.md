@@ -1517,6 +1517,14 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     toter Locale-Block raus, Pruefweg = Besucher-Vorschaulink (shopifypreview.com, ohne Login), nur die
     `<link rel="canonical"`-Zeile ersetzen. Der Block ist NIE gerendert worden, Thomas fuegt ihn nur
     auf einer Theme-KOPIE ein, ich verifiziere vor dem Veroeffentlichen.
+  - **LIVE verifiziert 27.09. 12:15 MESZ (Deployment dpl_3cxkHpTZamqEduKvf5TZeZJSEeB2 = Commit
+    11d94a4, per Vercel-API READY):** /api/search-index 200, 485 Eintraege, Cache-Control
+    public/s-maxage=86400 bleibt live erhalten, x-vercel-cache HIT; Produktseite h4 106 KB ohne
+    Index-Eintraege (vorher ~290 KB), Startseite 389 KB; /de/products/... 301 + sm_lang-Cookie;
+    /admin/chats/abc.txt GET und POST 307 auf /admin/login (Gate-Fix wirkt live); robots, sitemap,
+    Feed, Logo 200, geloeschte hero-trails.png 404; Meta-Descriptions live wie lokal (h4, Wolfcarbon);
+    JSON-LD Wolfcarbon behaelt "Designed for"; 53 von 59 CDN-URLs mit width, Optimizer 200 in 0,66 s;
+    /shop 2,06 MB, 480 Produktlinks, lang=de; OG: Produktkarte 200 image/png 157526B, Startkarte 200 image/png 1346328B.
   - **Nicht gemacht, bewusst:** Rueckgabe TEST-1 in /admin/returns (braucht Admin-Passwort, Leon
     ein Klick); versand.md-Preise (Rechtstext, Thomas liefert); srcset-Reduktion auf /shop (Entscheidung).
 
