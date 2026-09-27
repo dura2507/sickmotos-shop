@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE_NAME, isValidSession } from "@/lib/adminSession";
 
+// Next 16 proxy (formerly middleware.ts). Runs in the Node.js runtime before
+// a request reaches the app. Same responsibilities as before: rescue old
+// Shopify locale URLs, pass the current path to the root layout, gate /admin.
+
 const SUPPORTED_LANGS = ["de", "en", "it", "es"];
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Old Shopify storefront used locale-prefixed URLs (/de, /de/products/...,
@@ -55,5 +59,11 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon\\.ico).*)"],
+  // Skip Next internals, the favicon and every static asset (anything with a
+  // file extension: public/ files, fonts, and the robots/sitemap/feed routes,
+  // which need neither the locale rescue nor the admin gate). Product handles
+  // and blog slugs never contain a dot, so pages are unaffected.
+  matcher: [
+    "/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:png|jpe?g|gif|svg|webp|avif|ico|txt|xml|csv|json|woff2?|ttf|otf|css|js|map|webmanifest|mp4|webm|pdf)$).*)",
+  ],
 };

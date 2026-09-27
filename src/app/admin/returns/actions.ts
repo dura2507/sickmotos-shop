@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { SESSION_COOKIE_NAME, isValidSession } from "@/lib/adminSession";
 import { setReturnStatus } from "@/lib/returnsStore";
 
-// The middleware already gates /admin/*, this second check keeps the action
+// The proxy (src/proxy.ts) already gates /admin/*, this second check keeps the action
 // safe even if the matcher ever changes.
 async function assertAdmin() {
   const cookieStore = await cookies();
