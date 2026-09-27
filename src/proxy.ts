@@ -59,11 +59,15 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  // Skip Next internals, the favicon and every static asset (anything with a
-  // file extension: public/ files, fonts, and the robots/sitemap/feed routes,
-  // which need neither the locale rescue nor the admin gate). Product handles
-  // and blog slugs never contain a dot, so pages are unaffected.
+  // /admin is ALWAYS proxied (the session gate must not be bypassable via a
+  // dotted path such as /admin/chats/x.txt, whose server actions would
+  // otherwise run without a session check). Everything else skips the proxy
+  // for Next internals, the favicon and static assets (anything with a file
+  // extension: public/ files, fonts, and the robots/sitemap/feed routes, which
+  // need neither the locale rescue nor the admin gate). Product handles and
+  // blog slugs never contain a dot, so pages are unaffected.
   matcher: [
-    "/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:png|jpe?g|gif|svg|webp|avif|ico|txt|xml|csv|json|woff2?|ttf|otf|css|js|map|webmanifest|mp4|webm|pdf)$).*)",
+    "/admin/:path*",
+    "/((?!admin|_next/static|_next/image|favicon\\.ico|.*\\.(?:png|jpe?g|gif|svg|webp|avif|ico|txt|xml|csv|json|woff2?|ttf|otf|css|js|map|webmanifest|mp4|webm|pdf)$).*)",
   ],
 };
