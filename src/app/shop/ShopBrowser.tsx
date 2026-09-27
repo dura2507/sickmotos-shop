@@ -5,13 +5,10 @@ import { shopifyImage } from "@/lib/shopifyImage";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import {
-  CATEGORIES,
-  type BikeBrand,
-  type Category,
-  type ShopCard,
-  fmtEUR,
-} from "@/lib/products";
+// Value imports come from productShared, NOT from products.ts: that module
+// holds the whole catalog and would land in the browser bundle (3 MB chunk).
+import { CATEGORIES, type Category, fmtEUR } from "@/lib/productShared";
+import type { BikeBrand, ShopCard } from "@/lib/products";
 import { leadTimeFor } from "@/lib/leadTime";
 import { readBikes, subscribeBikes, type Bike } from "@/lib/myBikes";
 import { useDictionary } from "@/app/_components/LocaleProvider";
