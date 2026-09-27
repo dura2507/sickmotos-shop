@@ -254,8 +254,8 @@ Erwartete Ausgabe je URL (alles andere = nicht veroeffentlichen, Fehler an mich)
 | `/blogs/news` | Kopie | `https://sickmotos.com/blog` | `noindex, follow` | 28 | ja |
 | `/pages/impressum` | Kopie | `https://sickmotos.com/legal/impressum` | `noindex, follow` | 28 | ja |
 | `/policies/refund-policy` | Kopie | `https://sickmotos.com/legal/widerruf` | `noindex, follow` | 28 | ja |
-| `/cart` | Kopie | `https://checkout.sickmotos.com/cart` (Shopify) | (keins) | 28 | ja |
-| 404-Seite | Kopie | `https://checkout.sickmotos.com/404` (Shopify) | `noindex, follow` | 0 | ja |
+| `/cart` | Kopie | Shopify-eigenes Canonical auf `/cart` (Host je nach Vorschau-Art: Vorschau-Host oder checkout.sickmotos.com; entscheidend: NICHT sickmotos.com) | (keins) | 28 | ja |
+| 404-Seite | Kopie | Shopify-eigenes Canonical auf `/404` (Host wie bei `/cart`) | `noindex, follow` | 0 | ja |
 
 Dazu in jeder Ausgabe: genau EIN Canonical (keine Meldung „ACHTUNG: mehrere Canonicals"), Status
 200 (404-Seite: 404). Wenn „Shopify-Theme" weiter „Geen Experiment ... role main" zeigt, ist die
