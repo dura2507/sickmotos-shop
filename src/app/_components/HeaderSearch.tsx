@@ -1,21 +1,58 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { readBike, subscribeBike, writeBike, type SavedBike } from "@/lib/bikeStore";
 import type { SearchEntry } from "@/lib/products";
+import { getCachedSearchIndex, loadSearchIndex } from "@/lib/searchIndexLoader";
 import { SearchSuggest } from "./SearchSuggest";
 import { useDictionary } from "./LocaleProvider";
 
-export function HeaderSearch({ index }: { index: SearchEntry[] }) {
+export function HeaderSearch() {
   const dict = useDictionary();
   const [bike, setBike] = useState<SavedBike>({ brand: null, model: null, year: null });
   const [mounted, setMounted] = useState(false);
+  // Der Suchindex (~180 KB) kommt nicht mehr im Seiten-Payload mit, sondern
+  // wird beim ersten Hover/Fokus/Tastendruck auf die Suche von
+  // /api/search-index geholt. Der Loader haelt ihn modulweit, ein Remount
+  // (z.B. Sprachwechsel laedt die Seite neu) startet also nicht bei null.
+  const [index, setIndex] = useState<SearchEntry[]>(() => getCachedSearchIndex() ?? []);
+  const [indexLoading, setIndexLoading] = useState(false);
+  const requested = useRef(false);
+  const alive = useRef(true);
 
   useEffect(() => {
     setMounted(true);
     setBike(readBike());
-    return subscribeBike(setBike);
+    alive.current = true;
+    const unsubscribe = subscribeBike(setBike);
+    return () => {
+      alive.current = false;
+      unsubscribe();
+    };
+  }, []);
+
+  const ensureIndex = useCallback(() => {
+    if (requested.current) return;
+    requested.current = true;
+    const cached = getCachedSearchIndex();
+    if (cached) {
+      setIndex(cached);
+      return;
+    }
+    setIndexLoading(true);
+    loadSearchIndex()
+      .then((entries) => {
+        if (alive.current) setIndex(entries);
+      })
+      .catch(() => {
+        // Naechster Trigger versucht es erneut, der Loader hat sein Promise
+        // bereits verworfen.
+        requested.current = false;
+      })
+      .finally(() => {
+        if (alive.current) setIndexLoading(false);
+      });
   }, []);
 
   const hasBike = !!(bike.brand || bike.model);
@@ -56,6 +93,8 @@ export function HeaderSearch({ index }: { index: SearchEntry[] }) {
       )}
       <SearchSuggest
         index={index}
+        indexLoading={indexLoading}
+        onIntent={ensureIndex}
         variant="header"
         placeholder={placeholder}
         filterBrand={bike.brand ?? undefined}
