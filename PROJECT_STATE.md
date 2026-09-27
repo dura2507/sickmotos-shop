@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-09-22.
+> Stand: 2026-09-27.
 
 ---
 
@@ -1457,7 +1457,91 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     Verarbeitungsfehler" an den geprueften URLs (Google-seitig, Sitemap selbst war am 17.08. mit
     496 Seiten erfolgreich); beobachten.
 
+- **"Mach alles fertig"-Runde 27.09. (Leon: kein Ueberblick mehr): Konten-Check + restliche Code-Punkte
+  der Komplettanalyse umgesetzt (7 parallele Umsetzungs-Agenten in eigenen Worktrees, je ein
+  adversarial Review, 3 Review-Funde von Hand behoben, alles auf main gemerged):**
+  - **Konten (in Leons Chrome gelesen, 27.09.):** Merchant 28 Tage 9.777 Klicks, 1085 Produkte /
+    1083 freigegeben / 2 begrenzt / 0 abgelehnt / 0 in Pruefung, Website-Feld sickmotos.com verifiziert
+    + beansprucht, Checkout-Template intakt, Kundenservice-Kontakt zeigt jetzt sickmotos.com. Search
+    Console Domain-Property: 578 indexiert, Sitemap "Erfolgreich" (500 Seiten, zuletzt 24.09.), der
+    "Voruebergehende Verarbeitungsfehler" vom 22.09. ist weg. Ads 30 Tage (28.08. bis 26.09.): 2.992
+    Klicks, 844 EUR Kosten, Seitenaufrufe 115, Warenkorb 0, Bezahlvorgang 67, Kaeufe 15 / 3.041 EUR
+    (Checkout-Start zu Kauf weiter ~22 %, Warenkorb-Event weiter 0 = GTM-Luecke). Gmail 7 Tage: keine
+    Google-Mails; Vercel-Mail "2 domains need configuration" betrifft Projekt see-me (wiundme.at),
+    nicht SickMotos (alle 9 SickMotos-Domains per API: verified, misconfigured=false). Telegram-Bot:
+    keine neuen Nachrichten. Shopify (Storefront-API): kein Produkt mit Tag Highlight, keine Sitzbank,
+    Demo-T-Shirt (99999 EUR) weiter veroeffentlicht. Vercel-Deployments per API: Shopify-Hook loest
+    weiter 8 bis 24 Production-Deploys pro Tag aus (21.09. 20, 22.09. 20, 23.09. 24, 24.09. 11,
+    25.09. 10, 26.09. 8); der 15-s-Lock buendelt nur Bursts, Thomas' Block-Schreib-App bleibt die
+    Ursache.
+  - **Chrome-Falle:** Google- und Shopify-Tabs, die seit dem 22.09. offen waren, erreichten nie mehr
+    document_idle (jeder Screenshot lief in den Timeout). Loesung: alte Tabs schliessen, frische
+    oeffnen. Merchant-Tabs haengen auch frisch gelegentlich, dann Tab neu laden.
+  - **Code (alles lokal im Produktionsbuild `next start` verifiziert, Live-Verify siehe unten):**
+    (1) **Suchindex lazy:** `/api/search-index` (force-static, revalidate 1 Tag, Cache-Control
+    public/s-maxage) statt Prop auf jeder Seite; `src/lib/searchIndexLoader.ts` teilt ein Fetch-
+    Promise, HeaderSearch laedt bei Hover/Fokus/Taste. Gemessen: Startseite 582 auf 403 KB, Produktseite
+    293 auf 114 KB (minus 179 KB je Seite), Endpunkt 165 KB / 485 Eintraege, 1 Fetch pro Sitzung, 0 auf
+    Mobile (Suche dort ausgeblendet). (2) **middleware.ts -> proxy.ts** (Next-16-Konvention, Export
+    `proxy`), Matcher: `/admin/:path*` IMMER durch den Proxy plus Rest ohne Next-Interna und Dateien
+    mit Endung. Review-Fund behoben: die erste Fassung nahm Dateiendungen auch unter /admin aus, damit
+    waere `/admin/chats/x.txt` (dynamisches Segment) samt Server-Actions ohne Session-Check erreichbar
+    gewesen; jetzt 307 auf /admin/login (GET und POST geprueft). Locale-Redirect (301 + sm_lang),
+    robots/sitemap/feed/PNG 200, Admin-Login ohne Storefront-Chrome: alles geprueft. (3) **/shop
+    Payload:** eigener Kartentyp `ShopCard` (nur Kartenfelder); Ersparnis nur 34 KB (1,6 %), weil die
+    Props schon schlank waren. Der echte Brocken sind die srcsets der 477 Karten (~1 MB, 10 Kandidaten
+    je Bild) = Entscheidung ueber deviceSizes/eigenen Loader, offen. (4) **Bilder:** neue
+    `src/lib/shopifyImage.ts` haengt `width=` an Shopify-CDN-URLs (Karten 1600, Galerie-Hauptbild
+    2000, Thumbs kleiner), alle `<Image>` mit passendem `sizes`; gemessen: Produktseite 53 von 59
+    CDN-URLs mit width, /shop 5225 von 5708, groesstes Katalogfoto 6000 px / 1,5 MB wird zu 2000 px /
+    154 KB. (5) **Lambda-Bundle:** OG-Assets (Bebas-Font, Logo, Schriftzug, Fallback-Foto) nach
+    `src/assets/og` mit Literalpfaden (der alte Helfer mit Pfadparameter liess Next das GANZE Projekt
+    inkl. public/ 14 MB, PROJECT_STATE.md, package-lock in jede Funktion tracen), `outputFileTracingExcludes`
+    public/** in next.config, tote A/B-Routen /api/og/v1..v4 + ogAssets.ts entfernt, 7,9 MB
+    unreferenzierte public-Dateien geloescht (sickmotos-rider.png, hero-trails.png, 5 builds-Fotos,
+    BebasNeue.woff2, create-next-app-SVGs; live jetzt 404, 0 Referenzen im Repo), `productShared.ts`
+    damit ShopBrowser (use client) nicht mehr den 3-MB-Katalog-Chunk zieht. Gemessen: 0 public-Eintraege
+    in allen nft.json (vorher 1216), Seitenfunktion 42,5 auf 24,7 MB lokal, .next/server 41 auf 35 MB,
+    Startseiten-OG-Karte byteidentisch, Produkt-OG 200/PNG 1200x630. (6) **Meta-Description** aus echten
+    Daten: `src/lib/productDescription.ts` baut "{Titel}, {Typ} von {Vendor}. {erste sinnvolle Saetze
+    des Shopify-Texts} {Preis}, auf Lager" (Labels, All-Caps-Slogans, Kontaktzeilen, halbe Saetze
+    uebersprungen; kein erfundenes Wort). Gemessen ueber 486 Produkte: min 57, Median 148, max 155, 4
+    unter 70 (die 4 textlosen Produkte, Thomas), 0 ueber 155, 0 Dashes, 0 HTML. Review-Funde behoben:
+    Saetze jetzt strikt in Reihenfolge (kein Vorgriff auf spaetere kurze Saetze wie CTAs), JSON-LD
+    behaelt den vollen Highlight-Text (der neue Helfer haette 134 Wolfcarbon-Produkten den
+    "Designed for"-Block genommen). (7) **Theme-Anleitung fuer checkout.sickmotos.com:**
+    `docs/shopify-theme-canonical-snippet.md` (Liquid-Block: Cross-Domain-Canonical auf sickmotos.com
+    mit Pfad-Mapping ueber page_type/Handles, noindex,follow ausser Cart/Kundenkonto, Anleitung
+    Theme-Duplikat -> Besucher-Vorschaulink -> Skript -> Publish, Rollback, Liste UNGETESTET) plus
+    `scripts/check-shopify-canonical.mjs` (Canonical/Robots/hreflang je URL). Review-Funde behoben:
+    toter Locale-Block raus, Pruefweg = Besucher-Vorschaulink (shopifypreview.com, ohne Login), nur die
+    `<link rel="canonical"`-Zeile ersetzen. Der Block ist NIE gerendert worden, Thomas fuegt ihn nur
+    auf einer Theme-KOPIE ein, ich verifiziere vor dem Veroeffentlichen.
+  - **Nicht gemacht, bewusst:** Rueckgabe TEST-1 in /admin/returns (braucht Admin-Passwort, Leon
+    ein Klick); versand.md-Preise (Rechtstext, Thomas liefert); srcset-Reduktion auf /shop (Entscheidung).
+
 ### Offen / TODO
+- **KONSOLIDIERTE LISTE (Stand 27.09., ersetzt den Ueberblick, aeltere Punkte darunter bleiben als Kontext):**
+  - **Thomas (Daten/Entscheidungen):** (a) Fotos fuer die 2 Angel-Eye-V6.1-COB-Lampen ohne Bild
+    (kritischer SC-Punkt); (b) Editions-Namen im Titel fuer die 63 identischen Styles-Kits (Tenere 700,
+    BMW GS 1300, Multistrada: Google waehlt sonst das Original als Canonical); (c) Text fuer die 4
+    Produkte ohne Beschreibung (adapter-kabel, montagehilfe-neue-modelle, h4-adapter-montagehilfe,
+    1-year-extended-warranty); (d) Versandseite: 6,99/13,99/22,99 vs Checkout 7,19/14,99/29,99, Irland
+    und Rumaenien ohne Versandzone; (e) Sitzbank anlegen + Tag Highlight; (f) Demo-T-Shirt 99999 EUR
+    auf Entwurf; (g) Block-Schreib-App finden (8 bis 24 Deploys/Tag); (h) Theme-Kopie + Liquid-Block
+    aus docs/shopify-theme-canonical-snippet.md einfuegen, Vorschaulink an Leon; (i) Entscheidung
+    Kundenkonto-Domain account.sick-motos.com -> account.sickmotos.com (kosmetisch); (j) Felgen-
+    Lieferzeit 6+ Wochen vs 7-14; (k) Princip-Referenz fuer Ton-Rewrite; (l) Plausible-Domain-Label;
+    (m) Shopify-Retourenadresse Zadar statt Poettmes pruefen.
+  - **Operator (Ads/GTM, englisch):** Anruf-Asset abgelehnt (alle 3 PMax-Kampagnen, Politik
+    "Physischer Standort nicht verfuegbar") entfernen; GTM add_to_cart-Tag fehlt (Warenkorb-Conversions
+    seit Monaten 0); Conversion-Linker URL-Passthrough; GA4-Cross-Domain-Regeln auf tote Hosts;
+    zwei identische G-Config-Tags; Kontakt-Zielvorhaben ohne primaere Aktion; PMax Germany "durch
+    Budget eingeschraenkt".
+  - **Leon:** TEST-1 in /admin/returns auf erledigt; Entscheidung srcset/deviceSizes fuer /shop;
+    Entscheidung stuendliche Merchant-Feld-Wache (weiter nicht gebaut).
+  - **Ich, naechste Runde:** Live-Verify nach Deploy (unten), Theme-Skript-Lauf sobald Thomas den
+    Vorschaulink schickt, Kundenkonto-Domain-Umzug falls Thomas will.
 - **Notiz Operator-Erwartung (22.09., WhatsApp Thomas mit Operator "kimmy", von Leon geparkt):**
   Operator: "need 3-4 months to working on new domain", "if not working, just let it go, may need
   1-2 years", "He keeps regretting the old domain. Google places huge weight on historical account
