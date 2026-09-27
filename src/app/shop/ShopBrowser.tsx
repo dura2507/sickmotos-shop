@@ -7,8 +7,8 @@ import { useEffect, useMemo, useState } from "react";
 import {
   CATEGORIES,
   type BikeBrand,
-  type CardProduct,
   type Category,
+  type ShopCard,
   fmtEUR,
 } from "@/lib/products";
 import { leadTimeFor } from "@/lib/leadTime";
@@ -20,9 +20,8 @@ import { BikeFinder } from "./BikeFinder";
 type SortKey = "popular" | "price-asc" | "price-desc" | "discount" | "newest";
 
 type Props = {
-  products: CardProduct[];
+  products: ShopCard[];
   categoryCounts: Record<string, number>;
-  brandCounts: Record<string, number>;
   years: number[];
   brandList: { name: string; count: number }[];
   modelsByBrand: Record<string, { name: string; count: number }[]>;

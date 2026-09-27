@@ -27,7 +27,6 @@ export default function ShopPage() {
       <ShopBrowser
         products={data.products}
         categoryCounts={data.categoryCounts}
-        brandCounts={data.brandCounts}
         years={data.years}
         brandList={data.brandList}
         modelsByBrand={data.modelsByBrand}
