@@ -176,15 +176,17 @@ export function cutAtWord(s: string, max: number): string {
   return clean ? `${clean}...` : "";
 }
 
-// Fill `budget` characters with whole sentences in source order. A sentence
-// that does not fit is skipped in favour of later shorter ones; only when no
-// sentence fits at all is the first one cut at a word boundary.
+// Fill `budget` characters with whole sentences in source order. The text
+// stops at the first sentence that does not fit (no skipping ahead to later,
+// shorter sentences, which quoted a CTA or an unrelated line out of context);
+// when not even the first sentence fits, it is cut at a word boundary.
 function fillSentences(lines: string[], budget: number): string {
   const sentences = lines.map(asSentence);
   let out = "";
   for (const sentence of sentences) {
     const needed = sentence.length + (out ? 1 : 0);
-    if (out.length + needed <= budget) out += (out ? " " : "") + sentence;
+    if (out.length + needed > budget) break;
+    out += (out ? " " : "") + sentence;
   }
   if (!out && sentences.length > 0) return cutAtWord(sentences[0], budget);
   return out;

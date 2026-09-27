@@ -154,7 +154,11 @@ export default async function ProductPage({
     // an empty string made Search Console flag "Feld description fehlt" on
     // merchant listings (2026-09-10), they fall back to title, type and
     // vendor inside the helper, all real data.
-    description: buildStructuredDescription(shopify),
+    // Keep the full highlight text (fitment blocks like "Designed for: ..."
+    // matter for merchant listings); the structured fallback only steps in
+    // for the products without any Shopify text.
+    description:
+      product.highlights.join(" ").slice(0, 500) || buildStructuredDescription(shopify),
     // An empty image array is a critical merchant-listing error in Search
     // Console; leaving the field out is the lesser evil until Thomas adds
     // photos (2 products, 2026-09-07).
