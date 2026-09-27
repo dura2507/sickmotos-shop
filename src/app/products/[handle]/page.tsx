@@ -13,9 +13,12 @@ import {
   getPrice,
   getProductByHandle,
   getProductHandles,
-  htmlToBlocks,
   toDetailViewModel,
 } from "@/lib/products";
+import {
+  buildMetaDescription,
+  buildStructuredDescription,
+} from "@/lib/productDescription";
 import { getLocale } from "@/lib/i18n/getLocale";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 
@@ -35,8 +38,10 @@ export async function generateMetadata({
   if (!p) return { title: "Product not found | SickMotos" };
   const { price } = getPrice(p);
   const title = `${cleanTitle(p.title)} | SickMotos`;
-  const desc = htmlToBlocks(p.body_html)[0]?.slice(0, 160) ??
-    `Performance part for ${p.vendor || "SickMotos"}.`;
+  // Title, type, vendor, the meaningful Shopify lines and the price, all real
+  // data (see src/lib/productDescription.ts). The old first-line-of-Shopify
+  // text was under 50 characters on 331 of 483 products.
+  const desc = buildMetaDescription(p);
   return {
     title,
     description: desc,
@@ -143,13 +148,13 @@ export default async function ProductPage({
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.title,
-    // 4 products have no Shopify description at all (adapter-kabel,
+    // Meaningful Shopify text with entities decoded and labels or slogans
+    // skipped. 4 products have no Shopify description at all (adapter-kabel,
     // montagehilfe-neue-modelle, h4-adapter-montagehilfe, extended warranty);
     // an empty string made Search Console flag "Feld description fehlt" on
-    // merchant listings (2026-09-10). Fall back to title + vendor, both real data.
-    description:
-      product.highlights.join(" ").slice(0, 500) ||
-      `${cleanTitle(shopify.title)} von ${shopify.vendor || "SickMotos"}`,
+    // merchant listings (2026-09-10), they fall back to title, type and
+    // vendor inside the helper, all real data.
+    description: buildStructuredDescription(shopify),
     // An empty image array is a critical merchant-listing error in Search
     // Console; leaving the field out is the lesser evil until Thomas adds
     // photos (2 products, 2026-09-07).
