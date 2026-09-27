@@ -3,7 +3,7 @@
 // One shared password (ADMIN_PASSWORD env var), one owner + Leon. We sign an
 // expiry timestamp with the password so a stolen cookie can't be reissued
 // without knowing the password. Web Crypto keeps it Edge-runtime-safe so the
-// same function works in a route handler AND in middleware.
+// same function works in a route handler AND in the proxy (src/proxy.ts).
 
 export const SESSION_COOKIE_NAME = "sm_admin";
 const SESSION_DURATION_SEC = 60 * 60 * 24 * 30; // 30 days
