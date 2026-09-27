@@ -48,12 +48,13 @@ ergaenzt zwei Dinge, die Hydrogen nicht braucht, wir aber schon: das Locale-Prae
 ### 1a. Was Thomas im Code-Editor tut
 
 1. Im Code-Editor links die **Suche ueber alle Dateien** (Lupe in der Seitenleiste) oeffnen und nach
-   `canonical_url` suchen. Erwartet: genau ein Treffer in `layout/theme.liquid`, die Zeile
-   `<link rel="canonical" href="{{ canonical_url }}">`. Falls der Treffer stattdessen in einem
-   Snippet liegt (Ella-typische Kandidaten: `snippets/head*.liquid`, `snippets/meta-tags.liquid`,
-   `sections/header*.liquid`), wird die Zeile DORT ersetzt, nicht in theme.liquid. Gibt es zwei
-   Treffer, beide melden, nicht raten (welche Datei gerendert wird, zeigt danach das Pruefskript:
-   es darf genau EIN Canonical im HTML stehen).
+   `canonical_url` suchen. Ersetzt wird NUR die Zeile, die mit `<link rel="canonical"` beginnt
+   (normalerweise in `layout/theme.liquid`). Ein weiterer Treffer in einer `og:url`- oder
+   Social-Meta-Zeile (z.B. `<meta property="og:url" content="{{ canonical_url }}">`) ist normal
+   und bleibt unveraendert. Liegt die `<link rel="canonical"`-Zeile in einem Snippet statt in
+   theme.liquid (Ella-typische Kandidaten: `snippets/head*.liquid`, `snippets/meta-tags.liquid`,
+   `sections/header*.liquid`), wird sie DORT ersetzt. Gibt es ZWEI `<link rel="canonical"`-Zeilen,
+   beide melden, nicht raten (das Pruefskript zeigt danach, ob genau EIN Canonical im HTML steht).
 2. Diese eine Zeile komplett durch den Block aus 1b ersetzen. Sonst nichts anfassen:
    **das JS-Redirect-Snippet direkt nach `<head>` bleibt unveraendert**, `{{ content_for_header }}`
    bleibt unveraendert, GTM bleibt unveraendert.
@@ -74,22 +75,7 @@ ergaenzt zwei Dinge, die Hydrogen nicht braucht, wir aber schon: das Locale-Prae
 {%- endcomment -%}
 {%- liquid
   assign sm_host = 'https://sickmotos.com'
-  assign sm_path = request.path
-
-  unless request.locale.primary
-    assign sm_root = request.locale.root_url
-    if sm_root != blank and sm_root != '/'
-      assign sm_root_slash = sm_root | append: '/'
-      assign sm_head = sm_path | slice: 0, sm_root_slash.size
-      if sm_path == sm_root
-        assign sm_path = '/'
-      elsif sm_head == sm_root_slash
-        assign sm_path = sm_path | remove_first: sm_root
-      endif
-    endif
-  endunless
-
-  assign sm_last = sm_path | split: '/' | last
+  assign sm_last = request.path | split: '/' | last
   assign sm_target = ''
 
   case request.page_type
@@ -156,16 +142,11 @@ ergaenzt zwei Dinge, die Hydrogen nicht braucht, wir aber schon: das Locale-Prae
 
 ### 1c. Was der Block tut, Zeile fuer Zeile
 
-- `request.path` ist der Pfad der aktuellen Seite. Ob er auf lokalisierten URLs das
-  Locale-Praefix (`/de/products/...`) enthaelt, sagt die offizielle Doku nicht (Quelle 7d);
-  Shopifys eigenes `canonical_url` enthaelt es (gemessen: `/de/products/...` bleibt im
-  Live-Canonical), und das hydrogen-redirect-theme setzt `request.path` unveraendert ins
-  Canonical. Deshalb wird das Praefix nur dann entfernt, wenn der Pfad wirklich mit
-  `request.locale.root_url` plus `/` beginnt oder exakt gleich ist (`/de` wird zu `/`). Damit
-  funktioniert der Block in beiden Faellen, und ein Handle wie `/products/dekor-...` kann nie
-  beschaedigt werden. Fuer Produkte, Artikel und Seiten haengt das Canonical ohnehin nicht am
-  Pfad, sondern an `product.handle`, `article.handle` und `page.handle`; nur Policies nutzen den
-  bereinigten Pfad.
+- Locale-Praefixe (`/de/...`, `/en-at/...`) spielen im Block keine Rolle: kein einziges Canonical
+  haengt am Pfad. Produkte, Artikel und Seiten nehmen `product.handle`, `article.handle` und
+  `page.handle`, Kollektionen, Suche und Blog sind feste Ziele, nur Policies nutzen das letzte
+  Pfadsegment (`request.path | split: '/' | last`), und das ist mit und ohne Praefix dasselbe.
+  Deshalb kann ein Handle wie `/products/dekor-...` nie beschaedigt werden.
 - `request.page_type` liefert laut Shopify-Doku (Quelle 7b) unter anderem `index`, `product`,
   `collection`, `list-collections`, `blog`, `article`, `page`, `policy`, `search`, `cart`, `404`,
   `customers/login` usw. Das Mapping entspricht 1:1 den Weiterleitungen in `next.config.ts` der
@@ -235,26 +216,32 @@ Veroeffentlichen).
 
 ### Wie Leon/ich mit curl bzw. dem Skript verifiziere (vor dem Veroeffentlichen)
 
-Gemessen am 27.09.2026: `?preview_theme_id=<ID>` antwortet auf checkout.sickmotos.com mit `302`
-auf denselben Pfad ohne Parameter und setzt das Cookie `_shopify_essential`; erst mit diesem Cookie
-liefert der Folge-Request das Vorschau-Theme. Ein nacktes `curl -L` verliert das Cookie und zeigt
-immer das Live-Theme. Das Skript traegt die Cookies ueber die Redirect-Kette (mit der Live-ID
-178472648970 getestet: 1 Weiterleitung, danach `role main`).
+Grundlage ist der **Teilen-Link aus der Vorschauleiste** (Schritt 3 oben). Laut Shopify-Hilfe
+(„Adding, previewing, and buying themes", gelesen 27.09.2026) gibt es zwei Vorschau-Arten:
+Besucher-Vorschaulinks haben die Form `https://<token>-<shop_id>.shopifypreview.com`, gelten 2 Tage
+und brauchen KEINEN Login; Haendler-Vorschaulinks laufen ueber die Primaerdomain mit Token-Parameter
+und verlangen eine Admin-Anmeldung („Merchant previews require admin authentication"). Fuer curl
+und das Skript ist deshalb der Besucher-Link der Regelfall. Der Parameter `?preview_theme_id=<ID>`
+auf checkout.sickmotos.com (302 plus Cookie `_shopify_essential`, mit der Live-ID 178472648970
+gemessen) ist nur ein Fallback fuer den eingeloggten Browser, nicht fuer das Skript.
+
+Den Besucher-Link von Thomas nehmen, den Host daraus als `<PREVIEW>` einsetzen (alles vor dem
+ersten `/` nach `https://`), Pfade anhaengen:
 
 ```
 node scripts/check-shopify-canonical.mjs \
-  "https://checkout.sickmotos.com/?preview_theme_id=<ID>" \
-  "https://checkout.sickmotos.com/de?preview_theme_id=<ID>" \
-  "https://checkout.sickmotos.com/products/h4-adapter-montagehilfe?preview_theme_id=<ID>" \
-  "https://checkout.sickmotos.com/de/products/h4-adapter-montagehilfe?preview_theme_id=<ID>" \
-  "https://checkout.sickmotos.com/en-at/products/h4-adapter-montagehilfe?preview_theme_id=<ID>" \
-  "https://checkout.sickmotos.com/collections/all?preview_theme_id=<ID>" \
-  "https://checkout.sickmotos.com/blogs/news?preview_theme_id=<ID>" \
-  "https://checkout.sickmotos.com/pages/impressum?preview_theme_id=<ID>" \
-  "https://checkout.sickmotos.com/policies/refund-policy?preview_theme_id=<ID>" \
-  "https://checkout.sickmotos.com/search?preview_theme_id=<ID>" \
-  "https://checkout.sickmotos.com/cart?preview_theme_id=<ID>" \
-  "https://checkout.sickmotos.com/pages/gibt-es-nicht?preview_theme_id=<ID>"
+  "<PREVIEW>/" \
+  "<PREVIEW>/de" \
+  "<PREVIEW>/products/h4-adapter-montagehilfe" \
+  "<PREVIEW>/de/products/h4-adapter-montagehilfe" \
+  "<PREVIEW>/en-at/products/h4-adapter-montagehilfe" \
+  "<PREVIEW>/collections/all" \
+  "<PREVIEW>/blogs/news" \
+  "<PREVIEW>/pages/impressum" \
+  "<PREVIEW>/policies/refund-policy" \
+  "<PREVIEW>/search" \
+  "<PREVIEW>/cart" \
+  "<PREVIEW>/pages/gibt-es-nicht"
 ```
 
 Erwartete Ausgabe je URL (alles andere = nicht veroeffentlichen, Fehler an mich):
@@ -281,8 +268,9 @@ Cart-Permalink `https://checkout.sickmotos.com/cart/<variantId>:1` landet weiter
 ### Veroeffentlichen
 
 Erst wenn alle Zeilen der Tabelle stimmen: Themes > Kopie > drei Punkte > **Publish** (oder
-**Edit theme** > oben **Publish** > im Fenster **Publish**). Danach dieselbe Skriptliste OHNE
-`?preview_theme_id` laufen lassen (Live-URLs), gleiche Erwartung, „Shopify-Theme ... role main".
+**Edit theme** > oben **Publish** > im Fenster **Publish**). Danach dieselbe Skriptliste mit
+`https://checkout.sickmotos.com` statt `<PREVIEW>` laufen lassen (Live-URLs), gleiche Erwartung,
+„Shopify-Theme ... role main".
 Dann ein echter Testlauf: Produkt auf sickmotos.com in den Warenkorb, zur Kasse, Checkout muss auf
 checkout.sickmotos.com rendern (alle Zahlarten sichtbar), Kauf abbrechen.
 
@@ -312,18 +300,20 @@ ist der Test, nicht dieses Dokument.
    Shopify-Doku (`{% liquid %}`, `case/when ... or ...`, `slice`, `remove_first`, `contains`),
    aber nicht ausgefuehrt. Ein Tippfehler wuerde in der Vorschau als Liquid-Fehlermeldung im
    `<head>` sichtbar (dann zeigt das Skript kein oder ein kaputtes Canonical).
-2. **Ob `request.path` das Locale-Praefix enthaelt**, ist aus der offiziellen Doku nicht belegt
-   (nur Community-Thread, Quelle 7d). Der Block ist so gebaut, dass beide Faelle funktionieren;
-   Beweis liefert die Zeile `/de/products/...` in der Tabelle.
+2. **Lokalisierte URLs** (`/de/...`, `/en-at/...`): der Block benutzt den Pfad nur fuer das
+   letzte Segment bei Policies, ein Praefix kann das Ergebnis also nicht veraendern. Die Zeilen
+   `/de/products/...` und `/en-at/products/...` in der Tabelle pruefen trotzdem, dass jede
+   Sprachvariante dasselbe Canonical ohne Praefix liefert.
 3. **Ob Shopify das Attribut `canonical-shop-url` auch an unser Canonical haengt oder den href
    umschreibt.** Live traegt das heutige Canonical das Attribut, obwohl das Theme vermutlich nur
    `{{ canonical_url }}` ausgibt. Das Skript zeigt den echten href.
 4. **Wo genau die Canonical-Zeile im Ella-Theme steht** (theme.liquid direkt oder ein Snippet).
    Aus dem Live-HTML (Zeile 31, vor `<title>`, vor `content_for_header`) ist theme.liquid am
    wahrscheinlichsten. Die Suche im Code-Editor klaert es in 10 Sekunden.
-5. **Ob `?preview_theme_id=` fuer ein UNVEROEFFENTLICHTES Theme ohne Login funktioniert.** Mit der
-   Live-ID funktioniert der Mechanismus (302 + Cookie). Falls Shopify fuer Entwuerfe zusaetzlich
-   ein signiertes Token verlangt, den Teilen-Link aus der Vorschauleiste nehmen (2 Tage gueltig).
+5. **Der Besucher-Vorschaulink selbst** (`https://<token>-<shop_id>.shopifypreview.com`) wurde
+   noch mit keinem Link dieses Shops ausprobiert; Form und 2-Tage-Frist stammen aus der
+   Shopify-Hilfe. `?preview_theme_id=` auf checkout.sickmotos.com funktioniert fuer die Kopie
+   nur im eingeloggten Browser (Haendler-Vorschau), nicht fuer curl.
 6. **Die Knopfnamen der Shopify-Oberflaeche** stammen aus der englischen Hilfe, nicht aus einem
    eigenen Klick-Durchlauf in Thomas' Admin.
 7. **Wie schnell Google reagiert.** Prognose, keine Messung: noindex wird beim naechsten Crawl

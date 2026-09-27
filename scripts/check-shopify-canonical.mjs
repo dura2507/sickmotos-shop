@@ -8,7 +8,7 @@
 //
 // Beispiele:
 //   node scripts/check-shopify-canonical.mjs https://checkout.sickmotos.com/products/h4-adapter-montagehilfe
-//   node scripts/check-shopify-canonical.mjs "https://checkout.sickmotos.com/de/products/h4-adapter-montagehilfe?preview_theme_id=123456789"
+//   node scripts/check-shopify-canonical.mjs "https://<token>-<shopid>.shopifypreview.com/de/products/h4-adapter-montagehilfe"
 //
 // Shopify-Vorschau: ?preview_theme_id=... antwortet mit 302 auf denselben Pfad
 // ohne Parameter und setzt Cookies (gemessen 27.09.2026 auf checkout.sickmotos.com,
