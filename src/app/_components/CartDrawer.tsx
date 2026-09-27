@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { shopifyImage, SHOPIFY_IMAGE_WIDTH } from "@/lib/shopifyImage";
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { trackBeginCheckout } from "@/lib/analytics";
@@ -246,7 +247,7 @@ export function CartDrawer({ open, onClose }: Props) {
                       <div className="relative size-12 shrink-0 overflow-hidden rounded-md border border-border bg-surface">
                         {cs.image && (
                           <Image
-                            src={cs.image}
+                            src={shopifyImage(cs.image, SHOPIFY_IMAGE_WIDTH.thumb)}
                             alt={cs.title}
                             fill
                             sizes="48px"
@@ -287,7 +288,7 @@ export function CartDrawer({ open, onClose }: Props) {
                     <div className="relative size-20 shrink-0 overflow-hidden rounded-md border border-border bg-surface">
                       {img && (
                         <Image
-                          src={img.url}
+                          src={shopifyImage(img.url, SHOPIFY_IMAGE_WIDTH.thumb)}
                           alt={img.altText ?? line.merchandise.product.title}
                           fill
                           sizes="80px"

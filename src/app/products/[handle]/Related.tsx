@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { shopifyImage } from "@/lib/shopifyImage";
 import Link from "next/link";
 import type { CardProduct } from "@/lib/products";
 import { fmtEUR } from "@/lib/products";
@@ -40,10 +41,10 @@ export async function Related({ items }: { items: CardProduct[] }) {
               <div className="relative aspect-square overflow-hidden border-b border-border bg-gradient-to-br from-surface-2 to-bg">
                 {p.image && (
                   <Image
-                    src={p.image}
+                    src={shopifyImage(p.image)}
                     alt={p.title}
                     fill
-                    sizes="(max-width: 768px) 100vw, 25vw"
+                    sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, (max-width: 1280px) 25vw, 308px"
                     className="object-contain p-2 transition-transform duration-500 group-hover:scale-105"
                   />
                 )}

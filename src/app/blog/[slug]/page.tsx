@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { shopifyImage } from "@/lib/shopifyImage";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -71,12 +72,12 @@ export default async function BlogPostPage({
       {post.cover && (
         <div className="relative mb-10 aspect-[16/9] overflow-hidden rounded-2xl border border-border bg-surface">
           <Image
-            src={post.cover}
+            src={shopifyImage(post.cover)}
             alt={post.title}
             fill
             sizes="(max-width: 768px) 100vw, 768px"
             className="object-cover"
-            priority
+            preload
           />
         </div>
       )}

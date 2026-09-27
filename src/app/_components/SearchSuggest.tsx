@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { shopifyImage, SHOPIFY_IMAGE_WIDTH } from "@/lib/shopifyImage";
 import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import {
@@ -412,7 +413,7 @@ export function SearchSuggest({
                   <div className="relative size-12 shrink-0 overflow-hidden rounded-md border border-border bg-gradient-to-br from-surface-2 to-bg">
                     {s.i && (
                       <Image
-                        src={s.i}
+                        src={shopifyImage(s.i, SHOPIFY_IMAGE_WIDTH.thumb)}
                         alt=""
                         fill
                         sizes="48px"

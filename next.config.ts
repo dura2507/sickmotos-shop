@@ -42,6 +42,10 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
+    // Next 16 answers 400 for any quality that is not listed here. The
+    // ActionBanner photo asks for 90 and was a broken image in production
+    // (measured 27.09.: /_next/image?...&q=90 -> 400, q=75 -> 200).
+    qualities: [75, 90],
     remotePatterns: [
       {
         protocol: "https",

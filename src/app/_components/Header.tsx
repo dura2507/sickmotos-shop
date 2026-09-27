@@ -33,7 +33,8 @@ export async function Header() {
             alt="SickMotos"
             width={974}
             height={626}
-            priority
+            loading="eager"
+            sizes="(max-width: 639px) 88px, (max-width: 767px) 100px, 125px"
             className="h-14 w-auto sm:h-16 md:h-20"
           />
         </Link>

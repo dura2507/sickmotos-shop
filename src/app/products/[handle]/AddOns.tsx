@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { shopifyImage, SHOPIFY_IMAGE_WIDTH } from "@/lib/shopifyImage";
 import Link from "next/link";
 import { isConverter } from "@/lib/essentials";
 import type { CardProduct } from "@/lib/products";
@@ -39,7 +40,7 @@ export async function AddOns({ items, lampAutoBundled = false }: { items: CardPr
               >
                 {p.image && (
                   <Image
-                    src={p.image}
+                    src={shopifyImage(p.image, SHOPIFY_IMAGE_WIDTH.thumb)}
                     alt={p.title}
                     fill
                     sizes="56px"

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { shopifyImage, SHOPIFY_IMAGE_WIDTH } from "@/lib/shopifyImage";
 import Link from "next/link";
 import {
   cleanTitle,
@@ -50,11 +51,10 @@ export async function NewHighlight() {
               className="reveal-soft relative block aspect-[4/3] overflow-hidden rounded-lg border border-border bg-surface"
             >
               <Image
-                src={hero.src}
+                src={shopifyImage(hero.src, SHOPIFY_IMAGE_WIDTH.hero)}
                 alt={hero.alt || title}
                 fill
-                priority={false}
-                sizes="(max-width: 768px) 100vw, 60vw"
+                sizes="(max-width: 767px) 100vw, (max-width: 1280px) 53vw, 630px"
                 className="object-cover transition-transform duration-700 hover:scale-105"
               />
             </Link>
@@ -68,10 +68,10 @@ export async function NewHighlight() {
                   className="reveal relative aspect-square overflow-hidden rounded-lg border border-border bg-surface"
                 >
                   <Image
-                    src={img.src}
+                    src={shopifyImage(img.src)}
                     alt={img.alt || title}
                     fill
-                    sizes="(max-width: 768px) 33vw, 20vw"
+                    sizes="(max-width: 767px) 31vw, (max-width: 1280px) 17vw, 202px"
                     className="object-cover transition-transform duration-500 hover:scale-105"
                   />
                 </Link>

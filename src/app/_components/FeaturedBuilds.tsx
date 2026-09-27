@@ -76,7 +76,7 @@ export async function FeaturedBuilds() {
                   src={b.src}
                   alt={dict.featuredBuilds.builds[b.buildKey].alt}
                   fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
+                  sizes="(max-width: 767px) 100vw, (max-width: 1280px) 33vw, 400px"
                   className={`${b.focal} object-cover transition-transform duration-500 group-hover:scale-[1.04]`}
                 />
                 <div aria-hidden className="absolute inset-0 bg-black/30" />
