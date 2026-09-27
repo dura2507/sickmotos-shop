@@ -6,7 +6,11 @@ export const alt = "SickMotos. Ride in style, faster than others.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const asset = (p: string) => readFile(join(process.cwd(), p));
+// Every read below spells out its path as a string literal, never through a
+// helper parameter: Next traces fs calls statically, and a dynamic argument
+// makes it copy the whole project directory (public/ with all its photos
+// included) into every serverless function. The assets live in src/assets/og
+// so the trace pulls exactly these four files.
 const dataUri = (buf: Buffer, mime: string) =>
   `data:${mime};base64,${buf.toString("base64")}`;
 
@@ -25,10 +29,10 @@ const stop = (px: number) => `${((px / size.width) * 100).toFixed(1)}%`;
 // otherwise render the card in Noto Sans with every font-weight ignored.
 export default async function OpengraphImage() {
   const [bike, logo, lockup, bebas] = await Promise.all([
-    asset("public/builds/build-fantic-bold-red.jpg"),
-    asset("public/logo-alt-2.png"),
-    asset("public/brand/ride-in-style.png"),
-    asset("public/fonts/BebasNeue-Regular.ttf"),
+    readFile(join(process.cwd(), "src/assets/og/build-fantic-bold-red.jpg")),
+    readFile(join(process.cwd(), "src/assets/og/logo-alt-2.png")),
+    readFile(join(process.cwd(), "src/assets/og/ride-in-style.png")),
+    readFile(join(process.cwd(), "src/assets/og/BebasNeue-Regular.ttf")),
   ]);
 
   return new ImageResponse(

@@ -1,6 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Guard for the serverless bundle: public/ is served by the CDN and must
+  // never be read from the function file system. Until 27.09. a dynamic
+  // fs.readFile helper in the OG image routes made Next trace the whole
+  // project directory (public/ with 14 MB of photos plus every source file)
+  // into every function. The routes now read literal paths under
+  // src/assets/og; this exclude keeps public/ out of the traces for good.
+  // Key "/*" matches every route (picomatch with contains:true).
+  outputFileTracingExcludes: {
+    "/*": ["public/**/*"],
+  },
   // Map the old Shopify storefront URLs to the new routes so existing Google
   // rankings and shared links don't 404 after the domain switch. Product URLs
   // (/products/:handle) are identical on both, so they need no redirect.

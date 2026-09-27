@@ -2,6 +2,7 @@ import raw from "@/data/products.json";
 import addonsRaw from "@/data/addons.json";
 import fitmentRaw from "@/data/fitment.json";
 import { leadTimeFor } from "@/lib/leadTime";
+import { CATEGORIES, type Category } from "@/lib/productShared";
 
 const ADDON_MAP = addonsRaw as Record<string, string[]>;
 const FITMENT_MAP = fitmentRaw as Record<string, string[]>;
@@ -66,22 +67,12 @@ export const allProducts: ShopifyProduct[] = (
 ).filter(isLiveProduct);
 
 // ---------------------------------------------------------------------------
-// Categories — derived from product_type + title + tags via keyword rules.
+// Categories, derived from product_type + title + tags via keyword rules.
+// The list itself lives in productShared.ts (no data import there) so client
+// components can use it without pulling products.json into the browser.
 
-export const CATEGORIES = [
-  "Exhaust",
-  "LED Headlights",
-  "Carbon Parts",
-  "ECU Tuning",
-  "Brakes",
-  "Graphics",
-  "Titanium Screws",
-  "Merchandise",
-  "Wheels",
-  "Other",
-] as const;
-
-export type Category = (typeof CATEGORIES)[number];
+export { CATEGORIES, fmtEUR } from "@/lib/productShared";
+export type { Category } from "@/lib/productShared";
 
 const categoryRules: { keywords: string[]; category: Category }[] = [
   { keywords: ["led", "scheinwerfer", "angel eye", "hexagon", "headlight"], category: "LED Headlights" },
@@ -359,11 +350,6 @@ export function isInStock(p: ShopifyProduct): boolean {
   return p.variants.some((v) => v.available);
 }
 
-const EUR = new Intl.NumberFormat("de-DE", {
-  style: "currency",
-  currency: "EUR",
-});
-export const fmtEUR = (n: number) => EUR.format(n);
 
 // Strip "SICKMOTOS" prefix and similar for cleaner display
 export function cleanTitle(t: string): string {

@@ -34,7 +34,9 @@ const INSET = 26;
 const TILE_W = size.width - PANEL - INSET * 2;
 const TILE_H = size.height - INSET * 2;
 
-const asset = (p: string) => readFile(join(process.cwd(), p));
+// Asset reads spell out literal paths (see src/app/opengraph-image.tsx): a
+// helper with a path parameter would make Next trace the whole project
+// directory into every serverless function.
 const dataUri = (buf: Buffer | Uint8Array, mime: string) =>
   `data:${mime};base64,${Buffer.from(buf).toString("base64")}`;
 
@@ -63,9 +65,9 @@ export default async function ProductOpengraphImage({
   const p = getProductByHandle(handle);
 
   const [logo, fallback, bebas] = await Promise.all([
-    asset("public/logo-alt-2.png"),
-    asset("public/builds/build-fantic-bold-red.jpg"),
-    asset("public/fonts/BebasNeue-Regular.ttf"),
+    readFile(join(process.cwd(), "src/assets/og/logo-alt-2.png")),
+    readFile(join(process.cwd(), "src/assets/og/build-fantic-bold-red.jpg")),
+    readFile(join(process.cwd(), "src/assets/og/BebasNeue-Regular.ttf")),
   ]);
 
   const shot = p ? await productShot(p.images[0]?.src) : null;
