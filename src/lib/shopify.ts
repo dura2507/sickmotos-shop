@@ -221,6 +221,15 @@ const CHECKOUT_HOST = "checkout.sickmotos.com";
 // code / Shop). Shopify redirects this path to the configured customer
 // accounts domain, so it keeps working if Thomas changes that domain later.
 export const SHOPIFY_ACCOUNT_LOGIN_URL = `https://${CHECKOUT_HOST}/account/login`;
+
+// Shopify only serves its login page in German via the /de path (measured
+// 2026-09-29: /de/account/login -> locale=de, /it and /es fall back to
+// English), so German visitors get that path and everyone else the default.
+export function shopifyAccountLoginUrl(locale: string): string {
+  return locale === "de"
+    ? `https://${CHECKOUT_HOST}/de/account/login`
+    : SHOPIFY_ACCOUNT_LOGIN_URL;
+}
 function fixCheckoutHost<T extends { checkoutUrl?: string } | null>(cart: T): T {
   if (!cart || !cart.checkoutUrl) return cart;
   try {
