@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-09-27.
+> Stand: 2026-09-29.
 
 ---
 
@@ -1527,6 +1527,19 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     /shop 2,06 MB, 480 Produktlinks, lang=de; OG: Produktkarte 200 image/png 157526B, Startkarte 200 image/png 1346328B.
   - **Nicht gemacht, bewusst:** Rueckgabe TEST-1 in /admin/returns (braucht Admin-Passwort, Leon
     ein Klick); versand.md-Preise (Rechtstext, Thomas liefert); srcset-Reduktion auf /shop (Entscheidung).
+
+- **Kundenkonto-Problem (Filip) Endkontrolle 29.09.:** Live in Leons Chrome durchgeklickt:
+  sickmotos.com/account/login zeigt oben "Anmelden ohne Passwort", der Button "Mit E-Mail-Code
+  anmelden" oeffnet Shopifys Anmeldung mit E-Mail-Feld und "Continue with shop" (kein Passwortfeld).
+  Neu (Commit af1af79): deutsche Besucher landen ueber `/de/account/login` auf der DEUTSCHEN
+  Shopify-Anmeldung ("Anmelden oder ein Konto erstellen", locale=de-DE); gemessen: /it und /es
+  liefert Shopify nur englisch, deshalb bekommen alle anderen Sprachen den Standardpfad. Live
+  verifiziert pro Accept-Language (de -> /de/account/login, en/it/sk -> /account/login).
+  **Nicht selbst getestet:** Code-Mail anfordern und Code eingeben (das waere eine Anmeldung auf
+  einem Produktivsystem mit fremder bzw. Leons E-Mail). Den letzten Schritt bestaetigt nur ein echter
+  Kunde oder Leon mit der eigenen Adresse. Merchant-Feld am selben Tag kontrolliert: sickmotos.com,
+  verifiziert + beansprucht, Kasse checkout.sickmotos.com/cart/{id}:1 (die Karte "Kasse" rendert
+  verzoegert, erst nach ein paar Sekunden sichtbar, kein Fehler).
 
 ### Offen / TODO
 - **KONSOLIDIERTE LISTE (Stand 27.09., ersetzt den Ueberblick, aeltere Punkte darunter bleiben als Kontext):**
