@@ -1551,6 +1551,12 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   gestartet, Startdatum 01.10.26"), Google prueft die URLs damit gezielt nach statt im Turnus; Ergebnis
   laut SC in Tagen bis 2 Wochen (Prognose). Die alten Chunk-URLs liefern inzwischen 404, das ist
   korrekt (Deployment-gebundene Dateinamen), sie fallen damit aus dem Bericht.
+  **Crawl-Stand per URL-Pruefung (01.10. abends):** Startseite zuletzt gecrawlt 30.09. 19:56
+  (Googlebot Smartphone, Crawling erlaubt, indexiert), Produktseite h4-adapter-montagehilfe zuletzt
+  10.09. (Produkte also nur alle ~3 Wochen). Fuer beide "Indexierung beantragt" (prioritaere
+  Crawl-Warteschlange, Bestaetigung "Indexierung wurde beantragt" gesehen). SC-Falle: das
+  URL-Suchfeld verschluckt Eingaben nach SPA-Navigationen; zuverlaessig nur nach frischer
+  Navigation auf die Uebersicht per Koordinaten-Klick + type, dann find/ref fuer die Buttons.
 
 - **Statistik-Check 01.10. (Leons "bessert sichs?", alles in Leons Chrome gelesen):**
   Search Console sc-domain 28 Tage (01.09. bis 28.09.): 6.690 Klicks, 63.400 Impressionen, CTR 10,6 %,
