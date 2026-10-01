@@ -1552,6 +1552,22 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   laut SC in Tagen bis 2 Wochen (Prognose). Die alten Chunk-URLs liefern inzwischen 404, das ist
   korrekt (Deployment-gebundene Dateinamen), sie fallen damit aus dem Bericht.
 
+- **Statistik-Check 01.10. (Leons "bessert sichs?", alles in Leons Chrome gelesen):**
+  Search Console sc-domain 28 Tage (01.09. bis 28.09.): 6.690 Klicks, 63.400 Impressionen, CTR 10,6 %,
+  Position 5,7, Tageswerte 220 bis 310 (07.09. lagen 28 Tage bei 5.420 Klicks, also rund +23 %);
+  URL-Praefix-Property 3 Monate (ab 17.08.): 11.000 Klicks, 99.600 Impressionen (3-Monats-Chart
+  blieb im Spinner haengen, Kacheln lesbar). Merchant 28 Tage: 10.026 Klicks (+2,3 % vs Vorperiode,
+  ~358/Tag, Vor-Krise ~600/Tag), 1085 Produkte / 1080 frei / 5 begrenzt / 0 abgelehnt,
+  Conversion-Wert 8.517 bei 752 EUR Kosten. Ads 30 Tage: 3.131 Klicks, 36,9 Conversions, 796 EUR.
+  Shopify Analytics (Datumsfilter per UI gesetzt, URL-Parameter werden ignoriert): letzte 30 Tage
+  (01.09. bis 01.10.) Gesamtumsatz 36.955,86 EUR (+0,1 % vs August), Bruttoumsatz 30.059,84 (+1,7 %),
+  Bestellungen 188 (-10 %), Nettoumsatz 29.714,50 (+1,5 %); letzte 90 Tage (03.07. bis 01.10.)
+  Gesamtumsatz 109.277,64 EUR (-29 % vs 03.04. bis 02.07.), Bestellungen 606 (-30 %). Einordnung:
+  Google-Seite steigt (SC +23 % in 4 Wochen, Merchant stabil ohne Ablehnungen), Umsatz hat sich auf
+  August-Niveau stabilisiert, liegt aber weiter unter dem Fruehjahrsquartal (Migration Juli plus
+  Saison, Thomas nennt Ende Oktober als Saisonstart). Shopify-Insight 01.10.: "on track to beat
+  last week", Wochenprognose 5,78k.
+
 ### Offen / TODO
 - **KONSOLIDIERTE LISTE (Stand 27.09., ersetzt den Ueberblick, aeltere Punkte darunter bleiben als Kontext):**
   - **Thomas (Daten/Entscheidungen):** (a) Fotos fuer die 2 Angel-Eye-V6.1-COB-Lampen ohne Bild
