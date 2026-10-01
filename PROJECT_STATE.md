@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-09-29.
+> Stand: 2026-10-01.
 
 ---
 
@@ -1540,6 +1540,17 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   Kunde oder Leon mit der eigenen Adresse. Merchant-Feld am selben Tag kontrolliert: sickmotos.com,
   verifiziert + beansprucht, Kasse checkout.sickmotos.com/cart/{id}:1 (die Karte "Kasse" rendert
   verzoegert, erst nach ein paar Sekunden sichtbar, kein Fehler).
+
+- **robots.txt-Meldungen: Google hat seit dem Fix NICHT neu gecrawlt, Validierung gestartet (01.10.):**
+  Leon fragte nach dem SC-Mail "Indexiert, obwohl durch robots.txt blockiert". In der Domain-Property
+  (Datenstand 21.09.) stehen 1 Seite "indexiert obwohl blockiert" (ein /_next/static-Chunk eines
+  alten Deployments, zuletzt gecrawlt 03.09.) und 82 "durch robots.txt blockiert" (Beispiele: Chunks
+  und woff2-Fonts unter /_next/static, zuletzt gecrawlt 08.09. bis 13.09.). Alle Crawls liegen VOR dem
+  Fix vom 17.09., die Zahlen sind also reiner Nachlauf. Live robots.txt erneut geprueft: nur /api/
+  gesperrt. Fuer beide Gruende in der SC "Fehlerbehebung ueberpruefen" gestartet (Status "Ueberpruefung
+  gestartet, Startdatum 01.10.26"), Google prueft die URLs damit gezielt nach statt im Turnus; Ergebnis
+  laut SC in Tagen bis 2 Wochen (Prognose). Die alten Chunk-URLs liefern inzwischen 404, das ist
+  korrekt (Deployment-gebundene Dateinamen), sie fallen damit aus dem Bericht.
 
 ### Offen / TODO
 - **KONSOLIDIERTE LISTE (Stand 27.09., ersetzt den Ueberblick, aeltere Punkte darunter bleiben als Kontext):**
