@@ -256,7 +256,8 @@
     "closeAria": "Chat schließen",
     "openAria": "Chat öffnen",
     "errorGeneric": "Da ist etwas schiefgelaufen, bitte gleich nochmal versuchen.",
-    "errorConnection": "Verbindungsproblem, bitte gleich nochmal versuchen."
+    "errorConnection": "Verbindungsproblem, bitte gleich nochmal versuchen.",
+    "poweredBy": "Chatbot von"
   },
   "shop": {
     "title": "Shop Katalog",

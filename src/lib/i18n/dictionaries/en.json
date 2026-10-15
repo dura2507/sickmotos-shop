@@ -256,7 +256,8 @@
     "closeAria": "Close chat",
     "openAria": "Open chat",
     "errorGeneric": "Something went wrong, please try again in a moment.",
-    "errorConnection": "Connection issue, please try again in a moment."
+    "errorConnection": "Connection issue, please try again in a moment.",
+    "poweredBy": "Powered by"
   },
   "shop": {
     "title": "Shop the catalog",

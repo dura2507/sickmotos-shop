@@ -256,7 +256,8 @@
     "closeAria": "Cerrar chat",
     "openAria": "Abrir chat",
     "errorGeneric": "Algo salió mal, inténtalo de nuevo en un momento.",
-    "errorConnection": "Problema de conexión, inténtalo de nuevo en un momento."
+    "errorConnection": "Problema de conexión, inténtalo de nuevo en un momento.",
+    "poweredBy": "Desarrollado por"
   },
   "shop": {
     "title": "Explora el catálogo",

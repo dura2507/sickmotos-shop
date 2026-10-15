@@ -1,7 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { useDictionary } from "./LocaleProvider";
+import { useDictionary, useLocale } from "./LocaleProvider";
+
+// Agency credit under the input. krileo.de is the German site, krileo.com
+// the English one, so German visitors land on German.
+const KRILEO_UTM = "?utm_source=sickmotos-shop&utm_medium=chatbot";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -51,7 +56,10 @@ function renderRich(text: string): ReactNode {
 
 export function SupportChat() {
   const dict = useDictionary();
+  const locale = useLocale();
   const bot = dict.bot;
+  const krileoUrl =
+    (locale === "de" ? "https://krileo.de/" : "https://krileo.com/") + KRILEO_UTM;
   const SUGGESTIONS = [
     bot.suggestions.shipping,
     bot.suggestions.fitment,
@@ -251,6 +259,28 @@ export function SupportChat() {
               </svg>
             </button>
           </form>
+
+          {/* Agency credit, deliberately small and quiet */}
+          <div className="flex justify-center bg-surface/60 pb-2">
+            <a
+              href={krileoUrl}
+              target="_blank"
+              rel="noopener"
+              className="inline-flex items-center gap-1.5 px-2 py-0.5 text-[11px] leading-none text-fg-dim transition-colors hover:text-fg-muted"
+            >
+              <Image
+                src="/krileo-k.png"
+                alt=""
+                width={14}
+                height={14}
+                unoptimized
+                className="size-3.5"
+              />
+              <span>
+                {bot.poweredBy} <span className="font-semibold text-fg-muted">Krileo</span>
+              </span>
+            </a>
+          </div>
         </div>
       )}
     </>

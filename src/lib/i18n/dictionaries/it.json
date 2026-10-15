@@ -256,7 +256,8 @@
     "closeAria": "Chiudi chat",
     "openAria": "Apri chat",
     "errorGeneric": "Qualcosa è andato storto, riprova tra poco.",
-    "errorConnection": "Problema di connessione, riprova tra poco."
+    "errorConnection": "Problema di connessione, riprova tra poco.",
+    "poweredBy": "Realizzato da"
   },
   "shop": {
     "title": "Sfoglia il catalogo",
