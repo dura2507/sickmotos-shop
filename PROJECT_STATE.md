@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-10-01.
+> Stand: 2026-11-02.
 
 ---
 
@@ -1573,6 +1573,62 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   August-Niveau stabilisiert, liegt aber weiter unter dem Fruehjahrsquartal (Migration Juli plus
   Saison, Thomas nennt Ende Oktober als Saisonstart). Shopify-Insight 01.10.: "on track to beat
   last week", Wochenprognose 5,78k.
+
+- **LAGECHECK 02.11. (Leon: "Thomas ist sehr enttaeuscht weil nix geht"; Konten in Leons Chrome,
+  Technik per 5 Sweep-Agenten + 5 Gegenpruefungen, alles gemessen):**
+  - **Technik: nichts kaputt.** 502/502 Sitemap-URLs 200 (TTFB Median 0,27 s, p95 0,37 s), robots,
+    Feed (1437 Zeilen), Suchindex (487), OG-Bilder ok; 29 Stichprobenseiten mit lang=de auch fuer
+    Googlebot, Self-Canonical, gueltigem JSON-LD (76 Offers, alle mit Preis, Versand, Rueckgabe);
+    Storefront-API cartCreate + Checkout-Render 200 (Checkout rate-limitet curl nach Bursts mit 429,
+    kein Kundenproblem). Vercel: 242 Deploys in 32 Tagen, 241 per Shopify-Hook, 5 ERROR am 12.10.
+    (GitHub secondary rate limit, kein Alias, kein Live-Schaden), Live-Stand = origin/main; einziger
+    Code-Push im Oktober: c39aa0a (15.10., SickBot-Hinweis, anderer Rechner). Manuelle Massnahmen SC:
+    keine. Vercel-CLI-Token war 8 Tage abgelaufen (per `vercel whoami` erneuert, Merker fuer Checks).
+  - **Google Suche: minus 27 % im Oktober.** sc-domain 28 Tage (04.10. bis 31.10.): 4.900 Klicks,
+    49.100 Impressionen, CTR 10 %, Position 5,8 (September-Fenster: 6.690 / 63.400). Tageskurve von
+    ~300 Anfang Oktober auf ~100 bis 150 Ende Oktober; 3-Monats-Chart der Praefix-Property zeigt den
+    Peak Mitte September und den stetigen Abstieg durch den Oktober. Indexiert 549 (21.09.: 578).
+    Google Trends DE 5 Jahre fuer "supermoto": jedes Jahr Hochpunkt Sommer, Tal November bis Januar,
+    der Oktober-Abfall ist also zu grossen Teilen Saison. Zugriff auf die Property der alten Domain
+    (Vergleich Oktober 2025) fehlt fuer unser Google-Konto ("kein Zugriff", Thomas' Property).
+  - **Merchant:** 28 Tage 9.237 Klicks (-9,3 %), 1083 frei / 2 begrenzt / 0 abgelehnt, Website-Feld
+    sickmotos.com verifiziert + beansprucht, Kasse intakt. Reporting: organische Onlineshop-Klicks
+    3.950 (-25,9 %), Anzeigen+organisch 5.287 (+8,9 %), Ads-Conversion-Wert 12.796 (-9,8 %) bei
+    Kosten 1.209,69 EUR (+58,2 %), ROAS 1.058 % (-43 %). Staerkste Verlierer: Kruemmer Titan Beta
+    -86 Klicks, LED-Scheinwerfer -56, Zontes-Kit -43.
+  - **Ads: Konto im Oktober vom Operator komplett umgebaut, das ist die groesste Veraenderung.**
+    Seit 20.10. ein zusaetzlicher Ads-Nutzer (Google-Mail "Neuer Nutzer", Name im Aenderungsverlauf,
+    hier nicht notiert), dazu das bekannte Operator-Konto. Aenderungsverlauf: 20.10. 3 Kampagnen
+    pausiert; 24./26.10. Hin und Her (Angel Eye aktiv/pausiert, Sales-PMax-DE-AT-2026 pausiert/aktiv,
+    Sales-PMax-EU-EN-2026 pausiert); 26.10. acht Asset-Aenderungen; 30.10. Ziel-ROAS der alten
+    Germany-Kampagne von 10.000 % auf 11.000 % gesetzt; 31.10. Budget Germany 40 auf 20 EUR gesenkt,
+    Budget Sales-PMax-DE-AT-2026 erhoeht. **Stand 02.11.: ALLE alten Kampagnen pausiert** (Performance
+    Max Germany, Austria, Angel Eye, Auspuffanlage, UK, FR, CH, Search AT/DE), einzige aktive Kampagne
+    "Sales-PMax-DE-AT-2026" mit 75 EUR/Tag = das ganze Kontobudget. 30-Tage-Vergleich: alte Germany-
+    Kampagne 505 EUR Kosten, 19,65 Conversions, 8.660 EUR Conversion-Wert (ROAS ~17); neue
+    Sales-PMax-DE-AT-2026 777 EUR Kosten, 6 Conversions, 1.159 EUR Conversion-Wert (ROAS ~1,5).
+    Konto gesamt 30 Tage: 5.663 Klicks, 1.265 EUR, 57,95 Conversions, 14.433 EUR Conversion-Wert
+    (-1.263 EUR vs Vorperiode). Nichts angefasst (Geld, Operator-Konto).
+  - **Shopify-Umsatz NICHT gelesen:** Shopify-Tab verlangt neue Anmeldung (Passwort = Leon),
+    Admin-API-Token ist in Vercel als sensibel markiert (Pull liefert leer). Leon muss einloggen oder
+    die Oktober-Zahl aus Shopify Analytics nennen.
+  - **Thomas' Datenpunkte: nichts bewegt** (per Storefront-API 02.11.): 0 Highlight-Tag, keine
+    Sitzbank, Demo-T-Shirt weiter veroeffentlicht, beide Angel-Eye-COB-Lampen weiter ohne Bild (eine
+    am 09.10. bearbeitet, ohne Foto), alle 4 textlosen Produkte weiter leer (zwei am 26./27.10.
+    bearbeitet, ohne Text), 12 Gruppen / 63 identische Kit-Titel, 118 kopie-von-Handles, die 2 neuen
+    Oktober-Produkte (12.10. Fuel-X, 27.10. Titan-Kruemmer) wieder als Kopie angelegt. Theme-Snippet
+    auf checkout.sickmotos.com nicht eingefuegt (Self-Canonical, 28 hreflang, kein noindex).
+  - **Zwei echte Code-Funde, beide gefixt (Commit f0f1ec6):** (1) **Deutsche Kunden bekamen den
+    ENGLISCHEN Checkout:** cartCreate lief ohne @inContext, Shopify baute die checkoutUrl auf
+    /checkouts/cn/<token>/en-de (lang en-DE) unabhaengig vom Browser. Jetzt tragen alle fuenf
+    Cart-Operationen `@inContext(language: $language, country: $country)`, die Route reicht die
+    Storefront-Sprache (Cookie/Accept-Language) durch; lokal gemessen: sm_lang=de ->
+    checkout.sickmotos.com/de/cart/c/..., en -> /cart/c/..., it -> /cart/c/... (Italienisch bei
+    Shopify nicht veroeffentlicht). (2) **Startseite und /shop hatten fuer deutsche Besucher
+    englischen Titel, Description und og:locale en_US** (Layout-Default): neue `seo`-Keys in allen 4
+    Woerterbuechern (Uebersetzung der bestehenden englischen Texte, nichts Neues erfunden),
+    generateMetadata auf Startseite und Shop. Nebenbei: Merchant-Feed laesst das Demo-T-Shirt jetzt
+    weg (Link zeigte auf 404). tsc sauber, Dev-Server verifiziert. Live-Verify siehe naechster Eintrag.
 
 ### Offen / TODO
 - **KONSOLIDIERTE LISTE (Stand 27.09., ersetzt den Ueberblick, aeltere Punkte darunter bleiben als Kontext):**
