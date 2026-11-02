@@ -8,10 +8,16 @@ import { NextResponse } from "next/server";
 import {
   cartCreate,
   cartGet,
+  cartLanguageFor,
   cartLinesAdd,
   cartLinesRemove,
   cartLinesUpdate,
 } from "@/lib/shopify";
+import { getLocale } from "@/lib/i18n/getLocale";
+
+// Checkout language follows the storefront locale (cookie / Accept-Language),
+// otherwise Shopify sends German customers to the English checkout.
+const lang = async () => cartLanguageFor(await getLocale());
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -27,7 +33,7 @@ export async function GET(req: Request) {
   const cartId = url.searchParams.get("id");
   if (!cartId) return bad("missing id");
   try {
-    const cart = await cartGet(cartId);
+    const cart = await cartGet(cartId, await lang());
     if (!cart) return NextResponse.json({ cart: null });
     return NextResponse.json({ cart });
   } catch (e) {
@@ -53,9 +59,10 @@ export async function POST(req: Request) {
     if (l.quantity < 1 || l.quantity > 99) return bad("quantity out of range");
   }
   try {
+    const language = await lang();
     const cart = body.cartId
-      ? await cartLinesAdd(body.cartId, lines)
-      : await cartCreate(lines);
+      ? await cartLinesAdd(body.cartId, lines, language)
+      : await cartCreate(lines, language);
     return NextResponse.json({ cart });
   } catch (e) {
     return bad((e as Error).message, 500);
@@ -79,7 +86,7 @@ export async function PATCH(req: Request) {
     if (l.quantity < 0 || l.quantity > 99) return bad("quantity out of range");
   }
   try {
-    const cart = await cartLinesUpdate(body.cartId, lines);
+    const cart = await cartLinesUpdate(body.cartId, lines, await lang());
     return NextResponse.json({ cart });
   } catch (e) {
     return bad((e as Error).message, 500);
@@ -98,7 +105,7 @@ export async function DELETE(req: Request) {
     return bad("lineIds required");
   }
   try {
-    const cart = await cartLinesRemove(body.cartId, body.lineIds);
+    const cart = await cartLinesRemove(body.cartId, body.lineIds, await lang());
     return NextResponse.json({ cart });
   } catch (e) {
     return bad((e as Error).message, 500);

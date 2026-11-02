@@ -662,5 +662,11 @@
     "kicker": "Novedad en la tienda",
     "cta": "Ver producto",
     "inStock": "En stock"
+  },
+  "seo": {
+    "homeTitle": "SickMotos. Piezas de rendimiento hechas por un maestro mecatrónico",
+    "homeDescription": "Piezas de rendimiento premium para supermoto y enduro: escapes de titanio, faros LED, ECU tuning, carbono. Diseñadas en Alemania por Thomas Krawietz.",
+    "shopDescription": "Todas las piezas de rendimiento SickMotos para supermoto y enduro: escapes, faros LED, carbono, kits de gráficos, tuning. Filtra por marca, modelo y año.",
+    "ogLocale": "es_ES"
   }
 }

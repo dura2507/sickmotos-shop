@@ -54,7 +54,7 @@ export type ShopifyProduct = {
 // Strip Shopify demo/test products (e.g. "Demo T-Shirt | Automatic recoloring
 // | Out of stock | test product" priced at 99999) so they never reach the
 // shop, search, bestsellers or any other surface.
-function isLiveProduct(p: ShopifyProduct): boolean {
+export function isLiveProduct(p: ShopifyProduct): boolean {
   const t = (p.title || "").toLowerCase();
   if (t.includes("demo") || t.includes("test product") || t.includes("recoloring")) return false;
   const price = parseFloat(p.variants[0]?.price ?? "0");

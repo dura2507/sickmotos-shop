@@ -18,14 +18,30 @@ import { DNA } from "./_components/DNA";
 import { TestCenter } from "./_components/TestCenter";
 import { Founder } from "./_components/Founder";
 import { Reviews } from "./_components/Reviews";
+import { getLocale } from "@/lib/i18n/getLocale";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 import { FAQ } from "./_components/FAQ";
 
 // Self-canonical so Google prefers this page over the Shopify duplicate
 // storefront on checkout.sickmotos.com (Search Console: "Duplikat, Google hat
 // eine andere Seite als kanonisch bestimmt", 2026-09-06).
-export const metadata: Metadata = {
-  alternates: { canonical: "/" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  // Title, description and og:locale in the visitor's language; the layout
+  // default is English and made Google show English snippets for the German
+  // homepage (measured 2026-11-02).
+  const dict = await getDictionary(await getLocale());
+  return {
+    alternates: { canonical: "/" },
+    title: dict.seo.homeTitle,
+    description: dict.seo.homeDescription,
+    openGraph: {
+      title: dict.seo.homeTitle,
+      description: dict.seo.homeDescription,
+      locale: dict.seo.ogLocale,
+      url: "https://sickmotos.com",
+    },
+  };
+}
 
 export default function Home() {
   return (

@@ -246,84 +246,103 @@ function fixCheckoutHost<T extends { checkoutUrl?: string } | null>(cart: T): T 
   return cart;
 }
 
+// Shopify builds the checkoutUrl from the language the cart was created and
+// read in. Without @inContext every German customer landed on the English
+// checkout (/checkouts/cn/<token>/en-de, measured 2026-11-02). The route
+// handler passes the visitor's locale; the market country stays pinned.
+export type CartLanguage = "DE" | "EN" | "IT" | "ES";
+const CART_COUNTRY = process.env.SHOPIFY_MARKET_COUNTRY || "DE";
+export function cartLanguageFor(locale: string): CartLanguage {
+  const map: Record<string, CartLanguage> = { de: "DE", en: "EN", it: "IT", es: "ES" };
+  return map[locale] ?? "DE";
+}
+const CTX = "@inContext(language: $language, country: $country)";
+
 export async function cartCreate(
-  lines: { merchandiseId: string; quantity: number }[]
+  lines: { merchandiseId: string; quantity: number }[],
+  language: CartLanguage = "DE"
 ): Promise<StorefrontCart> {
   const data = await shopifyFetch<{ cartCreate: { cart: StorefrontCart } }>(
     `${CART_FRAGMENT}
-     mutation CartCreate($input: CartInput!) {
+     mutation CartCreate($input: CartInput!, $language: LanguageCode!, $country: CountryCode!) ${CTX} {
        cartCreate(input: $input) {
          cart { ...CartFields }
          userErrors { field message }
        }
      }`,
-    { variables: { input: { lines } }, revalidate: false }
+    { variables: { input: { lines }, language, country: CART_COUNTRY }, revalidate: false }
   );
   return fixCheckoutHost(data.cartCreate.cart);
 }
 
-export async function cartGet(cartId: string): Promise<StorefrontCart | null> {
+export async function cartGet(
+  cartId: string,
+  language: CartLanguage = "DE"
+): Promise<StorefrontCart | null> {
   const data = await shopifyFetch<{ cart: StorefrontCart | null }>(
     `${CART_FRAGMENT}
-     query CartGet($id: ID!) {
+     query CartGet($id: ID!, $language: LanguageCode!, $country: CountryCode!) ${CTX} {
        cart(id: $id) { ...CartFields }
      }`,
-    { variables: { id: cartId }, revalidate: false }
+    { variables: { id: cartId, language, country: CART_COUNTRY }, revalidate: false }
   );
   return fixCheckoutHost(data.cart);
 }
 
 export async function cartLinesAdd(
   cartId: string,
-  lines: { merchandiseId: string; quantity: number }[]
+  lines: { merchandiseId: string; quantity: number }[],
+  language: CartLanguage = "DE"
 ): Promise<StorefrontCart> {
   const data = await shopifyFetch<{ cartLinesAdd: { cart: StorefrontCart } }>(
     `${CART_FRAGMENT}
-     mutation CartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
+     mutation CartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!, $language: LanguageCode!, $country: CountryCode!) ${CTX} {
        cartLinesAdd(cartId: $cartId, lines: $lines) {
          cart { ...CartFields }
          userErrors { field message }
        }
      }`,
-    { variables: { cartId, lines }, revalidate: false }
+    { variables: { cartId, lines, language, country: CART_COUNTRY }, revalidate: false }
   );
   return fixCheckoutHost(data.cartLinesAdd.cart);
 }
 
 export async function cartLinesUpdate(
   cartId: string,
-  lines: { id: string; quantity: number }[]
+  lines: { id: string; quantity: number }[],
+  language: CartLanguage = "DE"
 ): Promise<StorefrontCart> {
   const data = await shopifyFetch<{
     cartLinesUpdate: { cart: StorefrontCart };
   }>(
     `${CART_FRAGMENT}
-     mutation CartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+     mutation CartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!, $language: LanguageCode!, $country: CountryCode!) ${CTX} {
        cartLinesUpdate(cartId: $cartId, lines: $lines) {
          cart { ...CartFields }
          userErrors { field message }
        }
      }`,
-    { variables: { cartId, lines }, revalidate: false }
+    { variables: { cartId, lines, language, country: CART_COUNTRY }, revalidate: false }
   );
   return fixCheckoutHost(data.cartLinesUpdate.cart);
 }
 
 export async function cartLinesRemove(
   cartId: string,
-  lineIds: string[]
+  lineIds: string[],
+  language: CartLanguage = "DE"
 ): Promise<StorefrontCart> {
   const data = await shopifyFetch<{
     cartLinesRemove: { cart: StorefrontCart };
   }>(
     `${CART_FRAGMENT}
-     mutation CartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
+     mutation CartLinesRemove($cartId: ID!, $lineIds: [ID!]!, $language: LanguageCode!, $country: CountryCode!) ${CTX} {
        cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
          cart { ...CartFields }
          userErrors { field message }
        }
      }`,
-    { variables: { cartId, lineIds }, revalidate: false }
+    { variables: { cartId, lineIds, language, country: CART_COUNTRY }, revalidate: false }
   );
   return fixCheckoutHost(data.cartLinesRemove.cart);
 }

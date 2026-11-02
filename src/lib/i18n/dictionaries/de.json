@@ -662,5 +662,11 @@
     "kicker": "Neu im Shop",
     "cta": "Zum Produkt",
     "inStock": "Auf Lager"
+  },
+  "seo": {
+    "homeTitle": "SickMotos. Performance-Teile vom Mechatronik-Meister",
+    "homeDescription": "Premium Performance-Teile für Supermoto und Enduro: Titan-Auspuffanlagen, LED-Scheinwerfer, ECU-Tuning, Carbon. Entwickelt in Deutschland von Thomas Krawietz.",
+    "shopDescription": "Alle SickMotos Performance-Teile für Supermoto und Enduro: Auspuff, LED-Scheinwerfer, Carbon, Dekor-Kits, Tuning. Nach Marke, Modell und Baujahr filtern.",
+    "ogLocale": "de_DE"
   }
 }

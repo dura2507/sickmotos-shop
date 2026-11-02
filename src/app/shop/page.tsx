@@ -17,6 +17,13 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     alternates: { canonical: "/shop" },
     title: dict.shopPage.metaTitle,
+    description: dict.seo.shopDescription,
+    openGraph: {
+      title: dict.shopPage.metaTitle,
+      description: dict.seo.shopDescription,
+      locale: dict.seo.ogLocale,
+      url: "https://sickmotos.com/shop",
+    },
   };
 }
 

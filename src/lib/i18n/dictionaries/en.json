@@ -662,5 +662,11 @@
     "kicker": "New in the shop",
     "cta": "View product",
     "inStock": "In stock"
+  },
+  "seo": {
+    "homeTitle": "SickMotos. Performance Parts Built by a Mechatronics Master",
+    "homeDescription": "Premium performance parts for supermoto and enduro: titanium exhausts, LED headlights, ECU tuning, carbon. Engineered in Germany by Thomas Krawietz.",
+    "shopDescription": "All SickMotos performance parts for supermoto and enduro: exhausts, LED headlights, carbon, graphics kits, tuning. Filter by brand, model and year.",
+    "ogLocale": "en_US"
   }
 }

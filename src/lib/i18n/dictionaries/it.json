@@ -662,5 +662,11 @@
     "kicker": "Novità in negozio",
     "cta": "Vai al prodotto",
     "inStock": "Disponibile"
+  },
+  "seo": {
+    "homeTitle": "SickMotos. Ricambi performance costruiti da un maestro meccatronico",
+    "homeDescription": "Ricambi performance premium per supermoto ed enduro: scarichi in titanio, fari LED, ECU tuning, carbonio. Progettati in Germania da Thomas Krawietz.",
+    "shopDescription": "Tutti i ricambi performance SickMotos per supermoto ed enduro: scarichi, fari LED, carbonio, kit grafiche, tuning. Filtra per marca, modello e anno.",
+    "ogLocale": "it_IT"
   }
 }

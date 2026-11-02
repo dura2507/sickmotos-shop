@@ -1,4 +1,5 @@
 import raw from "@/data/products.json";
+import { isLiveProduct } from "@/lib/products";
 
 export const dynamic = "force-static";
 
@@ -54,7 +55,12 @@ function genderOf(title: string): string {
 }
 
 export async function GET() {
-  const products = raw as RawProduct[];
+  // Same demo/test filter as the storefront: the Shopify demo T-shirt
+  // (99999 EUR) is a 404 on sickmotos.com, its feed row would point Google
+  // at a dead page (found 2026-11-02).
+  const products = (raw as RawProduct[]).filter((p) =>
+    isLiveProduct(p as unknown as Parameters<typeof isLiveProduct>[0])
+  );
   const lines = ["id,link,age_group,color,gender"];
   for (const p of products) {
     const link = `${SITE}/products/${p.handle}`;
