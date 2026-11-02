@@ -1609,9 +1609,23 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     Sales-PMax-DE-AT-2026 777 EUR Kosten, 6 Conversions, 1.159 EUR Conversion-Wert (ROAS ~1,5).
     Konto gesamt 30 Tage: 5.663 Klicks, 1.265 EUR, 57,95 Conversions, 14.433 EUR Conversion-Wert
     (-1.263 EUR vs Vorperiode). Nichts angefasst (Geld, Operator-Konto).
-  - **Shopify-Umsatz NICHT gelesen:** Shopify-Tab verlangt neue Anmeldung (Passwort = Leon),
-    Admin-API-Token ist in Vercel als sensibel markiert (Pull liefert leer). Leon muss einloggen oder
-    die Oktober-Zahl aus Shopify Analytics nennen.
+  - **Shopify-Umsatz (nach Leons Login in Shopify Analytics gelesen, Gesamtumsatz / Bestellungen,
+    Vergleich jeweils zum Vorjahreszeitraum):** Juni 2026 43.448 EUR / 234 (-5 % / -9 %, vor der
+    Migration); Juli 37.040 / 225 (-17 % / -9 %); August 38.482 / 215 (-22 % / -17 %); September
+    35.766 / 185 (-19 % / -18 %); **Oktober 24.120 / 130 (-43 % / -43 %, zum September -36 %)**,
+    davon 01.10. bis 19.10. 15.959 / 81 (-37 % / -39 %) und 20.10. bis 01.11. 9.437 / 55
+    (-49 % / -49 %; zu den 13 Tagen davor aber +6 %). Einordnung: nach der Migration lag der
+    Vorjahresabstand drei Monate stabil bei rund -20 %, im Oktober verdoppelt er sich. Saison allein
+    erklaert das nicht (Vorjahresvergleich ist saisonbereinigt). In der Search Console fielen im
+    Oktober die Impressionen (-23 %), Position 5,7 auf 5,8 und CTR 10,6 auf 10 % blieben fast
+    gleich, also keine Ranking- oder Snippet-Panne, sondern weniger Suchen bzw. weniger Sichtbarkeit.
+    Admin-API-Token ist in Vercel als sensibel markiert (Pull liefert leer), Umsatz deshalb nur ueber
+    die Oberflaeche lesbar.
+  - **Mobile Kauf-Durchlauf 02.11. im Browser-Pane (375 px, echtes UI, nicht bezahlt):** Produktseite
+    H4-Adapter, Cookie "Nur essenziell", "In den Warenkorb", Drawer mit 14,99 EUR, "Zur Kasse" fuehrt
+    auf checkout.sickmotos.com/checkouts/cn/<token>/de-de mit "Bestelluebersicht 14,99 EUR",
+    Kontakt, Lieferung Deutschland. Mobile Suche ist ein normales GET-Formular auf /shop, vom
+    Suchindex-Umbau 27.09. nicht betroffen.
   - **Thomas' Datenpunkte: nichts bewegt** (per Storefront-API 02.11.): 0 Highlight-Tag, keine
     Sitzbank, Demo-T-Shirt weiter veroeffentlicht, beide Angel-Eye-COB-Lampen weiter ohne Bild (eine
     am 09.10. bearbeitet, ohne Foto), alle 4 textlosen Produkte weiter leer (zwei am 26./27.10.
