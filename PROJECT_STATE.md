@@ -1628,7 +1628,13 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     englischen Titel, Description und og:locale en_US** (Layout-Default): neue `seo`-Keys in allen 4
     Woerterbuechern (Uebersetzung der bestehenden englischen Texte, nichts Neues erfunden),
     generateMetadata auf Startseite und Shop. Nebenbei: Merchant-Feed laesst das Demo-T-Shirt jetzt
-    weg (Link zeigte auf 404). tsc sauber, Dev-Server verifiziert. Live-Verify siehe naechster Eintrag.
+    weg (Link zeigte auf 404). tsc sauber, Dev-Server verifiziert. **LIVE verifiziert 02.11. 17:22 MEZ:**
+    POST /api/cart mit sm_lang=de -> checkoutUrl checkout.sickmotos.com/de/cart/c/..., mit en ->
+    /cart/c/...; der deutsche Checkout-Link rendert nach Redirect-Kette auf
+    /checkouts/cn/<token>/de-de mit html lang="de-DE" (Kontakt/Lieferung im HTML), vorher en-de;
+    Startseite de: Titel "SickMotos. Performance-Teile vom Mechatronik-Meister", og:locale de_DE,
+    en weiter englisch; /shop de mit deutscher Description; Feed 0 Demo-Zeilen. Merke: der
+    Dictionary-String steht auch im HTML der alten Version, Deploy-Erkennung nur ueber den <title>.
 
 ### Offen / TODO
 - **KONSOLIDIERTE LISTE (Stand 27.09., ersetzt den Ueberblick, aeltere Punkte darunter bleiben als Kontext):**
