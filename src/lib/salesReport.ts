@@ -146,7 +146,7 @@ function aggregate(nodes: OrderNode[], fromDay: string, toDay: string): SalesDay
 // tauchen damit spaetestens nach 6 Stunden auf. Der laufende Monat 60 Sekunden
 // pro Instanz. So kostet ein Jahresvergleich nur beim ersten Aufruf Zeit.
 const MONTH_CACHE_SEC = 6 * 60 * 60;
-const MONTH_KEY = (m: string) => `sm:sales:month:v1:${m}`;
+const MONTH_KEY = (m: string) => `sm:sales:month:v2:${m}`;
 const liveMonth = new Map<string, { at: number; data: SalesDay[] }>();
 
 function monthBounds(month: string): [string, string] {
@@ -186,14 +186,28 @@ async function loadMonth(month: string, today: string): Promise<SalesDay[]> {
 
 let scopeCache: { at: number; allOrders: boolean } | null = null;
 
+// Ohne read_all_orders liefert Shopify stillschweigend nur 60 Tage. Apps, die
+// der Shop-Inhaber selbst im Dev Dashboard angelegt hat, sehen laut Shopify
+// aber schon mit read_orders die ganze Historie, obwohl der Scope nicht in der
+// Liste steht. Deshalb nicht nur die Liste lesen, sondern nachsehen: gibt es
+// eine Bestellung, die aelter als 70 Tage ist?
 async function canReadAllOrders(): Promise<boolean> {
   if (scopeCache && Date.now() - scopeCache.at < 60 * 60_000) return scopeCache.allOrders;
+  const cutoff = addDays(berlinToday(), -70);
   const data = await adminGraphQL<{
     currentAppInstallation: { accessScopes: { handle: string }[] };
-  }>(`{ currentAppInstallation { accessScopes { handle } } }`, {}, 3600);
-  const allOrders = data.currentAppInstallation.accessScopes.some(
-    (s) => s.handle === "read_all_orders"
+    orders: { edges: { node: { id: string } }[] };
+  }>(
+    `query Probe($q: String!) {
+      currentAppInstallation { accessScopes { handle } }
+      orders(first: 1, query: $q) { edges { node { id } } }
+    }`,
+    { q: `created_at:<${cutoff}` },
+    3600
   );
+  const allOrders =
+    data.currentAppInstallation.accessScopes.some((s) => s.handle === "read_all_orders") ||
+    data.orders.edges.length > 0;
   scopeCache = { at: Date.now(), allOrders };
   return allOrders;
 }
