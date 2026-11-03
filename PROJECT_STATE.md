@@ -224,15 +224,23 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   - **Live verifiziert 03.11. (Leons Admin-Sitzung):** Import ok, Oktober 2026 vs Oktober 2025:
     Umsatz 24.141,07 EUR / 130 Bestellungen (Shopify Analytics 24.120 / 130), Besucher 19.502 (eigener
     Zaehler) vs 21.216 (Shopify), Warenkorb/Kasse Vorjahr 871/443.
-  - **Luecke:** die App "SickMotos Panel" hat KEIN `read_all_orders`, Shopify liefert nur 60 Tage
-    Bestellungen (per echter Abfrage geprueft: keine Bestellung aelter als 70 Tage sichtbar). Das
-    Dashboard prueft das live (Probe-Abfrage, 10 Min Cache) und zeigt aeltere Umsatztage als "—".
-    **Stand Fix:** neue App-Version `sickmotos-panel-4-all-orders` im Dev Dashboard ausgefuellt
-    (Scopes read_customers,read_orders,read_all_orders, zusaetzlicher Redirect
-    https://sickmotos.com/api/shopify/oauth/callback), "Release" muss Leon selbst klicken (Classifier
-    blockt Berechtigungs-Freigaben). Danach Freigabe im Shop. Falls Shopify dafuer einen neuen Token
-    ausstellt: der OAuth-Callback speichert ihn seit commit e764c75 selbst in Redis
-    (`sm:shopify:admin-token:v1`, geht dem Env-Wert vor) und zeigt ihn NICHT mehr an.
+  - **60-Tage-Grenze behoben (03.11., live verifiziert):** die App "SickMotos Panel" durfte nur 60
+    Tage Bestellungen lesen (per Probe-Abfrage bewiesen, nicht nur aus der Scope-Liste geschlossen).
+    Neue App-Version `sickmotos-panel-4-all-orders` im Dev Dashboard (Scopes read_customers,
+    read_orders, read_all_orders; zusaetzlicher Redirect https://sickmotos.com/api/shopify/oauth/callback),
+    Shopify hat read_all_orders OHNE Antrag angenommen. Release hat Leon geklickt, die Freigabe im
+    Shop ("Update" auf der Authorize-Seite der App im Shopify-Admin) ich auf Leons Ansage. Der
+    bestehende Offline-Token bekam die Berechtigung ohne neuen Token, kein Redeploy noetig.
+    Falls je ein neuer Token noetig wird: der OAuth-Callback speichert ihn seit commit e764c75 selbst
+    in Redis (`sm:shopify:admin-token:v1`, geht dem Env-Wert vor) und zeigt ihn nicht mehr an.
+  - **Monatsabgleich 2026 gegen Shopify Analytics (ShopifyQL FROM sales, gleiche Tage):** alle Monate
+    gleich bis auf stornierte Bestellungen, die Shopify mitzaehlt und wir nicht. 2026 sind das genau
+    10 (Maerz 1, Juli 2, August 2, September 5), Jahr bis 03.11.: Shopify 2.441 Bestellungen /
+    426.715 EUR, Dashboard 2.431 / 424.742 EUR. Oktober 2026 vs Oktober 2025: 24.141 vs 42.472 EUR,
+    130 vs 229 Bestellungen (minus 43,2 %), Ø Warenkorb gleich (185,70 vs 185,47).
+    **Bug dabei gefunden und gefixt (3ca6b02):** ein Monat, der ueber die 60-Tage-Grenze reichte,
+    wurde halb gespeichert (1. bis 4.9. fehlten, 28 Bestellungen). Solche Monate werden nie mehr
+    gecacht, Cache-Version v3.
   - **Thomas' WhatsApp vom 03.11. (Shopify-Screenshots, Jahr bis heute vs Vorjahr):** "Checkout
     abgeschlossen Verlust 14 Prozent, Sprache? Warenkorb hinzugefuegt minus 40%, warum, wie wird das
     gezaehlt?" Antwort: Warenkorb -40% und Sitzungen -58% sind Zaehlartefakte (siehe oben, ausserdem
@@ -1692,8 +1700,7 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     Dictionary-String steht auch im HTML der alten Version, Deploy-Erkennung nur ueber den <title>.
 
 ### Offen / TODO
-- **NEU 03.11.:** (1) `read_all_orders` fuer die App "SickMotos Panel" (Leon), sonst vergleicht das
-  Dashboard Umsatz nur 60 Tage zurueck. (2) Thomas' Wunsch "Auf Bestellung gefertigt" erst in der
+- **NEU 03.11.:** (1) `read_all_orders` ERLEDIGT (siehe oben). (2) Thomas' Wunsch "Auf Bestellung gefertigt" erst in der
   Bestellmail: VORSCHLAG, nicht umgesetzt. Achtung, die Lieferzeit selbst muss vor der Bestellung
   sichtbar bleiben (Pflichtangabe im Fernabsatz), nur der Hinweis "auf Bestellung gefertigt" kann
   wandern. (3) Bot-Guthaben: Bot antwortet live, Kontostand nur mit Login auf platform.claude.com
