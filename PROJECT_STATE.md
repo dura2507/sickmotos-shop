@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-11-02.
+> Stand: 2026-11-03.
 
 ---
 
@@ -198,6 +198,41 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   **Offen (Thomas' Datenseite, aus dem Audit):** ~18 Produkte mit falschem „Beta"-Tag (sind
   KTM-Duke/Yamaha-MT/Fantic-Teile), Tag „Beta RR 50 LC" auf reinen 125er-Lampen, 14 Produkte
   ohne product_type → in Shopify pflegen, dann wird die Zuordnung noch schärfer.
+
+- **Analytics-Dashboard mit freiem Zeitraum + Vorher/Nachher-Vergleich (03.11., commit 4e5c0c9),
+  ausgeloest von Thomas: "sieht die Stats nicht mehr wie davor, kann frueher und jetzt nicht vergleichen".**
+  - **Ursache der Beschwerde, in Shopify Analytics gemessen (ShopifyQL, nur human):** seit dem Umzug
+    (09.07. mittags) sieht Shopify nur noch die Kasse. Sitzungen pro Monat: Jun 2026 30.133, Jul 8.807,
+    Aug 1.111, Sep 1.399, Okt 1.426. "In den Warenkorb": Jun 974, Aug 11, Sep 12, Okt 7. "Kasse
+    erreicht" zaehlt Shopify weiter (Okt 2025 443, Okt 2026 459), "Kauf abgeschlossen" Okt 2025 191,
+    Okt 2026 96. Shopifys Sitzungs- und Warenkorb-Vergleiche ueber den Umzug sind damit wertlos.
+  - **Gebaut:** `/admin/dashboard` mit Schnellwahl (Heute bis 12 Monate, "Seit Umzug"), freiem
+    Von-Bis (GET-Formular), Vergleich Vorperiode / Vorjahr / eigener Zeitraum / keiner, sechs Karten
+    (Umsatz, Bestellungen, Ø Warenkorb, Besucher, In den Warenkorb, Kasse erreicht), Diagramme und
+    Tabelle pro Tag/Woche/Monat (Vergleich Tag fuer Tag gespiegelt), gelbe Umzugs-Markierung.
+    Ueber verschiedene Zaehlweisen hinweg steht bewusst KEIN Prozentwert, sondern beide Zahlen.
+    `src/lib/dashboardRange.ts`, `src/lib/shopifyHistory.ts`, `loadSalesDays` in salesReport.ts
+    (Monate einzeln, abgeschlossene 6 h in Redis, Drossel-Retry), `loadDailyTraffic` in analyticsStore.ts.
+  - **Shopify-Verlauf importiert:** 889 Tage (01.02.2024 bis 08.07.2026, Besucher/Sitzungen/Warenkorb/
+    Kasse pro Tag) liegen in Redis `sm:shopify:daily:v1`, Import-Seite `/admin/dashboard/history`.
+    Monatssummen gegen Shopifys eigene Monatstabelle geprueft (identisch). Bewusst NICHT im Repo.
+  - **Datenverlust gestoppt:** die eigenen Tageszaehler liefen nach 90 Tagen ab (Juli bis Anfang August
+    2026 deshalb weg). Jetzt dauerhaft, Besucherzahl wird pro Tag festgeschrieben, nur die Hash-Sets
+    laufen weiter ab. Einmal-Umstellung per Flag `sm:vis:persisted:v1`.
+  - **Neu gezaehlt ab 04.11.2026:** "In den Warenkorb" serverseitig in /api/cart (after()), "Kasse
+    erreicht" per Beacon beim Klick auf "Zur Kasse", je eindeutige Besucher pro Tag wie bei Shopify.
+  - **Live verifiziert 03.11. (Leons Admin-Sitzung):** Import ok, Oktober 2026 vs Oktober 2025:
+    Umsatz 24.141,07 EUR / 130 Bestellungen (Shopify Analytics 24.120 / 130), Besucher 19.502 (eigener
+    Zaehler) vs 21.216 (Shopify), Warenkorb/Kasse Vorjahr 871/443.
+  - **Luecke:** die App "SickMotos Panel" hat KEIN `read_all_orders`, Shopify liefert nur 60 Tage
+    Bestellungen. Das Dashboard erkennt das und zeigt aeltere Umsatztage als "—" mit Hinweis.
+    Fix = Scope ergaenzen + App neu autorisieren + neuen Offline-Token in Vercel (Leon, ungetestet).
+  - **Thomas' WhatsApp vom 03.11. (Shopify-Screenshots, Jahr bis heute vs Vorjahr):** "Checkout
+    abgeschlossen Verlust 14 Prozent, Sprache? Warenkorb hinzugefuegt minus 40%, warum, wie wird das
+    gezaehlt?" Antwort: Warenkorb -40% und Sitzungen -58% sind Zaehlartefakte (siehe oben, ausserdem
+    hatte Shopify Jan bis Mar 2025 auffaellig 120.000 bis 158.000 Sitzungen pro Monat). "Kasse
+    erreicht" +3% ist echt. Sprache: ja, deutscher Checkout lief bis 02.11. auf Englisch (gefixt).
+    Dazu sein Wunsch: "Auf Bestellung gefertigt" erst in der Bestellmail, nicht vorher (offen, siehe TODO).
 
 ### In Arbeit / muss verifiziert werden
 - **Shopify Admin Orders** (`/admin/orders` = echte Bestellungen): OAuth-Offline-Token-
@@ -1651,6 +1686,12 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     Dictionary-String steht auch im HTML der alten Version, Deploy-Erkennung nur ueber den <title>.
 
 ### Offen / TODO
+- **NEU 03.11.:** (1) `read_all_orders` fuer die App "SickMotos Panel" (Leon), sonst vergleicht das
+  Dashboard Umsatz nur 60 Tage zurueck. (2) Thomas' Wunsch "Auf Bestellung gefertigt" erst in der
+  Bestellmail: VORSCHLAG, nicht umgesetzt. Achtung, die Lieferzeit selbst muss vor der Bestellung
+  sichtbar bleiben (Pflichtangabe im Fernabsatz), nur der Hinweis "auf Bestellung gefertigt" kann
+  wandern. (3) Bot-Guthaben: Bot antwortet live, Kontostand nur mit Login auf platform.claude.com
+  pruefbar. (4) Repo-Sichtbarkeit pruefen (Leon).
 - **KONSOLIDIERTE LISTE (Stand 27.09., ersetzt den Ueberblick, aeltere Punkte darunter bleiben als Kontext):**
   - **Thomas (Daten/Entscheidungen):** (a) Fotos fuer die 2 Angel-Eye-V6.1-COB-Lampen ohne Bild
     (kritischer SC-Punkt); (b) Editions-Namen im Titel fuer die 63 identischen Styles-Kits (Tenere 700,
