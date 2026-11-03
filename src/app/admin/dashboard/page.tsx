@@ -145,6 +145,7 @@ function StatCard({
   cmpValue,
   state,
   coverage,
+  perDay,
   hasCompare,
 }: {
   label: string;
@@ -154,6 +155,9 @@ function StatCard({
   cmpValue: string;
   state: Comparable;
   coverage?: string;
+  // Bei Luecken ist die Summe kein fairer Vergleich (90 Tage gegen 62 Tage mit
+  // Daten). Der Schnitt pro Tag mit Daten ist es.
+  perDay?: string;
   hasCompare: boolean;
 }) {
   return (
@@ -172,9 +176,34 @@ function StatCard({
           <span className="text-fg-muted">Vergleich: {cmpValue}</span>
         </p>
       )}
+      {perDay && <p className="mt-1 text-xs text-fg-muted">{perDay}</p>}
       {coverage && <p className="mt-1 text-[11px] text-fg-dim">{coverage}</p>}
     </div>
   );
+}
+
+function perDayLine(cur: Agg, cmp: Agg | null): string | undefined {
+  if (!cmp || cur.covered === 0 || cmp.covered === 0) return undefined;
+  if (cur.covered === cur.total && cmp.covered === cmp.total) return undefined;
+  const a = Math.round(cur.sum / cur.covered);
+  const b = Math.round(cmp.sum / cmp.covered);
+  return `Ø pro Tag ${int(a)} zu ${int(b)}`;
+}
+
+function compareCoverage(cmp: Agg | null): string {
+  if (!cmp || cmp.covered === 0 || cmp.covered === cmp.total) return "";
+  return ` (nur ${cmp.covered} von ${cmp.total} Tagen)`;
+}
+
+// Warenkorb und Kasse zaehlt seit dem Umzug nur noch unser eigener Zaehler, und
+// der erst ab FUNNEL_FIRST_DAY. Ohne Hinweis sieht ein leerer Wert wie ein Fehler aus.
+function funnelNote(a: Agg, days: string[]): string | undefined {
+  if (a.covered === a.total) return undefined;
+  const gap = days.some((d) => d > SHOPIFY_LAST_FULL_DAY && d < FUNNEL_FIRST_DAY);
+  if (!gap) return coverageNote(a.covered, a.total);
+  return a.covered === 0
+    ? `Zählen wir erst ab ${fmtDay(FUNNEL_FIRST_DAY)}`
+    : `Daten für ${a.covered} von ${a.total} Tagen, gezählt erst ab ${fmtDay(FUNNEL_FIRST_DAY)}`;
 }
 
 function coverageNote(covered: number, total: number): string | undefined {
@@ -408,7 +437,8 @@ export default async function AdminDashboard({
         label: b.label,
         value: v.value,
         partial: v.partial,
-        cutover: b.days.includes(CUTOVER_DAY),
+        cutover:
+          b.days.includes(CUTOVER_DAY) || (cmpBuckets[i]?.days.includes(CUTOVER_DAY) ?? false),
         title: `${span(b.days)}: ${v.value != null ? format(v.value) : "keine Daten"}${v.partial ? " (unvollständig)" : ""}${cmpSpan}`,
       };
     });
@@ -417,6 +447,13 @@ export default async function AdminDashboard({
   const showCutoverNote = spansCutover(curDays) || (cmpDays.length > 0 && spansCutover(cmpDays));
   const touchesShopify = curDays[0] <= SHOPIFY_LAST_FULL_DAY || (cmpDays[0] ?? "9") <= SHOPIFY_LAST_FULL_DAY;
   const historyMissing = touchesShopify && history !== undefined && history.size === 0;
+  // Shopify hat von Dezember 2024 bis Maerz 2025 ein Vielfaches der ueblichen
+  // Besucher gezaehlt (Januar 2025: 149.334, sonst 12.000 bis 42.000 im Monat),
+  // die Bestellungen stiegen nicht mit. Wer dagegen vergleicht, sieht sonst
+  // "Besucher halbiert".
+  const touchesSpike = (days: string[]) =>
+    days.length > 0 && days[0] <= "2025-03-31" && days[days.length - 1] >= "2024-12-01";
+  const showSpikeNote = touchesSpike(curDays) || touchesSpike(cmpDays);
 
   const presetLinks = PRESETS.map((p) => ({ ...p, href: hrefFor(sel, { preset: p.key }) }));
   const cmpModes: CompareMode[] = ["prev", "year", "none"];
@@ -516,6 +553,14 @@ export default async function AdminDashboard({
             Die Datenbank antwortet gerade nicht. Umsätze sind davon nicht betroffen.
           </Notice>
         )}
+        {showSpikeNote && (
+          <Notice title="Besucherzahlen Dezember 2024 bis März 2025 mit Vorsicht lesen">
+            Shopify hat in diesen Monaten ein Vielfaches der üblichen Besucher gezählt (Januar 2025:
+            149.334, sonst 12.000 bis 42.000 im Monat), die Bestellungen sind damals nicht
+            mitgestiegen. Ein Besuchervergleich mit diesen Monaten sagt deshalb wenig aus. Umsatz und
+            Bestellungen sind davon nicht betroffen.
+          </Notice>
+        )}
         {historyMissing && (
           <Notice title="Shopify-Besucher vor dem Umzug fehlen noch">
             Der Verlauf aus Shopify ist noch nicht importiert.{" "}
@@ -561,8 +606,9 @@ export default async function AdminDashboard({
           value={fmtAgg(vC, int)}
           cur={vC.sum}
           cmp={vP?.sum ?? 0}
-          cmpValue={fmtAgg(vP, int)}
+          cmpValue={`${fmtAgg(vP, int)}${compareCoverage(vP)}`}
           state={comparability(vC, vP)}
+          perDay={perDayLine(vC, vP)}
           coverage={coverageNote(vC.covered, vC.total)}
           hasCompare={hasCompare}
         />
@@ -571,9 +617,10 @@ export default async function AdminDashboard({
           value={fmtAgg(cC, int)}
           cur={cC.sum}
           cmp={cP?.sum ?? 0}
-          cmpValue={fmtAgg(cP, int)}
+          cmpValue={`${fmtAgg(cP, int)}${compareCoverage(cP)}`}
           state={comparability(cC, cP)}
-          coverage={coverageNote(cC.covered, cC.total)}
+          perDay={perDayLine(cC, cP)}
+          coverage={funnelNote(cC, curDays)}
           hasCompare={hasCompare}
         />
         <StatCard
@@ -581,9 +628,10 @@ export default async function AdminDashboard({
           value={fmtAgg(kC, int)}
           cur={kC.sum}
           cmp={kP?.sum ?? 0}
-          cmpValue={fmtAgg(kP, int)}
+          cmpValue={`${fmtAgg(kP, int)}${compareCoverage(kP)}`}
           state={comparability(kC, kP)}
-          coverage={coverageNote(kC.covered, kC.total)}
+          perDay={perDayLine(kC, kP)}
+          coverage={funnelNote(kC, curDays)}
           hasCompare={hasCompare}
         />
       </section>
@@ -601,7 +649,7 @@ export default async function AdminDashboard({
           previous={visCmpB.map((b) => b.value)}
           note={
             showCutoverNote
-              ? "Gelbe Linie: Umzug der Storefront am 09.07.2026. Davor zählte Shopify die Besucher, danach unser eigener Zähler."
+              ? "Gelbe Linie: Umzug der Storefront am 09.07.2026 (im Zeitraum oder im Vergleich). Davor zählte Shopify die Besucher, danach unser eigener Zähler. Vom 09.07. bis 05.08.2026 gibt es keine Besucherdaten."
               : undefined
           }
         />
@@ -626,7 +674,7 @@ export default async function AdminDashboard({
             <tbody>
               {curBuckets.map((b, i) => {
                 const cb = cmpBuckets[i];
-                const cell = (cv: { value: number | null; partial: boolean }, pv: { value: number | null } | undefined, f: (n: number) => string) => (
+                const cell = (cv: { value: number | null; partial: boolean }, pv: { value: number | null; partial?: boolean } | undefined, f: (n: number) => string) => (
                   <td className="px-3 py-2 text-right align-top">
                     <span className={cv.partial ? "text-fg-muted" : "text-fg"}>
                       {cv.value != null ? f(cv.value) : dash}
@@ -635,6 +683,7 @@ export default async function AdminDashboard({
                     {cb && (
                       <span className="block text-[10px] text-fg-dim">
                         {pv?.value != null ? f(pv.value) : dash}
+                        {pv?.value != null && pv.partial ? "*" : ""}
                       </span>
                     )}
                   </td>
@@ -678,8 +727,9 @@ export default async function AdminDashboard({
           herausgefiltert). Seit dem Umzug sieht Shopify nur noch die Kasse, deshalb zeigt Shopify
           selbst seitdem kaum Besucher. Beide Zählweisen messen dasselbe, aber nicht identisch.
           Darum steht beim Vergleich über den Umzug hinweg kein Prozentwert, sondern beide Zahlen.
-          Vom 10.07. bis Anfang August 2026 fehlen die eigenen Zählerdaten (wurden damals nach 90
-          Tagen gelöscht, seit 03.11.2026 bleiben sie dauerhaft).
+          Vom 09.07. bis 05.08.2026 fehlen Besucherdaten (der eigene Zähler hat sie damals
+          nach 90 Tagen gelöscht, seit 03.11.2026 bleiben sie dauerhaft). Bei Lücken zeigen die
+          Karten zusätzlich den Schnitt pro Tag, der ist dann der faire Vergleich.
         </p>
         <p>
           <strong className="text-fg-muted">In den Warenkorb / Kasse erreicht</strong>: Besucher
