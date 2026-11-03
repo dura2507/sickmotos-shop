@@ -666,9 +666,11 @@ export default async function AdminDashboard({
       <div className="space-y-2 text-[11px] leading-relaxed text-fg-dim">
         <p>
           <strong className="text-fg-muted">Umsatz und Bestellungen</strong> kommen direkt aus den
-          Shopify-Bestellungen (ohne Test und Storno, Erstattungen abgezogen, Berliner Zeit) und
-          decken sich mit Shopify Analytics auf etwa 0,1%. Sie sind vor und nach dem Umzug
-          gleich gemessen und damit voll vergleichbar. Steuern im Zeitraum: {eur(sC.taxes)}.
+          Shopify-Bestellungen (ohne Test, Erstattungen abgezogen, Berliner Zeit) und decken sich
+          Monat für Monat mit Shopify Analytics. Einziger Unterschied: stornierte Bestellungen
+          zählt Shopify mit, wir nicht, ein Monat kann deshalb ein, zwei Bestellungen weniger
+          zeigen. Vor und nach dem Umzug gleich gemessen und damit voll vergleichbar. Steuern im
+          Zeitraum: {eur(sC.taxes)}.
         </p>
         <p>
           <strong className="text-fg-muted">Besucher</strong> bis 08.07.2026 aus Shopify (Besucher
