@@ -225,8 +225,14 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     Umsatz 24.141,07 EUR / 130 Bestellungen (Shopify Analytics 24.120 / 130), Besucher 19.502 (eigener
     Zaehler) vs 21.216 (Shopify), Warenkorb/Kasse Vorjahr 871/443.
   - **Luecke:** die App "SickMotos Panel" hat KEIN `read_all_orders`, Shopify liefert nur 60 Tage
-    Bestellungen. Das Dashboard erkennt das und zeigt aeltere Umsatztage als "—" mit Hinweis.
-    Fix = Scope ergaenzen + App neu autorisieren + neuen Offline-Token in Vercel (Leon, ungetestet).
+    Bestellungen (per echter Abfrage geprueft: keine Bestellung aelter als 70 Tage sichtbar). Das
+    Dashboard prueft das live (Probe-Abfrage, 10 Min Cache) und zeigt aeltere Umsatztage als "—".
+    **Stand Fix:** neue App-Version `sickmotos-panel-4-all-orders` im Dev Dashboard ausgefuellt
+    (Scopes read_customers,read_orders,read_all_orders, zusaetzlicher Redirect
+    https://sickmotos.com/api/shopify/oauth/callback), "Release" muss Leon selbst klicken (Classifier
+    blockt Berechtigungs-Freigaben). Danach Freigabe im Shop. Falls Shopify dafuer einen neuen Token
+    ausstellt: der OAuth-Callback speichert ihn seit commit e764c75 selbst in Redis
+    (`sm:shopify:admin-token:v1`, geht dem Env-Wert vor) und zeigt ihn NICHT mehr an.
   - **Thomas' WhatsApp vom 03.11. (Shopify-Screenshots, Jahr bis heute vs Vorjahr):** "Checkout
     abgeschlossen Verlust 14 Prozent, Sprache? Warenkorb hinzugefuegt minus 40%, warum, wie wird das
     gezaehlt?" Antwort: Warenkorb -40% und Sitzungen -58% sind Zaehlartefakte (siehe oben, ausserdem
