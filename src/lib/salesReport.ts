@@ -146,7 +146,7 @@ function aggregate(nodes: OrderNode[], fromDay: string, toDay: string): SalesDay
 // tauchen damit spaetestens nach 6 Stunden auf. Der laufende Monat 60 Sekunden
 // pro Instanz. So kostet ein Jahresvergleich nur beim ersten Aufruf Zeit.
 const MONTH_CACHE_SEC = 6 * 60 * 60;
-const MONTH_KEY = (m: string) => `sm:sales:month:v2:${m}`;
+const MONTH_KEY = (m: string) => `sm:sales:month:v3:${m}`;
 const liveMonth = new Map<string, { at: number; data: SalesDay[] }>();
 
 function monthBounds(month: string): [string, string] {
@@ -155,10 +155,17 @@ function monthBounds(month: string): [string, string] {
   return [`${month}-01`, `${month}-${String(last).padStart(2, "0")}`];
 }
 
-async function loadMonth(month: string, today: string): Promise<SalesDay[]> {
+async function loadMonth(
+  month: string,
+  today: string,
+  availableFrom: string | null
+): Promise<SalesDay[]> {
   const [first, last] = monthBounds(month);
   if (first > today) return [];
-  const closed = last < today;
+  // Ein Monat, der ueber die 60-Tage-Grenze reicht, kommt von Shopify nur halb.
+  // So einen nie speichern, sonst bleibt die Luecke nach einer neuen
+  // Berechtigung stundenlang haengen (passiert am 03.11. mit dem 1. bis 4.9.).
+  const closed = last < today && (!availableFrom || first >= availableFrom);
   if (closed) {
     const hit = await safe<SalesDay[] | null>(
       "sales.monthCache.get",
@@ -170,7 +177,7 @@ async function loadMonth(month: string, today: string): Promise<SalesDay[]> {
     const live = liveMonth.get(month);
     if (live && Date.now() - live.at < 60_000) return live.data;
   }
-  const to = closed ? last : today;
+  const to = last < today ? last : today;
   const data = aggregate(await fetchOrders(first, to), first, to);
   if (closed) {
     await safe(
@@ -239,7 +246,7 @@ export async function loadSalesDays(dayLists: string[][]): Promise<SalesDays[]> 
     const list = Array.from(months).sort();
     const byDay = new Map<string, SalesDay>();
     for (let i = 0; i < list.length; i += 3) {
-      const chunk = await Promise.all(list.slice(i, i + 3).map((m) => loadMonth(m, today)));
+      const chunk = await Promise.all(list.slice(i, i + 3).map((m) => loadMonth(m, today, availableFrom)));
       for (const month of chunk) for (const d of month) byDay.set(d.date, d);
     }
     return dayLists.map((days) => ({
