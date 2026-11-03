@@ -192,7 +192,8 @@ let scopeCache: { at: number; allOrders: boolean } | null = null;
 // Liste steht. Deshalb nicht nur die Liste lesen, sondern nachsehen: gibt es
 // eine Bestellung, die aelter als 70 Tage ist?
 async function canReadAllOrders(): Promise<boolean> {
-  if (scopeCache && Date.now() - scopeCache.at < 60 * 60_000) return scopeCache.allOrders;
+  // 10 Minuten, damit eine neu erteilte Berechtigung ohne Redeploy ankommt.
+  if (scopeCache && Date.now() - scopeCache.at < 10 * 60_000) return scopeCache.allOrders;
   const cutoff = addDays(berlinToday(), -70);
   const data = await adminGraphQL<{
     currentAppInstallation: { accessScopes: { handle: string }[] };
@@ -203,7 +204,7 @@ async function canReadAllOrders(): Promise<boolean> {
       orders(first: 1, query: $q) { edges { node { id } } }
     }`,
     { q: `created_at:<${cutoff}` },
-    3600
+    0
   );
   const allOrders =
     data.currentAppInstallation.accessScopes.some((s) => s.handle === "read_all_orders") ||
@@ -223,7 +224,7 @@ export async function loadSalesDays(dayLists: string[][]): Promise<SalesDays[]> 
       days: days.map(() => null),
       fetchError,
     }));
-  if (!hasAdminToken()) return blank(false);
+  if (!(await hasAdminToken())) return blank(false);
 
   const today = berlinToday();
   try {

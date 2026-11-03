@@ -152,7 +152,7 @@ async function fetchOrdersInWindow(sinceIso: string): Promise<OrderSummary[]> {
 }
 
 export async function loadOrdersSnapshot(): Promise<OrdersSnapshot> {
-  if (!hasAdminToken()) return EMPTY_SNAPSHOT;
+  if (!(await hasAdminToken())) return EMPTY_SNAPSHOT;
 
   const since30 = new Date();
   since30.setUTCDate(since30.getUTCDate() - 29);

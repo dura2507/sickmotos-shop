@@ -81,7 +81,7 @@ function OrderRow({ o }: { o: OrderSummary }) {
 }
 
 export default async function AdminOrders() {
-  const configured = hasAdminToken();
+  const configured = await hasAdminToken();
   const data = await loadOrdersSnapshot();
   const maxDay = data.perDay.reduce((m, d) => Math.max(m, d.revenue), 0);
   const orderTrend =

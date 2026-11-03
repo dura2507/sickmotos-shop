@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { isValidSession, SESSION_COOKIE_NAME } from "@/lib/adminSession";
+import { saveAdminToken } from "@/lib/shopifyAdmin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -66,19 +67,25 @@ export async function GET(req: Request) {
     return new NextResponse("No access_token in response", { status: 502 });
   }
 
-  const html = `<!doctype html><html><head><meta charset="utf-8"><title>Token</title>
+  // Der Token wird direkt gespeichert und nie angezeigt, damit ihn niemand
+  // kopieren oder abschreiben muss. Fehlt Redis, bitte erneut autorisieren.
+  const saved = await saveAdminToken(token, json.scope ?? "");
+  const scope = (json.scope ?? "?").replace(/[<>&"]/g, "");
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>Shopify verbunden</title>
 <style>body{font-family:system-ui;background:#0a0a0a;color:#eee;padding:2rem;max-width:720px;margin:0 auto}
-code{display:block;background:#1a1a1a;padding:1rem;border:1px solid #333;border-radius:6px;word-break:break-all;margin:1rem 0;font-size:12px}
-h1{font-size:1.5rem}a{color:#e10600}</style></head>
-<body><h1>Shopify Access Token</h1>
-<p>Scope: <strong>${json.scope ?? "?"}</strong></p>
-<p>Kopiere den Token, füge ihn in Vercel als <code>SHOPIFY_ADMIN_API_TOKEN</code> ein, dann Redeploy:</p>
-<code id="t">${token}</code>
-<p><a href="/admin/orders">→ zurück zu Bestellungen</a></p>
+h1{font-size:1.5rem}a{color:#e10600}.bad{color:#e10600}</style></head>
+<body><h1>${saved ? "Shopify-Verbindung erneuert" : "Speichern fehlgeschlagen"}</h1>
+<p>Berechtigungen: <strong>${scope}</strong></p>
+${
+  saved
+    ? "<p>Der neue Schlüssel ist gespeichert und wird ab sofort benutzt. Kein Kopieren, kein Redeploy nötig.</p>"
+    : '<p class="bad">Die Datenbank hat nicht geantwortet. Bitte die Autorisierung in ein paar Minuten wiederholen.</p>'
+}
+<p><a href="/admin/dashboard">→ zu Analytics</a></p>
 </body></html>`;
 
   return new NextResponse(html, {
-    status: 200,
+    status: saved ? 200 : 503,
     headers: { "Content-Type": "text/html; charset=utf-8" },
   });
 }
