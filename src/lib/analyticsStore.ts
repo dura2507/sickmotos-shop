@@ -13,14 +13,34 @@ const KEY_PATHS = (d: string) => `sm:vis:${d}:paths`;
 const KEY_COUNTRIES = (d: string) => `sm:vis:${d}:countries`;
 const KEY_REFERRERS = (d: string) => `sm:vis:${d}:referrers`;
 const KEY_LOCALES = (d: string) => `sm:vis:${d}:locales`;
+// Tageswerte, die nach Tagesende aus den Hash-Sets festgeschrieben werden. Die
+// Sets selbst (Hashes aus IP + Browser) laufen nach 90 Tagen ab, die Zahl bleibt.
+const KEY_VCOUNT = (d: string) => `sm:vis:${d}:vcount`;
+// Warenkorb und Kasse, gezaehlt wie Shopify: eindeutige Besucher pro Tag, die
+// etwas in den Korb gelegt bzw. auf "Zur Kasse" geklickt haben.
+const KEY_CART = (d: string) => `sm:fun:${d}:cart`;
+const KEY_CCOUNT = (d: string) => `sm:fun:${d}:ccount`;
+const KEY_CHECKOUT = (d: string) => `sm:fun:${d}:checkout`;
+const KEY_KCOUNT = (d: string) => `sm:fun:${d}:kcount`;
 
-const HIT_TTL_SEC = 60 * 60 * 24 * 90; // keep raw counters 90 days
+// Nur noch die Hash-Sets laufen ab. Bis 03.11.2026 liefen ALLE Tageszaehler
+// nach 90 Tagen ab, dadurch fehlen die Besucher vom 10.07. bis Anfang August.
+const SET_TTL_SEC = 60 * 60 * 24 * 90;
+
+// Erster voller Tag, fuer den Warenkorb und Kasse gezaehlt werden.
+export const FUNNEL_FIRST_DAY = "2026-11-04";
 
 // Bucket by the shop's timezone (Europe/Berlin), same as the sales report, so
 // the session days line up 1:1 with the revenue days in the dashboard. Using
 // UTC here shifted the first ~2h of every Berlin day into the wrong bucket.
 function today(): string {
   return new Date().toLocaleDateString("en-CA", { timeZone: "Europe/Berlin" });
+}
+
+function addDays(day: string, days: number): string {
+  const d = new Date(`${day}T12:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
 }
 
 function dateKey(offsetDaysFromToday: number): string {
@@ -75,13 +95,44 @@ function normalizePath(p: string): string {
 const BOT_UA =
   /bot|crawl|spider|slurp|mediapartners|bingpreview|headless|lighthouse|phantom|puppeteer|playwright|pingdom|uptime|monitor|curl|wget|python-requests|go-http|java\/|okhttp|facebookexternalhit|embedly|whatsapp|telegrambot|preview|scrap/i;
 
-// A day's keys only need a TTL once. Upstash bills every command inside a
-// pipeline separately, so re-stamping six expires on every hit doubled the
-// price of a pageview for nothing. The set lives per lambda instance, a cold
-// one stamps once more, and NX keeps that from sliding the expiry forward.
-// Folge davon: die 90 Tage laufen ab dem ersten Treffer des Tages, nicht ab
-// dem letzten.
-const ttlStamped = new Set<string>();
+// Schreibt die Tageszahl eines abgeschlossenen Tages fest, solange das Set noch
+// existiert. Ein Kommando fuer alle drei Sets, idempotent.
+const FINALIZE_SCRIPT = `
+for i = 1, #KEYS, 2 do
+  if redis.call('EXISTS', KEYS[i + 1]) == 0 then
+    local n = redis.call('SCARD', KEYS[i])
+    if n > 0 then redis.call('SET', KEYS[i + 1], n) end
+  end
+end
+return 1`;
+
+function finalizeKeys(d: string): string[] {
+  return [
+    KEY_VISITORS(d), KEY_VCOUNT(d),
+    KEY_CART(d), KEY_CCOUNT(d),
+    KEY_CHECKOUT(d), KEY_KCOUNT(d),
+  ];
+}
+
+// Einmal pro Tag und Instanz: TTL auf das Set des Tages und die Zahl von
+// gestern festschreiben. Upstash rechnet jedes Kommando einer Pipeline einzeln
+// ab, deshalb nicht bei jedem Aufruf. NX verhindert, dass eine kalte Instanz
+// den Ablauf nach hinten schiebt.
+const dayStamped = new Set<string>();
+
+function stampDay(pipe: ReturnType<NonNullable<typeof redis>["pipeline"]>, d: string, setKey: string) {
+  const mark = `${d}:${setKey}`;
+  if (dayStamped.has(mark)) return null;
+  pipe.expire(setKey, SET_TTL_SEC, "NX");
+  pipe.eval(FINALIZE_SCRIPT, finalizeKeys(addDays(d, -1)), []);
+  return mark;
+}
+
+function rememberStamp(mark: string | null) {
+  if (!mark) return;
+  if (dayStamped.size > 12) dayStamped.clear(); // gestern ist Ballast
+  dayStamped.add(mark);
+}
 
 export async function recordVisit(input: {
   path: string;
@@ -110,15 +161,7 @@ export async function recordVisit(input: {
   pipe.hincrby(KEY_COUNTRIES(d), country, 1);
   pipe.hincrby(KEY_REFERRERS(d), referrer, 1);
   pipe.hincrby(KEY_LOCALES(d), locale, 1);
-  const stampTtl = !ttlStamped.has(d);
-  if (stampTtl) {
-    pipe.expire(KEY_VIEWS(d), HIT_TTL_SEC, "NX");
-    pipe.expire(KEY_VISITORS(d), HIT_TTL_SEC, "NX");
-    pipe.expire(KEY_PATHS(d), HIT_TTL_SEC, "NX");
-    pipe.expire(KEY_COUNTRIES(d), HIT_TTL_SEC, "NX");
-    pipe.expire(KEY_REFERRERS(d), HIT_TTL_SEC, "NX");
-    pipe.expire(KEY_LOCALES(d), HIT_TTL_SEC, "NX");
-  }
+  const mark = stampDay(pipe, d, KEY_VISITORS(d));
   const ok = await safe(
     "analytics.recordVisit",
     async () => {
@@ -127,11 +170,33 @@ export async function recordVisit(input: {
     },
     false
   );
-  // Den TTL erst als gesetzt merken, wenn der Schreibvorgang wirklich lief.
-  if (ok && stampTtl) {
-    if (ttlStamped.size > 2) ttlStamped.clear(); // gestern ist Ballast
-    ttlStamped.add(d);
-  }
+  // Den Stempel erst merken, wenn der Schreibvorgang wirklich lief.
+  if (ok) rememberStamp(mark);
+}
+
+// Warenkorb ("cart", serverseitig in /api/cart) und Kasse ("checkout", Beacon
+// beim Klick auf "Zur Kasse"). Gleicher Tages-Hash wie bei den Besuchern, also
+// zaehlt jeder Besucher pro Tag hoechstens einmal, wie bei Shopify.
+export async function recordFunnel(
+  kind: "cart" | "checkout",
+  input: { ip: string | null; ua: string | null }
+) {
+  if (!redis) return;
+  if (!input.ua || BOT_UA.test(input.ua)) return;
+  const d = today();
+  const key = kind === "cart" ? KEY_CART(d) : KEY_CHECKOUT(d);
+  const pipe = redis.pipeline();
+  pipe.sadd(key, sessionHash(input.ip || "", input.ua || ""));
+  const mark = stampDay(pipe, d, key);
+  const ok = await safe(
+    "analytics.recordFunnel",
+    async () => {
+      await pipe.exec();
+      return true;
+    },
+    false
+  );
+  if (ok) rememberStamp(mark);
 }
 
 export type DailyBucket = { date: string; views: number; visitors: number };
@@ -181,22 +246,123 @@ async function topN(days: string[], key: (d: string) => string, n: number): Prom
     .slice(0, n);
 }
 
-// Die Aufrufe eines ganzen Fensters kommen mit einem MGET zurueck. Die
-// eindeutigen Besucher brauchen weiter ein SCARD pro Tag, fuer Sets gibt es
-// kein Sammelkommando.
+// Ein MGET fuer die Aufrufe, eins fuer die festgeschriebenen Besucherzahlen.
+// Nur Tage ohne festgeschriebene Zahl (heute, oder gestern vor dem ersten
+// Treffer des Tages) brauchen noch ein SCARD auf das Set.
+async function readCounts(
+  days: string[],
+  countKey: (d: string) => string,
+  setKey: (d: string) => string
+): Promise<number[]> {
+  const counts = await redis!.mget<(number | string | null)[]>(days.map(countKey));
+  const missing = days
+    .map((d, i) => (counts?.[i] == null ? i : -1))
+    .filter((i) => i >= 0);
+  const scards = await Promise.all(missing.map((i) => redis!.scard(setKey(days[i]))));
+  const out = days.map((_, i) => Number(counts?.[i] ?? 0));
+  missing.forEach((i, j) => {
+    out[i] = Number(scards[j] ?? 0);
+  });
+  return out;
+}
+
 async function readDailyBuckets(days: string[]): Promise<DailyBucket[]> {
   if (!redis || days.length === 0) {
     return days.map((date) => ({ date, views: 0, visitors: 0 }));
   }
   const [views, visitors] = await Promise.all([
     redis.mget<(number | null)[]>(days.map(KEY_VIEWS)),
-    Promise.all(days.map((d) => redis!.scard(KEY_VISITORS(d)))),
+    readCounts(days, KEY_VCOUNT, KEY_VISITORS),
   ]);
   return days.map((date, i) => ({
     date,
     views: Number(views?.[i] ?? 0),
-    visitors: Number(visitors[i] ?? 0),
+    visitors: visitors[i] ?? 0,
   }));
+}
+
+// Einmalige Umstellung vom 03.11.2026: bis dahin liefen alle Tageszaehler nach
+// 90 Tagen ab. Was noch da ist, wird dauerhaft gemacht und die Besucherzahl
+// festgeschrieben. Rund 120 Tage x 6 Kommandos, laeuft genau einmal.
+const PERSIST_FLAG = "sm:vis:persisted:v1";
+let persistChecked = false;
+
+async function ensurePersistentHistory(): Promise<void> {
+  if (!redis || persistChecked) return;
+  const done = await safe("analytics.persistFlag", () => redis!.get(PERSIST_FLAG), "error");
+  if (done === "error") return; // Redis nicht erreichbar, beim naechsten Mal
+  if (done) {
+    persistChecked = true;
+    return;
+  }
+  const yesterday = dateKey(-1);
+  const days: string[] = [];
+  for (let d = "2026-07-10"; d <= yesterday; d = addDays(d, 1)) days.push(d);
+  const ok = await safe(
+    "analytics.persistHistory",
+    async () => {
+      for (let i = 0; i < days.length; i += 30) {
+        const pipe = redis!.pipeline();
+        for (const d of days.slice(i, i + 30)) {
+          pipe.persist(KEY_VIEWS(d));
+          pipe.persist(KEY_PATHS(d));
+          pipe.persist(KEY_COUNTRIES(d));
+          pipe.persist(KEY_REFERRERS(d));
+          pipe.persist(KEY_LOCALES(d));
+          pipe.eval(FINALIZE_SCRIPT, finalizeKeys(d), []);
+        }
+        await pipe.exec();
+      }
+      await redis!.set(PERSIST_FLAG, new Date().toISOString());
+      return true;
+    },
+    false
+  );
+  if (ok) persistChecked = true;
+}
+
+export type TrafficDay = {
+  date: string;
+  // null = fuer diesen Tag gibt es keine Daten aus dem eigenen Zaehler
+  // (vor dem Start, abgelaufen oder Ausfall). Eine 0 waere gelogen.
+  views: number | null;
+  visitors: number | null;
+  carts: number | null;
+  checkouts: number | null;
+};
+
+// Tageswerte des eigenen Zaehlers fuer beliebige Tage. undefined, wenn Redis
+// konfiguriert ist, aber nicht antwortet.
+export async function loadDailyTraffic(days: string[]): Promise<TrafficDay[] | undefined> {
+  const empty = days.map((date) => ({ date, views: null, visitors: null, carts: null, checkouts: null }));
+  if (!redis || days.length === 0) return empty;
+  await ensurePersistentHistory();
+  const funnelDays = days.filter((d) => d >= FUNNEL_FIRST_DAY);
+  const result = await safe(
+    "analytics.loadDailyTraffic",
+    async () => {
+      const [buckets, carts, checkouts] = await Promise.all([
+        readDailyBuckets(days),
+        funnelDays.length ? readCounts(funnelDays, KEY_CCOUNT, KEY_CART) : Promise.resolve([]),
+        funnelDays.length ? readCounts(funnelDays, KEY_KCOUNT, KEY_CHECKOUT) : Promise.resolve([]),
+      ]);
+      const funnel = new Map(funnelDays.map((d, i) => [d, [carts[i] ?? 0, checkouts[i] ?? 0]]));
+      return buckets.map((b): TrafficDay => {
+        // Ein Shop-Tag ohne einen einzigen Aufruf heisst: keine Daten.
+        const has = b.views > 0;
+        const f = funnel.get(b.date);
+        return {
+          date: b.date,
+          views: has ? b.views : null,
+          visitors: has ? b.visitors : null,
+          carts: has && f ? f[0] : null,
+          checkouts: has && f ? f[1] : null,
+        };
+      });
+    },
+    undefined
+  );
+  return result;
 }
 
 // /admin und /admin/visitors rendern das bei jedem Request neu und beide sind
@@ -245,80 +411,6 @@ export async function loadAnalytics(): Promise<AnalyticsSnapshot> {
   }
   snapshot = { at: Date.now(), data };
   return data;
-}
-
-export type SessionsComparison = {
-  perDay: DailyBucket[]; // current window, oldest→newest
-  prevPerDay: DailyBucket[]; // previous window, same length, index-aligned
-  views: number;
-  visitors: number;
-  prevViews: number;
-  prevVisitors: number;
-  persistent: boolean;
-  // True only when the whole previous window has real data. False when it
-  // reaches back before the counter started (some days are zero because we
-  // weren't tracking yet), which would otherwise produce a misleading
-  // "+280%"-style delta against an artificially low baseline.
-  prevComplete: boolean;
-  // Wie bei AnalyticsSnapshot: Redis konfiguriert, aber keine Antwort.
-  fetchError?: string;
-};
-
-// Sessions (views + unique visitors) for an explicit list of days, plus the
-// same for the previous comparison window. Reads exactly the days the sales
-// report uses so the two line up in the dashboard.
-export async function loadSessionsForDays(
-  currentDays: string[],
-  prevDays: string[]
-): Promise<SessionsComparison> {
-  if (!redis) {
-    return {
-      perDay: currentDays.map((date) => ({ date, views: 0, visitors: 0 })),
-      prevPerDay: prevDays.map((date) => ({ date, views: 0, visitors: 0 })),
-      views: 0,
-      visitors: 0,
-      prevViews: 0,
-      prevVisitors: 0,
-      persistent: false,
-      prevComplete: false,
-    };
-  }
-
-  const both = await safe<DailyBucket[] | null>(
-    "analytics.loadSessionsForDays",
-    // Beide Fenster in einem Rutsch, so kostet ein 30-Tage-Bereich ein MGET
-    // statt zwei.
-    () => readDailyBuckets([...currentDays, ...prevDays]),
-    null
-  );
-  if (!both) {
-    return {
-      perDay: currentDays.map((date) => ({ date, views: 0, visitors: 0 })),
-      prevPerDay: prevDays.map((date) => ({ date, views: 0, visitors: 0 })),
-      views: 0,
-      visitors: 0,
-      prevViews: 0,
-      prevVisitors: 0,
-      persistent: true,
-      prevComplete: false,
-      fetchError: storeStatus().error ?? "unbekannt",
-    };
-  }
-  const cur = both.slice(0, currentDays.length);
-  const prev = both.slice(currentDays.length);
-  // A live shop has views every day; a zero-view day in the previous window
-  // means we weren't tracking yet, so the comparison baseline is incomplete.
-  const prevComplete = prev.length > 0 && prev.every((d) => d.views > 0);
-  return {
-    perDay: cur,
-    prevPerDay: prev,
-    views: cur.reduce((s, d) => s + d.views, 0),
-    visitors: cur.reduce((s, d) => s + d.visitors, 0),
-    prevViews: prev.reduce((s, d) => s + d.views, 0),
-    prevVisitors: prev.reduce((s, d) => s + d.visitors, 0),
-    persistent: true,
-    prevComplete,
-  };
 }
 
 const COUNTRY_FLAGS: Record<string, string> = {

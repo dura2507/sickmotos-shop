@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { recordVisit } from "@/lib/analyticsStore";
+import { recordFunnel, recordVisit } from "@/lib/analyticsStore";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -9,7 +9,12 @@ export const dynamic = "force-dynamic";
 // and never store the raw IP.
 
 export async function POST(req: Request) {
-  let body: { path?: string; referrer?: string | null; locale?: string | null };
+  let body: {
+    path?: string;
+    referrer?: string | null;
+    locale?: string | null;
+    event?: string;
+  };
   try {
     body = await req.json();
   } catch {
@@ -36,6 +41,12 @@ export async function POST(req: Request) {
     h.get("x-vercel-ip-country") ||
     h.get("cf-ipcountry") ||
     null;
+
+  // Klick auf "Zur Kasse": zaehlt nur fuer den Trichter, nicht als Seitenaufruf.
+  if (body.event === "checkout") {
+    await recordFunnel("checkout", { ip, ua });
+    return NextResponse.json({ ok: true });
+  }
 
   // Best-effort. A failure inside recordVisit (e.g. Redis hiccup) never
   // affects the customer's browsing.

@@ -4,7 +4,7 @@
 // gives us a single place to add logging, validation or rate-limiting
 // later.
 
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import {
   cartCreate,
   cartGet,
@@ -14,6 +14,7 @@ import {
   cartLinesUpdate,
 } from "@/lib/shopify";
 import { getLocale } from "@/lib/i18n/getLocale";
+import { recordFunnel } from "@/lib/analyticsStore";
 
 // Checkout language follows the storefront locale (cookie / Accept-Language),
 // otherwise Shopify sends German customers to the English checkout.
@@ -63,6 +64,14 @@ export async function POST(req: Request) {
     const cart = body.cartId
       ? await cartLinesAdd(body.cartId, lines, language)
       : await cartCreate(lines, language);
+    // Fuer das Admin-Dashboard: Shopify sieht den Warenkorb seit dem Umzug nicht
+    // mehr. Laeuft nach der Antwort, haelt den Warenkorb also nie auf.
+    const h = req.headers;
+    const who = {
+      ip: h.get("x-forwarded-for")?.split(",")[0].trim() || h.get("x-real-ip") || "",
+      ua: h.get("user-agent"),
+    };
+    after(() => recordFunnel("cart", who));
     return NextResponse.json({ cart });
   } catch (e) {
     return bad((e as Error).message, 500);

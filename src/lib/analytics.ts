@@ -116,4 +116,14 @@ export function trackBeginCheckout(opts: {
       value: opts.value,
     },
   });
+  // Eigener Zaehler fuer das Admin-Dashboard. sendBeacon ueberlebt den
+  // Seitenwechsel in die Kasse, fetch wuerde abgebrochen.
+  try {
+    const blob = new Blob([JSON.stringify({ event: "checkout" })], {
+      type: "application/json",
+    });
+    navigator.sendBeacon?.("/api/track", blob);
+  } catch {
+    // Zaehler ist nice to have, die Kasse geht vor.
+  }
 }

@@ -1,40 +1,138 @@
 import Link from "next/link";
+import { loadSalesDays, pctChange, type SalesDay } from "@/lib/salesReport";
+import { FUNNEL_FIRST_DAY, loadDailyTraffic, type TrafficDay } from "@/lib/analyticsStore";
 import {
-  loadSalesComparison,
-  pctChange,
+  COUNTER_FIRST_DAY,
+  CUTOVER_DAY,
+  SHOPIFY_LAST_FULL_DAY,
+  loadShopifyHistory,
+  type ShopifyDay,
+} from "@/lib/shopifyHistory";
+import {
+  COMPARE_LABELS,
+  MIN_DAY,
+  PRESETS,
+  berlinToday,
+  bucketize,
+  comparisonRange,
+  daysBetween,
   enumerateDays,
-} from "@/lib/salesReport";
-import { loadSessionsForDays } from "@/lib/analyticsStore";
+  fmtDay,
+  hrefFor,
+  parseRange,
+  pickGranularity,
+  type CompareMode,
+  type Granularity,
+} from "@/lib/dashboardRange";
+import { RangeForm } from "./RangeForm";
 
 export const dynamic = "force-dynamic";
-
-const RANGES = [
-  { days: 1, label: "Heute" },
-  { days: 7, label: "7 Tage" },
-  { days: 30, label: "30 Tage" },
-];
+// Ein Jahresvergleich holt beim ersten Aufruf bis zu 24 Monate Bestellungen.
+export const maxDuration = 60;
 
 function eur(n: number): string {
+  return new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(n);
+}
+
+function eur0(n: number): string {
   return new Intl.NumberFormat("de-DE", {
     style: "currency",
     currency: "EUR",
+    maximumFractionDigits: 0,
   }).format(n);
 }
 
 function int(n: number): string {
-  return new Intl.NumberFormat("de-DE").format(n);
+  return new Intl.NumberFormat("de-DE").format(Math.round(n));
+}
+
+// ---------------------------------------------------------------------------
+// Tageswerte zusammenfuehren
+
+type Src = "shopify" | "counter";
+type Point = { v: number; src: Src } | null;
+
+type DayData = {
+  sales: SalesDay | null;
+  visitors: Point;
+  carts: Point;
+  checkouts: Point;
+};
+
+function trafficPoints(
+  day: string,
+  counter: Map<string, TrafficDay>,
+  history: Map<string, ShopifyDay> | undefined
+): Pick<DayData, "visitors" | "carts" | "checkouts"> {
+  if (day <= SHOPIFY_LAST_FULL_DAY) {
+    const h = history?.get(day);
+    if (!h) return { visitors: null, carts: null, checkouts: null };
+    return {
+      visitors: { v: h.visitors, src: "shopify" },
+      carts: { v: h.cartSessions, src: "shopify" },
+      checkouts: { v: h.checkoutSessions, src: "shopify" },
+    };
+  }
+  if (day < COUNTER_FIRST_DAY) return { visitors: null, carts: null, checkouts: null };
+  const t = counter.get(day);
+  const pt = (v: number | null | undefined): Point => (v == null ? null : { v, src: "counter" });
+  return {
+    visitors: pt(t?.visitors),
+    carts: day >= FUNNEL_FIRST_DAY ? pt(t?.carts) : null,
+    checkouts: day >= FUNNEL_FIRST_DAY ? pt(t?.checkouts) : null,
+  };
+}
+
+type Agg = { sum: number; covered: number; total: number; sources: Set<Src> };
+
+function agg(points: Point[]): Agg {
+  const a: Agg = { sum: 0, covered: 0, total: points.length, sources: new Set() };
+  for (const p of points) {
+    if (!p) continue;
+    a.sum += p.v;
+    a.covered += 1;
+    a.sources.add(p.src);
+  }
+  return a;
+}
+
+function salesAgg(days: (SalesDay | null)[]) {
+  let sales = 0,
+    orders = 0,
+    taxes = 0,
+    covered = 0;
+  for (const d of days) {
+    if (!d) continue;
+    sales += d.totalSales;
+    orders += d.orders;
+    taxes += d.taxes;
+    covered += 1;
+  }
+  return { sales, orders, taxes, covered, total: days.length };
+}
+
+// ---------------------------------------------------------------------------
+// Karten
+
+type Comparable = "yes" | "partial" | "source" | "none";
+
+function comparability(cur: Agg, cmp: Agg | null): Comparable {
+  if (!cmp || cmp.covered === 0 || cur.covered === 0) return "none";
+  if (cur.covered < cur.total || cmp.covered < cmp.total) return "partial";
+  if (cur.sources.size > 1 || cmp.sources.size > 1) return "source";
+  const a = [...cur.sources][0];
+  const b = [...cmp.sources][0];
+  return a && b && a !== b ? "source" : "yes";
 }
 
 function Delta({ cur, prev }: { cur: number; prev: number }) {
   const pct = pctChange(cur, prev);
   if (pct === null) return <span className="text-fg-dim">—</span>;
-  // Treat a rounding-zero change as neutral, not a green "up".
-  if (Math.abs(pct) < 0.05)
-    return <span className="font-semibold text-fg-muted">0,0%</span>;
+  if (Math.abs(pct) < 0.05) return <span className="font-semibold text-fg-muted">0,0%</span>;
   const up = pct >= 0;
   return (
     <span className={`font-semibold ${up ? "text-emerald-400" : "text-accent"}`}>
-      {up ? "↗" : "↘"} {Math.abs(pct).toFixed(1)}%
+      {up ? "↗" : "↘"} {Math.abs(pct).toFixed(1).replace(".", ",")}%
     </span>
   );
 }
@@ -43,262 +141,567 @@ function StatCard({
   label,
   value,
   cur,
-  prev,
-  sub,
-  reliable = true,
+  cmp,
+  cmpValue,
+  state,
+  coverage,
+  hasCompare,
 }: {
   label: string;
   value: string;
   cur: number;
-  prev: number;
-  sub?: string;
-  // When false, the comparison baseline is not trustworthy (e.g. it predates
-  // the tracker) so we show "—" instead of a misleading delta.
-  reliable?: boolean;
+  cmp: number;
+  cmpValue: string;
+  state: Comparable;
+  coverage?: string;
+  hasCompare: boolean;
 }) {
   return (
     <div className="rounded-xl border border-border bg-surface/40 p-4">
-      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-fg-dim">
-        {label}
-      </p>
-      <p className="mt-1 font-display text-3xl leading-none text-fg tabular-nums">
-        {value}
-      </p>
-      <p className="mt-1.5 flex items-center gap-2 text-xs">
-        {reliable ? (
-          <Delta cur={cur} prev={prev} />
-        ) : (
-          <span className="text-fg-dim">—</span>
-        )}
-        {sub && <span className="text-fg-muted">{sub}</span>}
-      </p>
+      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-fg-dim">{label}</p>
+      <p className="mt-1 font-display text-3xl leading-none text-fg tabular-nums">{value}</p>
+      {hasCompare && (
+        <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
+          {state === "yes" ? (
+            <Delta cur={cur} prev={cmp} />
+          ) : state === "source" ? (
+            <span className="text-fg-dim">andere Zählweise</span>
+          ) : state === "partial" ? (
+            <span className="text-fg-dim">unvollständig</span>
+          ) : null}
+          <span className="text-fg-muted">Vergleich: {cmpValue}</span>
+        </p>
+      )}
+      {coverage && <p className="mt-1 text-[11px] text-fg-dim">{coverage}</p>}
     </div>
   );
 }
 
-// Bars for the current period plus a dashed line for the previous period,
-// aligned day-by-day and scaled to the same max (Shopify-style overlay).
+function coverageNote(covered: number, total: number): string | undefined {
+  if (covered === total || covered === 0) return undefined;
+  return `Daten für ${covered} von ${total} Tagen`;
+}
+
+// ---------------------------------------------------------------------------
+// Diagramm
+
+type ChartBucket = {
+  label: string;
+  value: number | null;
+  partial: boolean;
+  cutover: boolean;
+  title: string;
+};
+
+function sumBucket(points: (number | null)[]): { value: number | null; partial: boolean } {
+  const have = points.filter((p): p is number => p != null);
+  if (have.length === 0) return { value: null, partial: false };
+  return { value: have.reduce((s, n) => s + n, 0), partial: have.length < points.length };
+}
+
 function ComparisonChart({
   title,
   current,
   previous,
-  format,
+  note,
 }: {
   title: string;
-  current: { date: string; value: number }[];
-  previous: number[];
-  format: (n: number) => string;
+  current: ChartBucket[];
+  previous: (number | null)[];
+  note?: string;
 }) {
-  const max = Math.max(1, ...current.map((c) => c.value), ...previous);
+  const max = Math.max(
+    1,
+    ...current.map((c) => c.value ?? 0),
+    ...previous.map((p) => p ?? 0)
+  );
   const n = current.length;
-  const pts = previous
-    .map((v, i) => `${i + 0.5},${100 - (v / max) * 100}`)
-    .join(" ");
+  // Gestrichelte Vergleichslinie, an fehlenden Werten unterbrochen.
+  const segments: string[] = [];
+  let seg: string[] = [];
+  previous.slice(0, n).forEach((v, i) => {
+    if (v == null) {
+      if (seg.length) segments.push(seg.join(" "));
+      seg = [];
+      return;
+    }
+    seg.push(`${i + 0.5},${100 - (v / max) * 100}`);
+  });
+  if (seg.length) segments.push(seg.join(" "));
+  const hasPrev = previous.some((p) => p != null);
 
   return (
     <section className="rounded-xl border border-border bg-surface/40 p-4">
-      <h2 className="mb-4 text-[10px] font-bold uppercase tracking-[0.15em] text-fg-dim">
-        {title}
-      </h2>
-      <div className="relative flex h-36 items-end gap-1">
+      <h2 className="mb-4 text-[10px] font-bold uppercase tracking-[0.15em] text-fg-dim">{title}</h2>
+      <div className="relative flex h-40 items-end gap-px sm:gap-0.5">
         {current.map((d, i) => {
-          const h = max > 0 ? (d.value / max) * 100 : 0;
+          const h = d.value != null ? (d.value / max) * 100 : 0;
           return (
             <div
-              key={d.date}
+              key={`${d.label}-${i}`}
               className="group relative flex h-full flex-1 flex-col items-center justify-end"
-              title={`${d.date}: ${format(d.value)}  (Vergleich: ${format(
-                previous[i] ?? 0
-              )})`}
+              title={d.title}
             >
-              <div
-                className="w-full rounded-t-sm bg-accent/70 transition-colors hover:bg-accent"
-                style={{ height: `${h}%`, minHeight: d.value > 0 ? "2px" : "0" }}
-              />
-              <span className="invisible absolute bottom-full z-10 mb-1 whitespace-nowrap rounded border border-border bg-bg px-1.5 py-0.5 text-[10px] font-bold text-fg group-hover:visible">
-                {format(d.value)}
-              </span>
+              {d.cutover && (
+                <span className="absolute inset-y-0 left-1/2 w-px border-l border-dashed border-amber-400/70" />
+              )}
+              {d.value == null ? (
+                <div className="w-full border-b border-dotted border-fg-dim/40" />
+              ) : (
+                <div
+                  className={`w-full rounded-t-sm transition-colors ${
+                    d.partial ? "bg-accent/35" : "bg-accent/70 hover:bg-accent"
+                  }`}
+                  style={{ height: `${h}%`, minHeight: d.value > 0 ? "2px" : "0" }}
+                />
+              )}
             </div>
           );
         })}
-        {n > 1 && (
+        {n > 1 && hasPrev && (
           <svg
             className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
             viewBox={`0 0 ${n} 100`}
             preserveAspectRatio="none"
             aria-hidden
           >
-            <polyline
-              points={pts}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={1.5}
-              strokeDasharray="3 3"
-              vectorEffect="non-scaling-stroke"
-              className="text-fg-dim"
-            />
+            {segments.map((pts, i) =>
+              pts.includes(" ") ? (
+                <polyline
+                  key={i}
+                  points={pts}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={1.5}
+                  strokeDasharray="3 3"
+                  vectorEffect="non-scaling-stroke"
+                  className="text-fg-dim"
+                />
+              ) : null
+            )}
           </svg>
         )}
       </div>
-      <div className="mt-2 flex items-center justify-between font-mono text-[10px] text-fg-dim">
-        <span>{current[0]?.date.slice(5)}</span>
-        <span className="flex items-center gap-3 font-sans">
+      <div className="mt-2 flex items-center justify-between gap-2 font-mono text-[10px] text-fg-dim">
+        <span>{current[0]?.label}</span>
+        <span className="flex flex-wrap items-center justify-center gap-3 font-sans">
           <span className="flex items-center gap-1">
             <span className="inline-block h-2 w-2 rounded-sm bg-accent/70" />
-            aktuell
+            Zeitraum
           </span>
-          <span className="flex items-center gap-1">
-            <span className="inline-block h-0 w-3 border-t-2 border-dashed border-fg-dim" />
-            Vergleich
-          </span>
+          {hasPrev && (
+            <span className="flex items-center gap-1">
+              <span className="inline-block h-0 w-3 border-t-2 border-dashed border-fg-dim" />
+              Vergleich
+            </span>
+          )}
         </span>
-        <span>{current[current.length - 1]?.date.slice(5)}</span>
+        <span>{current[current.length - 1]?.label}</span>
       </div>
+      {note && <p className="mt-2 text-[11px] leading-relaxed text-fg-dim">{note}</p>}
     </section>
   );
 }
 
+// ---------------------------------------------------------------------------
+
+const GRAN_LABEL: Record<Granularity, string> = { day: "pro Tag", week: "pro Woche", month: "pro Monat" };
+
 export default async function AdminDashboard({
   searchParams,
 }: {
-  searchParams: Promise<{ range?: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const sp = await searchParams;
-  const rangeDays = RANGES.some((r) => String(r.days) === sp.range)
-    ? Number(sp.range)
-    : 7;
+  const today = berlinToday();
+  const sel = parseRange(sp, today);
+  const cmpRange = comparisonRange(sel);
+  const curDays = enumerateDays(sel.from, sel.to);
+  const cmpDays = cmpRange ? enumerateDays(cmpRange.from, cmpRange.to) : [];
 
-  const sales = await loadSalesComparison(rangeDays);
-  const curDays = enumerateDays(sales.fromDay, sales.toDay);
-  const prevDays = enumerateDays(sales.prevFromDay, sales.prevToDay);
-  const sessions = await loadSessionsForDays(curDays, prevDays);
+  const [salesRes, traffic, history] = await Promise.all([
+    loadSalesDays(cmpRange ? [curDays, cmpDays] : [curDays]),
+    loadDailyTraffic([...curDays, ...cmpDays]),
+    loadShopifyHistory(),
+  ]);
+  const salesCur = salesRes[0];
+  const salesCmp = cmpRange ? salesRes[1] : null;
+  const counter = new Map((traffic ?? []).map((t) => [t.date, t]));
 
-  const c = sales.current;
-  const p = sales.previous;
-  const rangeLabel = RANGES.find((r) => r.days === rangeDays)?.label ?? "";
+  const build = (days: string[], sales: (SalesDay | null)[]): DayData[] =>
+    days.map((d, i) => ({ sales: sales[i] ?? null, ...trafficPoints(d, counter, history) }));
+  const cur = build(curDays, salesCur.days);
+  const cmp = salesCmp ? build(cmpDays, salesCmp.days) : null;
+
+  // Kennzahlen
+  const sC = salesAgg(cur.map((d) => d.sales));
+  const sP = cmp ? salesAgg(cmp.map((d) => d.sales)) : null;
+  const salesAsAgg = (s: ReturnType<typeof salesAgg>): Agg => ({
+    sum: s.sales,
+    covered: s.covered,
+    total: s.total,
+    sources: new Set<Src>(["counter"]),
+  });
+  const salesState = comparability(salesAsAgg(sC), sP ? salesAsAgg(sP) : null);
+  const vC = agg(cur.map((d) => d.visitors));
+  const vP = cmp ? agg(cmp.map((d) => d.visitors)) : null;
+  const cC = agg(cur.map((d) => d.carts));
+  const cP = cmp ? agg(cmp.map((d) => d.carts)) : null;
+  const kC = agg(cur.map((d) => d.checkouts));
+  const kP = cmp ? agg(cmp.map((d) => d.checkouts)) : null;
+  const aovC = sC.orders ? sC.sales / sC.orders : 0;
+  const aovP = sP && sP.orders ? sP.sales / sP.orders : 0;
+
+  const hasCompare = !!cmp;
+  const dash = "—";
+  const fmtAgg = (a: Agg | null, f: (n: number) => string) =>
+    a && a.covered > 0 ? f(a.sum) : dash;
+
+  // Diagramme und Tabelle
+  const g = pickGranularity(curDays.length);
+  const curBuckets = bucketize(curDays, g);
+  // Vergleichseimer Tag fuer Tag gespiegelt: Tag 1 des Zeitraums gegen Tag 1
+  // des Vergleichs, auch wenn die Wochen- oder Monatsgrenzen anders liegen.
+  const offset = new Map(curDays.map((d, i) => [d, i]));
+  const cmpBuckets = cmpRange
+    ? curBuckets
+        .map((b) => ({
+          label: b.label,
+          days: b.days.map((d) => cmpDays[offset.get(d)!]).filter((d): d is string => !!d),
+        }))
+        .filter((b) => b.days.length > 0)
+    : [];
+  const byDay = (rows: DayData[], days: string[]) => new Map(days.map((d, i) => [d, rows[i]]));
+  const curMap = byDay(cur, curDays);
+  const cmpMap = cmp ? byDay(cmp, cmpDays) : new Map<string, DayData>();
+
+  const bucketValues = (
+    buckets: { days: string[] }[],
+    map: Map<string, DayData>,
+    pick: (d: DayData) => number | null
+  ) => buckets.map((b) => sumBucket(b.days.map((d) => (map.get(d) ? pick(map.get(d)!) : null))));
+
+  const pickSales = (d: DayData) => d.sales?.totalSales ?? null;
+  const pickOrders = (d: DayData) => d.sales?.orders ?? null;
+  const pickVisitors = (d: DayData) => d.visitors?.v ?? null;
+
+  const salesCurB = bucketValues(curBuckets, curMap, pickSales);
+  const salesCmpB = bucketValues(cmpBuckets, cmpMap, pickSales);
+  const ordersCurB = bucketValues(curBuckets, curMap, pickOrders);
+  const ordersCmpB = bucketValues(cmpBuckets, cmpMap, pickOrders);
+  const visCurB = bucketValues(curBuckets, curMap, pickVisitors);
+  const visCmpB = bucketValues(cmpBuckets, cmpMap, pickVisitors);
+
+  const span = (days: string[]) =>
+    days.length === 1 ? fmtDay(days[0]) : `${fmtDay(days[0])} bis ${fmtDay(days[days.length - 1])}`;
+
+  const chartBuckets = (
+    vals: { value: number | null; partial: boolean }[],
+    cmpVals: { value: number | null }[],
+    format: (n: number) => string
+  ): ChartBucket[] =>
+    curBuckets.map((b, i) => {
+      const v = vals[i];
+      const c = cmpVals[i]?.value;
+      const cmpSpan = cmpBuckets[i] ? ` · Vergleich ${span(cmpBuckets[i].days)}: ${c != null ? format(c) : dash}` : "";
+      return {
+        label: b.label,
+        value: v.value,
+        partial: v.partial,
+        cutover: b.days.includes(CUTOVER_DAY),
+        title: `${span(b.days)}: ${v.value != null ? format(v.value) : "keine Daten"}${v.partial ? " (unvollständig)" : ""}${cmpSpan}`,
+      };
+    });
+
+  const spansCutover = (days: string[]) => days[0] <= CUTOVER_DAY && days[days.length - 1] >= CUTOVER_DAY;
+  const showCutoverNote = spansCutover(curDays) || (cmpDays.length > 0 && spansCutover(cmpDays));
+  const touchesShopify = curDays[0] <= SHOPIFY_LAST_FULL_DAY || (cmpDays[0] ?? "9") <= SHOPIFY_LAST_FULL_DAY;
+  const historyMissing = touchesShopify && history !== undefined && history.size === 0;
+
+  const presetLinks = PRESETS.map((p) => ({ ...p, href: hrefFor(sel, { preset: p.key }) }));
+  const cmpModes: CompareMode[] = ["prev", "year", "none"];
 
   return (
     <div className="mx-auto max-w-7xl px-5 py-8 md:px-8">
-      <div className="mb-6 flex flex-wrap items-baseline justify-between gap-4">
-        <h1 className="font-display text-4xl uppercase tracking-tight text-fg md:text-5xl">
-          Übersicht
-        </h1>
+      <div className="mb-5 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <h1 className="font-display text-4xl uppercase tracking-tight text-fg md:text-5xl">Analytics</h1>
         <p className="text-xs text-fg-muted">
-          {sales.fromDay} bis {sales.toDay} · vs. Vorperiode ({sales.prevFromDay}{" "}
-          bis {sales.prevToDay})
+          {span(curDays)}
+          {cmpRange && (
+            <>
+              {" · "}Vergleich ({COMPARE_LABELS[sel.cmp]}): {span(cmpDays)}
+            </>
+          )}
         </p>
       </div>
 
-      {/* Range selector */}
-      <div className="mb-6 inline-flex rounded-full border border-border bg-surface/40 p-1">
-        {RANGES.map((r) => {
-          const active = r.days === rangeDays;
+      {/* Schnellauswahl */}
+      <div className="mb-3 flex flex-wrap gap-1.5">
+        {presetLinks.map((p) => {
+          const active = sel.preset === p.key;
           return (
             <Link
-              key={r.days}
-              href={`/admin/dashboard?range=${r.days}`}
-              className={`rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest transition-colors ${
+              key={p.key}
+              href={p.href}
+              className={`rounded-full border px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-colors ${
                 active
-                  ? "bg-accent text-white"
-                  : "text-fg-muted hover:text-fg"
+                  ? "border-accent bg-accent text-white"
+                  : "border-border text-fg-muted hover:border-fg-dim hover:text-fg"
               }`}
             >
-              {r.label}
+              {p.label}
             </Link>
           );
         })}
       </div>
+      <div className="mb-4 flex flex-wrap items-center gap-1.5 text-[11px]">
+        <span className="mr-1 font-bold uppercase tracking-wider text-fg-dim">Vergleich:</span>
+        {cmpModes.map((m) => {
+          const active = sel.cmp === m;
+          return (
+            <Link
+              key={m}
+              href={hrefFor(sel, { cmp: m })}
+              className={`rounded-full border px-3 py-1 font-bold uppercase tracking-wider transition-colors ${
+                active
+                  ? "border-fg-muted bg-surface text-fg"
+                  : "border-border text-fg-muted hover:text-fg"
+              }`}
+            >
+              {COMPARE_LABELS[m]}
+            </Link>
+          );
+        })}
+        {sel.cmp === "custom" && (
+          <span className="rounded-full border border-fg-muted bg-surface px-3 py-1 font-bold uppercase tracking-wider text-fg">
+            {COMPARE_LABELS.custom}
+          </span>
+        )}
+      </div>
 
-      {!sales.configured && (
-        <div className="mb-6 rounded-xl border border-accent/50 bg-accent/[0.06] p-4">
-          <p className="font-semibold text-accent">Shopify-Verbindung fehlt</p>
-          <p className="mt-1 text-sm text-fg-muted">
-            Die Umsatzzahlen erscheinen, sobald die Admin-API-Verbindung steht.
-          </p>
-        </div>
-      )}
-      {sales.fetchError && (
-        <div className="mb-6 rounded-xl border border-accent/50 bg-accent/[0.06] p-4">
-          <p className="font-semibold text-accent">Fehler beim Laden</p>
-          <p className="mt-1 font-mono text-sm text-fg-muted">{sales.fetchError}</p>
-        </div>
-      )}
+      <div className="mb-6">
+        <RangeForm
+          from={sel.from}
+          to={sel.to}
+          cmp={sel.cmp}
+          cfrom={sel.cfrom ?? cmpRange?.from ?? sel.from}
+          cto={sel.cto ?? cmpRange?.to ?? sel.to}
+          min={MIN_DAY}
+          max={today}
+        />
+      </div>
 
-      {/* Top cards */}
-      <section className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+      {/* Hinweise */}
+      <div className="mb-6 space-y-3">
+        {!salesCur.configured && (
+          <Notice title="Shopify-Verbindung fehlt">
+            Umsatz und Bestellungen erscheinen, sobald die Admin-API-Verbindung steht.
+          </Notice>
+        )}
+        {salesCur.fetchError && (
+          <Notice title="Umsätze konnten nicht geladen werden">
+            <span className="font-mono">{salesCur.fetchError}</span>
+          </Notice>
+        )}
+        {salesCur.availableFrom && (sel.from < salesCur.availableFrom || (cmpRange && cmpRange.from < salesCur.availableFrom)) && (
+          <Notice title="Ältere Umsätze nicht lesbar">
+            Die Shopify-Verbindung darf nur die letzten 60 Tage Bestellungen lesen (ab{" "}
+            {fmtDay(salesCur.availableFrom)}). Für ältere Zeiträume fehlt die Berechtigung
+            „read_all_orders“, diese Tage zeigen „—“. In Shopify Analytics sind die Umsätze
+            vollständig.
+          </Notice>
+        )}
+        {traffic === undefined && (
+          <Notice title="Besucherzähler nicht erreichbar">
+            Die Datenbank antwortet gerade nicht. Umsätze sind davon nicht betroffen.
+          </Notice>
+        )}
+        {historyMissing && (
+          <Notice title="Shopify-Besucher vor dem Umzug fehlen noch">
+            Der Verlauf aus Shopify ist noch nicht importiert.{" "}
+            <Link href="/admin/dashboard/history" className="underline">
+              Jetzt importieren
+            </Link>
+          </Notice>
+        )}
+      </div>
+
+      {/* Kennzahlen */}
+      <section className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-6">
         <StatCard
-          label={`Gesamtumsatz ${rangeLabel}`}
-          value={eur(c.totalSales)}
-          cur={c.totalSales}
-          prev={p.totalSales}
+          label="Gesamtumsatz"
+          value={sC.covered ? eur(sC.sales) : dash}
+          cur={sC.sales}
+          cmp={sP?.sales ?? 0}
+          cmpValue={sP && sP.covered ? eur(sP.sales) : dash}
+          state={salesState}
+          coverage={coverageNote(sC.covered, sC.total)}
+          hasCompare={hasCompare}
         />
         <StatCard
           label="Bestellungen"
-          value={int(c.orders)}
-          cur={c.orders}
-          prev={p.orders}
+          value={sC.covered ? int(sC.orders) : dash}
+          cur={sC.orders}
+          cmp={sP?.orders ?? 0}
+          cmpValue={sP && sP.covered ? int(sP.orders) : dash}
+          state={salesState}
+          hasCompare={hasCompare}
         />
         <StatCard
           label="Ø Warenkorb"
-          value={eur(c.aov)}
-          cur={c.aov}
-          prev={p.aov}
+          value={sC.orders ? eur(aovC) : dash}
+          cur={aovC}
+          cmp={aovP}
+          cmpValue={sP && sP.orders ? eur(aovP) : dash}
+          state={salesState}
+          hasCompare={hasCompare}
         />
         <StatCard
-          label="Sitzungen"
-          value={
-            sessions.persistent && !sessions.fetchError
-              ? int(sessions.visitors)
-              : "\u2014"
-          }
-          cur={sessions.visitors}
-          prev={sessions.prevVisitors}
-          reliable={
-            sessions.persistent && sessions.prevComplete && !sessions.fetchError
-          }
-          sub={
-            sessions.fetchError
-              ? "Zähler nicht erreichbar"
-              : sessions.persistent
-              ? `${int(sessions.views)} Aufrufe`
-              : "Zähler inaktiv"
-          }
+          label="Besucher"
+          value={fmtAgg(vC, int)}
+          cur={vC.sum}
+          cmp={vP?.sum ?? 0}
+          cmpValue={fmtAgg(vP, int)}
+          state={comparability(vC, vP)}
+          coverage={coverageNote(vC.covered, vC.total)}
+          hasCompare={hasCompare}
+        />
+        <StatCard
+          label="In den Warenkorb"
+          value={fmtAgg(cC, int)}
+          cur={cC.sum}
+          cmp={cP?.sum ?? 0}
+          cmpValue={fmtAgg(cP, int)}
+          state={comparability(cC, cP)}
+          coverage={coverageNote(cC.covered, cC.total)}
+          hasCompare={hasCompare}
+        />
+        <StatCard
+          label="Kasse erreicht"
+          value={fmtAgg(kC, int)}
+          cur={kC.sum}
+          cmp={kP?.sum ?? 0}
+          cmpValue={fmtAgg(kP, int)}
+          state={comparability(kC, kP)}
+          coverage={coverageNote(kC.covered, kC.total)}
+          hasCompare={hasCompare}
         />
       </section>
 
-      {/* Charts */}
+      {/* Diagramme */}
       <section className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <ComparisonChart
-          title={`Umsatz über Zeit · ${rangeLabel}`}
-          current={c.perDay.map((d) => ({ date: d.date, value: d.totalSales }))}
-          previous={p.perDay.map((d) => d.totalSales)}
-          format={eur}
+          title={`Umsatz ${GRAN_LABEL[g]}`}
+          current={chartBuckets(salesCurB, salesCmpB, eur0)}
+          previous={salesCmpB.map((b) => b.value)}
         />
         <ComparisonChart
-          title={`Sitzungen über Zeit · ${rangeLabel}`}
-          current={sessions.perDay.map((d) => ({
-            date: d.date,
-            value: d.visitors,
-          }))}
-          previous={
-            sessions.prevComplete
-              ? sessions.prevPerDay.map((d) => d.visitors)
-              : []
+          title={`Besucher ${GRAN_LABEL[g]}`}
+          current={chartBuckets(visCurB, visCmpB, int)}
+          previous={visCmpB.map((b) => b.value)}
+          note={
+            showCutoverNote
+              ? "Gelbe Linie: Umzug der Storefront am 09.07.2026. Davor zählte Shopify die Besucher, danach unser eigener Zähler."
+              : undefined
           }
-          format={int}
         />
       </section>
 
-      <p className="text-[11px] leading-relaxed text-fg-dim">
-        Gesamtumsatz aus den Shopify-Order-Totals (deckt sich mit Shopify Analytics
-        auf ~0,1%, Berlin-Zeit), davon Steuern {eur(c.taxes)}. Bestellungen exakt.
-        Sitzungen aus dem eigenen Besucher-Zähler, der den echten headless-Traffic
-        sieht, den Shopify seit dem Umzug nicht mehr zählt. Der Zähler läuft seit dem
-        10.07.2026, der Sitzungs-Vergleich erscheint erst, sobald die Vorperiode
-        komplett in diesem Zeitraum liegt (vorher steht dort „—"). Eine feine
-        Netto/Brutto-Aufschlüsselung 1:1 wie in Shopify braucht den Report-Zugriff
-        (read_reports) und kommt, sobald der freigegeben ist.
-      </p>
+      {/* Tabelle */}
+      <section className="mb-6 overflow-hidden rounded-xl border border-border bg-surface/40">
+        <h2 className="border-b border-border px-4 py-3 text-[10px] font-bold uppercase tracking-[0.15em] text-fg-dim">
+          Zahlen {GRAN_LABEL[g]}
+          {hasCompare && " · darunter der Vergleich"}
+        </h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs tabular-nums">
+            <thead className="text-[10px] uppercase tracking-wider text-fg-dim">
+              <tr>
+                <th className="px-3 py-2 font-bold">Zeitraum</th>
+                <th className="px-3 py-2 text-right font-bold">Umsatz</th>
+                <th className="px-3 py-2 text-right font-bold">Best.</th>
+                <th className="px-3 py-2 text-right font-bold">Besucher</th>
+              </tr>
+            </thead>
+            <tbody>
+              {curBuckets.map((b, i) => {
+                const cb = cmpBuckets[i];
+                const cell = (cv: { value: number | null; partial: boolean }, pv: { value: number | null } | undefined, f: (n: number) => string) => (
+                  <td className="px-3 py-2 text-right align-top">
+                    <span className={cv.partial ? "text-fg-muted" : "text-fg"}>
+                      {cv.value != null ? f(cv.value) : dash}
+                      {cv.partial ? "*" : ""}
+                    </span>
+                    {cb && (
+                      <span className="block text-[10px] text-fg-dim">
+                        {pv?.value != null ? f(pv.value) : dash}
+                      </span>
+                    )}
+                  </td>
+                );
+                return (
+                  <tr key={`${b.label}-${i}`} className="border-t border-border/60">
+                    <td className="px-3 py-2 align-top">
+                      <span className="text-fg">{g === "day" ? b.label : span(b.days)}</span>
+                      {cb && (
+                        <span className="block text-[10px] text-fg-dim">
+                          {g === "day" ? fmtDay(cb.days[0]) : span(cb.days)}
+                        </span>
+                      )}
+                    </td>
+                    {cell(salesCurB[i], salesCmpB[i], eur0)}
+                    {cell(ordersCurB[i], ordersCmpB[i], int)}
+                    {cell(visCurB[i], visCmpB[i], int)}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+        <p className="border-t border-border px-4 py-2 text-[10px] text-fg-dim">
+          * nur ein Teil der Tage hat Daten. „—“ = für diesen Zeitraum gibt es keine Daten.
+        </p>
+      </section>
+
+      <div className="space-y-2 text-[11px] leading-relaxed text-fg-dim">
+        <p>
+          <strong className="text-fg-muted">Umsatz und Bestellungen</strong> kommen direkt aus den
+          Shopify-Bestellungen (ohne Test und Storno, Erstattungen abgezogen, Berliner Zeit) und
+          decken sich mit Shopify Analytics auf etwa 0,1%. Sie sind vor und nach dem Umzug
+          gleich gemessen und damit voll vergleichbar. Steuern im Zeitraum: {eur(sC.taxes)}.
+        </p>
+        <p>
+          <strong className="text-fg-muted">Besucher</strong> bis 08.07.2026 aus Shopify (Besucher
+          pro Tag, nur Menschen), ab 10.07.2026 aus unserem eigenen Zähler (Besucher pro Tag, Bots
+          herausgefiltert). Seit dem Umzug sieht Shopify nur noch die Kasse, deshalb zeigt Shopify
+          selbst seitdem kaum Besucher. Beide Zählweisen messen dasselbe, aber nicht identisch.
+          Darum steht beim Vergleich über den Umzug hinweg kein Prozentwert, sondern beide Zahlen.
+          Vom 10.07. bis Anfang August 2026 fehlen die eigenen Zählerdaten (wurden damals nach 90
+          Tagen gelöscht, seit 03.11.2026 bleiben sie dauerhaft).
+        </p>
+        <p>
+          <strong className="text-fg-muted">In den Warenkorb / Kasse erreicht</strong>: Besucher
+          pro Tag, die etwas in den Korb gelegt bzw. auf „Zur Kasse“ geklickt haben. Bis 08.07.2026
+          aus Shopify, ab {fmtDay(FUNNEL_FIRST_DAY)} aus unserem Zähler, dazwischen gibt es keine
+          Daten.
+        </p>
+        <p>
+          <Link href="/admin/dashboard/history" className="underline hover:text-fg-muted">
+            Shopify-Verlauf vor dem Umzug verwalten
+          </Link>
+          {" · "}
+          {daysBetween(sel.from, sel.to)} Tage gewählt
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function Notice({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="rounded-xl border border-accent/50 bg-accent/[0.06] p-4">
+      <p className="font-semibold text-accent">{title}</p>
+      <p className="mt-1 text-sm text-fg-muted">{children}</p>
     </div>
   );
 }
