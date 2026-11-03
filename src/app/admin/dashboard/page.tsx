@@ -21,6 +21,7 @@ import {
   hrefFor,
   parseRange,
   pickGranularity,
+  sameDayLastYear,
   type CompareMode,
   type Granularity,
 } from "@/lib/dashboardRange";
@@ -392,11 +393,16 @@ export default async function AdminDashboard({
   // Vergleichseimer Tag fuer Tag gespiegelt: Tag 1 des Zeitraums gegen Tag 1
   // des Vergleichs, auch wenn die Wochen- oder Monatsgrenzen anders liegen.
   const offset = new Map(curDays.map((d, i) => [d, i]));
+  // Beim Vorjahr Kalendertag gegen Kalendertag, sonst verrutschen die Monate
+  // ueber ein Schaltjahr um einen Tag.
+  const cmpDaySet = new Set(cmpDays);
+  const mirror = (d: string): string | undefined =>
+    sel.cmp === "year" ? (cmpDaySet.has(sameDayLastYear(d)) ? sameDayLastYear(d) : undefined) : cmpDays[offset.get(d)!];
   const cmpBuckets = cmpRange
     ? curBuckets
         .map((b) => ({
           label: b.label,
-          days: b.days.map((d) => cmpDays[offset.get(d)!]).filter((d): d is string => !!d),
+          days: Array.from(new Set(b.days.map(mirror).filter((d): d is string => !!d))),
         }))
         .filter((b) => b.days.length > 0)
     : [];
@@ -470,6 +476,16 @@ export default async function AdminDashboard({
             </>
           )}
         </p>
+        {sel.to === today && sel.from !== today && cmpRange && (
+          <p className="w-full text-[11px] text-fg-dim">
+            Heute läuft noch: der letzte Tag zählt nur bis jetzt, der Vergleich hat ganze Tage.
+          </p>
+        )}
+        {sel.to === today && sel.from === today && cmpRange && (
+          <p className="w-full text-[11px] text-fg-dim">
+            Heute läuft noch und wird mit dem ganzen Vergleichstag verglichen.
+          </p>
+        )}
       </div>
 
       {/* Schnellauswahl */}
@@ -518,6 +534,9 @@ export default async function AdminDashboard({
 
       <div className="mb-6">
         <RangeForm
+          // Neu aufbauen, wenn sich die Auswahl ueber einen Link aendert, sonst
+          // haengen Felder und Vergleich am alten Stand.
+          key={`${sel.from}|${sel.to}|${sel.cmp}|${sel.cfrom}|${sel.cto}`}
           from={sel.from}
           to={sel.to}
           cmp={sel.cmp}
@@ -598,7 +617,7 @@ export default async function AdminDashboard({
           cur={aovC}
           cmp={aovP}
           cmpValue={sP && sP.orders ? eur(aovP) : dash}
-          state={salesState}
+          state={sC.orders && sP?.orders ? salesState : "none"}
           hasCompare={hasCompare}
         />
         <StatCard

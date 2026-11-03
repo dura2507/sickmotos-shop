@@ -59,11 +59,21 @@ function isDay(v: unknown): v is string {
 }
 
 function clampRange(from: string, to: string, today: string): DayRange {
-  let f = from < MIN_DAY ? MIN_DAY : from;
-  let t = to > today ? today : to;
-  if (f > t) [f, t] = [t, f];
+  // Erst ordnen, dann begrenzen. Andersherum wird aus einer Zukunfts-URL ein
+  // Zeitraum, der heute beginnt und in der Zukunft endet.
+  let [f, t] = from <= to ? [from, to] : [to, from];
+  if (f < MIN_DAY) f = MIN_DAY;
+  if (t > today) t = today;
+  if (f > t) f = t;
   if (daysBetween(f, t) > MAX_DAYS) f = addDays(t, -(MAX_DAYS - 1));
   return { from: f, to: t };
+}
+
+// Derselbe Kalendertag ein Jahr frueher. Der 29.02. wird zum 28.02.
+export function sameDayLastYear(day: string): string {
+  const y = Number(day.slice(0, 4)) - 1;
+  const md = day.slice(5) === "02-29" ? "02-28" : day.slice(5);
+  return `${y}-${md}`;
 }
 
 export type Preset = { key: string; label: string; range: (today: string) => DayRange };
@@ -141,7 +151,7 @@ export function comparisonRange(sel: RangeSelection): DayRange | null {
     case "none":
       return null;
     case "year":
-      return { from: addYears(sel.from, -1), to: addYears(sel.to, -1) };
+      return { from: sameDayLastYear(sel.from), to: sameDayLastYear(sel.to) };
     case "custom":
       return sel.cfrom && sel.cto ? { from: sel.cfrom, to: sel.cto } : null;
     default: {

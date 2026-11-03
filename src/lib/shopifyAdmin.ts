@@ -34,16 +34,17 @@ export async function hasAdminToken(): Promise<boolean> {
 }
 
 export async function saveAdminToken(token: string, scope: string): Promise<boolean> {
-  const ok = await safe(
-    "shopifyAdmin.saveToken",
-    async () => {
-      await redis!.set(TOKEN_KEY, { token, scope, at: new Date().toISOString() });
-      return true;
-    },
-    false
-  );
-  if (ok) cached = { at: Date.now(), token };
-  return ok;
+  if (!redis) return false;
+  // Bewusst nicht ueber safe(): dessen Log schreibt die Fehlermeldung mit, und
+  // die darf den Token nie enthalten koennen.
+  try {
+    await redis.set(TOKEN_KEY, { token, scope, at: new Date().toISOString() });
+  } catch {
+    console.error("[shopifyAdmin] saving the admin token to Redis failed");
+    return false;
+  }
+  cached = { at: Date.now(), token };
+  return true;
 }
 
 export async function adminGraphQL<T>(

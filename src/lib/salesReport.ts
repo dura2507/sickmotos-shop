@@ -89,7 +89,10 @@ async function fetchOrders(fromDay: string, toDay: string): Promise<OrderNode[]>
         edges: { node: OrderNode }[];
         pageInfo: { hasNextPage: boolean; endCursor: string | null };
       };
-    } = await withThrottleRetry(() => adminGraphQL(QUERY, { q, after }, 60));
+    // Kein Next-Datencache (0): wir cachen selbst (Monate in Redis, laufender
+    // Monat 60 s). Der Datencache haette auch eine "Throttled"-Antwort (HTTP 200)
+    // gespeichert, dann fragt der Retry Shopify gar nicht neu.
+    } = await withThrottleRetry(() => adminGraphQL(QUERY, { q, after }, 0));
     for (const e of data.orders.edges) {
       const node = e.node;
       if (node.test || node.cancelledAt) continue;
@@ -146,6 +149,12 @@ function aggregate(nodes: OrderNode[], fromDay: string, toDay: string): SalesDay
 // tauchen damit spaetestens nach 6 Stunden auf. Der laufende Monat 60 Sekunden
 // pro Instanz. So kostet ein Jahresvergleich nur beim ersten Aufruf Zeit.
 const MONTH_CACHE_SEC = 6 * 60 * 60;
+// Monate, die laenger als 90 Tage zurueckliegen, aendern sich kaum noch
+// (Erstattungen kommen meist in den ersten Wochen). Die bleiben 30 Tage im
+// Speicher, damit ein Jahresvergleich nicht alle 6 Stunden 20 Monate neu holt.
+function monthCacheSec(lastDay: string, today: string): number {
+  return lastDay < addDays(today, -90) ? 30 * 24 * 60 * 60 : MONTH_CACHE_SEC;
+}
 const MONTH_KEY = (m: string) => `sm:sales:month:v3:${m}`;
 const liveMonth = new Map<string, { at: number; data: SalesDay[] }>();
 
@@ -182,7 +191,7 @@ async function loadMonth(
   if (closed) {
     await safe(
       "sales.monthCache.set",
-      async () => redis?.set(MONTH_KEY(month), data, { ex: MONTH_CACHE_SEC }),
+      async () => redis?.set(MONTH_KEY(month), data, { ex: monthCacheSec(last, today) }),
       undefined
     );
   } else {
@@ -202,7 +211,7 @@ async function canReadAllOrders(): Promise<boolean> {
   // 10 Minuten, damit eine neu erteilte Berechtigung ohne Redeploy ankommt.
   if (scopeCache && Date.now() - scopeCache.at < 10 * 60_000) return scopeCache.allOrders;
   const cutoff = addDays(berlinToday(), -70);
-  const data = await adminGraphQL<{
+  const data = await withThrottleRetry(() => adminGraphQL<{
     currentAppInstallation: { accessScopes: { handle: string }[] };
     orders: { edges: { node: { id: string } }[] };
   }>(
@@ -212,7 +221,7 @@ async function canReadAllOrders(): Promise<boolean> {
     }`,
     { q: `created_at:<${cutoff}` },
     0
-  );
+  ));
   const allOrders =
     data.currentAppInstallation.accessScopes.some((s) => s.handle === "read_all_orders") ||
     data.orders.edges.length > 0;

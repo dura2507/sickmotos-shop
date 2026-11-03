@@ -23,9 +23,14 @@ const KEY_CCOUNT = (d: string) => `sm:fun:${d}:ccount`;
 const KEY_CHECKOUT = (d: string) => `sm:fun:${d}:checkout`;
 const KEY_KCOUNT = (d: string) => `sm:fun:${d}:kcount`;
 
-// Nur noch die Hash-Sets laufen ab. Bis 03.11.2026 liefen ALLE Tageszaehler
-// nach 90 Tagen ab, dadurch fehlen die Besucher vom 10.07. bis Anfang August.
+// Dauerhaft bleiben nur die Tageszahlen (Aufrufe, Besucher, Warenkorb, Kasse).
+// Die Hash-Sets (IP + Browser) und die Toplisten (Seiten, Laender, Herkunft,
+// Sprachen) laufen nach 90 Tagen ab: die Toplisten zeigt der Admin nur fuer 30
+// Tage, und ihre Feldnamen kommen aus fremden Requests, dauerhaft wuerden sie
+// grenzenlos wachsen. Bis 03.11.2026 lief ALLES nach 90 Tagen ab, dadurch fehlen
+// die Besucher vom 10.07. bis 05.08.2026.
 const SET_TTL_SEC = 60 * 60 * 24 * 90;
+const COUNTER_START = "2026-07-10";
 
 // Erster voller Tag, fuer den Warenkorb und Kasse gezaehlt werden.
 export const FUNNEL_FIRST_DAY = "2026-11-04";
@@ -78,7 +83,7 @@ function normalizeReferrer(raw: string | null): string {
     const u = new URL(raw);
     const host = u.hostname.toLowerCase();
     if (INTERNAL_HOSTS.has(host)) return "(direct)";
-    return host;
+    return host.slice(0, 60);
   } catch {
     return "(direct)";
   }
@@ -120,10 +125,14 @@ function finalizeKeys(d: string): string[] {
 // den Ablauf nach hinten schiebt.
 const dayStamped = new Set<string>();
 
-function stampDay(pipe: ReturnType<NonNullable<typeof redis>["pipeline"]>, d: string, setKey: string) {
-  const mark = `${d}:${setKey}`;
+function stampDay(
+  pipe: ReturnType<NonNullable<typeof redis>["pipeline"]>,
+  d: string,
+  expiring: string[]
+) {
+  const mark = `${d}:${expiring[0]}`;
   if (dayStamped.has(mark)) return null;
-  pipe.expire(setKey, SET_TTL_SEC, "NX");
+  for (const key of expiring) pipe.expire(key, SET_TTL_SEC, "NX");
   pipe.eval(FINALIZE_SCRIPT, finalizeKeys(addDays(d, -1)), []);
   return mark;
 }
@@ -161,7 +170,13 @@ export async function recordVisit(input: {
   pipe.hincrby(KEY_COUNTRIES(d), country, 1);
   pipe.hincrby(KEY_REFERRERS(d), referrer, 1);
   pipe.hincrby(KEY_LOCALES(d), locale, 1);
-  const mark = stampDay(pipe, d, KEY_VISITORS(d));
+  const mark = stampDay(pipe, d, [
+    KEY_VISITORS(d),
+    KEY_PATHS(d),
+    KEY_COUNTRIES(d),
+    KEY_REFERRERS(d),
+    KEY_LOCALES(d),
+  ]);
   const ok = await safe(
     "analytics.recordVisit",
     async () => {
@@ -187,7 +202,7 @@ export async function recordFunnel(
   const key = kind === "cart" ? KEY_CART(d) : KEY_CHECKOUT(d);
   const pipe = redis.pipeline();
   pipe.sadd(key, sessionHash(input.ip || "", input.ua || ""));
-  const mark = stampDay(pipe, d, key);
+  const mark = stampDay(pipe, d, [key]);
   const ok = await safe(
     "analytics.recordFunnel",
     async () => {
@@ -255,8 +270,11 @@ async function readCounts(
   setKey: (d: string) => string
 ): Promise<number[]> {
   const counts = await redis!.mget<(number | string | null)[]>(days.map(countKey));
+  // Ein SCARD nur, wo das Set noch existieren kann (90 Tage). Aeltere Tage ohne
+  // festgeschriebene Zahl haben schlicht keine Daten, jede Abfrage kostet Geld.
+  const oldest = dateKey(-92);
   const missing = days
-    .map((d, i) => (counts?.[i] == null ? i : -1))
+    .map((d, i) => (counts?.[i] == null && d >= oldest ? i : -1))
     .filter((i) => i >= 0);
   const scards = await Promise.all(missing.map((i) => redis!.scard(setKey(days[i]))));
   const out = days.map((_, i) => Number(counts?.[i] ?? 0));
@@ -282,9 +300,11 @@ async function readDailyBuckets(days: string[]): Promise<DailyBucket[]> {
 }
 
 // Einmalige Umstellung vom 03.11.2026: bis dahin liefen alle Tageszaehler nach
-// 90 Tagen ab. Was noch da ist, wird dauerhaft gemacht und die Besucherzahl
-// festgeschrieben. Rund 120 Tage x 6 Kommandos, laeuft genau einmal.
-const PERSIST_FLAG = "sm:vis:persisted:v1";
+// 90 Tagen ab. Die Aufrufe werden dauerhaft, die Besucherzahl abgeschlossener
+// Tage festgeschrieben, die Toplisten behalten (wieder) ihre 90 Tage. v2, weil
+// v1 den Umstellungstag selbst ausliess und die Toplisten ebenfalls dauerhaft
+// machte. Rund 120 Tage x 6 Kommandos, laeuft genau einmal.
+const PERSIST_FLAG = "sm:vis:persisted:v2";
 let persistChecked = false;
 
 async function ensurePersistentHistory(): Promise<void> {
@@ -295,9 +315,9 @@ async function ensurePersistentHistory(): Promise<void> {
     persistChecked = true;
     return;
   }
-  const yesterday = dateKey(-1);
+  const todayKey = today();
   const days: string[] = [];
-  for (let d = "2026-07-10"; d <= yesterday; d = addDays(d, 1)) days.push(d);
+  for (let d = COUNTER_START; d <= todayKey; d = addDays(d, 1)) days.push(d);
   const ok = await safe(
     "analytics.persistHistory",
     async () => {
@@ -305,11 +325,13 @@ async function ensurePersistentHistory(): Promise<void> {
         const pipe = redis!.pipeline();
         for (const d of days.slice(i, i + 30)) {
           pipe.persist(KEY_VIEWS(d));
-          pipe.persist(KEY_PATHS(d));
-          pipe.persist(KEY_COUNTRIES(d));
-          pipe.persist(KEY_REFERRERS(d));
-          pipe.persist(KEY_LOCALES(d));
-          pipe.eval(FINALIZE_SCRIPT, finalizeKeys(d), []);
+          pipe.expire(KEY_PATHS(d), SET_TTL_SEC, "NX");
+          pipe.expire(KEY_COUNTRIES(d), SET_TTL_SEC, "NX");
+          pipe.expire(KEY_REFERRERS(d), SET_TTL_SEC, "NX");
+          pipe.expire(KEY_LOCALES(d), SET_TTL_SEC, "NX");
+          // Der laufende Tag wird erst morgen festgeschrieben, sonst friert die
+          // Zahl mitten am Tag ein.
+          if (d < todayKey) pipe.eval(FINALIZE_SCRIPT, finalizeKeys(d), []);
         }
         await pipe.exec();
       }
@@ -337,24 +359,29 @@ export async function loadDailyTraffic(days: string[]): Promise<TrafficDay[] | u
   const empty = days.map((date) => ({ date, views: null, visitors: null, carts: null, checkouts: null }));
   if (!redis || days.length === 0) return empty;
   await ensurePersistentHistory();
-  const funnelDays = days.filter((d) => d >= FUNNEL_FIRST_DAY);
+  // Vor dem Zaehlerstart gibt es nichts zu lesen, also auch nichts abfragen.
+  const counterDays = days.filter((d) => d >= COUNTER_START);
+  if (counterDays.length === 0) return empty;
+  const funnelDays = counterDays.filter((d) => d >= FUNNEL_FIRST_DAY);
   const result = await safe(
     "analytics.loadDailyTraffic",
     async () => {
       const [buckets, carts, checkouts] = await Promise.all([
-        readDailyBuckets(days),
+        readDailyBuckets(counterDays),
         funnelDays.length ? readCounts(funnelDays, KEY_CCOUNT, KEY_CART) : Promise.resolve([]),
         funnelDays.length ? readCounts(funnelDays, KEY_KCOUNT, KEY_CHECKOUT) : Promise.resolve([]),
       ]);
       const funnel = new Map(funnelDays.map((d, i) => [d, [carts[i] ?? 0, checkouts[i] ?? 0]]));
-      return buckets.map((b): TrafficDay => {
+      const byDay = new Map(buckets.map((b) => [b.date, b]));
+      return days.map((date): TrafficDay => {
+        const b = byDay.get(date);
         // Ein Shop-Tag ohne einen einzigen Aufruf heisst: keine Daten.
-        const has = b.views > 0;
-        const f = funnel.get(b.date);
+        const has = !!b && b.views > 0;
+        const f = funnel.get(date);
         return {
-          date: b.date,
-          views: has ? b.views : null,
-          visitors: has ? b.visitors : null,
+          date,
+          views: has ? b!.views : null,
+          visitors: has ? b!.visitors : null,
           carts: has && f ? f[0] : null,
           checkouts: has && f ? f[1] : null,
         };
