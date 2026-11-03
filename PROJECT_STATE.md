@@ -241,6 +241,24 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     **Bug dabei gefunden und gefixt (3ca6b02):** ein Monat, der ueber die 60-Tage-Grenze reichte,
     wurde halb gespeichert (1. bis 4.9. fehlten, 28 Bestellungen). Solche Monate werden nie mehr
     gecacht, Cache-Version v3.
+  - **Review + Nacharbeit 03.11. nachmittags (Workflow: 4 Pruefer, je Fund ein Gegenpruefer, 14 Funde,
+    11 bestaetigt, alle behoben, commits 0e24f6d + 488e6d8, live verifiziert):** Thomas meldete "ab 90
+    Tagen stimmt was mit den Besuchern nicht": der Vergleich summierte 90 Tage gegen 62 Tage mit Daten
+    (09.07. bis 05.08.2026 fehlen). Jetzt "Vergleich: X (nur 62 von 90 Tagen)" plus "Ø pro Tag 612 zu
+    844", Sternchen an unvollstaendigen Vergleichswerten, Umzugslinie auch im Vergleichszeitraum,
+    Hinweis "zaehlen wir erst ab 04.11.2026" bei Warenkorb/Kasse, Warnung zur Shopify-Besucherspitze
+    Dez 2024 bis Maerz 2025 (Jan 2025 149.334 statt sonst 12.000 bis 42.000 pro Monat). Aus dem Review:
+    Formular haengte nach Klick auf einen Vergleichs-Knopf am alten Vergleich (jetzt key), Next-Datencache
+    hielt Shopify-Antworten inkl. "Throttled" 60 s fest (Umsatzabfragen jetzt ohne, eigener Cache reicht,
+    Monate aelter als 90 Tage 30 Tage im Redis), Dauerhaft-Umstellung v2 (`sm:vis:persisted:v2`)
+    schliesst den 03.11. ein und laesst die Toplisten wieder nach 90 Tagen ablaufen, keine Redis-Abfragen
+    vor dem Zaehlerstart, Vorjahr Kalendertag gegen Kalendertag (Schaltjahr), Zukunfts-URLs begrenzt,
+    Ø Warenkorb ohne Bestellungen ohne -100 %, Hinweis "heute laeuft noch", Token-Speicherfehler loggt
+    keine Details. Bewusst offen: /api/track ist weiter ein offener POST (Kasse-Zaehler aufblasbar, wie
+    die Besucher), langer Kaltstart bei 3-Jahres-Vergleichen ungetestet (22 Monate kalt liefen live in
+    unter 10 s).
+  - **Morgen pruefen (04.11.):** (a) Warenkorb/Kasse-Karten zeigen den ersten vollen Tag, (b) der 06.08.
+    hat noch Besucher (waere nach alter Regel in der Nacht abgelaufen), (c) /admin, /admin/visitors.
   - **Thomas' WhatsApp vom 03.11. (Shopify-Screenshots, Jahr bis heute vs Vorjahr):** "Checkout
     abgeschlossen Verlust 14 Prozent, Sprache? Warenkorb hinzugefuegt minus 40%, warum, wie wird das
     gezaehlt?" Antwort: Warenkorb -40% und Sitzungen -58% sind Zaehlartefakte (siehe oben, ausserdem
