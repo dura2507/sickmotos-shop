@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-11-03.
+> Stand: 2026-11-08.
 
 ---
 
@@ -265,6 +265,46 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     hatte Shopify Jan bis Mar 2025 auffaellig 120.000 bis 158.000 Sitzungen pro Monat). "Kasse
     erreicht" +3% ist echt. Sprache: ja, deutscher Checkout lief bis 02.11. auf Englisch (gefixt).
     Dazu sein Wunsch: "Auf Bestellung gefertigt" erst in der Bestellmail, nicht vorher (offen, siehe TODO).
+
+- **Thomas' Telegram/WhatsApp vom 30.10. bis 07.11. abgearbeitet (08.11., Leon: "mach was du willst"):**
+  - **Titan-Kruemmer Beta RR 125 LC Minarelli (Handle ...-2021-2024-minarelli-kopie, laut Shopify das
+    meistverkaufte Teil, 27 Stueck in 90 Tagen):** Thomas' "Vorschau zeigt nicht den Real View" = die
+    Shopify-App-Vorschau (shopifypreview.com, altes Shopify-Theme), nicht sickmotos.com. Auf unserer Seite
+    war seine neue Beschreibung eine Textwand: neue `src/lib/richDescription.ts` macht aus body_html einen
+    Block-Baum (Zwischentitel, Listen, fette Stichworte, Links), erkennt auch verlorene Struktur, ersetzt
+    Gedankenstriche; gegen alle 489 Beschreibungen geprueft, kein Wort verloren. Gilt fuer ALLE Produkte.
+  - **"Passend dazu" statt "Andere kauften auch"** (die alte Ueberschrift war nicht durch Kaeufe gedeckt,
+    die Liste waren einfach die ersten 4 derselben Marke, darunter Fuel X CF Moto 450 unter dem Beta-
+    Kruemmer): `getRecommendations()` in products.ts, gleiches Modell, Marke/Hubraum/Motor (Minarelli vs
+    Tayo)/Takt/Baujahre muessen passen, je Teileart eins. Kruemmer zeigt jetzt exakt Thomas' Liste:
+    Stage-1-Zylinder-Kit, Einspritzduese, Luftfilter, Endtopf Flame (alle Beta RR 125 LC). 133 Produkte
+    ohne passende Teile zeigen den Abschnitt nicht mehr (lieber nichts als falsches).
+  - **SEO fuer den Kruemmer** (Thomas' Gemini-Tipps): `src/data/seo.json` mit Titel "Titan Kruemmer Beta RR
+    125 LC 2021-2026 Minarelli | SickMotos" und Description aus seinen Fakten (0,65 kg, 2,23 kg leichter,
+    E5/E5+), Preis live angehaengt. Die 2,6 PS NICHT in den Text, die gelten laut Thomas nur im Set mit
+    Luftfilter + Street Injektor. Shopify-eigene SEO-Felder bewusst NICHT uebernommen: 149 sind gepflegt,
+    viele mit englischem "Buy" oder falschem Produkt (Fuel X CF Moto 450 MT traegt "KTM Duke 390").
+  - **Meta-Descriptions allgemein:** Preis = angezeigter Preis (vorher "ab 38,99" = Luftfilter-Variante
+    beim 199-EUR-Kruemmer), nie mehr mit "..." abgeschnittene Saetze, "-2,58 kg"-Fragmente raus.
+  - **Passt auf** fuer beide Minarelli-Kruemmer auf 2021-2026 (fitment.json, Titel + Beschreibung sagen 2026).
+  - **Search-Console-Hinweise 18.09./28.09.** (aus Thomas' Telegram): returnFees jetzt
+    ReturnFeesCustomerResponsibility (statt ReturnShippingFees ohne Betrag), sku nur wenn eindeutig und
+    ohne Leerzeichen ("FMF Style" auf 3 Varianten). deliveryTime bewusst weiter offen.
+  - Review per Workflow (2 Pruefer + Gegenpruefer, 9 Funde bestaetigt, alle behoben, u.a. Absturz bei
+    kaputtem Zeichen-Code, Zweitakt/CF-Moto/150ccm in den Empfehlungen). Commits c0d32dc, b21db6c.
+    **Live verifiziert** (curl): Titel, Description, Zwischentitel, fette Stichworte, Passend-dazu-Liste.
+  - **Instagram "Nicht verfuegbar":** Kanal Facebook & Instagram aktiv, 465 Produkte freigegeben, 3 "Has
+    issues". Ob der Kruemmer dabei ist, steht hinter einem Facebook-Cookie-Hinweis im eingebetteten Kanal,
+    den der Classifier mich nicht bestaetigen laesst (Leon muss einmal "OK" klicken). Der "1 Kanalfehler"
+    am Produkt ist Pinterest (keine Abrechnungsdaten), nicht Instagram. Ursache Instagram unbewiesen.
+  - **TikTok (Thomas 30.10. "alle Produkte synchronisieren?"):** TikTok-Kanal ist installiert, aber die
+    Einrichtung ist nicht abgeschlossen ("Finish Setup", neue Berechtigungen offen). Freigabe = Leon/Thomas.
+  - **Funnel-Zaehler laeuft:** 04.-07.11. 2.543 Besucher, 123 Warenkorb, 71 Kasse, 17 Bestellungen
+    (Kasse zu Kauf 24 %, kleine Stichprobe). **Dauerhaft-Speicherung bestaetigt:** 06.-12.08. noch da.
+  - **Offen bei Thomas/Leon:** WhatsApp 03.11. Bewertungs-Mails nach Zustellung (DHL-Trigger, 5 %/10 %
+    Code) = Vorschlag, Achtung: Bewertungsanfrage per Mail gilt in DE als Werbung (Einwilligung noetig);
+    Sprachnachricht von Thomas (Mi 05.11., 0:46) nicht abhoerbar; "Auf Bestellung gefertigt" erst in der
+    Mail weiter Vorschlag.
 
 ### In Arbeit / muss verifiziert werden
 - **Shopify Admin Orders** (`/admin/orders` = echte Bestellungen): OAuth-Offline-Token-
