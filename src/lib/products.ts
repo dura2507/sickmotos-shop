@@ -2,6 +2,7 @@ import raw from "@/data/products.json";
 import addonsRaw from "@/data/addons.json";
 import fitmentRaw from "@/data/fitment.json";
 import { leadTimeFor } from "@/lib/leadTime";
+import { parseRichDescription, type RichBlock } from "@/lib/richDescription";
 import { CATEGORIES, type Category } from "@/lib/productShared";
 
 const ADDON_MAP = addonsRaw as Record<string, string[]>;
@@ -740,6 +741,8 @@ export type DetailViewModel = {
   // The selected user options resolve to one of these via key matching.
   variants: DetailVariantFull[];
   description: string;
+  // Dieselbe Beschreibung mit Ueberschriften, Listen und Fettdruck.
+  descriptionBlocks: RichBlock[];
   specs: { key: string; label: string; value: string }[];
   related: CardProduct[];
   // Curated add-ons from the original site (e.g. LED -> converter + warranty).
@@ -778,6 +781,187 @@ function extractSpecsFromHtml(html: string, p: ShopifyProduct) {
   return specs;
 }
 
+// ---------------------------------------------------------------------------
+// "Passend dazu" auf der Produktseite. Bis 08.11.2026 standen dort einfach die
+// ersten vier Produkte derselben Marke unter "Andere kauften auch", also auch
+// ein Fuel X fuer die CF Moto 450 MT unter einem Beta-Kruemmer (Thomas). Jetzt:
+// nur Teile fuer dasselbe Modell, passender Motor und Baujahre, je Teileart
+// hoechstens eins, in der Reihenfolge, in der sie zum Teil passen. Fuer einen
+// Kruemmer ist das Thomas' Vorgabe: Zylinder, Einspritzduese, Luftfilter,
+// Endtopf.
+
+const PART_KINDS: [string, RegExp][] = [
+  ["graphics", /graphics kit|dekor|sticker/],
+  ["carbon", /carbon/],
+  ["battery", /akku|battery/],
+  ["converter", /wandler|converter/],
+  ["light", /\bled\b|scheinwerfer|angel eye|headlight/],
+  ["silencer", /endtopf|schalld[äa]mpfer|silencer/],
+  ["header", /kr[üu]mmer|header/],
+  ["exhaust", /auspuff|exhaust/],
+  ["cylinder", /zylinder|cylinder/],
+  ["injector", /einspritzd[üu]se|injektor|injector/],
+  ["airfilter", /luftfilter|air ?filter/],
+  ["camshaft", /nockenwelle|camshaft/],
+  ["ecu", /fuel ?x|\becu\b|mapping/],
+  ["wheels", /felge|wheel|\brim\b/],
+  ["brakes", /brems|brake/],
+  ["screws", /schraube|screw/],
+  ["merch", /hoodie|shirt|merch/],
+];
+
+const COMPLEMENTS: Record<string, string[]> = {
+  header: ["cylinder", "injector", "airfilter", "silencer", "ecu", "camshaft", "carbon"],
+  silencer: ["header", "airfilter", "injector", "ecu", "carbon"],
+  exhaust: ["airfilter", "ecu", "carbon", "light"],
+  cylinder: ["injector", "camshaft", "airfilter", "header", "ecu"],
+  injector: ["airfilter", "header", "cylinder", "ecu", "camshaft"],
+  airfilter: ["injector", "header", "cylinder", "ecu", "silencer"],
+  camshaft: ["cylinder", "injector", "airfilter", "header"],
+  ecu: ["airfilter", "injector", "header", "silencer"],
+  light: ["carbon", "header", "airfilter"],
+  carbon: ["light", "header", "silencer", "carbon"],
+  graphics: ["graphics", "light", "carbon"],
+  wheels: ["brakes"],
+  brakes: ["wheels"],
+};
+const DEFAULT_COMPLEMENTS = ["header", "airfilter", "injector", "ecu", "light", "carbon"];
+// Teile, die nur am Viertakt-Einspritzer Sinn ergeben.
+const FOUR_STROKE_ONLY = new Set(["injector", "camshaft", "cylinder", "header", "silencer"]);
+
+function partKind(title: string): string | null {
+  const t = title.toLowerCase();
+  return PART_KINDS.find(([, rx]) => rx.test(t))?.[0] ?? null;
+}
+
+function titleYears(title: string): Set<number> {
+  const years = new Set<number>();
+  yearsFromString(title, years);
+  return years;
+}
+
+const CCM_VALUES = [50, 65, 85, 125, 150, 155, 200, 250, 300, 350, 390, 400, 450, 500, 525, 690, 701, 790, 890, 900, 1290];
+
+function ccmOf(title: string): Set<number> {
+  const out = new Set<number>();
+  for (const m of title.matchAll(/\b(\d{2,4})\b/g)) {
+    const n = Number(m[1]);
+    if (CCM_VALUES.includes(n)) out.add(n);
+  }
+  return out;
+}
+
+function titleBrands(title: string): BikeBrand[] {
+  return BIKE_BRANDS.filter((b) => new RegExp(`\\b${b}\\b`, "i").test(title));
+}
+
+// true, wenn die beiden Teile sicher nicht an dasselbe Motorrad gehoeren.
+function fitConflict(src: ShopifyProduct, cand: ShopifyProduct, candKind: string | null): boolean {
+  const s = src.title.toLowerCase();
+  const c = cand.title.toLowerCase();
+  const sMin = s.includes("minarelli");
+  const sTayo = /tayo|zontes/.test(s);
+  const cMin = c.includes("minarelli");
+  const cTayo = /tayo|zontes/.test(c);
+  if (sMin && !sTayo && cTayo && !cMin) return true;
+  if (sTayo && !sMin && cMin && !cTayo) return true;
+  const s2t = /2-?takt|2-?stroke/.test(s);
+  const c2t = /2-?takt|2-?stroke/.test(c);
+  if (c2t && !s2t) return true;
+  if (s2t && !c2t && candKind && FOUR_STROKE_ONLY.has(candKind)) return true;
+  // Hubraum: steht in beiden Titeln einer und keiner passt, ist es ein
+  // anderes Motorrad (Duke 125 vs Duke 390, RR 50 vs RR 125).
+  const sc = ccmOf(src.title);
+  const cc = ccmOf(cand.title);
+  if (sc.size && cc.size && ![...cc].some((n) => sc.has(n))) return true;
+  // Marke laut Titel: Tags sind nicht immer sauber (Yamaha-Teile mit Beta-Tag).
+  const sb = titleBrands(src.title);
+  const cb = titleBrands(cand.title);
+  if (sb.length && cb.length && !cb.some((b) => sb.includes(b))) return true;
+  const sy = titleYears(src.title);
+  const cy = titleYears(cand.title);
+  if (sy.size && cy.size && ![...cy].some((y) => sy.has(y))) return true;
+  return false;
+}
+
+// "Beta RR", "KTM Duke", "Yamaha MT": Marke plus das naechste Wort aus dem
+// Titel. Reicht als Modell, wenn ein Produkt keine Modell-Tags hat.
+function modelPhrases(title: string): string[] {
+  const t = title.toLowerCase().replace(/[^a-z0-9äöü ]+/g, " ");
+  const out: string[] = [];
+  for (const b of titleBrands(title)) {
+    const m = t.match(new RegExp(`\\b${b.toLowerCase()}\\s+([a-z]{2,}|[a-z]+\\s?\\d{2,4})\\b`));
+    if (m) out.push(`${b.toLowerCase()} ${m[1]}`);
+  }
+  return out;
+}
+
+export function getRecommendations(
+  p: ShopifyProduct,
+  n = 4,
+  exclude: Set<string> = new Set()
+): ShopifyProduct[] {
+  const srcKind = partKind(p.title);
+  const srcModels = new Set(getModels(p).map((m) => m.toLowerCase()));
+  const srcPhrases = modelPhrases(p.title);
+  if (srcModels.size === 0 && srcPhrases.length === 0) return [];
+  const srcEngine = /minarelli/i.test(p.title) ? "minarelli" : /tayo|zontes/i.test(p.title) ? "tayo" : null;
+
+  const candidates = allProducts
+    .filter((q) => q.handle !== p.handle && !exclude.has(q.handle) && isInStock(q) && q.images.length > 0)
+    .map((q) => {
+      const kind = partKind(q.title);
+      const t = q.title.toLowerCase();
+      const shared = getModels(q).filter((m) => srcModels.has(m.toLowerCase())).length;
+      const modelInTitle = [...srcModels].some((m) => t.includes(m));
+      const phraseInTitle = srcPhrases.some((ph) => t.replace(/[^a-z0-9äöü ]+/g, " ").includes(ph));
+      return { q, kind, shared, modelInTitle, phraseInTitle };
+    })
+    .filter(({ q, kind, shared, modelInTitle, phraseInTitle }) => {
+      // Gleiches Modell: per Tag, oder per Modellname im Titel.
+      if (shared === 0 && !modelInTitle && !phraseInTitle) return false;
+      // Gleiche Teileart nur bei Carbon und Dekor (andere Editionen fuers selbe Bike).
+      if (kind && kind === srcKind && kind !== "carbon" && kind !== "graphics") return false;
+      if (kind === "graphics" && srcKind !== "graphics") return false;
+      if ((kind === "merch") !== (srcKind === "merch")) return false;
+      if (kind === "converter" || kind === "battery") return false; // laufen ueber die Add-ons
+      return !fitConflict(p, q, kind);
+    })
+    .map((x) => {
+      const engineMatch =
+        srcEngine && new RegExp(srcEngine === "tayo" ? "tayo|zontes" : "minarelli", "i").test(x.q.title) ? 1 : 0;
+      const copy = /\(kopie\)|kopie von/i.test(x.q.title) ? 1 : 0;
+      return {
+        ...x,
+        score: x.shared * 3 + (x.modelInTitle ? 4 : 0) + (x.phraseInTitle ? 2 : 0) + engineMatch - copy,
+      };
+    })
+    .sort((a, b) => b.score - a.score);
+
+  const picked: ShopifyProduct[] = [];
+  const usedKinds = new Set<string>();
+  const take = (kind: string) => {
+    const hit = candidates.find((c) => c.kind === kind && !picked.includes(c.q));
+    if (hit) {
+      picked.push(hit.q);
+      usedKinds.add(kind);
+    }
+  };
+  for (const kind of (srcKind && COMPLEMENTS[srcKind]) || DEFAULT_COMPLEMENTS) {
+    if (picked.length >= n) break;
+    if (!usedKinds.has(kind)) take(kind);
+  }
+  // Auffuellen mit anderen passenden Teilen, eine Art je Platz.
+  for (const c of candidates) {
+    if (picked.length >= n) break;
+    const kind = c.kind ?? `other:${c.q.handle}`;
+    if (usedKinds.has(kind) || picked.includes(c.q)) continue;
+    picked.push(c.q);
+    usedKinds.add(kind);
+  }
+  return picked;
+}
+
 export function toDetailViewModel(p: ShopifyProduct): DetailViewModel {
   const { price, compareAt } = getPrice(p);
   const inStock = isInStock(p);
@@ -804,18 +988,11 @@ export function toDetailViewModel(p: ShopifyProduct): DetailViewModel {
     }),
   }));
 
-  const related = allProducts
-    .filter((q) => q.handle !== p.handle)
-    .filter((q) => {
-      // pick products that share at least one bike brand
-      const mine = new Set(getBikeBrands(p));
-      return getBikeBrands(q).some((b) => mine.has(b));
-    })
-    .slice(0, 4)
-    .map(toCard);
-
   // Resolve curated add-on handles to product cards, preserving the source
   // order. Skip any that no longer exist.
+  const addOnHandles = new Set(ADDON_MAP[p.handle] ?? []);
+  const related = getRecommendations(p, 4, addOnHandles).map(toCard);
+
   const addOns = (ADDON_MAP[p.handle] ?? [])
     .map((h) => allProducts.find((q) => q.handle === h))
     .filter((q): q is ShopifyProduct => Boolean(q))
@@ -854,6 +1031,7 @@ export function toDetailViewModel(p: ShopifyProduct): DetailViewModel {
     variantGroups,
     variants,
     description: blocks.join("\n\n"),
+    descriptionBlocks: parseRichDescription(p.body_html),
     specs: extractSpecsFromHtml(p.body_html, p),
     related,
     addOns,

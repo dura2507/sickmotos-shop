@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { DetailViewModel } from "@/lib/products";
+import type { Inline, RichBlock } from "@/lib/richDescription";
 import { useDictionary } from "@/app/_components/LocaleProvider";
 
 type TabKey = "description" | "specs";
@@ -9,7 +10,7 @@ type TabKey = "description" | "specs";
 export function InfoTabs({ product: p }: { product: DetailViewModel }) {
   const dict = useDictionary();
   const [active, setActive] = useState<TabKey>("description");
-  const blocks = p.description.split(/\n+/).filter(Boolean);
+  const blocks: RichBlock[] = p.descriptionBlocks;
 
   const tabs: { key: TabKey; label: string }[] = [
     { key: "description", label: dict.infoTabs.description },
@@ -90,11 +91,7 @@ export function InfoTabs({ product: p }: { product: DetailViewModel }) {
           {active === "description" && (
             <div className="flex flex-col gap-3">
               {blocks.length > 0 ? (
-                blocks.map((b, i) => (
-                  <p key={i} className="text-fg">
-                    {b}
-                  </p>
-                ))
+                blocks.map((b, i) => <DescriptionBlock key={i} block={b} first={i === 0} />)
               ) : (
                 <p>{dict.infoTabs.noDescription}</p>
               )}
@@ -119,5 +116,79 @@ export function InfoTabs({ product: p }: { product: DetailViewModel }) {
         </div>
       </div>
     </section>
+  );
+}
+
+function InlineNodes({ nodes }: { nodes: Inline[] }) {
+  return (
+    <>
+      {nodes.map((n, i) => {
+        if (n.t === "text") return <span key={i}>{n.v}</span>;
+        if (n.t === "strong")
+          return (
+            <strong key={i} className="font-semibold text-fg">
+              <InlineNodes nodes={n.c} />
+            </strong>
+          );
+        if (n.t === "em")
+          return (
+            <em key={i}>
+              <InlineNodes nodes={n.c} />
+            </em>
+          );
+        const external = /^https?:/i.test(n.href);
+        return (
+          <a
+            key={i}
+            href={n.href}
+            className="text-accent underline underline-offset-2 hover:text-accent-hi"
+            {...(external ? { target: "_blank", rel: "noopener noreferrer nofollow" } : {})}
+          >
+            <InlineNodes nodes={n.c} />
+          </a>
+        );
+      })}
+    </>
+  );
+}
+
+// Struktur aus Thomas' Shopify-Text: Zwischentitel, Listen, fette Stichworte.
+function DescriptionBlock({ block, first }: { block: RichBlock; first: boolean }) {
+  if (block.type === "heading") {
+    return (
+      <h3
+        className={`font-display uppercase tracking-tight text-fg ${
+          first ? "text-xl md:text-2xl" : "mt-4 text-lg md:text-xl"
+        }`}
+      >
+        <InlineNodes nodes={block.c} />
+      </h3>
+    );
+  }
+  if (block.type === "list") {
+    const Tag = block.ordered ? "ol" : "ul";
+    return (
+      <Tag className={`flex flex-col gap-2 pl-1 ${block.ordered ? "list-decimal pl-5" : ""}`}>
+        {block.items.map((item, i) =>
+          block.ordered ? (
+            <li key={i} className="text-fg">
+              <InlineNodes nodes={item} />
+            </li>
+          ) : (
+            <li key={i} className="flex gap-3 text-fg">
+              <span aria-hidden className="mt-[0.55em] size-1.5 shrink-0 rounded-full bg-accent" />
+              <span className="min-w-0">
+                <InlineNodes nodes={item} />
+              </span>
+            </li>
+          )
+        )}
+      </Tag>
+    );
+  }
+  return (
+    <p className="text-fg">
+      <InlineNodes nodes={block.c} />
+    </p>
   );
 }

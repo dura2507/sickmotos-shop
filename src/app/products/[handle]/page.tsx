@@ -111,7 +111,11 @@ export default async function ProductPage({
     returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
     merchantReturnDays: 14,
     returnMethod: "https://schema.org/ReturnByMail",
-    returnFees: "https://schema.org/ReturnShippingFees",
+    // Der Kunde traegt die Ruecksendekosten selbst (widerruf.md). Mit
+    // ReturnShippingFees verlangt Google einen festen Betrag
+    // (returnShippingFeesAmount, Search-Console-Hinweis vom 18.09.), den es
+    // nicht gibt; CustomerResponsibility sagt genau das ohne Betrag.
+    returnFees: "https://schema.org/ReturnFeesCustomerResponsibility",
     refundType: "https://schema.org/FullRefund",
   };
 
@@ -123,8 +127,18 @@ export default async function ProductPage({
   // with an explicit price, the default variant first to match the price the
   // page initially displays. Google caps sku at 50 chars, longer values are
   // flagged by Search Console, so anything over that is dropped.
-  const skuOf = (raw?: string | null) =>
-    raw && raw.length <= 50 ? raw : undefined;
+  // Search Console meldete am 28.09. "Ungueltiger Wert in Feld sku": ein
+  // Produkt traegt bei allen Varianten dieselbe "SKU" "FMF Style" (Leerzeichen,
+  // nicht eindeutig). Nur echte, innerhalb des Produkts eindeutige SKUs.
+  const skuCounts = new Map<string, number>();
+  for (const v of shopify.variants) {
+    const k = (v.sku ?? "").trim();
+    if (k) skuCounts.set(k, (skuCounts.get(k) ?? 0) + 1);
+  }
+  const skuOf = (raw?: string | null) => {
+    const k = (raw ?? "").trim();
+    return /^[A-Za-z0-9._\/-]{1,50}$/.test(k) && skuCounts.get(k) === 1 ? k : undefined;
+  };
   // The purchase panel preselects the first AVAILABLE variant, so its price
   // is what the page shows; the first Offer must be that one (Google: price
   // must match the landing page). Stable sort keeps Shopify order otherwise.
