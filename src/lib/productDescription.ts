@@ -87,6 +87,9 @@ export function textLines(html: string): string[] {
     .replace(/<[^>]+>/g, "");
   return decodeEntities(stripped)
     .split(/\n+/)
+    // "-2,58 kg gegenueber der Original-Auspuffanlage" ist ein Messwert-Fragment;
+    // ohne sein Minus (stripDashes) sagte es in der Meta-Description das Gegenteil.
+    .filter((line) => !/^\s*[-–—]\s*\d/.test(line))
     .map((line) => tidy(stripDashes(line)))
     .filter(Boolean);
 }
@@ -180,7 +183,7 @@ export function cutAtWord(s: string, max: number): string {
 // stops at the first sentence that does not fit (no skipping ahead to later,
 // shorter sentences, which quoted a CTA or an unrelated line out of context);
 // when not even the first sentence fits, it is cut at a word boundary.
-function fillSentences(lines: string[], budget: number): string {
+function fillSentences(lines: string[], budget: number, allowCut = true): string {
   const sentences = lines.map(asSentence);
   let out = "";
   for (const sentence of sentences) {
@@ -188,7 +191,7 @@ function fillSentences(lines: string[], budget: number): string {
     if (out.length + needed > budget) break;
     out += (out ? " " : "") + sentence;
   }
-  if (!out && sentences.length > 0) return cutAtWord(sentences[0], budget);
+  if (!out && sentences.length > 0 && allowCut) return cutAtWord(sentences[0], budget);
   return out;
 }
 
@@ -223,6 +226,11 @@ function titleOf(p: ShopifyProduct): string {
 // their prices differ, the stock wording only when something is in stock.
 // With nothing in stock the price still comes from the cheapest variant, but
 // without the stock wording.
+// The amount is the price the page shows first (the first variant in stock),
+// not the cheapest one: Thomas sells accessories as variants of the main part
+// (Titan-Kruemmer 199 EUR with a 38,99 EUR air filter variant), and "ab 38,99"
+// would advertise the filter. "ab" only when that shown price is also the
+// lowest and other variants cost more.
 export function priceTail(p: ShopifyProduct): string {
   const available = p.variants.filter((v) => v.available);
   const pool = available.length > 0 ? available : p.variants;
@@ -230,10 +238,11 @@ export function priceTail(p: ShopifyProduct): string {
     .map((v) => parseFloat(v.price))
     .filter((n) => Number.isFinite(n) && n > 0);
   if (prices.length === 0) return "";
+  const shown = prices[0];
   const min = Math.min(...prices);
   const differ = new Set(prices.map((n) => n.toFixed(2))).size > 1;
-  const amount = `${NUMBER.format(min)} EUR`;
-  const price = differ ? `${WORD_FROM} ${amount}` : amount;
+  const amount = `${NUMBER.format(shown)} EUR`;
+  const price = differ && shown === min ? `${WORD_FROM} ${amount}` : amount;
   return available.length > 0 ? `${price}, ${WORD_IN_STOCK}.` : `${price}.`;
 }
 
@@ -257,14 +266,18 @@ export function buildMetaDescription(p: ShopifyProduct): string {
     `${title} ${WORD_BY} ${vendor}`,
     title,
   ].filter((h): h is string => Boolean(h));
-  const fitting = heads.map(endSentence).find((h) => h.length <= room);
-  const head = fitting ?? cutAtWord(title, room);
-
-  const budget = room - head.length - 1;
-  const body =
-    budget >= MIN_LINE ? fillSentences(meaningfulSentences(p.body_html, title), budget) : "";
-
-  return [head, body, tail].filter(Boolean).join(" ");
+  const fitting = heads.map(endSentence).filter((h) => h.length <= room);
+  const sentences = meaningfulSentences(p.body_html, title);
+  // Kein Satz mehr, der mitten im Wort mit "..." endet ("Upgrade fuer..."):
+  // erst den laengsten Kopf nehmen, bei dem ein ganzer Satz passt, sonst einen
+  // kuerzeren Kopf, sonst gar keinen Text aus der Beschreibung.
+  for (const head of fitting) {
+    const budget = room - head.length - 1;
+    const body = budget >= MIN_LINE ? fillSentences(sentences, budget, false) : "";
+    if (body) return [head, body, tail].filter(Boolean).join(" ");
+  }
+  const head = fitting[0] ?? cutAtWord(title, room);
+  return [head, tail].filter(Boolean).join(" ");
 }
 
 // JSON-LD Product.description: the meaningful Shopify text up to `max`

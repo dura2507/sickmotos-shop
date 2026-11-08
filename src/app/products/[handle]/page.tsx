@@ -14,13 +14,25 @@ import {
   getProductByHandle,
   getProductHandles,
   toDetailViewModel,
+  type ShopifyProduct,
 } from "@/lib/products";
 import {
   buildMetaDescription,
   buildStructuredDescription,
+  priceTail,
 } from "@/lib/productDescription";
 import { getLocale } from "@/lib/i18n/getLocale";
 import { getDictionary } from "@/lib/i18n/dictionaries";
+import seoRaw from "@/data/seo.json";
+
+const SEO_MAP = seoRaw as Record<string, { title?: string; description?: string }>;
+
+// Price and stock come live from the catalog, so a hand-written text never
+// shows a stale price. Left out when it would push past Google's 155 chars.
+function withPrice(text: string, p: ShopifyProduct): string {
+  const tail = priceTail(p);
+  return tail && text.length + 1 + tail.length <= 155 ? `${text} ${tail}` : text;
+}
 
 export const dynamicParams = true;
 
@@ -37,11 +49,16 @@ export async function generateMetadata({
   const p = getProductByHandle(handle);
   if (!p) return { title: "Product not found | SickMotos" };
   const { price } = getPrice(p);
-  const title = `${cleanTitle(p.title)} | SickMotos`;
+  // Hand-written SEO for single products (src/data/seo.json), only from facts
+  // in Thomas' own product text. Shopify's own SEO fields are NOT used: 149 of
+  // them exist, many with English "Buy" or another product's name (Fuel X CF
+  // Moto titled "KTM Duke 390"), checked 08.11.2026.
+  const seo = SEO_MAP[handle];
+  const title = seo?.title ?? `${cleanTitle(p.title)} | SickMotos`;
   // Title, type, vendor, the meaningful Shopify lines and the price, all real
   // data (see src/lib/productDescription.ts). The old first-line-of-Shopify
   // text was under 50 characters on 331 of 483 products.
-  const desc = buildMetaDescription(p);
+  const desc = seo?.description ? withPrice(seo.description, p) : buildMetaDescription(p);
   return {
     title,
     description: desc,

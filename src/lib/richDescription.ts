@@ -33,16 +33,21 @@ function decode(s: string): string {
   return s.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m, e: string) => {
     if (e[0] === "#") {
       const code = e[1] === "x" || e[1] === "X" ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10);
-      return Number.isFinite(code) ? String.fromCodePoint(code) : m;
+      // fromCodePoint wirft bei Werten ausserhalb von Unicode, die Seite darf
+      // an einem kaputten Entity in Shopify nicht abstuerzen.
+      return Number.isFinite(code) && code > 0 && code <= 0x10ffff ? String.fromCodePoint(code) : m;
     }
     return ENTITIES[e] ?? m;
   });
 }
 
 // Gedankenstriche: zwischen Zahlen ein Bindestrich (2021–2024), sonst ein Komma.
+// Nur symmetrische Strich-Bereiche werden zusammengezogen ("2021–2024",
+// "2021 – 2024"); "2017– 125ccm" ist ein offenes Baujahr und bleibt getrennt.
 function dashes(s: string): string {
   return s
-    .replace(/(\d)\s*[–—]\s*(\d)/g, "$1-$2")
+    .replace(/(\d)[–—](\d)/g, "$1-$2")
+    .replace(/(\d) +[–—] +(\d)/g, "$1-$2")
     .replace(/\s+[–—]\s+/g, ", ")
     .replace(/[–—]/g, "-");
 }
@@ -64,6 +69,22 @@ function safeHref(raw: string): string | null {
 }
 
 type Line = { c: Inline[]; indented: boolean; bullet: boolean };
+
+// Tabellenzeilen enden sonst auf " · ".
+function dropTrailingSeparator(c: Inline[]): Inline[] {
+  const out = [...c];
+  while (out.length) {
+    const last = out[out.length - 1];
+    if (last.t !== "text") break;
+    const v = last.v.replace(/[\s·]+$/, "");
+    if (v) {
+      out[out.length - 1] = { t: "text", v };
+      break;
+    }
+    out.pop();
+  }
+  return out;
+}
 
 // Plain text of an inline list.
 export function inlineText(c: Inline[]): string {
@@ -87,6 +108,10 @@ const BULLET_RE = /^\s*(?:[•▪●◦✅✔✓☑➤►▶→]|\*|-(?=\s|[A-Za
 // Strip a leading bullet glyph from the first text node.
 function stripBullet(c: Inline[]): { c: Inline[]; had: boolean } {
   const first = c[0];
+  // "*Hinweis*" ist Hervorhebung, kein Listenpunkt.
+  if (first && first.t === "text" && /^\s*\*/.test(first.v) && inlineText(c).trim().slice(1).includes("*")) {
+    return { c, had: false };
+  }
   if (first && first.t === "text" && BULLET_RE.test(first.v)) {
     return { c: [{ t: "text", v: first.v.replace(BULLET_RE, "") }, ...c.slice(1)], had: true };
   }
@@ -112,7 +137,8 @@ function boldLabel(c: Inline[]): Inline[] {
 
 function isHeadingLine(text: string, line: Line): boolean {
   const t = text.trim();
-  if (!t.endsWith(":") || t.length > 70 || line.bullet) return false;
+  if (!t.endsWith(":") || t.length > 60 || line.bullet) return false;
+  if (t.split(/\s+/).length > 8) return false;
   // Ein Satz mit Punkt davor ist kein Zwischentitel ("Wichtig. Bitte beachten:")
   return !/[.!?]\s/.test(t);
 }
@@ -136,7 +162,7 @@ export function parseRichDescription(html: string | null | undefined): RichBlock
   const top = () => stack[stack.length - 1];
 
   const endLine = () => {
-    const c = trimInline(line.c);
+    const c = trimInline(dropTrailingSeparator(line.c));
     if (inlineText(c).trim()) pendingLines.push({ ...line, c });
     line = { c: [], indented: false, bullet: false };
     stack = [line.c];
@@ -174,12 +200,29 @@ export function parseRichDescription(html: string | null | undefined): RichBlock
     pendingLines = [];
   };
 
+  const finishItem = () => {
+    const c = boldLabel(trimInline(dropTrailingSeparator(stripBullet(line.c).c)));
+    if (inlineText(c).trim()) {
+      if (!list) {
+        list = { ordered: false, items: [] };
+        blocks.push({ type: "list", ordered: false, items: list.items });
+      }
+      list.items.push(c);
+    }
+    inItem = false;
+    line = { c: [], indented: false, bullet: false };
+    stack = [line.c];
+    lineStarted = false;
+  };
+
   const re = /<\/?([a-zA-Z][a-zA-Z0-9]*)\b([^>]*)>|([^<]+)/g;
   let m: RegExpExecArray | null;
   while ((m = re.exec(src))) {
     const [, rawTag, attrs = "", text] = m;
     if (text !== undefined) {
-      const v = dashes(decode(text)).replace(/\s+/g, " ");
+      // Am Zeilenanfang erst die Leerzeichen weg, sonst wird " – Text" zu ", Text".
+      const raw = lineStarted ? decode(text) : decode(text).replace(/^\s+/, "");
+      const v = dashes(raw).replace(/\s+/g, " ");
       if (!v.trim() && !lineStarted) continue;
       top().push({ t: "text", v });
       if (v.trim()) lineStarted = true;
@@ -199,6 +242,18 @@ export function parseRichDescription(html: string | null | undefined): RichBlock
         flushParagraph();
         break;
       case "h1": case "h2": case "h3": case "h4": case "h5": case "h6":
+        // Ueberschrift in einem Listenpunkt: bleibt im Punkt, fett.
+        if (inItem) {
+          if (!closing) {
+            const c: Inline[] = [];
+            top().push({ t: "strong", c });
+            stack.push(c);
+          } else {
+            if (stack.length > 1) stack.pop();
+            top().push({ t: "text", v: " " });
+          }
+          break;
+        }
         flushParagraph();
         heading = !closing;
         break;
@@ -208,6 +263,9 @@ export function parseRichDescription(html: string | null | undefined): RichBlock
         break;
       case "ul":
       case "ol":
+        // Verschachtelte Liste: den offenen Punkt erst abschliessen, damit
+        // sein Text an seiner Stelle bleibt.
+        if (inItem) finishItem();
         flushParagraph();
         if (!closing) {
           list = { ordered: tag === "ol", items: [] };
@@ -218,23 +276,13 @@ export function parseRichDescription(html: string | null | undefined): RichBlock
         break;
       case "li":
         if (!closing) {
+          if (inItem) finishItem(); // <li> ohne </li> davor
           flushParagraph();
           inItem = true;
           line = { c: [], indented: false, bullet: false };
           stack = [line.c];
         } else if (inItem) {
-          const c = boldLabel(trimInline(stripBullet(line.c).c));
-          if (inlineText(c).trim()) {
-            if (!list) {
-              list = { ordered: false, items: [] };
-              blocks.push({ type: "list", ordered: false, items: list.items });
-            }
-            list.items.push(c);
-          }
-          inItem = false;
-          line = { c: [], indented: false, bullet: false };
-          stack = [line.c];
-          lineStarted = false;
+          finishItem();
         }
         break;
       case "td":
@@ -289,7 +337,7 @@ export function parseRichDescription(html: string | null | undefined): RichBlock
   const first = blocks[0];
   if (first && first.type === "p") {
     const t = inlineText(first.c).trim();
-    if (t.length <= 120 && !/[.!?:]$/.test(t)) blocks[0] = { type: "heading", c: first.c };
+    if (t.length <= 90 && !/[.!?:]/.test(t)) blocks[0] = { type: "heading", c: first.c };
   }
   // Zwischentitel ohne Doppelpunkt am Ende, als Ueberschrift gesetzt wirkt er doppelt.
   const dropColon = (c: Inline[]): Inline[] => {

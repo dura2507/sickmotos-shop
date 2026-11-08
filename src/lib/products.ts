@@ -808,6 +808,8 @@ const PART_KINDS: [string, RegExp][] = [
   ["brakes", /brems|brake/],
   ["screws", /schraube|screw/],
   ["merch", /hoodie|shirt|merch/],
+  ["barends", /bar ?ends?|lenkerend/],
+  ["handguards", /handguard|handschutz|handprotektor/],
 ];
 
 const COMPLEMENTS: Record<string, string[]> = {
@@ -826,12 +828,24 @@ const COMPLEMENTS: Record<string, string[]> = {
   brakes: ["wheels"],
 };
 const DEFAULT_COMPLEMENTS = ["header", "airfilter", "injector", "ecu", "light", "carbon"];
-// Teile, die nur am Viertakt-Einspritzer Sinn ergeben.
-const FOUR_STROKE_ONLY = new Set(["injector", "camshaft", "cylinder", "header", "silencer"]);
+// Teile, die nur am Viertakt-Einspritzer Sinn ergeben (Fuel X ist ein
+// Einspritz-Modul, der Zweitakt hat Expansionsauspuff statt Kruemmer).
+const FOUR_STROKE_ONLY = new Set(["injector", "camshaft", "cylinder", "header", "silencer", "ecu"]);
+const TWO_STROKE_RE = /2-?takt|2 takt|2-?stroke|\b2t\b|\btpi\b|\btbi\b/;
+const FOUR_STROKE_RE = /4-?takt|4 takt|4-?stroke|\b4t\b/;
+// Marken, die keine BikeFinder-Marke sind, aber in Titeln stehen. Nur fuer den
+// Marken-Abgleich, nicht fuer Filter oder Chips.
+const EXTRA_TITLE_BRANDS = ["CF Moto", "CFMoto", "Kawasaki", "Triumph", "Sur-Ron", "Surron", "Talaria", "Zero"];
 
 function partKind(title: string): string | null {
   const t = title.toLowerCase();
   return PART_KINDS.find(([, rx]) => rx.test(t))?.[0] ?? null;
+}
+
+// Ohne erkannte Teileart zaehlt der Shopify-Produkttyp, damit auch dort nur
+// eins pro Art gezeigt wird (sonst dreimal Lenkerenden).
+function kindKey(p: ShopifyProduct): string {
+  return partKind(p.title) ?? `type:${(p.product_type || p.handle).toLowerCase()}`;
 }
 
 function titleYears(title: string): Set<number> {
@@ -840,19 +854,24 @@ function titleYears(title: string): Set<number> {
   return years;
 }
 
-const CCM_VALUES = [50, 65, 85, 125, 150, 155, 200, 250, 300, 350, 390, 400, 450, 500, 525, 690, 701, 790, 890, 900, 1290];
+const CCM_VALUES = [50, 65, 85, 125, 150, 155, 200, 250, 300, 350, 390, 400, 450, 500, 525, 530, 690, 701, 790, 890, 900, 1290];
 
 function ccmOf(title: string): Set<number> {
   const out = new Set<number>();
-  for (const m of title.matchAll(/\b(\d{2,4})\b/g)) {
+  // "150ccm" hat keine Wortgrenze vor dem "c", deshalb ccm/cc extra.
+  for (const m of title.matchAll(/(?<![\d.,])(\d{2,4})(?=\s*(?:ccm|cc)\b|\b)/gi)) {
     const n = Number(m[1]);
     if (CCM_VALUES.includes(n)) out.add(n);
   }
+  // Big-Bore-Kits (150/155 ccm) sind Upgrades fuer den 125er.
+  if (out.has(150) || out.has(155)) out.add(125);
   return out;
 }
 
-function titleBrands(title: string): BikeBrand[] {
-  return BIKE_BRANDS.filter((b) => new RegExp(`\\b${b}\\b`, "i").test(title));
+function titleBrands(title: string): string[] {
+  return [...BIKE_BRANDS, ...EXTRA_TITLE_BRANDS].filter((b) =>
+    new RegExp(`\\b${b.replace(/[-\s]/g, "[-\\s]?")}\\b`, "i").test(title)
+  );
 }
 
 // true, wenn die beiden Teile sicher nicht an dasselbe Motorrad gehoeren.
@@ -865,17 +884,21 @@ function fitConflict(src: ShopifyProduct, cand: ShopifyProduct, candKind: string
   const cTayo = /tayo|zontes/.test(c);
   if (sMin && !sTayo && cTayo && !cMin) return true;
   if (sTayo && !sMin && cMin && !cTayo) return true;
-  const s2t = /2-?takt|2-?stroke/.test(s);
-  const c2t = /2-?takt|2-?stroke/.test(c);
-  if (c2t && !s2t) return true;
-  if (s2t && !c2t && candKind && FOUR_STROKE_ONLY.has(candKind)) return true;
+  const s2t = TWO_STROKE_RE.test(s);
+  const c2t = TWO_STROKE_RE.test(c);
+  const s4t = FOUR_STROKE_RE.test(s);
+  const c4t = FOUR_STROKE_RE.test(c);
+  if (c2t && !c4t && !s2t) return true;
+  if (s2t && !s4t && (c4t || (!c2t && candKind && FOUR_STROKE_ONLY.has(candKind)))) return true;
   // Hubraum: steht in beiden Titeln einer und keiner passt, ist es ein
   // anderes Motorrad (Duke 125 vs Duke 390, RR 50 vs RR 125).
   const sc = ccmOf(src.title);
   const cc = ccmOf(cand.title);
   if (sc.size && cc.size && ![...cc].some((n) => sc.has(n))) return true;
   // Marke laut Titel: Tags sind nicht immer sauber (Yamaha-Teile mit Beta-Tag).
-  const sb = titleBrands(src.title);
+  // Ohne Marke im Quelltitel gelten die Marken aus den Tags.
+  const sbTitle = titleBrands(src.title);
+  const sb = sbTitle.length ? sbTitle : getBikeBrands(src);
   const cb = titleBrands(cand.title);
   if (sb.length && cb.length && !cb.some((b) => sb.includes(b))) return true;
   const sy = titleYears(src.title);
@@ -954,7 +977,7 @@ export function getRecommendations(
   // Auffuellen mit anderen passenden Teilen, eine Art je Platz.
   for (const c of candidates) {
     if (picked.length >= n) break;
-    const kind = c.kind ?? `other:${c.q.handle}`;
+    const kind = kindKey(c.q);
     if (usedKinds.has(kind) || picked.includes(c.q)) continue;
     picked.push(c.q);
     usedKinds.add(kind);
