@@ -373,9 +373,15 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     **Ziel der Bewertungsbitte: Google.** Direktlink
     https://search.google.com/local/writereview?placeid=ChIJC-OrPrPrnkcRLyBckhJkx2A (Place-ID aus dem
     Bewertungsdialog in Google Maps, Link im Browser geoeffnet, oeffnet den Dialog, nichts gepostet).
-  - **Zustell-Mail mit Google-Bewertung als Entwurf:** `email-templates/delivered-de-review.html`
-    (deutsch, Design wie die bestehenden gebrandeten Shopify-Mails im Repo), Screenshot an Leon zur
-    Freigabe durch Thomas. NICHT in Shopify eingefuegt. Die live gebrandeten Benachrichtigungen
+  - **Zwei Zustell-Mails mit Google-Bewertung als Entwurf (Leons Vorgabe: Hauptmail ist "Paket kommt
+    heute", weil die geoeffnet wird, "zugestellt" nur zusaetzlich):**
+    `email-templates/out-for-delivery-de-review.html` ("Dein Paket kommt heute!", Button Sendung
+    verfolgen, Block "Teil verbaut und zufrieden?" + Google-Button) und
+    `email-templates/delivered-de-review.html` ("Dein Paket ist da!", Block "Zufrieden mit deinem
+    Teil?"). Design wie die bestehenden gebrandeten Shopify-Mails, Screenshots an Leon zur Freigabe
+    durch Thomas. DHL liefert das Ereignis "in das Zustellfahrzeug geladen" (DHL-Sendungsverlauf
+    geprueft, z.B. 03.11. 10:25, zugestellt 14:41); ob Shopify daraus "In Zustellung" macht und die
+    Mail ausloest, ist an einer echten Bestellung zu testen. NICHT in Shopify eingefuegt. Die live gebrandeten Benachrichtigungen
     (Zugestellt, In Zustellung usw.) sind englisch. Vor dem Einbau: Test-Bestellung mit "Kunden
     benachrichtigen", Pruefung customer.accepts_marketing in der Shopify-Vorschau.
   - **Nebenbefund Lieferzeit:** 3 deutsche Zwei-Teile-Bestellungen vom 20., 26. und 27.10. wurden laut
