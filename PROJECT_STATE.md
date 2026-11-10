@@ -354,6 +354,14 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     {{ open_tracking_block }} drin), Empfaenger wieder das Segment (682), gleicher Betreff. Der alte graue
     Entwurf 80587498 liegt noch daneben (gleicher Titel, Thumbnail grau), Loeschen wartet auf Leons Okay.
     Preise im Newsletter sind fest eingetragen, bei Preisaenderung vor dem Versand anpassen.
+    **3 Testmails an kristian2507@gmail.com (Leons Wunsch), in Gmail geprueft:** landet im
+    **Posteingang** (nicht Spam, nicht Werbung-Tab), Von: "Sickmotos-Styles
+    <store+53473804477@m.shopifyemail.com>", Antwort an: SickMotos-styles@freenet.de, gesendet und
+    signiert von mailer3.m.shopifyemail.com, TLS. Zwei Fehler dabei gefunden und behoben: (1) Gmail
+    kann aspect-ratio/object-fit nicht, Produktbilder waren ungleich hoch, jetzt per Shopify-CDN
+    quadratisch zugeschnitten (&width=500&height=500&crop=center); (2) {{ unsubscribe_link }} liefert
+    einen fertigen Link, in href gesetzt stand Code-Text im Footer, jetzt "Abmelden: {{ unsubscribe_link }}"
+    (Linktext von Shopify: "Unsubscribe"). Gmail zeigt Arial statt Oswald (laedt keine Webfonts).
   - **Recherche "Bewertungsmail am Zustelltag kostenlos?" (Workflow, 4 Recherchen + 4 Gegenpruefungen,
     Quellen im Workflow-Journal):** (1) Kostenlos und am Zustelltag geht nur Shopifys eigene
     Benachrichtigung "Zugestellt" (Liquid-Code editierbar, Satz + Bewertungslink einfuegbar). Laut
