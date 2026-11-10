@@ -62,6 +62,30 @@
           </tr>
           {% endif %}
 
+          {% if fulfillment.item_count > 0 %}
+          <tr>
+            <td style="padding:28px 36px 0 36px;">
+              <p style="margin:0 0 12px 0;font-family:'Oswald',Arial,sans-serif;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#71717a;">In deinem Paket</p>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                {% for line in fulfillment.fulfillment_line_items %}
+                <tr>
+                  <td width="84" valign="top" style="padding:10px 0;">
+                    {% if line.line_item.image %}
+                      <img src="{{ line.line_item.image | img_url: 'compact_cropped' }}" alt="{{ line.line_item.title | escape }}" width="72" style="display:block;border:1px solid #e5e7eb;border-radius:10px;width:72px;height:72px;object-fit:cover;">
+                    {% endif %}
+                  </td>
+                  <td valign="middle" style="padding:10px 0 10px 14px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+                    <span style="display:block;font-size:14px;line-height:1.4;font-weight:600;color:#18181b;">{{ line.line_item.product.title | default: line.line_item.title }}</span>
+                    {% if line.line_item.variant_title != blank and line.line_item.variant_title != 'Default Title' %}<span style="display:block;font-size:12px;line-height:1.5;color:#71717a;">{{ line.line_item.variant_title }}</span>{% endif %}
+                    <span style="display:block;font-size:12px;line-height:1.5;color:#71717a;">Anzahl: {{ line.quantity }}</span>
+                  </td>
+                </tr>
+                {% endfor %}
+              </table>
+            </td>
+          </tr>
+          {% endif %}
+
           <!-- Bewertungsbitte -->
           <tr>
             <td style="padding:28px 36px 4px 36px;">
