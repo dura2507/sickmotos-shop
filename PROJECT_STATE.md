@@ -347,6 +347,13 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     Antworten an die Freenet-Adresse. Auf sickmotos.com, sick-motos.com, sickmotos.de gibt es KEINE
     MX-Records, also kein eigenes Postfach. Thomas' letzte Shopify-Email-Kampagne: 19.09.2022; aktive
     Automationen: Warenkorb/Checkout-Abbruch DE+EN, Browse-Abbruch, "Thank you!", Win-back.
+  - **Newsletter jetzt im SickMotos-Mail-Design (10.11. spaet, Leons Wunsch):** neuer Entwurf in
+    Shopify Messaging per "Code your own" (Editor-ID 80592811), HTML = `email-templates/newsletter-euro5plus.html`
+    (Titel ohne "(Kopie)", E5+-Preise statisch, live geprueft: Beta T-Model ab 299, FuelX Beta ab 249,
+    Fantic Kruemmer 269, FuelX Fantic 299, Hinweis inkl. MwSt. zzgl. Versand, {{ unsubscribe_link }} und
+    {{ open_tracking_block }} drin), Empfaenger wieder das Segment (682), gleicher Betreff. Der alte graue
+    Entwurf 80587498 liegt noch daneben (gleicher Titel, Thumbnail grau), Loeschen wartet auf Leons Okay.
+    Preise im Newsletter sind fest eingetragen, bei Preisaenderung vor dem Versand anpassen.
   - **Recherche "Bewertungsmail am Zustelltag kostenlos?" (Workflow, 4 Recherchen + 4 Gegenpruefungen,
     Quellen im Workflow-Journal):** (1) Kostenlos und am Zustelltag geht nur Shopifys eigene
     Benachrichtigung "Zugestellt" (Liquid-Code editierbar, Satz + Bewertungslink einfuegbar). Laut

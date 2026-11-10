@@ -4,7 +4,7 @@
   Kruemmer Beta T-Model E5+ Race 299 / EG-ABE E5+ 449, FuelX Beta 2025 E5+ 249 / Pro+ 349,
   Kruemmer Fantic E5+ 269, FuelX Fantic E5+ 299. Vor dem Versand nochmal pruefen.
   Empfaenger: Shopify-Segment "Beta + Fantic Kaeufer mit Mail-Abo (Euro 5+ Mailing)".
-  Abmeldelink: beim Einbau in Shopify Messaging durch dessen Abmelde-Variable ersetzen.
+  Shopify Messaging verlangt {{ unsubscribe_link }} und {{ open_tracking_block }}, beide drin.
 -->
 <!doctype html>
 <html lang="de">
@@ -103,7 +103,7 @@
                 <span style="color:#d4d4d8;">&nbsp;|&nbsp;</span>
                 <a href="https://sickmotos.com" style="color:#e10600;text-decoration:none;font-weight:600;font-size:13px;">sickmotos.com</a>
               </p>
-              <p style="margin:0;font-size:11px;line-height:1.6;color:#a1a1aa;">Sickmotos-Styles &middot; Obere Str. 18, 86554 Pöttmes &middot; Engineered in Germany<br>Du bekommst diese Mail, weil du den SickMotos-Newsletter abonniert hast. <a href="#ABMELDELINK" style="color:#a1a1aa;text-decoration:underline;">Abmelden</a></p>
+              <p style="margin:0;font-size:11px;line-height:1.6;color:#a1a1aa;">Sickmotos-Styles &middot; Obere Str. 18, 86554 Pöttmes &middot; Engineered in Germany<br>Du bekommst diese Mail, weil du den SickMotos-Newsletter abonniert hast. <a href="{{ unsubscribe_link }}" style="color:#a1a1aa;text-decoration:underline;">Abmelden</a></p>
             </td>
           </tr>
 
@@ -111,5 +111,6 @@
       </td>
     </tr>
   </table>
+{{ open_tracking_block }}
 </body>
 </html>
