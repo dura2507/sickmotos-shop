@@ -335,6 +335,34 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     **NICHT gesendet**, kein Entwurf angelegt: Versand = Thomas/Leon (Segment -> "Use segment" ->
     "Email segment", alternativ Klaviyo, ist installiert). Segment-Syntax fuer spaeter:
     `products_purchased MATCHES (id IN (...))`, `tag:` und `product_id` gibt es nicht.
+  - **Nachtrag 10.11. abends (Leon: "nur an Newsletter-Kunden, hast recht"):** Entwurf in Shopify
+    Messaging angelegt, NICHT gesendet: "Neu fuer Euro 5+: Titan-Kruemmer und FuelX fuer Beta und
+    Fantic" (Editor-ID 80587498), Empfaenger das Segment oben, Shopify zeigt **682 erreichbare
+    Abonnenten**, 4 Produkte (FuelX Fantic, FuelX Beta 2025 E5+, Kruemmer Fantic Handmade Race,
+    Kruemmer Beta T-Model Tayo/Zontes), Preise ausgeblendet (Shopify zeigt sonst den guenstigsten
+    Variantenpreis, nicht den E5+-Preis), Button "Zum Shop" auf https://sickmotos.com/shop, fremde
+    Vorlagenbloecke geloescht. Schoenheitsfehler: Produkttitel kommen aus Shopify ("(Kopie)",
+    "2023-2024"). **Absender:** Store-Mail ist eine Freenet-Adresse (oeffentliche Domain), deshalb
+    schreibt Shopify den Absender auf store+584231@shopifyemail.com um, Anzeige "Sickmotos-Styles",
+    Antworten an die Freenet-Adresse. Auf sickmotos.com, sick-motos.com, sickmotos.de gibt es KEINE
+    MX-Records, also kein eigenes Postfach. Thomas' letzte Shopify-Email-Kampagne: 19.09.2022; aktive
+    Automationen: Warenkorb/Checkout-Abbruch DE+EN, Browse-Abbruch, "Thank you!", Win-back.
+  - **Recherche "Bewertungsmail am Zustelltag kostenlos?" (Workflow, 4 Recherchen + 4 Gegenpruefungen,
+    Quellen im Workflow-Journal):** (1) Kostenlos und am Zustelltag geht nur Shopifys eigene
+    Benachrichtigung "Zugestellt" (Liquid-Code editierbar, Satz + Bewertungslink einfuegbar). Laut
+    Shopify-API gilt die Benachrichtigungswahl beim Versand auch fuer spaetere Tracking-Updates, da
+    Thomas ohne "Kunde benachrichtigen" versendet, geht sie derzeit nicht raus (deckt sich mit den
+    Timelines). Vorher an EINER echten Bestellung mit Haken testen. (2) Judge.me Free: Ausloeser
+    "Fulfilled" mit 0 bis 365 Tagen Verzoegerung, Option "nur an Kunden mit Marketing-Einwilligung"
+    unter Request scheduling > Advanced; Judge.me-Email-Flow "Order delivered" laut Judge.me im Free-Plan,
+    aber nur fuer Abonnenten und schrittweise ausgerollt (im Konto nicht geprueft); QR-Code/Link als
+    Paketbeilage gratis. (3) Shopify Flow faellt aus: "Fulfillment event created" startet laut Doku bei
+    manuellem Versand nicht. (4) Klaviyo koennte technisch auch Nicht-Abonnenten anschreiben, AGB
+    verbieten es, und fuer 2.599 Profile 70 USD/Monat; Brevo/Mailchimp-AGB verlangen Einwilligung.
+    (5) Recht: BGH VI ZR 225/17, Bewertungsbitte per Mail = Werbung, auch in Transaktionsmails;
+    Wettbewerbszentrale hat am 01.10.2024 zwei Shops wegen automatischer Bewertungsmails ohne
+    Einwilligung abgemahnt (beide Unterlassung unterschrieben). Betrifft auch die JETZIGE Judge.me-Mail
+    (geht an alle Kaeufer). Entscheidung Thomas, nichts geaendert.
   - **Nebenbefund Lieferzeit:** 3 deutsche Zwei-Teile-Bestellungen vom 20., 26. und 27.10. wurden laut
     DHL-Sendungsverfolgung erst am **10.11.** in der Filiale eingeliefert (21, 15, 14 Tage). Die Seite
     verspricht bei Fertigung auf Bestellung 7-14 Tage. Bei Thomas ansprechen.
