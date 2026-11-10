@@ -363,6 +363,21 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     Wettbewerbszentrale hat am 01.10.2024 zwei Shops wegen automatischer Bewertungsmails ohne
     Einwilligung abgemahnt (beide Unterlassung unterschrieben). Betrifft auch die JETZIGE Judge.me-Mail
     (geht an alle Kaeufer). Entscheidung Thomas, nichts geaendert.
+  - **Bewertungen, wo sie heute liegen (10.11., im Konto und bei Google gelesen):** Judge.me hat
+    **134 Bewertungen** (133 Produkt, 1 Shop), Auto-Publish an, juengste: 1 Stern vor 1 Stunde
+    ("Leider defekt", Kunde schreibt, die Mailbox fuer Kaeufer sei voll und der Kundenservice per Mail
+    nicht erreichbar), 2x 1 Stern vor 12 Tagen ("no support"). **Google-Unternehmensprofil SickMotos
+    (Poettmes): 4,9 Sterne, 286 Rezensionen**, Profil-Website steht noch auf sick-motos.com.
+    Trustpilot 2,0 Sterne bei 10 Rezensionen. Apps Trustpilot und Trustindex (Google Reviews):
+    keine Aktivitaet in 30 Tagen. sickmotos.com zeigt keine Bewertungen (0 Treffer im Code).
+    **Ziel der Bewertungsbitte: Google.** Direktlink
+    https://search.google.com/local/writereview?placeid=ChIJC-OrPrPrnkcRLyBckhJkx2A (Place-ID aus dem
+    Bewertungsdialog in Google Maps, Link im Browser geoeffnet, oeffnet den Dialog, nichts gepostet).
+  - **Zustell-Mail mit Google-Bewertung als Entwurf:** `email-templates/delivered-de-review.html`
+    (deutsch, Design wie die bestehenden gebrandeten Shopify-Mails im Repo), Screenshot an Leon zur
+    Freigabe durch Thomas. NICHT in Shopify eingefuegt. Die live gebrandeten Benachrichtigungen
+    (Zugestellt, In Zustellung usw.) sind englisch. Vor dem Einbau: Test-Bestellung mit "Kunden
+    benachrichtigen", Pruefung customer.accepts_marketing in der Shopify-Vorschau.
   - **Nebenbefund Lieferzeit:** 3 deutsche Zwei-Teile-Bestellungen vom 20., 26. und 27.10. wurden laut
     DHL-Sendungsverfolgung erst am **10.11.** in der Filiale eingeliefert (21, 15, 14 Tage). Die Seite
     verspricht bei Fertigung auf Bestellung 7-14 Tage. Bei Thomas ansprechen.
