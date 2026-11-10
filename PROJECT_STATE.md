@@ -8,7 +8,7 @@
 > Vercel-Env bzw. Passwort-Manager, nie im Repo).
 >
 > Detaillierte Standing-Rules stehen in [AGENTS.md](AGENTS.md).
-> Stand: 2026-11-08.
+> Stand: 2026-11-10.
 
 ---
 
@@ -305,6 +305,39 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     Code) = Vorschlag, Achtung: Bewertungsanfrage per Mail gilt in DE als Werbung (Einwilligung noetig);
     Sprachnachricht von Thomas (Mi 05.11., 0:46) nicht abhoerbar; "Auf Bestellung gefertigt" erst in der
     Mail weiter Vorschlag.
+
+- **Thomas' Telegram vom 10.11. + Sprachmemo vom 04.11. (10.11., in Leons Chrome und Shopify-Admin geprueft):**
+  - **Sprachmemo 04.11. (46 s, lokal transkribiert):** keine neuen Auftraege, nur der Rahmen fuer den
+    Kruemmer-Auftrag ("auf die populaersten Artikel kanalisieren, mit dem Kruemmer anfangen, Gelerntes
+    auf die anderen uebertragen", SEO-Empfehlungen des Operators mit anschauen). Abgearbeitet am 08.11.
+  - **"Bewertungsmail erst nach Zustellung, Tracking einbeziehen"** (+ Leon: am besten am Tag der
+    Zustellung, "wenn es dir gefaellt wuerde ich mich ueber eine Bewertung freuen"). Ist-Zustand im
+    Konto: Judge.me Reviews im **Forever-Free-Plan**, Ausloeser "After fulfilled", **14 Tage** nach
+    Versandmarkierung, DE und international, keine Erinnerungen. Der Ausloeser "zugestellt"
+    (delivery-based scheduling) gibt es nur im **Awesome-Plan, 15 USD/Monat** (15 Tage gratis), also
+    Kaufentscheidung Thomas, NICHT gebucht, nichts an Judge.me geaendert. Datenlage dafuer gut: alle 9
+    geprueften Bestellungen laufen ueber **DHL Germany** (DE 3586..., international CY...DE), Shopify
+    markiert DHL-Zustellungen selbst ("Carrier tracking marked 1 item as delivered"). Ausnahme:
+    internationale Sendungen bleiben teils auf "Tracking added" stehen (z.B. #10309), wie Judge.me
+    das dann behandelt, ist ungetestet. Nebenbefund: in 4 Timelines keine Versandbestaetigung und
+    keine Zugestellt-Mail von Shopify, Thomas markiert Bestellungen ohne Kundenbenachrichtigung als
+    versendet. Rechtshinweis (kein Rechtsrat): Bewertungsbitten per Mail gelten laut BGH (VI ZR
+    225/17) als Werbung, auch in einer Transaktionsmail.
+  - **"An alle Beta- oder Fantic-Kaeufer Mail: neue Artikel fuer Euro 5+, Kruemmer und FuelX"**:
+    Euro-5+-Varianten live geprueft (JSON-LD): Kruemmer Beta RR 125 LC T-Model Tayo/Zontes E5+
+    Race 299 / EG-ABE 449 EUR; FuelX Beta RR 125 LC 2025- E5+ Tayo/Zontes Lite 249 / Pro+ 349 EUR;
+    Kruemmer Fantic XMF/XEF 125 2025- E5+ 269 EUR; FuelX Fantic XMF/XEF 125 E5+ 299 EUR. **Segment
+    angelegt** (Shopify Kunden -> Segmente, id 640538706186): "Beta + Fantic Kaeufer mit Mail-Abo
+    (Euro 5+ Mailing)" = **683 Kunden** (Mail-Abo + Kauf eines von 84 Produkten mit Beta/Fantic im
+    Titel, 9 Mehrmarken-Universalteile ausgenommen, nur Produkte, die noch im Katalog sind). Ohne
+    Abo-Filter waeren es 2.599. Nur Abonnenten, weil unsere Datenschutzerklaerung keinen
+    Bestandskunden-Hinweis (§ 7 Abs. 3 UWG) enthaelt; Shopify Email schickt ohnehin nur an Abonnenten.
+    **NICHT gesendet**, kein Entwurf angelegt: Versand = Thomas/Leon (Segment -> "Use segment" ->
+    "Email segment", alternativ Klaviyo, ist installiert). Segment-Syntax fuer spaeter:
+    `products_purchased MATCHES (id IN (...))`, `tag:` und `product_id` gibt es nicht.
+  - **Nebenbefund Lieferzeit:** 3 deutsche Zwei-Teile-Bestellungen vom 20., 26. und 27.10. wurden laut
+    DHL-Sendungsverfolgung erst am **10.11.** in der Filiale eingeliefert (21, 15, 14 Tage). Die Seite
+    verspricht bei Fertigung auf Bestellung 7-14 Tage. Bei Thomas ansprechen.
 
 ### In Arbeit / muss verifiziert werden
 - **Shopify Admin Orders** (`/admin/orders` = echte Bestellungen): OAuth-Offline-Token-
