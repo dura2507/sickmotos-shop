@@ -355,7 +355,7 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     Entwurf 80587498 liegt noch daneben (gleicher Titel, Thumbnail grau), Loeschen wartet auf Leons Okay.
     Preise im Newsletter sind fest eingetragen, bei Preisaenderung vor dem Versand anpassen.
     **3 Testmails an kristian2507@gmail.com (Leons Wunsch), in Gmail geprueft:** landet im
-    **Posteingang** (nicht Spam, nicht Werbung-Tab), Von: "Sickmotos-Styles
+    Posteingang, nicht Spam (KORREKTUR 11.11.: die Testmails vom 11.11. lagen im Gmail-Tab **Werbung**, ein Teil der 10.11.-Tests auch; fuer einen Newsletter normal, Shopify setzt den Abmelde-Header), Von: "Sickmotos-Styles
     <store+53473804477@m.shopifyemail.com>", Antwort an: SickMotos-styles@freenet.de, gesendet und
     signiert von mailer3.m.shopifyemail.com, TLS. Zwei Fehler dabei gefunden und behoben: (1) Gmail
     kann aspect-ratio/object-fit nicht, Produktbilder waren ungleich hoch, jetzt per Shopify-CDN
