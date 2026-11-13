@@ -144,6 +144,7 @@ export async function POST(req: Request) {
   // erzwingt eine Textantwort. Schlaegt der Tool-Weg fehl, antwortet der Bot
   // wie vorher ohne Tools, damit der Chat nie wegen der Suche ausfaellt.
   const MAX_TOOL_ROUNDS = 3;
+  const offered: string[] = [];
   async function answerWithTools(): Promise<string> {
     let convo: Anthropic.MessageParam[] = [...messages];
     let last = "";
@@ -165,7 +166,8 @@ export async function POST(req: Request) {
         const r =
           tu.name === PRODUCT_SEARCH_TOOL.name
             ? runProductSearchTool(tu.input)
-            : { content: `Unknown tool ${tu.name}`, isError: true };
+            : { content: `Unknown tool ${tu.name}`, isError: true, urls: [] };
+        offered.push(...r.urls);
         return {
           type: "tool_result",
           tool_use_id: tu.id,
@@ -198,7 +200,7 @@ export async function POST(req: Request) {
     }
 
     const finalReply =
-      sanitizeBotReply(reply) ||
+      sanitizeBotReply(reply, offered) ||
       "Sorry, I couldn't generate a reply just now. Please try rephrasing your question.";
 
     let conversationId = body.conversationId ?? null;

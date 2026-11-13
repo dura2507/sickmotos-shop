@@ -219,16 +219,22 @@ function toHit(it: Indexed): BotProductHit {
 }
 
 // Tool-Aufruf ausfuehren. Gibt immer einen String fuer tool_result zurueck.
-export function runProductSearchTool(input: unknown): { content: string; isError: boolean } {
+export function runProductSearchTool(input: unknown): {
+  content: string;
+  isError: boolean;
+  urls: string[];
+} {
   const query =
     input && typeof input === "object" && typeof (input as { query?: unknown }).query === "string"
       ? (input as { query: string }).query
       : "";
   if (!query.trim()) {
-    return { content: "Missing 'query'.", isError: true };
+    return { content: "Missing 'query'.", isError: true, urls: [] };
   }
   const results = searchProducts(query.slice(0, 200));
+  const urls = results.flatMap((r) => [r.url, ...r.variants.map((v) => v.url)]);
   return {
+    urls,
     content: JSON.stringify(
       results.length
         ? { results }
@@ -264,18 +270,84 @@ export function isValidShopUrl(raw: string): boolean {
   return true;
 }
 
-// Erfundene Produktlinks entfernen (Linktext bleibt stehen) und Gedanken-
-// striche ersetzen (Hausregel, Haiku streut sie gern ein, auch Shopify-Titel
-// enthalten welche).
-export function sanitizeBotReply(text: string): string {
+function productHandle(raw: string): { u: URL; handle: string } | null {
+  try {
+    const u = new URL(raw);
+    if (u.hostname !== "sickmotos.com" && u.hostname !== "www.sickmotos.com") return null;
+    const m = u.pathname.match(/^\/products\/([^/]+)\/?$/);
+    return m ? { u, handle: decodeURIComponent(m[1]) } : null;
+  } catch {
+    return null;
+  }
+}
+
+// Aehnlichkeit zweier Handles (Bigramm-Dice, 0 bis 1).
+function dice(a: string, b: string): number {
+  if (a === b) return 1;
+  const grams = (s: string) => {
+    const m = new Map<string, number>();
+    for (let i = 0; i < s.length - 1; i++) {
+      const g = s.slice(i, i + 2);
+      m.set(g, (m.get(g) ?? 0) + 1);
+    }
+    return m;
+  };
+  const A = grams(a);
+  const B = grams(b);
+  let inter = 0;
+  A.forEach((n, g) => (inter += Math.min(n, B.get(g) ?? 0)));
+  const total = Math.max(1, a.length - 1 + b.length - 1);
+  return (2 * inter) / total;
+}
+
+// Ungueltige Produkt-URL reparieren: falsche Variante weglassen, oder einen
+// leicht verschriebenen Handle auf das aehnlichste Produkt aus den
+// Suchtreffern dieser Anfrage (offered) korrigieren. Sonst null.
+export function repairShopUrl(raw: string, offered: string[] = []): string | null {
+  const h = productHandle(raw);
+  if (!h) return null;
+  let handle: string | null = PRODUCT_INDEX.has(h.handle) ? h.handle : null;
+  if (!handle) {
+    // Nur echte Tippfehler reparieren: verschiedene Produkte haben oft fast
+    // gleiche Handles (Sherco Angel Eye vs Hexagon 2013-2023: 0,94, ein
+    // Tippfehler im Jahr: 0,99). Deshalb hohe Schwelle UND klarer Abstand
+    // zum zweitbesten Handle, sonst lieber keinen Link als den falschen.
+    const scores = Array.from(
+      new Set(offered.map((o) => productHandle(o)?.handle).filter((x): x is string => !!x))
+    )
+      .map((oh) => ({ oh, score: dice(h.handle, oh) }))
+      .sort((x, y) => y.score - x.score);
+    const [first, second] = scores;
+    if (first && first.score >= 0.96 && (!second || first.score - second.score >= 0.03)) {
+      handle = first.oh;
+    }
+  }
+  if (!handle || !PRODUCT_INDEX.has(handle)) return null;
+  const v = h.u.searchParams.get("variant");
+  const base = `${SITE}/products/${handle}`;
+  return v && PRODUCT_INDEX.get(handle)!.has(v) ? `${base}?variant=${v}` : base;
+}
+
+// Produktlinks pruefen (erfundene reparieren oder entfernen, Linktext bleibt
+// stehen) und Gedankenstriche ersetzen (Hausregel, Haiku streut sie gern
+// ein, auch Shopify-Titel enthalten welche).
+export function sanitizeBotReply(text: string, offered: string[] = []): string {
   let out = text.replace(
     /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
-    (m, label: string, url: string) => (isValidShopUrl(url) ? m : label)
+    (m, label: string, url: string) => {
+      if (isValidShopUrl(url)) return m;
+      const fixed = repairShopUrl(url, offered);
+      console.warn("[chat] invalid product link", fixed ? "repaired" : "removed", url);
+      return fixed ? `[${label}](${fixed})` : label;
+    }
   );
   out = out.replace(/(^|[\s(])(https?:\/\/[^\s)\]]+)/g, (m, pre: string, url: string) => {
     const trail = url.match(/[.,;:!?]+$/)?.[0] ?? "";
     const clean = trail ? url.slice(0, -trail.length) : url;
-    return isValidShopUrl(clean) ? m : pre;
+    if (isValidShopUrl(clean)) return m;
+    const fixed = repairShopUrl(clean, offered);
+    console.warn("[chat] invalid product link", fixed ? "repaired" : "removed", clean);
+    return fixed ? pre + fixed + trail : pre;
   });
   return out.replace(/\s[–—]\s/g, ", ").replace(/[–—]/g, "-");
 }
