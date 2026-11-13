@@ -536,5 +536,7 @@ export function sanitizeBotReply(text: string, offered: string[] = []): string {
     .replace(/[ \t][\u2013\u2014][ \t]/g, ", ")
     .replace(/[\u2013\u2014]/g, "-");
 
+  // Entfernte Links in Klammern hinterlassen sonst "()".
+  out = out.replace(/[ \t]*\([ \t]*\)/g, "");
   return out.replace(/\u0000(\d+)\u0000/g, (_, i: string) => kept[Number(i)]);
 }

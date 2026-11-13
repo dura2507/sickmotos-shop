@@ -155,8 +155,9 @@ export async function POST(req: Request) {
   const diag = { rounds: 0, searches: [] as string[], fallback: false, error: "" };
   async function answerWithTools(): Promise<string> {
     let convo: Anthropic.MessageParam[] = [...messages];
-    // Text aus ALLEN Runden sammeln: was der Bot vor einer Suche schreibt,
-    // wiederholt er danach nicht.
+    // Antwort = letzter Textteil. Zusammenkleben aller Runden ergab live
+    // Widersprueche (erst Rueckfrage, nach der Suche "Perfekt, hier ist ...").
+    // Text vor einer Suche bleibt nur als Ersatz, falls danach nichts kommt.
     const parts: string[] = [];
     for (let round = 0; round <= MAX_TOOL_ROUNDS; round++) {
       // Letzte Runde oder nach 20 s: keine weitere Suche, nur antworten.
@@ -180,7 +181,7 @@ export async function POST(req: Request) {
           const cut = Math.max(lastPart.lastIndexOf(". "), lastPart.lastIndexOf(".\n"), lastPart.lastIndexOf(")\n"));
           if (cut > 0) parts[parts.length - 1] = lastPart.slice(0, cut + 1);
         }
-        return parts.join("\n\n");
+        return parts[parts.length - 1] ?? "";
       }
       const toolUses = response.content.filter(
         (b): b is Anthropic.ToolUseBlock => b.type === "tool_use"
@@ -207,7 +208,7 @@ export async function POST(req: Request) {
         { role: "user", content: results },
       ];
     }
-    return parts.join("\n\n");
+    return parts[parts.length - 1] ?? "";
   }
 
   try {
