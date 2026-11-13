@@ -151,6 +151,8 @@ export async function POST(req: Request) {
   const MAX_TOOL_ROUNDS = 3;
   const offered: string[] = [];
   const started = Date.now();
+  // Kleine Diagnose in der Antwort (vom Widget ignoriert, keine Kundendaten).
+  const diag = { rounds: 0, searches: [] as string[], fallback: false, error: "" };
   async function answerWithTools(): Promise<string> {
     let convo: Anthropic.MessageParam[] = [...messages];
     // Text aus ALLEN Runden sammeln: was der Bot vor einer Suche schreibt,
@@ -159,6 +161,7 @@ export async function POST(req: Request) {
     for (let round = 0; round <= MAX_TOOL_ROUNDS; round++) {
       // Letzte Runde oder nach 20 s: keine weitere Suche, nur antworten.
       const finalRound = round === MAX_TOOL_ROUNDS || Date.now() - started > 20_000;
+      diag.rounds++;
       const response = await client.messages.create({
         model: MODEL,
         max_tokens: 1200,
@@ -188,6 +191,9 @@ export async function POST(req: Request) {
             ? runProductSearchTool(tu.input)
             : { content: `Unknown tool ${tu.name}`, isError: true, urls: [] };
         offered.push(...r.urls);
+        diag.searches.push(
+          `${String((tu.input as { query?: unknown })?.query ?? "").slice(0, 80)} => ${r.urls.length}`
+        );
         return {
           type: "tool_result",
           tool_use_id: tu.id,
@@ -210,6 +216,8 @@ export async function POST(req: Request) {
       reply = await answerWithTools();
     } catch (toolErr) {
       console.error("[chat] tool path failed, answering without tools:", toolErr);
+      diag.fallback = true;
+      diag.error = String((toolErr as Error)?.message ?? toolErr).slice(0, 200);
       const response = await client.messages.create({
         model: MODEL,
         max_tokens: 600,
@@ -241,7 +249,7 @@ export async function POST(req: Request) {
       console.error("[chat] failed to log conversation:", logErr);
     }
 
-    return NextResponse.json({ reply: finalReply, conversationId });
+    return NextResponse.json({ reply: finalReply, conversationId, diag });
   } catch (e) {
     console.error("[chat] upstream error:", e);
     return NextResponse.json(
