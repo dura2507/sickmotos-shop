@@ -356,6 +356,8 @@ export function isInStock(p: ShopifyProduct): boolean {
 export function cleanTitle(t: string): string {
   return t
     .replace(/^SICKMOTOS\s+/i, "")
+    // Shopify haengt beim Duplizieren "(Kopie)" an, das ist kein Teil des Namens.
+    .replace(/\s*\(\s*kopie\s*\)/gi, "")
     .replace(/\s+/g, " ")
     .trim();
 }

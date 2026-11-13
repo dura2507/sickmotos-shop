@@ -23,6 +23,18 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
     });
     return init;
   });
+  // ?variant=<Shopify-Varianten-ID> (z.B. aus dem Newsletter) waehlt genau
+  // diese Variante vor. Die Seite ist statisch gerendert, deshalb nach dem Mount.
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get("variant");
+    if (!id || !/^\d+$/.test(id)) return;
+    const v = p.variants.find(
+      (x) => x.gid === `gid://shopify/ProductVariant/${id}`
+    );
+    if (v && Object.keys(v.options).length > 0) {
+      setVariantSel((prev) => ({ ...prev, ...v.options }));
+    }
+  }, [p.variants]);
   const [qty, setQty] = useState(1);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
