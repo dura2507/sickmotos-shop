@@ -393,7 +393,7 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     nur DACH. Neues Segment "Beta + Fantic Kaeufer mit Mail-Abo, DACH (Euro 5+ Mailing)" (id 640726139146, 586 Kunden,
     Shopify: 585 Abonnenten), altes Segment + alter grauer Entwurf 80587498 bleiben. Vor dem Senden blockierte Shopifys
     Review mit "Syntax isn't valid" (4x): rohes & in den img-src-URLs, jetzt &amp; (Bilder unveraendert). Status in
-    Messaging direkt nach dem Klick: "Sending". Bekannter Schoenheitsfehler: ohne den Hinweistext haelt Gmail die Mail
+    Messaging: "Sending", kurz danach **"Sent", 13.11.2026 12:42** (in der Kampagnenliste geprueft). Bekannter Schoenheitsfehler: ohne den Hinweistext haelt Gmail die Mail
     wieder fuer Englisch (Uebersetzen-Angebot), ein zusaetzlicher deutscher Satz half im Test nicht (wieder entfernt).
     Auswertung ueber utm_campaign=euro5plus (GA4/eigenes Dashboard), nicht ueber Shopifys Kampagnen-Bestellungen.
   - **Recherche "Bewertungsmail am Zustelltag kostenlos?" (Workflow, 4 Recherchen + 4 Gegenpruefungen,
@@ -1889,6 +1889,12 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     Dictionary-String steht auch im HTML der alten Version, Deploy-Erkennung nur ueber den <title>.
 
 ### Offen / TODO
+- **NEU 13.11. Bot-Guthaben auf Thomas umziehen (Leon):** Shop (Vercel-Projekt sickmotos-shop: /api/chat, botCorrections,
+  chatTranslation) und Rental (Vercel-Projekt vozivespa, rentamotozadar.com) nutzen je `ANTHROPIC_API_KEY` (Production,
+  sensitive), abgerechnet bisher ueber Leons Anthropic-Konto. Plan: Thomas legt eigenes Konto auf platform.claude.com an +
+  Zahlungsmittel/Guthaben (nur er, Konto- und Zahlungsdaten nie durch mich), laedt Leon als Mitglied ein; dann neue Keys
+  in Thomas' Organisation, in beiden Vercel-Projekten tauschen (Oberflaeche, nicht CLI), redeployen, beide Bots live testen,
+  erst danach alte Keys in Leons Konto widerrufen. Verbrauch je Bot noch unbekannt (Leons Console-Login noetig).
 - **NEU 03.11.:** (1) `read_all_orders` ERLEDIGT (siehe oben). (2) Thomas' Wunsch "Auf Bestellung gefertigt" erst in der
   Bestellmail: VORSCHLAG, nicht umgesetzt. Achtung, die Lieferzeit selbst muss vor der Bestellung
   sichtbar bleiben (Pflichtangabe im Fernabsatz), nur der Hinweis "auf Bestellung gefertigt" kann
