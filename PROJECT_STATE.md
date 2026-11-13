@@ -363,6 +363,32 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     einen fertigen Link, in href gesetzt stand Code-Text im Footer, jetzt "Abmelden: {{ unsubscribe_link }}"
     (Linktext von Shopify: "Unsubscribe"). Gmail zeigt Arial statt Oswald (laedt keine Webfonts).
     **11.11.:** Logo 150 auf 130 px, Ueberschriften je 1 pt kleiner (alle 3 Mails, commit 96c7b65). Fuer "weisse Raender weg" zwei Varianten als Testmail an kristian2507@gmail.com (Betreff kurz mit "Variante A/B |" davor, danach zurueckgesetzt), beide im Posteingang: A = grauer Rahmen + Karte (wie Repo), B = ohne Rahmen, Mail geht bis zum Rand. Das Weiss AUSSERHALB ist Gmail selbst, nicht steuerbar. Leons Entscheidung: kein Grau, weisser Hintergrund, Ecken rund (alle 3 Mails umgestellt, Entwurf 80592811 aktualisiert, Testmail 13:33 im Gmail-Posteingang geprueft, Original-Betreff). Danach leichter Rand schwarz/rot als Test verschickt, Leon: Rand doch weg. Entwurf = Repo-Stand (weiss, rund, ohne Rand). Falle: pbcopy ohne LANG=en_US.UTF-8 zerschiesst Umlaute (F√ºr). **Design von Thomas abgesegnet (11.11., laut Leon), gilt fuer alle 3 Mails.** Preise am 11.11. erneut live geprueft (JSON-LD), unveraendert: Beta T-Model E5+ Race 299, FuelX Beta Lite 249, Fantic Kruemmer E5+ 269, FuelX Fantic E5+ 299. Versand des Newsletters weiter Thomas/Leon. **info@sickmotos.com existiert NICHT** (11.11. per dig: keine MX-Records auf sickmotos.com, sick-motos.com, sickmotos.de), eine Mail dorthin waere unzustellbar; Website nennt ueberall die Freenet-Adresse. Fuer eine eigene Adresse braucht es erst ein Postfach oder eine Weiterleitung (Anbieter/Kosten = Thomas), dann MX-Records bei GoDaddy. 13.11. erneut geprueft: alle 4 Domains (sickmotos.com/.de, sick-motos.com/.de) liegen auf GoDaddy-Nameservern, keine MX, kein SPF, kein mail.-Host. Absender der Shopify-Mails ist eine Shopify-Adresse (store+...@m.shopifyemail.com, Anzeigename Sickmotos-Styles), Antworten gehen an die Freenet-Adresse.
+  - **Finale Vorab-Pruefung Newsletter (13.11., Leon: "nicht unprofessionell wirken"; Workflow mit 5 Pruefern
+    + 5 Gegenpruefern, danach alles selbst nachgemessen):** Empfaenger: Segment 683 Kunden (Shopify: 682 erreichbar),
+    alle mit Abo-Status SUBSCRIBED; davon DE 348, AT 204, CH 38, DE+AT+CH zusammen 586, IT 28, Rest ~69 andere
+    Laender (Mail ist nur deutsch, Entscheidung Leon offen). Funde und Fixes (commit 4579651, live):
+    (1) **Zulassung:** alle 4 beworbenen Preise sind Race-Varianten ohne StVO-Zulassung (Produktseiten sagen das
+    selbst), Mail sagte nichts -> Hinweisbox mit dem Wortlaut der Produktseiten + Beta EG-ABE E5+ 449 EUR.
+    (2) Links landeten auf der billigeren E5-Variante (Seite zeigte 249/199/249 statt 299/269/299) -> Produktseite
+    waehlt jetzt `?variant=<id>` vor (PurchasePanel, nach dem Mount), Links tragen die E5+-IDs (Beta 54095681880330,
+    Fantic Kruemmer XMF 54095412363530, FuelX Fantic XMF 54095416983818) + utm_source=newsletter&utm_medium=email&
+    utm_campaign=euro5plus; live im echten Browser geprueft (299/269/299). (3) "(Kopie)" im H1 des Beta-Kruemmers
+    -> `cleanTitle` entfernt "(Kopie)" (einziger Live-Titel damit). (4) Mail fest 600 px -> responsiv, Desktop
+    unveraendert, Handy 375 px ohne Schrumpfen (gemessen). (5) "Abmelden: Unsubscribe" -> `{{ unsubscribe_url }}`
+    als "Hier abmelden" (Testmail: rendert echte URL checkout.sickmotos.com/account/unsubscribe/...). (6) Impressum-
+    Link statt "Engineered in Germany"; Versandkosten in der Preiszeile, an der echten Kasse per Test-Warenkorb
+    geprueft (DE 7,19 EUR, AT/IT/NL 14,99 EUR, CH 29 CHF, GB 13 GBP, DK 115 DKK, PL 68 PLN). (7) Beide FuelX hatten
+    dasselbe Foto -> Fantic-FuelX nimmt IMG-5982 aus der eigenen Galerie; Fantic-Kruemmer nimmt das E5+-Variantenbild.
+    (8) Google-Fonts-Link raus (DSGVO, Gmail ignoriert ihn eh), eigener Preheader raus (Shopify-Feld "Preview text"
+    liefert ihn), kleines Logo public/logo-mail.png (40 KB statt 314 KB), Outlook-Button, Alt-Text weiss.
+    Testmail 13.11. 12:18 an kristian2507: Gmail-Hinweis "anscheinend auf Englisch" ist WEG, SPF/DKIM/DMARC PASS.
+    Entwurf 80592811 = Repo-Stand. Vorschaubilder .thomas-screens/newsletter-final-desktop.png + -handy.jpg.
+    **Nicht in der Mail loesbar (Website/Thomas):** Impressum veraltet (§ 5 TMG statt DDG, ODR-Link tot seit
+    20.07.2025, "Registernummer: OIB", USt-ID ohne Laenderkennung, Telefon ohne +385), Datenschutz = englische
+    Shopify-Vorlage mit sick-motos.com und ohne Newsletter-Abschnitt, Beta-Kruemmer-Foto ist ein Werkstattfoto
+    in Folie, Freenet-Postfach soll laut Kundenbewertung voll sein, WhatsApp im Footer obwohl die Website WhatsApp
+    im Juni bewusst entfernt hat. Shopify-Kampagnenbericht wird kaum Bestellungen zeigen (headless), messen ueber
+    UTM/GA4. **NICHT gesendet**, wartet auf Leons ausdrueckliches Go.
   - **Recherche "Bewertungsmail am Zustelltag kostenlos?" (Workflow, 4 Recherchen + 4 Gegenpruefungen,
     Quellen im Workflow-Journal):** (1) Kostenlos und am Zustelltag geht nur Shopifys eigene
     Benachrichtigung "Zugestellt" (Liquid-Code editierbar, Satz + Bewertungslink einfuegbar). Laut
