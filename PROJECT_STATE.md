@@ -1894,7 +1894,13 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   sensitive), abgerechnet bisher ueber Leons Anthropic-Konto. Plan: Thomas legt eigenes Konto auf platform.claude.com an +
   Zahlungsmittel/Guthaben (nur er, Konto- und Zahlungsdaten nie durch mich), laedt Leon als Mitglied ein; dann neue Keys
   in Thomas' Organisation, in beiden Vercel-Projekten tauschen (Oberflaeche, nicht CLI), redeployen, beide Bots live testen,
-  erst danach alte Keys in Leons Konto widerrufen. Verbrauch je Bot noch unbekannt (Leons Console-Login noetig).
+  erst danach alte Keys in Leons Konto widerrufen. **Verbrauch (Leons Console 13.11., Kosten nach API-Schluessel):** Keys
+  `thomas-shop` (erstellt 21.06.2026 = Vercel-Env sickmotos-shop vom 21.06.) und `thomas-rental` (05.07.2026 = Vercel-Env
+  vozivespa vom 05.07.). Die Console zeigt Kosten erst ab 20.10.: Shop 6,46 $ vom 20.10. bis 12.11. (24 Tage, ~0,27 $/Tag,
+  hochgerechnet ~8-10 $ im Monat, Spitze 0,70 $ am 10.11.), Rental 0,12 $ im selben Zeitraum (Nebensaison). Leons Guthaben
+  102,03 $ (bleibt bei Leon). Weitere Keys in Leons Org (baustellen, Duraska-CSM, Krileo Webapp, N8N, boss-api-key)
+  gehoeren NICHT zu Thomas, nicht anfassen. In Thomas' Org Workspace-Schluessel anlegen (laufen weiter, auch wenn Leon
+  die Org verlaesst).
 - **NEU 03.11.:** (1) `read_all_orders` ERLEDIGT (siehe oben). (2) Thomas' Wunsch "Auf Bestellung gefertigt" erst in der
   Bestellmail: VORSCHLAG, nicht umgesetzt. Achtung, die Lieferzeit selbst muss vor der Bestellung
   sichtbar bleiben (Pflichtangabe im Fernabsatz), nur der Hinweis "auf Bestellung gefertigt" kann
