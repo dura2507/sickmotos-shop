@@ -70,7 +70,14 @@ const STOPWORDS = new Set(
     "passt passend zu auf von im in am sickmotos produkt produkte teil teile gerne " +
     "hallo hi hey shop haben habe are there any kostet preis price wo where find finde " +
     "schick schicke send me dazu auch noch so ja nein bike motorrad moped baujahr model " +
-    "modell year version"
+    "modell year version welchen welchem welcher etwas mal gerade aktuell schon kannst " +
+    "konnt konnte wurde wurdest gut beste besten genau eigentlich frage fragen info " +
+    "infos hilfe helfen danke okay ok jetzt heute lange dauert wann warum wieso ob " +
+    "nicht kein keine keinen viel mehr will mochte mochten hat ist sind war waren " +
+    "meinem meines deinem eure euer euch uns wir sie er man dann aber weil wenn als " +
+    "bei nach vor uber unter zum zur vom beim ins ans dein deine deinen ihr hey servus " +
+    "moin leute team bestellen kaufen kaufe gekauft bestellt bestellung fahre fahr " +
+    "habe hab gibts gibt's what which does can is it this that your yours please thanks"
   ).split(" ")
 );
 
@@ -268,8 +275,16 @@ export function searchProducts(query: string, limit = 5): BotProductHit[] {
 type Scored = { it: Indexed; hits: number; score: number };
 
 function scoreAll(q: Query, strictBrands: boolean): Scored[] {
+  const all = index();
+  // Seltene Begriffe zaehlen mehr: bei "Wandler fuer die LED" meint der Kunde
+  // den Wandler (2 Produkte), nicht irgendeine der ~100 LED-Lampen.
+  const weights = q.part.map((g) => {
+    let df = 0;
+    for (const it of all) if (partScore(it, g) > 0) df++;
+    return df > 0 ? 1 + Math.log(all.length / df) : 1;
+  });
   const scored: Scored[] = [];
-  for (const it of index()) {
+  for (const it of all) {
     // Teil einer anderen Marke (KTM-Teil bei "Beta") nicht anbieten.
     // Universalteile ohne Marke bleiben drin.
     const otherBrand =
@@ -277,13 +292,13 @@ function scoreAll(q: Query, strictBrands: boolean): Scored[] {
     if (otherBrand && strictBrands) continue;
     let hits = 0;
     let score = 0;
-    for (const g of q.part) {
+    q.part.forEach((g, gi) => {
       const s = partScore(it, g);
       if (s > 0) {
         hits++;
-        score += s;
+        score += s * weights[gi];
       }
-    }
+    });
     // Gibt es Teilebegriffe, muss mindestens einer passen. Sonst kaeme bei
     // "Nockenwelle Beta RR" jedes Beta-Teil.
     if (q.part.length > 0 && hits === 0) continue;

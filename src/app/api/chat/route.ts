@@ -150,9 +150,34 @@ export async function POST(req: Request) {
   // wie vorher ohne Tools, damit der Chat nie wegen der Suche ausfaellt.
   const MAX_TOOL_ROUNDS = 3;
   const offered: string[] = [];
-  const started = Date.now();
   // Kleine Diagnose in der Antwort (vom Widget ignoriert, keine Kundendaten).
-  const diag = { rounds: 0, searches: [] as string[], fallback: false, error: "" };
+  const diag = { rounds: 0, pre: 0, searches: [] as string[], fallback: false, error: "" };
+
+  // Haiku ruft die Suche live oft nicht von selbst auf (beantwortet aus dem
+  // Grundwissen oder fragt zurueck, "Tayo kenne ich nicht"). Deshalb sucht
+  // der Server bei jeder Kundennachricht selbst und gibt die Treffer mit.
+  const lastUserText = messages[messages.length - 1].content;
+  const prevUserText = [...messages].reverse().filter((m) => m.role === "user")[1]?.content ?? "";
+  let pre = runProductSearchTool({ query: lastUserText.slice(0, 300) });
+  if (pre.urls.length === 0 && prevUserText) {
+    pre = runProductSearchTool({ query: `${prevUserText} ${lastUserText}`.slice(0, 300) });
+  }
+  diag.pre = pre.urls.length;
+  if (pre.urls.length > 0) {
+    offered.push(...pre.urls);
+    system.push({
+      type: "text",
+      text:
+        "# Catalog matches for the customer's latest message (automatic search)\n" +
+        "These products were found automatically in the live catalog for what the customer just wrote. " +
+        "If they ask about a part, product, price or their bike, recommend the fitting ones from this list " +
+        "and link them with these exact URLs (use a variant URL when a variant clearly fits). Ignore products " +
+        "that do not fit their bike, and ignore the whole list if the message is not about products. " +
+        "You may call search_products for a better search.\n" +
+        pre.content,
+    });
+  }
+  const started = Date.now();
   async function answerWithTools(): Promise<string> {
     let convo: Anthropic.MessageParam[] = [...messages];
     // Antwort = letzter Textteil. Zusammenkleben aller Runden ergab live
