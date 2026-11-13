@@ -438,6 +438,33 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     verspricht bei Fertigung auf Bestellung 7-14 Tage. Bei Thomas ansprechen.
 
 ### In Arbeit / muss verifiziert werden
+- **SickBot schickt Produktlinks (13.11., Thomas: "Bitte auch kucken ob der Bot Produkt links senden kann. Die
+  Leute fragen mir wieder ein Loch in den Bauch").** Vorher: Bot kannte keine Produkt-URLs ("such auf der Website"),
+  Widget machte Links nicht klickbar. Jetzt (commits 5d8cd55 bis 124f805):
+  - `src/lib/botProductSearch.ts`: Katalogsuche (Teilebegriffe vor Bike-Angaben, IDF-Gewichtung, DE/EN-Synonyme
+    wie Wandler=Converter, Komposita, Marken-Aliase, Baujahre auch aus Variantennamen, alle Varianten mit
+    `?variant=`-URL, gleichnamige Kits zusammengefasst mit `/shop?q=`-Link), Tool `search_products`.
+  - `/api/chat`: Server sucht bei JEDER Kundennachricht selbst und gibt die Treffer als Kontext mit (Haiku rief das
+    Tool live oft nicht auf, sagte z.B. "Tayo kenne ich nicht"), Tool bleibt fuer bessere Suchen; Antwort = letzter
+    Textteil; 20-s-Limit je Aufruf, maxDuration 90; Rueckfall ohne Suche; Feld `diag` in der JSON-Antwort
+    (Suchrunden, Vorab-Treffer, Rueckfall), vom Widget ignoriert.
+  - Link-Pruefung vor dem Senden (`sanitizeBotReply`, gemeinsame Erkennung in `src/lib/botLinks.ts` mit dem Widget):
+    nur existierende Produkt-URLs, Tippfehler gegen die Treffer korrigiert (Schwelle 0,96 + Abstand, weil
+    verschiedene Produkte fast gleiche Handles haben), sonst Link entfernen; nur erlaubte sickmotos.com-Pfade
+    klickbar (nie `//fremd`), Gedankenstriche ersetzt.
+  - Widget: `[Text](URL)` und sickmotos.com-URLs als next/link (Chat bleibt beim Seitenwechsel offen), fett
+    gedruckte Links klickbar, auf dem Handy schliesst der Chat nach dem Klick.
+  - Produktseite waehlt `?variant=<id>` vor (PurchasePanel), `cleanTitle` entfernt "(Kopie)", products.ts erkennt
+    offene Baujahre wie "2024- ECE" (auch Bike-Finder).
+  - Bot-Wissen: Rueckgaben nur ueber das Formular sickmotos.com/returns (Thomas' Vorgabe 19.08.), es gibt KEIN
+    Kontaktformular (Bot hatte eins erfunden), stattdessen die Mail-Adresse.
+  - Review per Workflow (3 Pruefer + 3 Gegenpruefer, alle Funde bestaetigt und behoben). **Live verifiziert 13.11.**
+    (Testfragen mit "[Test]" markiert, liegen in /admin/chats): Tayo-Kruemmer 2025 -> Links auf E5+ Race 299 und
+    EG-ABE 449 (Variante vorausgewaehlt), Wandler Beta 50 -> 3-Pin-Converter 39 + Akku Set 3 PIN 65,99 (Variante
+    geprueft), H4 Adapter -> Link, Versandfrage -> keine Suche; alle Links 200. Fantic XMF 2025 fragt erst E5/E5+.
+  - Kosten: jede Produktfrage hat jetzt mehr Kontext (Treffer-Liste) und teils eine zweite Runde. Prognose, nicht
+    gemessen: Bot-Kosten steigen grob um 20-50 % (Shop vorher ~8-10 $/Monat). In ein paar Tagen in Leons Console
+    (Kosten nach API-Schluessel, `thomas-shop`) nachmessen.
 - **Shopify Admin Orders** (`/admin/orders` = echte Bestellungen): OAuth-Offline-Token-
   Flow gebaut (`/api/shopify/oauth/callback`, `src/lib/shopifyAdmin.ts`, API-Version
   2026-07). Ablauf: `SHOPIFY_APP_CLIENT_SECRET` + `SHOPIFY_ADMIN_API_TOKEN` (Offline-
