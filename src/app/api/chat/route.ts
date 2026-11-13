@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { buildSystemPrompt, buildStockPrompt } from "@/lib/botKnowledge";
+import {
+  PRODUCT_SEARCH_TOOL,
+  runProductSearchTool,
+  sanitizeBotReply,
+} from "@/lib/botProductSearch";
 import { appendConversation, getBotKnowledge } from "@/lib/adminStore";
 import {
   ABUSE_THRESHOLD,
@@ -127,22 +132,73 @@ export async function POST(req: Request) {
     });
   }
 
-  try {
-    const response = await client.messages.create({
-      model: MODEL,
-      max_tokens: 600,
-      system,
-      messages,
-    });
-
-    const reply = response.content
+  const textOf = (r: Anthropic.Message) =>
+    r.content
       .filter((b): b is Anthropic.TextBlock => b.type === "text")
       .map((b) => b.text)
       .join("\n")
       .trim();
 
+  // Produktsuche als Tool (2026-11-13, Thomas: "Bot soll Produktlinks
+  // senden"). Hoechstens MAX_TOOL_ROUNDS Suchrunden, die letzte Anfrage
+  // erzwingt eine Textantwort. Schlaegt der Tool-Weg fehl, antwortet der Bot
+  // wie vorher ohne Tools, damit der Chat nie wegen der Suche ausfaellt.
+  const MAX_TOOL_ROUNDS = 3;
+  async function answerWithTools(): Promise<string> {
+    let convo: Anthropic.MessageParam[] = [...messages];
+    let last = "";
+    for (let round = 0; round <= MAX_TOOL_ROUNDS; round++) {
+      const response = await client.messages.create({
+        model: MODEL,
+        max_tokens: 900,
+        system,
+        tools: [PRODUCT_SEARCH_TOOL],
+        tool_choice: round === MAX_TOOL_ROUNDS ? { type: "none" } : { type: "auto" },
+        messages: convo,
+      });
+      last = textOf(response);
+      if (response.stop_reason !== "tool_use") return last;
+      const toolUses = response.content.filter(
+        (b): b is Anthropic.ToolUseBlock => b.type === "tool_use"
+      );
+      const results: Anthropic.ToolResultBlockParam[] = toolUses.map((tu) => {
+        const r =
+          tu.name === PRODUCT_SEARCH_TOOL.name
+            ? runProductSearchTool(tu.input)
+            : { content: `Unknown tool ${tu.name}`, isError: true };
+        return {
+          type: "tool_result",
+          tool_use_id: tu.id,
+          content: r.content,
+          is_error: r.isError,
+        };
+      });
+      convo = [
+        ...convo,
+        { role: "assistant", content: response.content },
+        { role: "user", content: results },
+      ];
+    }
+    return last;
+  }
+
+  try {
+    let reply = "";
+    try {
+      reply = await answerWithTools();
+    } catch (toolErr) {
+      console.error("[chat] tool path failed, answering without tools:", toolErr);
+      const response = await client.messages.create({
+        model: MODEL,
+        max_tokens: 600,
+        system,
+        messages,
+      });
+      reply = textOf(response);
+    }
+
     const finalReply =
-      reply ||
+      sanitizeBotReply(reply) ||
       "Sorry, I couldn't generate a reply just now. Please try rephrasing your question.";
 
     let conversationId = body.conversationId ?? null;

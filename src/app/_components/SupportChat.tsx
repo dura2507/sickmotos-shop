@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useDictionary, useLocale } from "./LocaleProvider";
 
@@ -10,21 +11,70 @@ const KRILEO_UTM = "?utm_source=sickmotos-shop&utm_medium=chatbot";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
-// Light markdown rendering for the bot's replies: **bold**, "- " bullets and
-// line breaks — so structured answers look clean instead of showing raw **.
-function renderInline(text: string): ReactNode[] {
-  return text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
-    /^\*\*[^*]+\*\*$/.test(part) ? (
-      <strong key={i} className="font-semibold text-fg">
-        {part.slice(2, -2)}
-      </strong>
-    ) : (
-      <span key={i}>{part}</span>
-    )
+// Nur Links auf sickmotos.com werden klickbar (die Route hat erfundene
+// Produktlinks schon entfernt). Interne Links laufen ueber next/link, dann
+// bleibt der Chat beim Seitenwechsel offen und der Verlauf erhalten.
+function internalPath(raw: string): string | null {
+  try {
+    const u = new URL(raw);
+    if (u.hostname !== "sickmotos.com" && u.hostname !== "www.sickmotos.com") return null;
+    return u.pathname + u.search;
+  } catch {
+    return null;
+  }
+}
+
+function renderLink(url: string, label: string, key: number, onNav?: () => void): ReactNode {
+  const path = internalPath(url);
+  if (!path) return <span key={key}>{label}</span>;
+  return (
+    <Link
+      key={key}
+      href={path}
+      onClick={onNav}
+      className="font-semibold text-accent underline underline-offset-2 [overflow-wrap:anywhere] hover:text-accent-hi"
+    >
+      {label}
+    </Link>
   );
 }
 
-function renderRich(text: string): ReactNode {
+// Light markdown rendering for the bot's replies: **bold**, [links](url),
+// bare sickmotos.com URLs, "- " bullets and line breaks.
+const INLINE_TOKEN = /(\[[^\]]+\]\(https?:\/\/[^\s)]+\)|https?:\/\/[^\s)\]]+|\*\*[^*]+\*\*)/g;
+
+function renderInline(text: string, onNav?: () => void): ReactNode[] {
+  const out: ReactNode[] = [];
+  text.split(INLINE_TOKEN).forEach((part, i) => {
+    if (!part) return;
+    const md = part.match(/^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/);
+    if (md) {
+      out.push(renderLink(md[2], md[1].replace(/\*\*/g, ""), i, onNav));
+      return;
+    }
+    if (/^https?:\/\//.test(part)) {
+      const trail = part.match(/[.,;:!?]+$/)?.[0] ?? "";
+      const url = trail ? part.slice(0, -trail.length) : part;
+      const path = internalPath(url);
+      const label = path ? "sickmotos.com" + (path.length > 34 ? path.slice(0, 33) + "…" : path) : url;
+      out.push(renderLink(url, label, i, onNav));
+      if (trail) out.push(<span key={`${i}-t`}>{trail}</span>);
+      return;
+    }
+    if (/^\*\*[^*]+\*\*$/.test(part)) {
+      out.push(
+        <strong key={i} className="font-semibold text-fg">
+          {part.slice(2, -2)}
+        </strong>
+      );
+      return;
+    }
+    out.push(<span key={i}>{part}</span>);
+  });
+  return out;
+}
+
+function renderRich(text: string, onNav?: () => void): ReactNode {
   const lines = text.split("\n");
   const blocks: ReactNode[] = [];
   let bullets: string[] = [];
@@ -33,7 +83,7 @@ function renderRich(text: string): ReactNode {
       blocks.push(
         <ul key={key} className="my-1 list-disc space-y-0.5 pl-4">
           {bullets.map((b, i) => (
-            <li key={i}>{renderInline(b)}</li>
+            <li key={i}>{renderInline(b, onNav)}</li>
           ))}
         </ul>
       );
@@ -47,7 +97,7 @@ function renderRich(text: string): ReactNode {
       bullets.push(m[1]);
     } else {
       flush(`ul-${i}`);
-      if (t) blocks.push(<p key={`p-${i}`} className="[&:not(:first-child)]:mt-1.5">{renderInline(t)}</p>);
+      if (t) blocks.push(<p key={`p-${i}`} className="[&:not(:first-child)]:mt-1.5">{renderInline(t, onNav)}</p>);
     }
   });
   flush("ul-end");
@@ -74,6 +124,13 @@ export function SupportChat() {
   const [busy, setBusy] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Auf dem Handy deckt der Chat den Grossteil der Seite ab. Nach einem Klick
+  // auf einen Produktlink schliessen, damit die Seite sichtbar ist (Verlauf
+  // bleibt erhalten, der Chat laesst sich wieder oeffnen).
+  const closeOnPhone = () => {
+    if (window.matchMedia("(max-width: 767px)").matches) setOpen(false);
+  };
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
@@ -201,7 +258,7 @@ export function SupportChat() {
                       : "rounded-bl-sm bg-surface text-fg-muted"
                   }`}
                 >
-                  {m.role === "assistant" ? renderRich(m.content) : m.content}
+                  {m.role === "assistant" ? renderRich(m.content, closeOnPhone) : m.content}
                 </div>
               </div>
             ))}
