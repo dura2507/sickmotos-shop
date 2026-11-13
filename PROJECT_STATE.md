@@ -388,7 +388,14 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     Shopify-Vorlage mit sick-motos.com und ohne Newsletter-Abschnitt, Beta-Kruemmer-Foto ist ein Werkstattfoto
     in Folie, Freenet-Postfach soll laut Kundenbewertung voll sein, WhatsApp im Footer obwohl die Website WhatsApp
     im Juni bewusst entfernt hat. Shopify-Kampagnenbericht wird kaum Bestellungen zeigen (headless), messen ueber
-    UTM/GA4. **NICHT gesendet**, wartet auf Leons ausdrueckliches Go.
+    UTM/GA4.
+    **GESENDET 13.11.2026 12:41 (Leons "ja schick raus"):** Leons Entscheidungen davor: Zulassungshinweis wieder raus,
+    nur DACH. Neues Segment "Beta + Fantic Kaeufer mit Mail-Abo, DACH (Euro 5+ Mailing)" (id 640726139146, 586 Kunden,
+    Shopify: 585 Abonnenten), altes Segment + alter grauer Entwurf 80587498 bleiben. Vor dem Senden blockierte Shopifys
+    Review mit "Syntax isn't valid" (4x): rohes & in den img-src-URLs, jetzt &amp; (Bilder unveraendert). Status in
+    Messaging direkt nach dem Klick: "Sending". Bekannter Schoenheitsfehler: ohne den Hinweistext haelt Gmail die Mail
+    wieder fuer Englisch (Uebersetzen-Angebot), ein zusaetzlicher deutscher Satz half im Test nicht (wieder entfernt).
+    Auswertung ueber utm_campaign=euro5plus (GA4/eigenes Dashboard), nicht ueber Shopifys Kampagnen-Bestellungen.
   - **Recherche "Bewertungsmail am Zustelltag kostenlos?" (Workflow, 4 Recherchen + 4 Gegenpruefungen,
     Quellen im Workflow-Journal):** (1) Kostenlos und am Zustelltag geht nur Shopifys eigene
     Benachrichtigung "Zugestellt" (Liquid-Code editierbar, Satz + Bewertungslink einfuegbar). Laut
