@@ -176,8 +176,11 @@ function yearsFromString(s: string, into: Set<number>) {
     let b: number;
     if (!tail) {
       // Bare trailing dash. Only treat it as an open range when it isn't a
-      // hyphenated word ("2021-Modelle"), i.e. nothing word-like follows.
-      const next = s[(m.index ?? 0) + m[0].length] ?? "";
+      // hyphenated word ("2021-Modelle"): the character DIRECTLY after the
+      // dash decides. "2024- ECE" or "2025- E5+" (space, then a word) are
+      // open ranges; m[0] already swallowed that space, so look at the dash.
+      const dashAt = (m.index ?? 0) + m[0].search(/[-–]/);
+      const next = s[dashAt + 1] ?? "";
       if (/[a-z0-9äöü]/i.test(next)) continue;
       b = MAX_FIT_YEAR;
     } else if (/^on$/i.test(tail)) {
@@ -194,6 +197,13 @@ function yearsFromString(s: string, into: Set<number>) {
     const a = parseInt(m[1], 10);
     for (let y = a; y <= MAX_FIT_YEAR; y++) into.add(y);
   }
+}
+
+// Baujahre aus beliebigem Text (z.B. Variantennamen), gleiche Regeln wie oben.
+export function yearsInText(text: string): number[] {
+  const set = new Set<number>();
+  yearsFromString(text, set);
+  return Array.from(set).sort((x, y) => x - y);
 }
 
 export function getYears(p: ShopifyProduct): number[] {

@@ -17,6 +17,9 @@ import {
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// Bis zu 4 Modellaufrufe nacheinander (Produktsuche), je 20 s Limit, ab 20 s
+// keine weitere Suche mehr. Puffer fuer einen Wiederholversuch.
+export const maxDuration = 90;
 
 const MODEL = process.env.SICKMOTOS_BOT_MODEL || "claude-haiku-4-5";
 const MAX_TURNS = 20;
@@ -100,7 +103,9 @@ export async function POST(req: Request) {
     });
   }
 
-  const client = new Anthropic({ apiKey });
+  // Kurzes Limit pro Aufruf, damit bei einer haengenden API der Rueckfall und
+  // die Fehlermeldung noch innerhalb der Funktionslaufzeit greifen.
+  const client = new Anthropic({ apiKey, timeout: 20_000, maxRetries: 1 });
 
   // Owner corrections override the base knowledge. Kept in a separate,
   // uncached block so a fresh correction takes effect on the very next answer.
@@ -145,20 +150,35 @@ export async function POST(req: Request) {
   // wie vorher ohne Tools, damit der Chat nie wegen der Suche ausfaellt.
   const MAX_TOOL_ROUNDS = 3;
   const offered: string[] = [];
+  const started = Date.now();
   async function answerWithTools(): Promise<string> {
     let convo: Anthropic.MessageParam[] = [...messages];
-    let last = "";
+    // Text aus ALLEN Runden sammeln: was der Bot vor einer Suche schreibt,
+    // wiederholt er danach nicht.
+    const parts: string[] = [];
     for (let round = 0; round <= MAX_TOOL_ROUNDS; round++) {
+      // Letzte Runde oder nach 20 s: keine weitere Suche, nur antworten.
+      const finalRound = round === MAX_TOOL_ROUNDS || Date.now() - started > 20_000;
       const response = await client.messages.create({
         model: MODEL,
-        max_tokens: 900,
+        max_tokens: 1200,
         system,
         tools: [PRODUCT_SEARCH_TOOL],
-        tool_choice: round === MAX_TOOL_ROUNDS ? { type: "none" } : { type: "auto" },
+        tool_choice: finalRound ? { type: "none" } : { type: "auto" },
         messages: convo,
       });
-      last = textOf(response);
-      if (response.stop_reason !== "tool_use") return last;
+      if (response.stop_reason === "refusal") return "";
+      const text = textOf(response);
+      if (text) parts.push(text);
+      if (response.stop_reason !== "tool_use" || finalRound) {
+        // Abgeschnitten: auf den letzten vollstaendigen Satz kuerzen.
+        if (response.stop_reason === "max_tokens" && parts.length) {
+          const lastPart = parts[parts.length - 1];
+          const cut = Math.max(lastPart.lastIndexOf(". "), lastPart.lastIndexOf(".\n"), lastPart.lastIndexOf(")\n"));
+          if (cut > 0) parts[parts.length - 1] = lastPart.slice(0, cut + 1);
+        }
+        return parts.join("\n\n");
+      }
       const toolUses = response.content.filter(
         (b): b is Anthropic.ToolUseBlock => b.type === "tool_use"
       );
@@ -181,7 +201,7 @@ export async function POST(req: Request) {
         { role: "user", content: results },
       ];
     }
-    return last;
+    return parts.join("\n\n");
   }
 
   try {
@@ -193,7 +213,13 @@ export async function POST(req: Request) {
       const response = await client.messages.create({
         model: MODEL,
         max_tokens: 600,
-        system,
+        system: [
+          ...system,
+          {
+            type: "text",
+            text: "The product search is unavailable right now. Do not promise to look anything up and do not write product links. Point the customer to the shop search at sickmotos.com/shop.",
+          },
+        ],
         messages,
       });
       reply = textOf(response);
@@ -201,7 +227,7 @@ export async function POST(req: Request) {
 
     const finalReply =
       sanitizeBotReply(reply, offered) ||
-      "Sorry, I couldn't generate a reply just now. Please try rephrasing your question.";
+      "Sorry, da ist gerade etwas schiefgelaufen. Frag gerne nochmal. (Sorry, something went wrong, please ask again.)";
 
     let conversationId = body.conversationId ?? null;
     try {

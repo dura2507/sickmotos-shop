@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useDictionary, useLocale } from "./LocaleProvider";
+import { BARE_URL_SRC, MD_LINK_SRC, shopPath, splitTrail } from "@/lib/botLinks";
 
 // Agency credit under the input. krileo.de is the German site, krileo.com
 // the English one, so German visitors land on German.
@@ -11,21 +12,12 @@ const KRILEO_UTM = "?utm_source=sickmotos-shop&utm_medium=chatbot";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
-// Nur Links auf sickmotos.com werden klickbar (die Route hat erfundene
-// Produktlinks schon entfernt). Interne Links laufen ueber next/link, dann
-// bleibt der Chat beim Seitenwechsel offen und der Verlauf erhalten.
-function internalPath(raw: string): string | null {
-  try {
-    const u = new URL(raw);
-    if (u.hostname !== "sickmotos.com" && u.hostname !== "www.sickmotos.com") return null;
-    return u.pathname + u.search;
-  } catch {
-    return null;
-  }
-}
-
-function renderLink(url: string, label: string, key: number, onNav?: () => void): ReactNode {
-  const path = internalPath(url);
+// Nur Links auf erlaubte sickmotos.com-Pfade werden klickbar (die Route hat
+// erfundene Produktlinks schon entfernt, beide nutzen dieselbe Erkennung aus
+// botLinks.ts). Interne Links laufen ueber next/link, dann bleibt der Chat
+// beim Seitenwechsel offen und der Verlauf erhalten.
+function renderLink(url: string, label: ReactNode, key: string, onNav?: () => void): ReactNode {
+  const path = shopPath(url);
   if (!path) return <span key={key}>{label}</span>;
   return (
     <Link
@@ -39,37 +31,39 @@ function renderLink(url: string, label: string, key: number, onNav?: () => void)
   );
 }
 
-// Light markdown rendering for the bot's replies: **bold**, [links](url),
-// bare sickmotos.com URLs, "- " bullets and line breaks.
-const INLINE_TOKEN = /(\[[^\]]+\]\(https?:\/\/[^\s)]+\)|https?:\/\/[^\s)\]]+|\*\*[^*]+\*\*)/g;
+// Light markdown rendering for the bot's replies: **bold** (auch um Links),
+// [links](url), nackte sickmotos.com-URLs, "- " bullets and line breaks.
+const INLINE_TOKEN = new RegExp(String.raw`(\*\*[^*]+\*\*|${MD_LINK_SRC}|${BARE_URL_SRC})`, "g");
 
-function renderInline(text: string, onNav?: () => void): ReactNode[] {
+function renderInline(text: string, onNav?: () => void, keyPrefix = ""): ReactNode[] {
   const out: ReactNode[] = [];
-  text.split(INLINE_TOKEN).forEach((part, i) => {
+  text.split(INLINE_TOKEN).forEach((part, idx) => {
     if (!part) return;
-    const md = part.match(/^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/);
-    if (md) {
-      out.push(renderLink(md[2], md[1].replace(/\*\*/g, ""), i, onNav));
-      return;
-    }
-    if (/^https?:\/\//.test(part)) {
-      const trail = part.match(/[.,;:!?]+$/)?.[0] ?? "";
-      const url = trail ? part.slice(0, -trail.length) : part;
-      const path = internalPath(url);
-      const label = path ? "sickmotos.com" + (path.length > 34 ? path.slice(0, 33) + "…" : path) : url;
-      out.push(renderLink(url, label, i, onNav));
-      if (trail) out.push(<span key={`${i}-t`}>{trail}</span>);
-      return;
-    }
+    const key = `${keyPrefix}${idx}`;
     if (/^\*\*[^*]+\*\*$/.test(part)) {
       out.push(
-        <strong key={i} className="font-semibold text-fg">
-          {part.slice(2, -2)}
+        <strong key={key} className="font-semibold text-fg">
+          {renderInline(part.slice(2, -2), onNav, `${key}-`)}
         </strong>
       );
       return;
     }
-    out.push(<span key={i}>{part}</span>);
+    const md = part.match(/^\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)$/);
+    if (md) {
+      const [url, trail] = splitTrail(md[2]);
+      out.push(renderLink(url, md[1].replace(/\*\*/g, ""), key, onNav));
+      if (trail) out.push(<span key={`${key}-t`}>{trail}</span>);
+      return;
+    }
+    if (/^https?:\/\//.test(part)) {
+      const [url, trail] = splitTrail(part);
+      const path = shopPath(url);
+      const label = path ? "sickmotos.com" + (path.length > 34 ? path.slice(0, 33) + "…" : path) : url;
+      out.push(renderLink(url, label, key, onNav));
+      if (trail) out.push(<span key={`${key}-t`}>{trail}</span>);
+      return;
+    }
+    out.push(<span key={key}>{part}</span>);
   });
   return out;
 }
