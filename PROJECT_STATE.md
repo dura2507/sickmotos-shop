@@ -463,6 +463,17 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   7 Kopien, aelteste Themes bis 2021); Wayback-Schnappschuss 18.10.2025 vorhanden. Eine Backup-DATEI gibt es auf
   diesem Mac nicht (Dateisystem + alle Claude-Chats durchsucht, Ur-Chat "SHOP" vor 30.05. liegt nicht hier).
   Viva-Login: Leon bekommt keine Verifizierungs-Mail.
+  **KORREKTUR (Leon hat zu Recht nachgehakt):** verglichen wurden zwei Wege in die HEUTIGE Kasse, Shopify hat nur
+  eine Kasse und versioniert ihre Einstellungen nicht. Die Kasse vom Oktober 2025 ist nicht mehr aufrufbar, "Kasse
+  unveraendert" ist also NICHT belegt. Belegte Aenderungen seit 2025: Kassen-Branding dunkel/rot (Konfiguration
+  "Live", zuletzt gespeichert Sa 30.05.2026, ob vorher schon aktiv unbekannt); Kassen-Domain bis 09.07. sick-motos.com,
+  09.-19.07. sickmotos.myshopify.com, seit 19.07. checkout.sickmotos.com; deutsche Kunden 09.07.-02.11. englische
+  Kasse; Warenkorb-Symbol im Kassenkopf fehlt jetzt. **Neu 15.11. in Shopify -> Einstellungen -> Zahlungen:**
+  "Payment methods limited", Klarna (dazu Przelewy24, TWINT) "Unavailable", laut Shopify Sidekick Status
+  "provider action required / provider rejected, other" (Klarna hat abgelehnt, Grund unbekannt, naechster Schritt
+  Shopify-Support). Klarna war schon am 17.06.2026 "Unavailable at checkout" (eigener Verlauf). Chargeback-Rate
+  1,45 %. Aktive Zahlarten: Shopify Payments (Karten, Apple/Google Pay, Shop Pay, USDC, lokale), PayPal, Viva.com
+  Smart Checkout (+20 inkl. Klarna/Sofort als Weiterleitung). Eine Liste fehlgeschlagener Zahlungen nicht gefunden.
 - **SickBot schickt Produktlinks (13.11., Thomas: "Bitte auch kucken ob der Bot Produkt links senden kann. Die
   Leute fragen mir wieder ein Loch in den Bauch").** Vorher: Bot kannte keine Produkt-URLs ("such auf der Website"),
   Widget machte Links nicht klickbar. Jetzt (commits 5d8cd55 bis 124f805):
