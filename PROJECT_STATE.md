@@ -484,6 +484,9 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   ("Auf Bestellung gefertigt / 7-14 Tage", Pflichtangabe bleibt), Text + Ablauf klappen erst bei
   "So entsteht deine Bestellung" auf. Felgen (6+ Wochen) gleich behandelt. Warenkorb-Pille unveraendert (klein, grau).
   Wirkung messen: Kasse-zu-Kauf-Quote der naechsten Wochen gegen 23-25 % (Prognose, kein Ergebnis).
+  **Eckiges Design 15.11. (Leon, commit f983c3b, live verifiziert):** eine Regel in globals.css setzt jede
+  rounded-*-Klasse auf 0 (Knoepfe, Chips, Kacheln, Suchfeld, Chat-Knopf). Rund bleiben soll etwas nur mit Klasse
+  keep-round. Shopify-Kasse und Mails nicht betroffen (eigene Einstellungen).
 - **SickBot schickt Produktlinks (13.11., Thomas: "Bitte auch kucken ob der Bot Produkt links senden kann. Die
   Leute fragen mir wieder ein Loch in den Bauch").** Vorher: Bot kannte keine Produkt-URLs ("such auf der Website"),
   Widget machte Links nicht klickbar. Jetzt (commits 5d8cd55 bis 124f805):
