@@ -313,3 +313,11 @@ html {
 [class*="rounded"]:not(.keep-round) {
   border-radius: 0;
 }
+
+/* Freistehend statt ueberall umrandet (Leon, 2026-11-15): Rahmen bleiben nur an
+   Bedienelementen (Links, Knoepfe, Eingabefelder). Reine Info-Kaesten verlieren
+   den Rahmen, die Flaeche bleibt. Ein Kasten, der den Rahmen behalten soll,
+   bekommt die Klasse keep-border. */
+.border.border-border:not(a):not(button):not(input):not(select):not(textarea):not(label):not(.keep-border) {
+  border-color: transparent;
+}
