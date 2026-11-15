@@ -474,6 +474,11 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   Shopify-Support). Klarna war schon am 17.06.2026 "Unavailable at checkout" (eigener Verlauf). Chargeback-Rate
   1,45 %. Aktive Zahlarten: Shopify Payments (Karten, Apple/Google Pay, Shop Pay, USDC, lokale), PayPal, Viva.com
   Smart Checkout (+20 inkl. Klarna/Sofort als Weiterleitung). Eine Liste fehlgeschlagener Zahlungen nicht gefunden.
+  **Klarna-Nachtrag 15.11.:** Shopify Payments -> Transaktionen, Suche "klarna": letzte Klarna-Zahlung 20.11.2023,
+  davor im Okt 2023 drei Klarna-Rueckbuchungen. Klarna fehlte also schon im Vergleichszeitraum Okt 2025 und erklaert
+  den Einbruch NICHT (bleibt Wachstumshebel, Support-Anfrage optional, Leon wartet auf Thomas). Lieferzeit-Anzeige:
+  alt kleiner gruener Text "Delivery time 4-8 days" unter "Add to cart"; neu roter Kasten direkt unter dem Preis
+  "Auf Bestellung gefertigt, 7-14 Tage ... in der Reihenfolge des Eingangs". Beides VOR der Kasse sichtbar.
 - **SickBot schickt Produktlinks (13.11., Thomas: "Bitte auch kucken ob der Bot Produkt links senden kann. Die
   Leute fragen mir wieder ein Loch in den Bauch").** Vorher: Bot kannte keine Produkt-URLs ("such auf der Website"),
   Widget machte Links nicht klickbar. Jetzt (commits 5d8cd55 bis 124f805):
