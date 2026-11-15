@@ -452,6 +452,17 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   Endpreis-Ueberraschung (Versand erst an der Kasse, CH in Franken), Vertrauen (neue Seite zeigt keine
   Bewertungen), "Zurueck zum Warenkorb" im Checkout fuehrt evtl. ins alte Theme. Naechste Schritte: Thomas
   prueft Viva-Fehlerquote seit Juli; echter Kassen-Durchlauf mobil bis zur Zahlungsauswahl; Abbruch-Warenkoerbe.
+  **Vergleich alt/neu 15.11. (Leons Chrome, Theme-Vorschau "Copy of Geen Experiment" vom 21.12.2025, gleicher
+  Kruemmer 199 EUR):** die Kasse selbst ist 1:1 GLEICH (Express Shop Pay/PayPal/Google Pay, Kreditkarte, PayPal,
+  Crypto USDC, Viva 30+, Trinkgeld-Block, deutsch); einziger Unterschied: im neuen Kassen-Kopf fehlt das
+  Warenkorb-Symbol. Unterschiede liegen DAVOR: alte Produktseite "Delivery time 4-8 days" + "Only 1 left in stock"
+  + "Save 13%", neue "Auf Bestellung gefertigt, meist 7-14 Tage"; alter Warenkorb mit Shop Pay/PayPal/Google Pay
+  direkt im Warenkorb, Gutscheinfeld, Haken "Garantie fuer sicheres Einkaufen" und Countdown "Jemand hat einen
+  Artikel aus Ihrem Warenkorb bestellt, reserviert 39:57 Min" (Fake-Dringlichkeit, NICHT nachbauen, Regel 3);
+  neue Seite zeigt keine Bewertungen. Alte Seite bleibt komplett in Shopify (Theme "Geen Experiment" live +
+  7 Kopien, aelteste Themes bis 2021); Wayback-Schnappschuss 18.10.2025 vorhanden. Eine Backup-DATEI gibt es auf
+  diesem Mac nicht (Dateisystem + alle Claude-Chats durchsucht, Ur-Chat "SHOP" vor 30.05. liegt nicht hier).
+  Viva-Login: Leon bekommt keine Verifizierungs-Mail.
 - **SickBot schickt Produktlinks (13.11., Thomas: "Bitte auch kucken ob der Bot Produkt links senden kann. Die
   Leute fragen mir wieder ein Loch in den Bauch").** Vorher: Bot kannte keine Produkt-URLs ("such auf der Website"),
   Widget machte Links nicht klickbar. Jetzt (commits 5d8cd55 bis 124f805):
