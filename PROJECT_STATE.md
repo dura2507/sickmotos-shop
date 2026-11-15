@@ -479,6 +479,11 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   den Einbruch NICHT (bleibt Wachstumshebel, Support-Anfrage optional, Leon wartet auf Thomas). Lieferzeit-Anzeige:
   alt kleiner gruener Text "Delivery time 4-8 days" unter "Add to cart"; neu roter Kasten direkt unter dem Preis
   "Auf Bestellung gefertigt, 7-14 Tage ... in der Reihenfolge des Eingangs". Beides VOR der Kasse sichtbar.
+  **Umgesetzt 15.11. (Leon: "kleiner, nicht wie eine Warnung"):** roter Kasten unter dem Preis entfernt
+  (PurchasePanel.tsx). Lieferzeit steht weiter VOR dem Kauf in der grauen Kachel unter "In den Warenkorb"
+  ("Auf Bestellung gefertigt / 7-14 Tage", Pflichtangabe bleibt), Text + Ablauf klappen erst bei
+  "So entsteht deine Bestellung" auf. Felgen (6+ Wochen) gleich behandelt. Warenkorb-Pille unveraendert (klein, grau).
+  Wirkung messen: Kasse-zu-Kauf-Quote der naechsten Wochen gegen 23-25 % (Prognose, kein Ergebnis).
 - **SickBot schickt Produktlinks (13.11., Thomas: "Bitte auch kucken ob der Bot Produkt links senden kann. Die
   Leute fragen mir wieder ein Loch in den Bauch").** Vorher: Bot kannte keine Produkt-URLs ("such auf der Website"),
   Widget machte Links nicht klickbar. Jetzt (commits 5d8cd55 bis 124f805):

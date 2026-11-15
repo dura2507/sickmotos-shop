@@ -155,57 +155,6 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
         )}
       </div>
 
-      {lead && (
-        <div
-          className={`flex flex-col gap-3 rounded-xl border p-3.5 ${
-            lead.long
-              ? "border-accent/40 bg-accent/[0.07]"
-              : "border-border bg-surface/40"
-          }`}
-        >
-          <div className="flex items-start gap-2.5">
-            <svg viewBox="0 0 24 24" className="mt-0.5 size-4 shrink-0 text-accent" fill="none" stroke="currentColor" strokeWidth={2}>
-              <path d="M12 8v4l3 2" strokeLinecap="round" strokeLinejoin="round" />
-              <circle cx="12" cy="12" r="9" />
-            </svg>
-            <div className="flex flex-col gap-0.5">
-              <span className="text-xs font-bold uppercase tracking-wider text-fg">
-                {t.madeToOrder} · {leadShort}
-              </span>
-              <span className="text-xs leading-relaxed text-fg-muted">
-                {leadNote}
-              </span>
-            </div>
-          </div>
-          {!lead.long && (
-            <details className="group border-t border-border pt-3">
-              <summary className="flex cursor-pointer items-center justify-between gap-2 text-[11px] font-bold uppercase tracking-[0.15em] text-fg-dim transition-colors hover:text-fg [&::-webkit-details-marker]:hidden">
-                <span>{t.howOrderBuilt}</span>
-                <svg viewBox="0 0 24 24" className="size-3.5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" strokeWidth={2.4}>
-                  <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </summary>
-              <ol className="mt-3 flex flex-col gap-2.5">
-                {t.buildSteps.map((s, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <span className="grid size-6 shrink-0 place-items-center rounded-full bg-accent/15 text-[10px] font-bold text-accent">
-                      {i + 1}
-                    </span>
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-fg">
-                        {s.day} · {s.label}
-                      </span>
-                      <span className="text-[11px] leading-relaxed text-fg-muted">
-                        {s.detail}
-                      </span>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </details>
-          )}
-        </div>
-      )}
 
       {p.fitsOn.length > 0 && (
         <div className="flex flex-col gap-2 rounded-xl border border-border bg-surface/40 p-3.5">
@@ -371,6 +320,38 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
           <span className="text-fg-dim">{t.warranty}</span>
         </span>
       </div>
+
+      {/* Lieferzeit-Details bewusst unauffaellig (2026-11-15, Leon): die
+          Lieferzeit selbst steht in der Kachel oben, der Rest klappt nur auf,
+          wenn jemand nachschauen will. Vorher roter Kasten direkt unter dem
+          Preis, der wie eine Warnung wirkte. */}
+      {lead && (
+        <details className="group -mt-2">
+          <summary className="flex cursor-pointer items-center justify-center gap-1 text-[11px] text-fg-dim transition-colors hover:text-fg [&::-webkit-details-marker]:hidden">
+            <span>{t.howOrderBuilt}</span>
+            <svg viewBox="0 0 24 24" className="size-3 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" strokeWidth={2.4}>
+              <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </summary>
+          <div className="mt-2.5 flex flex-col gap-2.5 rounded-lg border border-border bg-surface/40 p-3">
+            <p className="text-[11px] leading-relaxed text-fg-muted">{leadNote}</p>
+            {!lead.long && (
+              <ol className="flex flex-col gap-2">
+                {t.buildSteps.map((s, i) => (
+                  <li key={i} className="flex items-start gap-2.5">
+                    <span className="grid size-5 shrink-0 place-items-center rounded-full bg-surface-2 text-[10px] font-bold text-fg-muted">
+                      {i + 1}
+                    </span>
+                    <span className="text-[11px] leading-relaxed text-fg-muted">
+                      <span className="font-semibold text-fg">{s.day} · {s.label}.</span> {s.detail}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </div>
+        </details>
+      )}
     </div>
   );
 }
