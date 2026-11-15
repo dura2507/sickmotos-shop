@@ -306,3 +306,10 @@ html {
     font-size: 16px !important;
   }
 }
+
+/* Eckiges Design (Leon, 2026-11-15): alle abgerundeten Ecken im Shop auf 0.
+   Bewusst ausserhalb der Tailwind-Layer, damit die Regel jede rounded-*-Klasse
+   schlaegt. Ein Element, das rund bleiben soll, bekommt die Klasse keep-round. */
+[class*="rounded"]:not(.keep-round) {
+  border-radius: 0;
+}
