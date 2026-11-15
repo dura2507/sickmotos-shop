@@ -490,6 +490,9 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   Danach (Leon: "ueberall umrandet"): zweite Regel macht Rahmen von reinen Info-Kaesten (.border.border-border auf
   div/span usw.) unsichtbar, Rahmen bleiben an Links, Knoepfen, Feldern; Ausnahme per keep-border. Live geprueft
   (Produktseite, Startseite).
+  Zweite Runde ("immer noch zu viel umrahmt", commit 425ed62): graue Rahmen (border-border UND border-border-strong)
+  nur noch an input/select/textarea; rote Rahmen (Auswahl, Passt-auf) bleiben. Leon: "besser, kann man vorerst lassen".
+  Offen, falls mehr reduziert werden soll: Vorschaubilder der Galerie, FRAG-SICKBOT-Label.
 - **SickBot schickt Produktlinks (13.11., Thomas: "Bitte auch kucken ob der Bot Produkt links senden kann. Die
   Leute fragen mir wieder ein Loch in den Bauch").** Vorher: Bot kannte keine Produkt-URLs ("such auf der Website"),
   Widget machte Links nicht klickbar. Jetzt (commits 5d8cd55 bis 124f805):
