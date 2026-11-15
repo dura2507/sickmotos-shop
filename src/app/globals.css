@@ -314,10 +314,12 @@ html {
   border-radius: 0;
 }
 
-/* Freistehend statt ueberall umrandet (Leon, 2026-11-15): Rahmen bleiben nur an
-   Bedienelementen (Links, Knoepfe, Eingabefelder). Reine Info-Kaesten verlieren
-   den Rahmen, die Flaeche bleibt. Ein Kasten, der den Rahmen behalten soll,
-   bekommt die Klasse keep-border. */
-.border.border-border:not(a):not(button):not(input):not(select):not(textarea):not(label):not(.keep-border) {
+/* Freistehend statt ueberall umrandet (Leon, 2026-11-15, zweite Runde: "immer
+   noch viel zu viel umrahmt"): graue Rahmen gibt es nur noch an Eingabefeldern.
+   Knoepfe und Kacheln stehen ueber ihre Flaeche frei, die ausgewaehlte Variante
+   behaelt ihren roten Rahmen (border-accent ist hier nicht betroffen). Ein
+   Element, das den grauen Rahmen behalten soll, bekommt die Klasse keep-border. */
+.border.border-border:not(input):not(select):not(textarea):not(.keep-border),
+.border.border-border-strong:not(input):not(select):not(textarea):not(.keep-border) {
   border-color: transparent;
 }
