@@ -438,6 +438,20 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
     verspricht bei Fertigung auf Bestellung 7-14 Tage. Bei Thomas ansprechen.
 
 ### In Arbeit / muss verifiziert werden
+- **Kassen-Abschlussrate seit dem Umzug halbiert (15.11., nach Thomas' "verlieren immer noch gewaltig an
+  Boden"; ShopifyQL in Leons Shopify, nur human, nichts geaendert):** zur Kasse kommen gleich viele wie im
+  Vorjahr, kaufen tut die Haelfte. Monatlich reached/completed: Maerz 2025 bis Mai 2026 jeden Monat 38-51 %
+  (Okt 2025 443/191 = 43 %), Jun 2026 33 %, Jul 23 %, Aug 21 %, Sep 28 %, Okt 21 %, Nov bis 15. 25 %.
+  28.09.-15.11.: 773/177 (23 %) vs Vorjahr 727/312 (43 %). 01.08.-15.11. nach Geraet: Mobil 1498/342 (23 %) vs
+  1328/575 (43 %), Desktop 248/70 (28 %) vs 293/119 (41 %); nach Land: DE 685/218 (32 %) vs 586/322 (55 %),
+  AT 414/95 (23 %) vs 452/192 (42 %), CH 139/24 (17 %) vs 148/54 (36 %). Gegenproben: eigener Zaehler 04.-07.11.
+  71 Kasse / 17 Bestellungen (24 %), Ads Checkout-Start zu Kauf ~20 %. Englischer Checkout (Fix 02.11.) war NICHT
+  die Hauptursache (Nov weiter 24-25 %). Schaetzung: 1.761 Kassen-Sitzungen seit 01.08. mit Vorjahresquote =
+  ~335 Kaeufe mehr, bei ~185 EUR grob 60.000 EUR. **Ursache offen**, Kandidaten alle ungeprueft: Zahlung
+  (Viva.com-Fehlversuche, Apple Pay/Google Pay/PayPal auf checkout.sickmotos.com; Handy staerker betroffen),
+  Endpreis-Ueberraschung (Versand erst an der Kasse, CH in Franken), Vertrauen (neue Seite zeigt keine
+  Bewertungen), "Zurueck zum Warenkorb" im Checkout fuehrt evtl. ins alte Theme. Naechste Schritte: Thomas
+  prueft Viva-Fehlerquote seit Juli; echter Kassen-Durchlauf mobil bis zur Zahlungsauswahl; Abbruch-Warenkoerbe.
 - **SickBot schickt Produktlinks (13.11., Thomas: "Bitte auch kucken ob der Bot Produkt links senden kann. Die
   Leute fragen mir wieder ein Loch in den Bauch").** Vorher: Bot kannte keine Produkt-URLs ("such auf der Website"),
   Widget machte Links nicht klickbar. Jetzt (commits 5d8cd55 bis 124f805):
