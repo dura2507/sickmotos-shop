@@ -493,6 +493,17 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   Zweite Runde ("immer noch zu viel umrahmt", commit 425ed62): graue Rahmen (border-border UND border-border-strong)
   nur noch an input/select/textarea; rote Rahmen (Auswahl, Passt-auf) bleiben. Leon: "besser, kann man vorerst lassen".
   Offen, falls mehr reduziert werden soll: Vorschaubilder der Galerie, FRAG-SICKBOT-Label.
+  **Lieferzeit komplett von der Website entfernt (17.11., Thomas ueber Leon: "schreckt ab, kann es nicht
+  zuverlaessig sagen, Leute koennen ja stornieren"):** Kachel unter "In den Warenkorb" zeigt jetzt "Weltweit /
+  Versand", "So entsteht deine Bestellung" weg, Pillen in Shop-Karten und Warenkorb weg, Zeile "Lieferung" im
+  Datenblatt weg, Startseiten-Leiste "5-10 Tage" -> "Weltweit / Versand". leadTime.ts + Dictionary-Keys bleiben
+  (Rueckbau = git revert). Bot nennt auf Nachfrage weiter 7-14 Tage. **Risiko an Thomas kommuniziert, von ihm zu
+  tragen:** Lieferzeit ist vorvertragliche Pflichtangabe (Abmahnrisiko), UND versand.md sagt "soweit im Angebot
+  keine andere Frist angegeben ist ... Inland 1-4 Tage, Ausland 4-21 Tage" = ohne Angabe im Angebot gilt jetzt
+  1-4 Tage vertraglich. Alternative angeboten: Versandart in der Kasse "Standard (7-14 Werktage)".
+  Bestellbestaetigung: Block "Lieferzeit / Delivery time" (DE+EN, Felgen 6+ Wochen per Liquid `contains 'felge'`,
+  sonst 7-14 Tage) in `email-templates/order-confirmation.html`, **NOCH NICHT in Shopify eingesetzt** (braucht Go
+  + Vorschau-Test).
 - **SickBot schickt Produktlinks (13.11., Thomas: "Bitte auch kucken ob der Bot Produkt links senden kann. Die
   Leute fragen mir wieder ein Loch in den Bauch").** Vorher: Bot kannte keine Produkt-URLs ("such auf der Website"),
   Widget machte Links nicht klickbar. Jetzt (commits 5d8cd55 bis 124f805):

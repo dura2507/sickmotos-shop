@@ -1,7 +1,6 @@
 import raw from "@/data/products.json";
 import addonsRaw from "@/data/addons.json";
 import fitmentRaw from "@/data/fitment.json";
-import { leadTimeFor } from "@/lib/leadTime";
 import { parseRichDescription, type RichBlock } from "@/lib/richDescription";
 import { CATEGORIES, type Category } from "@/lib/productShared";
 
@@ -779,12 +778,6 @@ function extractSpecsFromHtml(html: string, p: ShopifyProduct) {
   }
   if (p.vendor) specs.push({ key: "brand", label: "Brand", value: p.vendor });
   if (p.product_type) specs.push({ key: "category", label: "Category", value: p.product_type });
-  const lead = leadTimeFor(categorize(p));
-  specs.push({
-    key: lead ? (lead.long ? "delivery-mto-long" : "delivery-mto") : "delivery-standard",
-    label: "Delivery",
-    value: lead ? `Made to order, ${lead.short}` : "4-8 business days",
-  });
   specs.push({
     key: "warranty",
     label: "Warranty",

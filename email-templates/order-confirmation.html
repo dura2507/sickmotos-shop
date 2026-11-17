@@ -40,6 +40,12 @@
               <p style="margin:14px 0 0 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#3f3f46;">
                 Thanks{% if customer.first_name %}, {{ customer.first_name }}{% endif %}. We got your order <strong style="color:#18181b;">{{ order_name }}</strong> and the crew is on it. You will get another email when it ships.
               </p>
+              {% comment %} Lieferzeit (2026-11-17): steht seit Thomas' Entscheidung nicht mehr auf der Website, nur noch hier. Felgen = 6+ Wochen, sonst 7-14 Tage (Texte wie bisher auf der Produktseite). {% endcomment %}
+              {% assign sm_long = false %}{% for line in line_items %}{% assign sm_t = line.title | downcase %}{% if sm_t contains 'felge' %}{% assign sm_long = true %}{% endif %}{% endfor %}
+              <p style="margin:16px 0 0 0;padding:12px 14px;background:#f4f4f5;border-radius:10px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;line-height:1.6;color:#3f3f46;">
+                <strong style="color:#18181b;">Lieferzeit / Delivery time</strong><br>
+                {% if sm_long %}Für dich auf Bestellung gefertigt. Aktuelle Lieferzeit 6 Wochen oder mehr, du bekommst per Mail Updates.<br><span style="color:#71717a;">Built to order just for you. Current lead time is 6 weeks or more, and you get email updates along the way.</span>{% else %}Vieles ist ab Lager lieferbar. Von Hand gefertigt und vor Versand getestet, meist 7-14 Tage, in der Reihenfolge des Eingangs.<br><span style="color:#71717a;">A lot is in stock. Handcrafted and tested before it ships, usually 7-14 days, built in the order things come in.</span>{% endif %}
+              </p>
             </td>
           </tr>
 

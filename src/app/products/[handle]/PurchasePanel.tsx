@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import { trackAddToCart, trackViewItem } from "@/lib/analytics";
 import { addLinesToCart } from "@/lib/cartStore";
 import { isConverter, isLamp } from "@/lib/essentials";
-import { leadTimeFor } from "@/lib/leadTime";
 import type { DetailViewModel } from "@/lib/products";
 import { useVariantImage } from "./VariantImageContext";
 import { useDictionary } from "@/app/_components/LocaleProvider";
@@ -87,9 +86,6 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
     compareAt && compareAt > unitPrice
       ? Math.round((1 - unitPrice / compareAt) * 100)
       : null;
-  const lead = leadTimeFor(p.category);
-  const leadShort = lead ? (lead.long ? t.madeToOrderLong : t.madeToOrderNormal) : null;
-  const leadNote = lead ? (lead.long ? t.madeToOrderNoteLong : t.madeToOrderNoteNormal) : null;
   const productIsLamp = isLamp(p.handle, p.title, p.category);
   const converterAddon = productIsLamp
     ? p.addOns.find((a) => isConverter(a.handle, a.title) && a.defaultVariantGid)
@@ -312,8 +308,8 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
 
       <div className="grid grid-cols-2 gap-2 text-[11px] text-fg-muted">
         <span className="flex flex-col items-center gap-1 rounded-lg border border-border bg-surface/40 p-2.5 text-center">
-          <span className="text-fg">{lead ? t.madeToOrder : t.worldwide}</span>
-          <span className="text-fg-dim">{lead ? leadShort : t.shipping5to10}</span>
+          <span className="text-fg">{t.worldwide}</span>
+          <span className="text-fg-dim">{t.shippingLabel}</span>
         </span>
         <span className="flex flex-col items-center gap-1 rounded-lg border border-border bg-surface/40 p-2.5 text-center">
           <span className="text-fg">{t.warranty6m}</span>
@@ -321,37 +317,9 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
         </span>
       </div>
 
-      {/* Lieferzeit-Details bewusst unauffaellig (2026-11-15, Leon): die
-          Lieferzeit selbst steht in der Kachel oben, der Rest klappt nur auf,
-          wenn jemand nachschauen will. Vorher roter Kasten direkt unter dem
-          Preis, der wie eine Warnung wirkte. */}
-      {lead && (
-        <details className="group -mt-2">
-          <summary className="flex cursor-pointer items-center justify-center gap-1 text-[11px] text-fg-dim transition-colors hover:text-fg [&::-webkit-details-marker]:hidden">
-            <span>{t.howOrderBuilt}</span>
-            <svg viewBox="0 0 24 24" className="size-3 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" strokeWidth={2.4}>
-              <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </summary>
-          <div className="mt-2.5 flex flex-col gap-2.5 rounded-lg border border-border bg-surface/40 p-3">
-            <p className="text-[11px] leading-relaxed text-fg-muted">{leadNote}</p>
-            {!lead.long && (
-              <ol className="flex flex-col gap-2">
-                {t.buildSteps.map((s, i) => (
-                  <li key={i} className="flex items-start gap-2.5">
-                    <span className="grid size-5 shrink-0 place-items-center rounded-full bg-surface-2 text-[10px] font-bold text-fg-muted">
-                      {i + 1}
-                    </span>
-                    <span className="text-[11px] leading-relaxed text-fg-muted">
-                      <span className="font-semibold text-fg">{s.day} · {s.label}.</span> {s.detail}
-                    </span>
-                  </li>
-                ))}
-              </ol>
-            )}
-          </div>
-        </details>
-      )}
+      {/* Lieferzeit auf der Website komplett entfernt (2026-11-17, Thomas'
+          Entscheidung ueber Leon, Risiko bewusst getragen): steht nur noch in
+          der Bestellbestaetigung. Logik liegt weiter in src/lib/leadTime.ts. */}
     </div>
   );
 }

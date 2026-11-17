@@ -6,7 +6,7 @@ export async function TrustBar() {
   const dict = await getDictionary(locale);
   const items = [
     { value: "★ 4.9", label: dict.trustBar.verifiedReviews },
-    { value: dict.product.shipping5to10, label: dict.trustBar.worldwideShipping },
+    { value: dict.product.worldwide, label: dict.product.shippingLabel },
     { value: dict.product.warranty6m, label: dict.trustBar.warrantyIncluded },
     { value: "Bitcoin", label: dict.trustBar.paymentMethodsSuffix },
   ];
