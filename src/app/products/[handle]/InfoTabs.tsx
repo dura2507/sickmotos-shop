@@ -25,8 +25,7 @@ export function InfoTabs({ product: p }: { product: DetailViewModel }) {
   const catCards = dict.categoryCards as Record<string, { name: string }>;
   function specValue(key: string, fallback: string): string {
     if (key === "delivery-standard") return specMap.deliveryStandard;
-    if (key === "delivery-mto") return `${dict.product.madeToOrder}, ${dict.product.madeToOrderNormal}`;
-    if (key === "delivery-mto-long") return `${dict.product.madeToOrder}, ${dict.product.madeToOrderLong}`;
+    if (key === "delivery-mto" || key === "delivery-mto-long") return dict.product.madeToOrder;
     if (key === "warranty") return specMap.warrantyValue;
     if (key === "category") return catCards[fallback]?.name ?? fallback;
     return fallback;

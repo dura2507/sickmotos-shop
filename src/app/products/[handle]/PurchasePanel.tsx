@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { trackAddToCart, trackViewItem } from "@/lib/analytics";
 import { addLinesToCart } from "@/lib/cartStore";
 import { isConverter, isLamp } from "@/lib/essentials";
+import { leadTimeFor } from "@/lib/leadTime";
 import type { DetailViewModel } from "@/lib/products";
 import { useVariantImage } from "./VariantImageContext";
 import { useDictionary } from "@/app/_components/LocaleProvider";
@@ -86,6 +87,10 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
     compareAt && compareAt > unitPrice
       ? Math.round((1 - unitPrice / compareAt) * 100)
       : null;
+  // Lieferzeit ohne Tage (2026-11-18, Leon): der Hinweis "Auf Bestellung
+  // gefertigt" steht wieder dort, wo er vor dem 17.11. stand, die Tage stehen
+  // nur noch in der Bestellbestaetigung.
+  const lead = leadTimeFor(p.category);
   const productIsLamp = isLamp(p.handle, p.title, p.category);
   const converterAddon = productIsLamp
     ? p.addOns.find((a) => isConverter(a.handle, a.title) && a.defaultVariantGid)
@@ -308,8 +313,8 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
 
       <div className="grid grid-cols-2 gap-2 text-[11px] text-fg-muted">
         <span className="flex flex-col items-center gap-1 rounded-lg border border-border bg-surface/40 p-2.5 text-center">
-          <span className="text-fg">{t.worldwide}</span>
-          <span className="text-fg-dim">{t.shippingLabel}</span>
+          <span className="text-fg">{lead ? t.madeToOrder : t.worldwide}</span>
+          <span className="text-fg-dim">{lead ? t.shippingWorldwide : t.shippingLabel}</span>
         </span>
         <span className="flex flex-col items-center gap-1 rounded-lg border border-border bg-surface/40 p-2.5 text-center">
           <span className="text-fg">{t.warranty6m}</span>
@@ -317,9 +322,10 @@ export function PurchasePanel({ product: p }: { product: DetailViewModel }) {
         </span>
       </div>
 
-      {/* Lieferzeit auf der Website komplett entfernt (2026-11-17, Thomas'
-          Entscheidung ueber Leon, Risiko bewusst getragen): steht nur noch in
-          der Bestellbestaetigung. Logik liegt weiter in src/lib/leadTime.ts. */}
+      {/* Lieferzeit-Tage auf der Website entfernt (2026-11-17, Thomas'
+          Entscheidung ueber Leon, Risiko bewusst getragen): stehen nur noch in
+          der Bestellbestaetigung. Der Hinweis "Auf Bestellung gefertigt"
+          (ohne Tage) steht seit 2026-11-18 wieder in der Kachel oben. */}
     </div>
   );
 }
