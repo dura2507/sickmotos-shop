@@ -502,10 +502,27 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   keine andere Frist angegeben ist ... Inland 1-4 Tage, Ausland 4-21 Tage" = ohne Angabe im Angebot gilt jetzt
   1-4 Tage vertraglich. Alternative angeboten: Versandart in der Kasse "Standard (7-14 Werktage)".
   Bestellbestaetigung: Block "Lieferzeit / Delivery time" (DE+EN, Felgen 6+ Wochen per Liquid `contains 'felge'`,
-  sonst 7-14 Tage) in `email-templates/order-confirmation.html`, **NOCH NICHT in Shopify eingesetzt** (braucht Go
+  sonst 7-14 Tage) in `email-templates/order-confirmation.html`, **am 18.11. umgebaut und in Shopify eingesetzt, siehe Nachtrag** (vorher: braucht Go
   + Vorschau-Test).
   **Live verifiziert 17.11.** (Leons Chrome, innerText): Produktseite Kruemmer, /shop, Startseite ohne "Auf Bestellung"
   und ohne "x-y Tage", Kachel "Weltweit / Versand"; Warenkorb-Pille nur per Code entfernt, nicht im Browser geprueft.
+  **Nachtrag 18.11. (Thomas 17.11. 19:11 im Telegram: "wir lassen das so wie nun gemacht ... es geht ja um den test",
+  "Wichtig ist das bei allen Artikeln Fertigung auf Bestellung bleibt"; Leon: "dort wo es davor stand, nicht ueberall"):**
+  (1) Website (commit 6a6dce5): Hinweis "Auf Bestellung gefertigt" OHNE Tage wieder genau dort, wo er vor dem 17.11. stand
+  (leadTimeFor/categorize: Kategorien LED, Auspuff, Felgen, per Titel + Produkttyp + Tags, deshalb auch 159 Dekor-Kits und
+  viele Carbon-/ECU-Teile mit Tag "Auspuff"; live 379 von 483 Shop-Karten). Produktkachel "Auf Bestellung gefertigt /
+  Weltweiter Versand", Shop-Karten-Pille, Warenkorb-Pille, Datenblatt "Lieferung: Auf Bestellung gefertigt"; Lagerware
+  "Weltweit / Versand" ohne Lieferzeile. "So entsteht deine Bestellung" bleibt weg (enthielt die Tage). Live geprueft
+  (innerText): Kruemmer mit Hinweis ohne Tage, H4-Adapter ohne Hinweis, /shop 379 Pillen, nirgends "x-y Tage".
+  (2) **Bestellbestaetigung in Shopify EINGESETZT 18.11.** (Leons Go "dann kriegt er genau diese Bestaetigungsmail ...
+  wenn nicht so gefertigt, braucht er den Hinweis nicht"): Live-Vorlage war vorher byte-identisch mit dem Repo-Stand vor
+  e7ca3c5 (FNV-Hash geprueft), komplett durch `email-templates/order-confirmation.html` ersetzt, nach Speichern + Neuladen
+  hash-identisch. Logik: Liquid bildet categorize() nach (Titel + Produkttyp + Tags, gleiche Regel-Reihenfolge); Block
+  "Lieferzeit / Delivery time" NUR wenn ein Artikel auf Bestellung gefertigt wird (meist 7-14 Tage; Felgen 6 Wochen oder
+  mehr), plus Label "Auf Bestellung gefertigt / Made to order" am jeweiligen Artikel; reine Lagerware-Bestellung = kein
+  Block. Shopify-Vorschau (Beispielbestellung 2x Carbon Exhaust Tip) rendert Block + 2 Labels; Gegenfaelle (nur Lagerware,
+  Lampe, Felge, gemischt) lokal mit liquidjs getestet. Rest der Mail unveraendert englisch (inkl. WhatsApp-Link, "Engineered
+  in Germany"). Echte Kundenmail noch nicht gesehen, bei der naechsten Bestellung mit Lampe/Kruemmer pruefen.
   **Klarna-Supportanfrage GESENDET 17.11. (Leons Go nach Abstimmung mit Thomas):** Chat im Shopify Help Center
   ("Chat with a human", eingeloggt als Sickmotos-Styles), Nachricht: Klarna/Przelewy24/TWINT "Unavailable", laut
   Sidekick "provider rejected, other", letzte Klarna-Zahlung 20.11.2023, Bitte um Grund + neue Pruefung. Shopifys

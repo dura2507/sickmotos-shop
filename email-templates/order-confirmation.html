@@ -40,12 +40,36 @@
               <p style="margin:14px 0 0 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#3f3f46;">
                 Thanks{% if customer.first_name %}, {{ customer.first_name }}{% endif %}. We got your order <strong style="color:#18181b;">{{ order_name }}</strong> and the crew is on it. You will get another email when it ships.
               </p>
-              {% comment %} Lieferzeit (2026-11-17): steht seit Thomas' Entscheidung nicht mehr auf der Website, nur noch hier. Felgen = 6+ Wochen, sonst 7-14 Tage (Texte wie bisher auf der Produktseite). {% endcomment %}
-              {% assign sm_long = false %}{% for line in line_items %}{% assign sm_t = line.title | downcase %}{% if sm_t contains 'felge' %}{% assign sm_long = true %}{% endif %}{% endfor %}
+              {% comment %}
+                Lieferzeit (2026-11-18): die Website zeigt nur noch den Hinweis "Auf Bestellung gefertigt" ohne Tage,
+                die Tage stehen hier. Zuordnung wie categorize() in src/lib/products.ts (Titel + Produkttyp + Tags,
+                gleiche Reihenfolge der Regeln), damit Mail und Website dieselben Artikel markieren.
+                Lagerware bekommt keinen Hinweis, Bestellungen nur mit Lagerware keinen Lieferzeit-Block.
+              {% endcomment %}
+              {%- assign sm_mto_ids = ',' -%}{%- assign sm_normal = false -%}{%- assign sm_long = false -%}
+              {%- for line in line_items -%}
+                {%- assign sm_tags = line.product.tags | join: ' ' -%}
+                {%- capture sm_h -%}{{ line.product.title | default: line.title }} {{ line.product.type }} {{ sm_tags }}{%- endcapture -%}
+                {%- assign sm_h = sm_h | downcase -%}
+                {%- assign sm_c = 'none' -%}
+                {%- if sm_h contains 'led' or sm_h contains 'scheinwerfer' or sm_h contains 'angel eye' or sm_h contains 'hexagon' or sm_h contains 'headlight' or sm_h contains 'auspuff' or sm_h contains 'krümmer' or sm_h contains 'krummer' or sm_h contains 'exhaust' -%}
+                  {%- assign sm_c = 'normal' -%}
+                {%- elsif sm_h contains 'carbon' or sm_h contains 'ecu' or sm_h contains 'mapping' or sm_h contains 'tuning kit' or sm_h contains 'fuel-x' or sm_h contains 'powercommander' or sm_h contains 'bremsscheibe' or sm_h contains 'brake' or sm_h contains 'bremse' or sm_h contains 'hoodie' or sm_h contains 'shirt' or sm_h contains 'merch' or sm_h contains 'titanschraube' or sm_h contains 'titanium screw' or sm_h contains 'titan-schraube' or sm_h contains 'dekor' or sm_h contains 'graphic' or sm_h contains 'razor blade' or sm_h contains 'razor gold' or sm_h contains 'grand theft' or sm_h contains 'broken head' -%}
+                  {%- assign sm_c = 'none' -%}
+                {%- elsif sm_h contains 'felge' or sm_h contains 'wheel' or sm_h contains 'rim' -%}
+                  {%- assign sm_c = 'long' -%}
+                {%- endif -%}
+                {%- if sm_c == 'normal' -%}{%- assign sm_normal = true -%}{%- endif -%}
+                {%- if sm_c == 'long' -%}{%- assign sm_long = true -%}{%- endif -%}
+                {%- if sm_c != 'none' -%}{%- capture sm_mto_ids -%}{{ sm_mto_ids }}{{ line.id }},{%- endcapture -%}{%- endif -%}
+              {%- endfor -%}
+              {% if sm_normal or sm_long %}
               <p style="margin:16px 0 0 0;padding:12px 14px;background:#f4f4f5;border-radius:10px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;line-height:1.6;color:#3f3f46;">
                 <strong style="color:#18181b;">Lieferzeit / Delivery time</strong><br>
-                {% if sm_long %}Für dich auf Bestellung gefertigt. Aktuelle Lieferzeit 6 Wochen oder mehr, du bekommst per Mail Updates.<br><span style="color:#71717a;">Built to order just for you. Current lead time is 6 weeks or more, and you get email updates along the way.</span>{% else %}Vieles ist ab Lager lieferbar. Von Hand gefertigt und vor Versand getestet, meist 7-14 Tage, in der Reihenfolge des Eingangs.<br><span style="color:#71717a;">A lot is in stock. Handcrafted and tested before it ships, usually 7-14 days, built in the order things come in.</span>{% endif %}
+                {% if sm_normal %}Artikel mit dem Hinweis „Auf Bestellung gefertigt“ bauen wir für dich. Von Hand gefertigt und vor Versand getestet, meist 7-14 Tage, in der Reihenfolge des Eingangs.<br><span style="color:#71717a;">Items marked “Made to order” are built for you. Handcrafted and tested before they ship, usually 7-14 days, in the order things come in.</span>{% endif %}
+                {% if sm_long %}{% if sm_normal %}<br><br>{% endif %}Felgen werden für dich auf Bestellung gefertigt. Aktuelle Lieferzeit 6 Wochen oder mehr, du bekommst per Mail Updates.<br><span style="color:#71717a;">Wheels are built to order just for you. Current lead time is 6 weeks or more, and you get email updates along the way.</span>{% endif %}
               </p>
+              {% endif %}
             </td>
           </tr>
 
@@ -80,6 +104,10 @@
                       <span style="display:block;font-size:12px;color:#71717a;">{{ line.variant.title }}</span>
                     {% endif %}
                     <span style="display:block;font-size:12px;color:#71717a;">Qty {{ line.quantity }}</span>
+                    {%- capture sm_key -%},{{ line.id }},{%- endcapture -%}
+                    {% if sm_mto_ids contains sm_key %}
+                      <span style="display:inline-block;margin-top:4px;padding:2px 6px;border-radius:4px;background:#f4f4f5;font-size:11px;font-weight:600;color:#52525b;">Auf Bestellung gefertigt / Made to order</span>
+                    {% endif %}
                   </td>
                   <td valign="top" align="right" style="padding:10px 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#18181b;white-space:nowrap;">
                     {{ line.final_line_price | money }}
