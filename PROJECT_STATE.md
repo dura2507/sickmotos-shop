@@ -504,6 +504,14 @@ Shopify-Storefront `sick-motos.com`. Design: premium, dunkel, rote Akzente (#E10
   Bestellbestaetigung: Block "Lieferzeit / Delivery time" (DE+EN, Felgen 6+ Wochen per Liquid `contains 'felge'`,
   sonst 7-14 Tage) in `email-templates/order-confirmation.html`, **NOCH NICHT in Shopify eingesetzt** (braucht Go
   + Vorschau-Test).
+  **Live verifiziert 17.11.** (Leons Chrome, innerText): Produktseite Kruemmer, /shop, Startseite ohne "Auf Bestellung"
+  und ohne "x-y Tage", Kachel "Weltweit / Versand"; Warenkorb-Pille nur per Code entfernt, nicht im Browser geprueft.
+  **Klarna-Supportanfrage GESENDET 17.11. (Leons Go nach Abstimmung mit Thomas):** Chat im Shopify Help Center
+  ("Chat with a human", eingeloggt als Sickmotos-Styles), Nachricht: Klarna/Przelewy24/TWINT "Unavailable", laut
+  Sidekick "provider rejected, other", letzte Klarna-Zahlung 20.11.2023, Bitte um Grund + neue Pruefung. Shopifys
+  KI-Assistent antwortete vorab: Grund nicht einsehbar, Klarna entscheidet, vor einer neuen Pruefung sollten im Shop
+  u.a. USt-ID, Kontakt, **Versandarten und Lieferzeiten**, Ruecksendeadresse, Widerrufsinfos klar sichtbar sein.
+  Mitarbeiter war nach ~3 Min Warteschlange noch nicht im Chat (Tab in Leons Chrome offen). Ergebnis offen.
 - **SickBot schickt Produktlinks (13.11., Thomas: "Bitte auch kucken ob der Bot Produkt links senden kann. Die
   Leute fragen mir wieder ein Loch in den Bauch").** Vorher: Bot kannte keine Produkt-URLs ("such auf der Website"),
   Widget machte Links nicht klickbar. Jetzt (commits 5d8cd55 bis 124f805):
